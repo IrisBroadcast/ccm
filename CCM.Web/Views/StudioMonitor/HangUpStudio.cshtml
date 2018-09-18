@@ -1,0 +1,29 @@
+﻿@model CCM.Web.Models.StudioMonitor.HangUpStudioViewModel
+@{
+    ViewBag.Title = Resources.HangUp_Studio;
+}
+
+<h2>@Resources.HangUp_Studio</h2>
+
+@using (Html.BeginForm("DoHangUp", "StudioMonitor", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.CheckBoxFor(m => m.IHaveBooked)
+        @Html.LabelFor(m => m.IHaveBooked)
+    </div>
+    <div class="form-group">
+        @Html.CheckBoxFor(m => m.IHaveChecked)
+        @Html.LabelFor(m => m.IHaveChecked)
+    </div>
+    @Html.HiddenFor(m => m.StudioId)
+
+    <div class="form-group">
+        <div class="">
+             @Html.ActionLink(Resources.Cancel, "Index", "StudioMonitor",  new { id = Model.StudioId}, new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-primary">@Resources.HangUp_Studio</button>
+        </div>
+    </div>
+}

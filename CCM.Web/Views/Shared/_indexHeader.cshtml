@@ -1,0 +1,20 @@
+﻿@using CCM.Core.Helpers
+@using Roles = CCM.Core.Helpers.Roles
+<div class="row">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <span class="navbar-brand">@ViewData["Type"]</span>
+            </div>
+            <div class="navbar admin-page">
+                @if (User.IsInRole(Roles.Admin))
+                {
+                    <ul class="nav navbar-nav nav-pills">
+                        <li>@Html.ActionLink((string)ViewData["NewLinkText"], "Create", (string)ViewData["Type"])</li>
+                    </ul>
+                }
+            </div>
+        </div>
+    </nav>
+</div>
+

@@ -1,0 +1,5 @@
+﻿@using System.Configuration
+@{
+    string env = @ConfigurationManager.AppSettings["Environment"];
+    Layout = env == "Stage" ? "~/Views/Shared/_Layout_CodecControl.cshtml" : "~/Views/Shared/_Layout.cshtml";
+}
