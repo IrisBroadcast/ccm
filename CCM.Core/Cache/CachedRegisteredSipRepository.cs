@@ -7,6 +7,7 @@ using CCM.Core.Kamailio;
 using LazyCache;
 using NLog;
 using System.Linq;
+using CCM.Core.CodecControl.Entities;
 
 namespace CCM.Core.Cache
 {
@@ -60,6 +61,11 @@ namespace CCM.Core.Cache
             }
 
             return result;
+        }
+
+        public List<CodecInformation> GetCodecInformationList()
+        {
+            return _internalRepository.GetCodecInformationList();
         }
     }
 }

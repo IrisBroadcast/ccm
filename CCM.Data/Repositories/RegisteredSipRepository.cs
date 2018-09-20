@@ -4,11 +4,11 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
+using CCM.Core.CodecControl.Entities;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Enums;
 using CCM.Core.Helpers;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.Kamailio;
@@ -27,7 +27,11 @@ namespace CCM.Data.Repositories
         public ILocationManager LocationManager { get; set; }
         public ISettingsManager SettingsManager { get; set; }
 
-        public RegisteredSipRepository(ISettingsManager settingsManager, ILocationManager locationManager, IMetaRepository metaRepository, IAppCache cache)
+        public RegisteredSipRepository(
+            ISettingsManager settingsManager,
+            ILocationManager locationManager,
+            IMetaRepository metaRepository, 
+            IAppCache cache)
             : base(cache)
         {
             _metaRepository = metaRepository;
@@ -46,6 +50,7 @@ namespace CCM.Data.Repositories
                     {
                         db.RegisteredSips.Remove(regSip);
                     }
+
                     db.SaveChanges();
                     return true;
                 }
@@ -145,17 +150,27 @@ namespace CCM.Data.Repositories
                 using (var db = GetDbContext())
                 {
                     // Registrations should be unique based on sipAddress, but to be safe we don't assume this.
-                    var dbSips = db.RegisteredSips.Where(rs => rs.SIP == sipAddress).OrderByDescending(rs => rs.Updated);
+                    var dbSips = db.RegisteredSips.Where(rs => rs.SIP == sipAddress)
+                        .OrderByDescending(rs => rs.Updated);
 
                     if (!dbSips.Any())
                     {
-                        return new KamailioMessageHandlerResult { ChangeStatus = KamailioMessageChangeStatus.NothingChanged, SipAddress = sipAddress };
+                        return new KamailioMessageHandlerResult
+                        {
+                            ChangeStatus = KamailioMessageChangeStatus.NothingChanged,
+                            SipAddress = sipAddress
+                        };
                     }
 
                     var changedObjectId = dbSips.FirstOrDefault()?.Id ?? Guid.Empty;
                     db.RegisteredSips.RemoveRange(dbSips);
                     db.SaveChanges();
-                    return new KamailioMessageHandlerResult { ChangeStatus = KamailioMessageChangeStatus.CodecRemoved, ChangedObjectId = changedObjectId, SipAddress = sipAddress };
+                    return new KamailioMessageHandlerResult
+                    {
+                        ChangeStatus = KamailioMessageChangeStatus.CodecRemoved,
+                        ChangedObjectId = changedObjectId,
+                        SipAddress = sipAddress
+                    };
                 }
             }
             catch (Exception ex)
@@ -190,7 +205,7 @@ namespace CCM.Data.Repositories
         /// <summary>
         /// Returnerar true om kodare i databasen indikerar att den var utgången.
         /// </summary>
-        private bool CodecWasExpired(DbEntityEntry<Entities.RegisteredSipEntity> entry)
+        private bool CodecWasExpired(DbEntityEntry<RegisteredSipEntity> entry)
         {
             var maxRegistrationAge = SettingsManager.MaxRegistrationAge;
             var expireTime = DateTime.UtcNow.AddSeconds(-maxRegistrationAge);
@@ -198,7 +213,7 @@ namespace CCM.Data.Repositories
             return entry.OriginalValues.GetValue<DateTime>(nameof(entry.Entity.Updated)) < expireTime;
         }
 
-        private bool HasRelevantChange(DbEntityEntry<Entities.RegisteredSipEntity> entry)
+        private bool HasRelevantChange(DbEntityEntry<RegisteredSipEntity> entry)
         {
             var changedProperties = GetChangedProperties(entry);
             // Remove not relevant properties
@@ -219,7 +234,7 @@ namespace CCM.Data.Repositories
                 .ToList();
         }
 
-        public RegisteredSip Single(Expression<Func<Entities.RegisteredSipEntity, bool>> expression)
+        public RegisteredSip Single(Expression<Func<RegisteredSipEntity, bool>> expression)
         {
             using (var db = GetDbContext())
             {
@@ -258,17 +273,17 @@ namespace CCM.Data.Repositories
                     }
 
                     IQueryable<RegisteredSipEntity> query = db.RegisteredSips
-                            .Include(rs => rs.Location)
-                            .Include(rs => rs.Location.Region)
-                            .Include(rs => rs.Location.City)
-                            .Include(rs => rs.Location.ProfileGroup)
-                            .Include(rs => rs.Location.ProfileGroup.OrderedProfiles)
-                            .Include(rs => rs.User)
-                            .Include(rs => rs.User.Owner)
-                            .Include(rs => rs.User.CodecType)
-                            .Include(rs => rs.UserAgent)
-                            .Include(rs => rs.UserAgent.OrderedProfiles)
-                            .Where(r => r.Updated >= maxAge); // && r.User.UserType == UserType.SIP);
+                        .Include(rs => rs.Location)
+                        .Include(rs => rs.Location.Region)
+                        .Include(rs => rs.Location.City)
+                        .Include(rs => rs.Location.ProfileGroup)
+                        .Include(rs => rs.Location.ProfileGroup.OrderedProfiles)
+                        .Include(rs => rs.User)
+                        .Include(rs => rs.User.Owner)
+                        .Include(rs => rs.User.CodecType)
+                        .Include(rs => rs.UserAgent)
+                        .Include(rs => rs.UserAgent.OrderedProfiles)
+                        .Where(r => r.Updated >= maxAge);
 
                     var dbResult = query.ToList();
                     var list = dbResult.Select(sip => MapToRegisteredSipDto(sip, metaList)).ToList();
@@ -302,6 +317,7 @@ namespace CCM.Data.Repositories
                     sip.InCall = false;
                     continue;
                 }
+
                 sip.InCall = true;
                 sip.IsPhoneCall = sip.IsPhoneCall;
                 sip.CallStartedAt = call.Started;
@@ -351,9 +367,15 @@ namespace CCM.Data.Repositories
                 IpAddress = dbSip.IP,
                 UserAgentHeader = dbSip.UserAgentHead,
                 UserName = dbSip.Username,
-                RegionName = dbSip.Location != null && dbSip.Location.Region != null ? dbSip.Location.Region.Name : string.Empty,
-                CodecTypeName = dbSip.User != null && dbSip.User.CodecType != null ? dbSip.User.CodecType.Name : string.Empty,
-                CodecTypeColor = dbSip.User != null && dbSip.User.CodecType != null ? dbSip.User.CodecType.Color : string.Empty,
+                RegionName = dbSip.Location != null && dbSip.Location.Region != null
+                    ? dbSip.Location.Region.Name
+                    : string.Empty,
+                CodecTypeName = dbSip.User != null && dbSip.User.CodecType != null
+                    ? dbSip.User.CodecType.Name
+                    : string.Empty,
+                CodecTypeColor = dbSip.User != null && dbSip.User.CodecType != null
+                    ? dbSip.User.CodecType.Color
+                    : string.Empty,
                 Comment = dbSip.User != null ? dbSip.User.Comment : string.Empty,
                 Image = dbSip.UserAgent != null ? dbSip.UserAgent.Image : string.Empty,
                 Api = dbSip.UserAgent != null ? dbSip.UserAgent.Api : string.Empty,
@@ -368,8 +390,12 @@ namespace CCM.Data.Repositories
                 HasGpo = dbSip.UserAgent != null && !string.IsNullOrEmpty(dbSip.UserAgent.GpoNames),
             };
 
-            var locationProfiles = dbSip.Location != null ? dbSip.Location.ProfileGroup.OrderedProfiles.OrderBy(op => op.SortIndex).Select(p => p.Profile.Name) : Enumerable.Empty<string>();
-            var userAgentProfiles = dbSip.UserAgent != null ? dbSip.UserAgent.OrderedProfiles.OrderBy(op => op.SortIndex).Select(p => p.Profile.Name) : Enumerable.Empty<string>();
+            var locationProfiles = dbSip.Location != null
+                ? dbSip.Location.ProfileGroup.OrderedProfiles.OrderBy(op => op.SortIndex).Select(p => p.Profile.Name)
+                : Enumerable.Empty<string>();
+            var userAgentProfiles = dbSip.UserAgent != null
+                ? dbSip.UserAgent.OrderedProfiles.OrderBy(op => op.SortIndex).Select(p => p.Profile.Name)
+                : Enumerable.Empty<string>();
             // The sort order is most important as it decides the order of recommended profiles in the Discovery service.
             // Sorting is based on the sort order of the location.
             regSip.Profiles = locationProfiles.Intersect(userAgentProfiles).ToList();
@@ -378,12 +404,16 @@ namespace CCM.Data.Repositories
             return regSip;
         }
 
-        private List<KeyValuePair<string, string>> GetMetaData(List<MetaType> metaList, Entities.RegisteredSipEntity sip)
+        private List<KeyValuePair<string, string>> GetMetaData(
+            List<MetaType> metaList,
+            Entities.RegisteredSipEntity sip)
         {
             metaList = metaList ?? new List<MetaType>();
 
             var userAgentMetaDataList = metaList
-                .Select(meta => new KeyValuePair<string, string>(meta.Name, MetadataHelper.GetPropertyValue(sip, meta.FullPropertyName)))
+                .Select(meta =>
+                    new KeyValuePair<string, string>(meta.Name,
+                        MetadataHelper.GetPropertyValue(sip, meta.FullPropertyName)))
                 .Where(m => !string.IsNullOrEmpty(m.Value))
                 .ToList();
 
@@ -404,30 +434,65 @@ namespace CCM.Data.Repositories
                 })
                 .ToList();
 
-            var dbUserAgent = allUserAgents.FirstOrDefault(u => u.MatchType == MatchType.BeginsWith && userAgent.StartsWith(u.Identifier));
+            var dbUserAgent = allUserAgents.FirstOrDefault(u =>
+                u.MatchType == MatchType.BeginsWith && userAgent.StartsWith(u.Identifier));
 
             if (dbUserAgent != null)
             {
                 return dbUserAgent.UserAgentId;
             }
 
-            dbUserAgent = allUserAgents.FirstOrDefault(u => u.MatchType == MatchType.EndsWith && userAgent.EndsWith(u.Identifier));
+            dbUserAgent = allUserAgents.FirstOrDefault(u =>
+                u.MatchType == MatchType.EndsWith && userAgent.EndsWith(u.Identifier));
 
             if (dbUserAgent != null)
             {
                 return dbUserAgent.UserAgentId;
             }
 
-            dbUserAgent = allUserAgents.FirstOrDefault(u => u.MatchType == MatchType.Contains && userAgent.Contains(u.Identifier));
+            dbUserAgent = allUserAgents.FirstOrDefault(u =>
+                u.MatchType == MatchType.Contains && userAgent.Contains(u.Identifier));
 
             return dbUserAgent?.UserAgentId;
         }
-    }
 
-    internal class UserAgentInfo
-    {
-        public Guid UserAgentId { get; set; }
-        public string Identifier { get; set; }
-        public MatchType MatchType { get; set; }
+        public List<CodecInformation> GetCodecInformationList()
+        {
+            DateTime maxAge = DateTime.UtcNow.AddSeconds(-SettingsManager.MaxRegistrationAge);
+
+            using (var db = GetDbContext())
+            {
+                List<RegisteredSipEntity> rsList = db.RegisteredSips
+                    .Include(rs => rs.UserAgent)
+                    .Where(r => r.Updated >= maxAge)
+                    .Where(rs => !string.IsNullOrEmpty(rs.UserAgent.Api))
+                    .OrderByDescending(rs => rs.Updated)
+                    .ToList();
+
+                // Only include latest registrations per sip address.
+                var groupBy = rsList.GroupBy(rs => rs.SIP).ToList();
+                List<RegisteredSipEntity> groupedList = groupBy.Select(g => g.First())
+                    .OrderBy(rs => rs.SIP)
+                    .ToList();
+
+                var list = groupedList.Select(rs => new CodecInformation()
+                {
+                    SipAddress = rs.SIP,
+                    Ip = rs.IP,
+                    Api = rs.UserAgent?.Api ?? string.Empty,
+                    GpoNames = rs.UserAgent?.GpoNames ?? string.Empty,
+                    NrOfInputs = rs.UserAgent?.Inputs ?? 0
+                }).ToList();
+
+                return list;
+            }
+        }
+
+        internal class UserAgentInfo
+        {
+            public Guid UserAgentId { get; set; }
+            public string Identifier { get; set; }
+            public MatchType MatchType { get; set; }
+        }
     }
 }

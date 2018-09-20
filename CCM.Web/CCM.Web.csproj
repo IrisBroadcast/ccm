@@ -260,6 +260,7 @@
     </Compile>
     <Compile Include="Authentication\ApiAuthorizeAttribute.cs" />
     <Compile Include="Authentication\CcmApiAuthorizeAttribute.cs" />
+    <Compile Include="Controllers\ApiExternal\CodecInformationController.cs" />
     <Compile Include="Infrastructure\CertificateHelper.cs" />
     <Compile Include="Controllers\ApiExternal\AuthenticatedDiscoveryController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -853,7 +854,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Import Project="..\packages\BuildWebCompiler.1.11.347\build\BuildWebCompiler.targets" Condition="Exists('..\packages\BuildWebCompiler.1.11.347\build\BuildWebCompiler.targets')" />
+  <Import Project="..\packages\BuildWebCompiler.1.11.347\build\BuildWebCompiler.targets" Condition="'$(OS)' != 'Unix' AND Exists('..\packages\BuildWebCompiler.1.11.347\build\BuildWebCompiler.targets')" />
   <Import Project="..\packages\OctoPack.3.6.3\build\OctoPack.targets" Condition="Exists('..\packages\OctoPack.3.6.3\build\OctoPack.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

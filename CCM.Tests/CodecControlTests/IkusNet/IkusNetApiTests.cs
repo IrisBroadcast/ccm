@@ -39,7 +39,6 @@ namespace CCM.Tests.CodecControlTests.IkusNet
 
             level = sut.GetInputGainLevelAsync(_hostAddress, 0);
             Assert.AreEqual(4, level);
-
         }
 
         [Test]
