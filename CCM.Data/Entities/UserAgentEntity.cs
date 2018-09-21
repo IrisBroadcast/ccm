@@ -29,6 +29,7 @@ namespace CCM.Data.Entities
         public string Api { get; set; }
         public int Lines { get; set; }
         public int Inputs { get; set; }
+        public int NrOfGpos { get; set; }
         public int MaxInputDb { get; set; }
         public int MinInputDb { get; set; }
         public string Comment { get; set; }

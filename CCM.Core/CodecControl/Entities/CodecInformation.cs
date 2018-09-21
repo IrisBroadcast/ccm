@@ -7,5 +7,6 @@
         public string Api { get; set; }
         public string GpoNames { get; set; }
         public int NrOfInputs { get; set; }
+        public int NrOfGpos { get; set; }
     }
 }

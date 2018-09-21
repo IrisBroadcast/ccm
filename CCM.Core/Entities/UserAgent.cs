@@ -20,6 +20,7 @@ namespace CCM.Core.Entities
         public string Api { get; set; }
         public int Lines { get; set; }
         public int Inputs { get; set; }
+        public int NrOfGpos { get; set; }
         public int InputMinDb { get; set; }
         public int InputMaxDb { get; set; }
         public int InputGainStep { get; set; }

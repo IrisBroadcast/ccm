@@ -30,6 +30,7 @@ namespace CCM.Core.Entities.Specific
         public int Width { get; set; }
         public int Height { get; set; }
         public int Inputs { get; set; }
+        public int NrOfGpos { get; set; }
         public int InputMinDb { get; set; }
         public int InputMaxDb { get; set; }
         public int InputGainStep { get; set; }
