@@ -1,2 +1,2 @@
-ALTER TABLE `useragents` 
+ALTER TABLE `UserAgents` 
 ADD COLUMN `NrOfGpos` INT(11) NOT NULL DEFAULT 0 AFTER `Inputs`;
