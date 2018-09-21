@@ -4,7 +4,6 @@ using System.Data.Entity;
 using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Repositories.Specialized;
 using LazyCache;
 
@@ -50,25 +49,26 @@ namespace CCM.Data.Repositories.Specialized
                 Comment = rs.User != null ? rs.User.Comment : string.Empty,
                 UserDisplayName = rs.User != null ? rs.User.DisplayName : string.Empty,
                 Api = rs.UserAgent != null ? rs.UserAgent.Api ?? string.Empty : string.Empty,
-                Image = rs.UserAgent != null && rs.UserAgent.Image != null ? rs.UserAgent.Image : string.Empty,
+                Image = rs.UserAgent?.Image ?? string.Empty,
                 ActiveX = rs.UserAgent != null && rs.UserAgent.Ax,
-                Width = rs.UserAgent != null ? rs.UserAgent.Width: 1000,
-                Height = rs.UserAgent != null ? rs.UserAgent.Height: 1000,
+                Width = rs.UserAgent?.Width ?? 1000,
+                Height = rs.UserAgent?.Height ?? 1000,
                 UserInterfaceLink = rs.UserAgent != null ? rs.UserAgent.UserInterfaceLink ?? "" : String.Empty,
                 UserInterfaceIsOpen = rs.UserAgent != null && rs.UserAgent.UserInterfaceIsOpen,
                 UseScrollbars = rs.UserAgent != null && rs.UserAgent.UseScrollbars,
-                Inputs = rs.UserAgent != null ? rs.UserAgent.Inputs : 0,
-                InputGainStep = rs.UserAgent != null ? rs.UserAgent.InputGainStep : 0,
-                InputMaxDb = rs.UserAgent != null ? rs.UserAgent.MaxInputDb : 0,
-                InputMinDb = rs.UserAgent != null ? rs.UserAgent.MinInputDb : 0,
-                Lines = rs.UserAgent != null ? rs.UserAgent.Lines : 0,
+                Inputs = rs.UserAgent?.Inputs ?? 0,
+                NrOfGpos = rs.UserAgent?.NrOfGpos ?? 0,
+                InputGainStep = rs.UserAgent?.InputGainStep ?? 0,
+                InputMaxDb = rs.UserAgent?.MaxInputDb ?? 0,
+                InputMinDb = rs.UserAgent?.MinInputDb ?? 0,
+                Lines = rs.UserAgent?.Lines ?? 0,
                 
                 CodecPresets = rs.UserAgent != null ? rs.UserAgent.CodecPresets.Select(MapToCodecPreset).ToList() :  new List<CodecPreset>(),
 
                 LocationName = rs.Location != null ? rs.Location.Name : string.Empty,
                 LocationComment = rs.Location != null ? rs.Location.Comment : string.Empty,
-                CityName = rs.Location != null && rs.Location.City != null ? rs.Location.City.Name : string.Empty,
-                RegionName = rs.Location != null && rs.Location.Region != null ? rs.Location.Region.Name : string.Empty,
+                CityName = rs.Location?.City != null ? rs.Location.City.Name : string.Empty,
+                RegionName = rs.Location?.Region != null ? rs.Location.Region.Name : string.Empty,
             };
 
             return model;

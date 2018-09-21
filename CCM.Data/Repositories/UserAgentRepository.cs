@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Data.Entity;
 using CCM.Core.Entities;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
@@ -60,6 +59,7 @@ namespace CCM.Data.Repositories
                 dbUserAgent.Api = userAgent.Api;
                 dbUserAgent.Lines = userAgent.Lines;
                 dbUserAgent.Inputs = userAgent.Inputs;
+                dbUserAgent.NrOfGpos = userAgent.NrOfGpos;
                 dbUserAgent.MaxInputDb = userAgent.InputMaxDb;
                 dbUserAgent.MinInputDb = userAgent.InputMinDb;
                 dbUserAgent.UserInterfaceLink = userAgent.UserInterfaceLink;
@@ -150,6 +150,7 @@ namespace CCM.Data.Repositories
                 Api = dbUserAgent.Api,
                 Lines = dbUserAgent.Lines,
                 Inputs = dbUserAgent.Inputs,
+                NrOfGpos = dbUserAgent.NrOfGpos,
                 InputMaxDb = dbUserAgent.MaxInputDb,
                 InputMinDb = dbUserAgent.MinInputDb,
                 Comment = dbUserAgent.Comment,

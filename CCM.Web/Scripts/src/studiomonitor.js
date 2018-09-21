@@ -13,6 +13,7 @@ ccmControllers.controller('studioMonitorController',
 
         var inactivityTimeoutHandle;
 
+        $scope.codecControlHost = window.codecControlHost;
         $scope.studioId = null;
         $scope.sipid = null;
         $scope.isInCall = false;
@@ -44,7 +45,7 @@ ccmControllers.controller('studioMonitorController',
 
         codecStatusHub.on('codecStatus', function (codecStatus) {
             console.log("Received codec status", codecStatus);
-            if (angular.isDefined(codecStatus) && codecStatus.SipAddress.toLowerCase() === $scope.sipid.toLowerCase()) {
+            if (angular.isDefined(codecStatus) && codecStatus.SipAddress.toLowerCase() === $scope.sipAddress.toLowerCase()) {
                 console.log("Received codec status for my codec", codecStatus);
                 $scope.onCodecStatusUpdate(codecStatus);
             }
@@ -52,10 +53,10 @@ ccmControllers.controller('studioMonitorController',
 
         codecStatusHub.start();
 
-        $scope.init = function (model) {
+        $scope.init = function(model) {
             console.log("* CodecControl Init", model);
             $scope.studioId = model.StudioId;
-            $scope.sipid = model.CodecSipAddress;
+            $scope.sipAddress = model.CodecSipAddress;
             $scope.nrOfGpos = model.NrOfGpos;
             $scope.nrOfMicrophones = model.NrOfAudioInputs;
             $scope.infoText = model.InfoText;
@@ -114,7 +115,7 @@ ccmControllers.controller('studioMonitorController',
             $scope.gpos = gpos;
             console.log($scope.gpos);
 
-            $scope.checkCodecIsOnline().then(function (isOnline) {
+            $scope.checkCodecIsOnline().then(function(isOnline) {
                 $scope.codecOnline = isOnline;
 
                 if (isOnline) {
@@ -125,7 +126,7 @@ ccmControllers.controller('studioMonitorController',
                 }
             });
 
-        }
+        };
 
         $scope.onCodecStatusUpdate = function (codecStatus) {
             var isInCall = codecStatus.State === 2;
@@ -141,7 +142,7 @@ ccmControllers.controller('studioMonitorController',
 
         $scope.checkCodecIsOnline = function () {
             console.info('Kontrollerar om kodaren är tillgänglig');
-            return $http.get('/api/studiomonitorapi/IsCodecAvailable?studioId=' + $scope.studioId)
+            return $http.get($scope.codecControlHost + '/api/codeccontrol/isavailable?sipaddress=' + $scope.sipAddress)
                 .then(
                     function (response) {
                         console.info('Codec available: ', response.data);
@@ -196,44 +197,42 @@ ccmControllers.controller('studioMonitorController',
 
         $scope.setGpo = function (gpo) {
             var active = gpo.active ? false : true;
-            $http.post('/api/studiomonitorapi/SetGpo',
-                    { studioId: $scope.studioId, number: gpo.number, active: active })
+            $http.post($scope.codecControlHost + '/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: active })
                 .then(function (response) {
                     console.log("Codec GPO data: ", response.data);
-                    gpo.active = response.data.Active;
+                    gpo.active = response.data.active;
                 });
         };
 
         // Input values, reset mixer
-        $scope.resetMixer = function () {
+        $scope.resetMixer = function() {
             console.info('* Codec Reset mixer snapshot');
             for (var i = 0; i < $scope.nrOfMicrophones; i++) {
                 $scope.setGainLevel(i, $scope.defaultInputLevel);
                 var on = (i === 0); // First mic on, other off
                 $scope.setInputEnabled(i, on);
             }
-        }
+        };
 
-        $scope.increaseGainLevel = function (input) {
+        $scope.increaseGainLevel = function(input) {
             var newValue = input.value + 1;
             $scope.setGainLevel(input.id, newValue);
-        }
+        };
 
-        $scope.decreaseGainLevel = function (input) {
+        $scope.decreaseGainLevel = function(input) {
             var newValue = input.value - 1;
             $scope.setGainLevel(input.id, newValue);
-        }
+        };
 
         $scope.setGainLevel = function (inputNumber, newValue) {
             $scope.stopUpdateAudioStatus();
             console.info("* Codec SetGainLevel", inputNumber, newValue);
-            $http.post('/api/studiomonitorapi/SetInputGainLevel',
-                    { studioid: $scope.studioId, input: inputNumber, level: newValue })
+            $http.post($scope.codecControlHost + '/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: inputNumber, level: newValue })
                 .then(function (response) {
                     var data = response.data;
-                    var input = $scope.inputs[data.Input];
-                    input.value = data.Level;
-                    $scope.updateAudioStatus();
+                    var input = $scope.inputs[inputNumber];
+                    input.value = data.gainLevel;
+                    //$scope.updateAudioStatus();
                 },
                 function (error) {
                     // Do nothing
@@ -242,17 +241,16 @@ ccmControllers.controller('studioMonitorController',
         };
 
         $scope.getAudioStatus = function () {
-
-            return $http.get('/api/studiomonitorapi/GetAudioStatus?studioId=' + $scope.studioId)
+            return $http.get($scope.codecControlHost + '/api/codeccontrol/getaudiostatus?sipaddress=' + $scope.sipAddress)
                 .then(function (response) {
                     let data = response.data;
                     console.log("* Codec GetAudioStatus: ", data);
 
                     for (var i = 0; i < $scope.nrOfMicrophones; i++) {
-                        var inputData = data.InputStatuses[i];
+                        var inputData = data.inputStatus[i];
                         var input = $scope.inputs[i];
-                        input.value = inputData.Level;
-                        input.enabled = inputData.Enabled;
+                        input.value = inputData.gainLevel;
+                        input.enabled = inputData.enabled;
                     }
 
                     var gpoData = response.data.GpoValues;
@@ -261,21 +259,21 @@ ccmControllers.controller('studioMonitorController',
                     for (var j = 0; j < $scope.nrOfGpos; j++) {
                         var gpo = $scope.gpos[j];
                         if (gpoData[j] !== undefined && gpoData[j] !== null) {
-                            gpo.active = gpoData[j].Active;
+                            gpo.active = gpoData[j].active;
                             hasActiveGpo = hasActiveGpo || gpo.active;
                         }
                     }
 
                     $scope.playMessageButtonDisabled = hasActiveGpo; // Disable play button when any GPO is active
 
-                    var vuData = response.data.VuValues;
+                    var vuData = response.data.vuValues;
                     console.info("* got VU-data: ", vuData);
 
                     // Värdena är i db där 0 = Fullscale +18db, -18 = Test 0dB, -96 = min-nivå
-                    $scope.txL = fallback($scope.txL, convertVuToPercentage(vuData.TxLeft));
-                    $scope.txR = fallback($scope.txR, convertVuToPercentage(vuData.TxRight));
-                    $scope.rxL = fallback($scope.rxL, convertVuToPercentage(vuData.RxLeft));
-                    $scope.rxR = fallback($scope.rxR, convertVuToPercentage(vuData.RxRight));
+                    $scope.txL = fallback($scope.txL, convertVuToPercentage(vuData.txLeft));
+                    $scope.txR = fallback($scope.txR, convertVuToPercentage(vuData.txRight));
+                    $scope.rxL = fallback($scope.rxL, convertVuToPercentage(vuData.rxLeft));
+                    $scope.rxR = fallback($scope.rxR, convertVuToPercentage(vuData.rxRight));
                 });
         };
 
@@ -285,20 +283,19 @@ ccmControllers.controller('studioMonitorController',
         };
 
         $scope.setInputEnabled = function (inputNumber, enabled) {
-            $http.post('/api/studiomonitorapi/SetInputEnabled', { studioId: $scope.studioId, input: inputNumber, enabled: enabled })
+            $http.post($scope.codecControlHost + '/api/codeccontrol/setinputenabled', { sipAddress: $scope.sipAddress, input: inputNumber, enabled: enabled })
                 .then(function (response) {
                     var result = response.data;
                     console.log("SetInputEnabled", result);
-                    var input = $scope.inputs[result.Input];
-                    input.enabled = result.Enabled;
+                    $scope.inputs[inputNumber].enabled = result.enabled;
                 },
                 function (response) {
-                    // SetInputEnabled failed
                     console.error('* Codec SetInputEnabled failed');
                 });
         };
 
         $scope.updateAudioStatus = function () {
+            console.log("updateAudioStatus");
             $scope.getAudioStatus().then(function () {
                 if (!angular.isDefined(audioStatusTimeoutHandle)) {
                     audioStatusTimeoutHandle = $timeout(function () {
@@ -337,15 +334,15 @@ ccmControllers.controller('studioMonitorController',
         };
 
         // Other
-        $scope.isInternetExplorer = function () {
+        $scope.isInternetExplorer = function() {
             return (navigator.appName === 'Microsoft Internet Explorer' ||
                 !!(navigator.userAgent.match(/Trident/) || navigator.userAgent.match(/rv:11/)) ||
                 (typeof $.browser !== "undefined" && $.browser.msie === 1));
-        }
+        };
 
         $scope.$on("$destroy",
             function () {
-                console.log("Destroy called, stop input checking, stop VU, stop codecStatusHub");
+                console.log("Destroy called");
                 $scope.stopUpdateAudioStatus();
                 codecStatusHub.stop();
             });

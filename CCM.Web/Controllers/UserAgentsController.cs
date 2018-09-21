@@ -88,6 +88,7 @@ namespace CCM.Web.Controllers
                 Api = userAgent.Api,
                 Lines = userAgent.Lines,
                 Inputs = userAgent.Inputs,
+                NrOfGpos = userAgent.NrOfGpos,
                 MaxInputDb = userAgent.InputMaxDb,
                 MinInputDb = userAgent.InputMinDb,
                 Comment = userAgent.Comment,
@@ -150,6 +151,7 @@ namespace CCM.Web.Controllers
             
             model.LinesInList = 10;
             model.InputsInList = 10;
+            model.GposInList = 6;
             model.InputDbInListMin = -100;
             model.InputDbInListMax = 100;
         }
@@ -171,6 +173,7 @@ namespace CCM.Web.Controllers
                 Api = model.Api,
                 Lines = model.Lines,
                 Inputs = model.Inputs,
+                NrOfGpos = model.NrOfGpos,
                 InputMinDb = model.MinInputDb,
                 InputMaxDb = model.MaxInputDb,
                 Comment = model.Comment,

@@ -6,7 +6,6 @@ using System.Linq.Expressions;
 using System.Data.Entity;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
@@ -215,6 +214,7 @@ namespace CCM.Data.Repositories
                 Api = userAgent.Api,
                 Lines = userAgent.Lines,
                 Inputs = userAgent.Inputs,
+                NrOfGpos = userAgent.NrOfGpos,
                 InputMinDb = userAgent.MinInputDb,
                 InputMaxDb = userAgent.MaxInputDb,
                 Comment = userAgent.Comment

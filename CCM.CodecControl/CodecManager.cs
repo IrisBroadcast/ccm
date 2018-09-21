@@ -34,6 +34,7 @@ namespace CCM.CodecControl
                 var apis = new List<CodecApiInformation>
                 {
                     new CodecApiInformation { DisplayName = "Prodys IkusNet", Name = "IkusNet" },
+                    new CodecApiInformation { DisplayName = "Prodys IkusNet ST", Name = "IkusNetSt" },
                     new CodecApiInformation { DisplayName = "Mandozzi Umac", Name = "Umac" },
                     new CodecApiInformation { DisplayName = "Baresip Proprietary", Name = "BaresipRest" }
                 };
@@ -60,6 +61,7 @@ namespace CCM.CodecControl
             switch (codecInformation.Api)
             {
                 case "IkusNet":
+                case "IkusNetSt":
                     return new IkusNetApi();
                 case "Umac":
                     return new UmacApi();

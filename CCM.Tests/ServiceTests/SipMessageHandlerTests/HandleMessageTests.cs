@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace CCM.Tests.ServiceTests.SipMessageHandlerTests
 {
-    [TestFixture, Ignore("Integration tests")]
+    [TestFixture, Ignore("")]
     public class HandleMessageTests : SipMessageHandlerTestsBase
     {
         [Test]

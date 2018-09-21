@@ -5,7 +5,7 @@
 }
 
 <div ng-controller="studioMonitorController" ng-init="init(@Newtonsoft.Json.JsonConvert.SerializeObject(Model))" class="ccm-ui-studio-container">
-    
+
     <div class="ccm-ui-studio--inactivity-banner vertical-align--unknown-size" ng-show="inactivity">
         <div class="inactivity-inner-div">Sidan uppdateras inte längre</div>
         <button onclick="location.reload();" class="btn btn-primary">Ladda om</button>
@@ -22,7 +22,7 @@
     <div class="row ccm-ui-studio-info-row">
         <div class="col-md-12">
             {{ infoText }}
-            <br/>
+            <br />
             <a href="{{moreInfoUrl}}" target="_blank" title="Manual">Manual</a>
         </div>
     </div>
@@ -80,11 +80,11 @@
                 </div>
 
                 <div class="ccm-ui-mixer--unit">
-                    
+
                     <div class="widget-options">
                         <button class="btn btn-primary ccm-ui-mixer--reset-mixer" ng-class="btn-default" ng-click="resetMixer()">Utgångsläge</button>
                     </div>
-                    
+
                     <div class="vu-group vu-group--left">
                         <vu-meter level="txL"></vu-meter>
                         <vu-meter level="txR"></vu-meter>
@@ -113,6 +113,6 @@
 </div>
 
 @section scripts
-    {
+{
     @Scripts.Render("~/bundles/home")
 }

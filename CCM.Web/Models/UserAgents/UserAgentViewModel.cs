@@ -52,6 +52,10 @@ namespace CCM.Web.Models.UserAgents
 
         [Display(ResourceType = typeof(Resources), Name = "Inputs")]
         public int Inputs { get; set; }
+        public int GposInList { get; set; }
+
+        [Display(ResourceType = typeof(Resources), Name = "NrOfGpos")]
+        public int NrOfGpos { get; set; }
 
         public int InputsInList { get; set; }
 

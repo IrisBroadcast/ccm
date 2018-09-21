@@ -22,7 +22,8 @@ namespace CCM.Web
                 "~/Scripts/src/studiomonitor.js",
                 "~/Scripts/ngStorage.js",
                 "~/Scripts/ui-bootstrap-tpls-{version}.js",
-                "~/Scripts/jquery.signalR-{version}.js"
+                "~/Scripts/jquery.signalR-{version}.js",
+                "~/Scripts/signalr.js"
             ));
 
             // Inkluderas i samtliga sidor

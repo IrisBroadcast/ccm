@@ -2,7 +2,6 @@
 using System.Data.Entity;
 using System.Linq;
 using CCM.Core.CodecControl.Entities;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Repositories.Specialized;
 using CCM.Data.Entities;
 using LazyCache;
@@ -47,7 +46,8 @@ namespace CCM.Data.Repositories.Specialized
                 Api = rs.UserAgent.Api,
                 Ip = rs.IP,
                 GpoNames = rs.UserAgent.GpoNames,
-                NrOfInputs = rs.UserAgent.Inputs
+                NrOfInputs = rs.UserAgent.Inputs,
+                NrOfGpos = rs.UserAgent.NrOfGpos
             };
         }
     }

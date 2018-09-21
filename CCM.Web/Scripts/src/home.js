@@ -5,7 +5,7 @@
 var ccmApp = angular.module('ccm', ['ccmControllers', 'ui.bootstrap', 'ngStorage']);
 
 ccmApp.filter('timeAgo', function () {
-    return function (started, currentTime) {
+    return function(started, currentTime) {
         var secNum = parseInt((currentTime - started) / 1000, 10);
         if (secNum < 0) {
             return '---';
@@ -16,9 +16,15 @@ ccmApp.filter('timeAgo', function () {
         var minutes = Math.floor(secNum / 60) % 60;
         var seconds = secNum % 60;
 
-        if (hours < 10) { hours = "0" + hours; }
-        if (minutes < 10) { minutes = "0" + minutes; }
-        if (seconds < 10) { seconds = "0" + seconds; }
+        if (hours < 10) {
+            hours = "0" + hours;
+        }
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
         if (days > 1) {
             return days + " dagar " + hours + ':' + minutes + ':' + seconds; // TODO: Internationalisera detta
         } else if (days === 1) {
@@ -26,22 +32,24 @@ ccmApp.filter('timeAgo', function () {
         } else {
             return hours + ':' + minutes + ':' + seconds;
         }
-    }
+    };
 });
 
 ccmApp.filter('max', function () {
-    return function (value, max) {
-        if (max < 0) { max = 0; }
+    return function(value, max) {
+        if (max < 0) {
+            max = 0;
+        }
         return value > max ? max : value;
-    }
+    };
 });
 
 ccmApp.filter('callTimeWarning', function () {
     // {{'text'|callTimeWarning:warningLevel(10000):call.start:call.end}}
-    return function (type, warningLevel, callStart, callEnd) { 
+    return function(type, warningLevel, callStart, callEnd) {
         var diff = new Date(callEnd) - new Date(callStart);
-        if (parseInt(diff) <= warningLevel ) { 
-            if(type=='class') {
+        if (parseInt(diff) <= warningLevel) {
+            if (type === 'class') {
                 return 'list-ccm--warning-calltime';
             } else {
                 return true;
@@ -49,7 +57,7 @@ ccmApp.filter('callTimeWarning', function () {
         } else {
             return false;
         }
-    }
+    };
 });
 
 ccmApp.directive('shortcut', function() {
@@ -140,7 +148,7 @@ ccmApp.factory('backendHubProxy', ['$rootScope', function ($rootScope) {
                     });
             }
         };
-    };
+    }
 
     return backendFactory;
 }]);
@@ -181,41 +189,41 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
             }
         };
 
-        var setOngoingCalls = function(ongoingCalls) {
-            // Updates start-time based on duration and local time/clock
-            // call-length is presented in a correct way even if there is different
-            // times on server and client
+    var setOngoingCalls = function(ongoingCalls) {
+        // Updates start-time based on duration and local time/clock
+        // call-length is presented in a correct way even if there is different
+        // times on server and client
 
-            ongoingCalls.forEach(function(item) {
-                var startTime = new Date() - (item.DurationSeconds * 1000);
-                item.StartedLocal = new Date(startTime);
-            });
+        ongoingCalls.forEach(function(item) {
+            var startTime = new Date() - (item.DurationSeconds * 1000);
+            item.StartedLocal = new Date(startTime);
+        });
 
-            if (ongoingCalls.length > 0) {
-                $scope.startCallDurationTimer();
-            } else {
-                $scope.stopCallDurationTimer();
-            }
-
-            $scope.onGoingCalls = ongoingCalls;
+        if (ongoingCalls.length > 0) {
+            $scope.startCallDurationTimer();
+        } else {
+            $scope.stopCallDurationTimer();
         }
 
-        var viewIsFiltered = function() {
-            if ($scope.codecType || $scope.region || $scope.searchString) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        $scope.onGoingCalls = ongoingCalls;
+    };
 
-        var onOldCalls = function(oldCalls) {
-            if (viewIsFiltered()) {
-                // If filter is applied get filtered data from server and show
-                $scope.refreshOldFiltered();
-            } else {
-                $scope.oldCalls = oldCalls;
-            }
+    var viewIsFiltered = function() {
+        if ($scope.codecType || $scope.region || $scope.searchString) {
+            return true;
+        } else {
+            return false;
         }
+    };
+
+    var onOldCalls = function(oldCalls) {
+        if (viewIsFiltered()) {
+            // If filter is applied get filtered data from server and show
+            $scope.refreshOldFiltered();
+        } else {
+            $scope.oldCalls = oldCalls;
+        }
+    };
 
         /* *******************************************************
          * Hub Sockets */
@@ -241,26 +249,27 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
 
         ccmDataHub.start();
 
-        $scope.socketStatusHubGui = { reconnectAttempts: 0, socketStatus: false};
+        $scope.socketStatusHubGui = { reconnectAttempts: 0, socketStatus: false };
+
         ccmDataHub.status(
             function (state) {
                 console.log("* Status changed: ", state);
-                if (state.current == 1) {
+                if (state.current === 1) {
                     // Connecting
                     $scope.socketStatusHubGui.reconnectAttempts = 0;
                     $scope.socketStatusHubGui.socketStatus = true;
-                } else if (state.current == 2) {
+                } else if (state.current === 2) {
                     // Connected ish
                     $scope.socketStatusHubGui.reconnectAttempts = 0;
                     $scope.socketStatusHubGui.socketStatus = false;
-                } else if (state.current == 3) {
+                } else if (state.current === 3) {
                     // Reconnecting
                     $scope.socketStatusHubGui.reconnectAttempts += 1;
                     $scope.socketStatusHubGui.socketStatus = false;
-                } else if (state.current == 4) {
+                } else if (state.current === 4) {
                     // Disconnected
                     $scope.socketStatusHubGui.socketStatus = false;
-                } else if (state.current == 5) {
+                } else if (state.current === 5) {
                     // Starting
                     $scope.socketStatusHubGui.reconnectAttempts += 1;
                     $scope.socketStatusHubGui.socketStatus = false;
@@ -363,104 +372,117 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
             return !!(item && item.toLowerCase().indexOf(searchString) > -1);
         };
 
-        $scope.refreshOngoing = function() {
-            $http.post('/api/OngoingCall')
-                .then(function(response) {
+    $scope.refreshOngoing = function() {
+        $http.post('/api/OngoingCall')
+            .then(function(response) {
                     setOngoingCalls(response.data);
-                }, function() {
+                },
+                function() {
                     console.error("No answer from /api/OngoingCall");
                 });
-        }
+    };
 
-        $scope.refreshOld = function() {
-            $http.post('/api/OldCall')
-                .then(function(response) {
+    $scope.refreshOld = function() {
+        $http.post('/api/OldCall')
+            .then(function(response) {
                     $scope.oldCalls = response.data;
-                }, function(response) {
+                },
+                function(response) {
                     console.error("No answer from /api/OldCall");
                 });
-        }
+    };
 
-        $scope.refreshOldFiltered = function() {
-            var region = $scope.region ? $scope.region : "";
-            var codecType = $scope.codecType ? $scope.codecType : "";
-            console.log("Getting filtered cancelled/hungup calls, region: ", region,", type: ", codecType,", search: ", $scope.searchString);
-            $http.get('/api/OldCallFiltered?region=' +
-                    encodeURI(region) +
-                    '&codecType=' +
-                    encodeURI(codecType) +
-                    '&search=' +
-                    encodeURI($scope.searchString))
-                .then(function(response) {
+    $scope.refreshOldFiltered = function() {
+        var region = $scope.region ? $scope.region : "";
+        var codecType = $scope.codecType ? $scope.codecType : "";
+        console.log("Getting filtered cancelled/hungup calls, region: ",
+            region,
+            ", type: ",
+            codecType,
+            ", search: ",
+            $scope.searchString);
+        $http.get('/api/OldCallFiltered?region=' +
+                encodeURI(region) +
+                '&codecType=' +
+                encodeURI(codecType) +
+                '&search=' +
+                encodeURI($scope.searchString))
+            .then(function(response) {
                     var oldCalls = response.data;
                     console.log("Recieved cancelled/hungup calls from server: ", oldCalls.length);
                     $scope.oldCalls = oldCalls;
-                }, function(response) {
+                },
+                function(response) {
                     console.error("No answer from /api/OldCallFiltered");
                 });
-        }
+    };
 
-        $scope.refreshRegistered = function() {
-            $http.post('/api/RegisteredSipsOverview')
-                .then(function(response) {
+    $scope.refreshRegistered = function() {
+        $http.post('/api/RegisteredSipsOverview')
+            .then(function(response) {
                     $scope.registeredSips = response.data;
-                }, function(response) {
+                },
+                function(response) {
                     console.error("No answer from /api/RegisteredSipsOverview");
                 });
-        }
+    };
 
-        $scope.changeOngoingCallSorting = function(sortProperty) {
-            $scope.setSorting($scope.ongoingCallSort, sortProperty);
-        }
+    $scope.changeOngoingCallSorting = function(sortProperty) {
+        $scope.setSorting($scope.ongoingCallSort, sortProperty);
+    };
 
-        $scope.changeRegisteredSorting = function(sortProperty) {
-            $scope.setSorting($scope.registeredSort, sortProperty);
-        }
+    $scope.changeRegisteredSorting = function(sortProperty) {
+        $scope.setSorting($scope.registeredSort, sortProperty);
+    };
 
-        $scope.setSorting = function(sort, sortProperty) {
-            if (sort.column === sortProperty) {
-                sort.descending = !sort.descending;
-            } else {
-                sort.column = sortProperty;
-                sort.descending = false;
+    $scope.setSorting = function(sort, sortProperty) {
+        if (sort.column === sortProperty) {
+            sort.descending = !sort.descending;
+        } else {
+            sort.column = sortProperty;
+            sort.descending = false;
+        }
+        console.log("Sort: ", sort.column, ", descending: ", sort.descending);
+    };
+
+    $scope.editComment = function(id) {
+        var url = '/home/EditRegisteredSipComment/' + id;
+        $('#registeredSipModal').modal({ remote: url });
+    };
+
+    $scope.setFilterRegion = function(region) {
+        $scope.region = region;
+        $scope.regionName = region || 'Alla';
+        $('#regions li').removeClass('active');
+        $('#regions li:contains(' + $scope.regionName + ')').addClass('active');
+        $sessionStorage.region = $scope.region;
+    };
+
+    $scope.setFilterCodecType = function(codecType) {
+        $scope.codecType = codecType;
+        $scope.codecTypeName = codecType || 'Alla';
+        $('#codecTypes li').removeClass('active');
+        $('#codecTypes li:contains(' + $scope.codecTypeName + ')').addClass('active');
+        $sessionStorage.codecType = $scope.codecType;
+    };
+
+    $scope.showSipInfo = function(id, sipAddress, $event) {
+        $event.preventDefault();
+        $uibModal.open({
+            templateUrl: 'sipInfo.html',
+            controller: 'sipInfoController',
+            resolve:
+            {
+                sipid: function () { return id; },
+                sipAddress: function () { return sipAddress; }
             }
-            console.log("Sort: ", sort.column, ", descending: ", sort.descending);
-        }
-
-        $scope.editComment = function(id) {
-            var url = '/home/EditRegisteredSipComment/' + id;
-            $('#registeredSipModal').modal({ remote: url });
-        }
-
-        $scope.setFilterRegion = function(region) {
-            $scope.region = region;
-            $scope.regionName = region || 'Alla';
-            $('#regions li').removeClass('active');
-            $('#regions li:contains(' + $scope.regionName + ')').addClass('active');
-            $sessionStorage.region = $scope.region;
-        }
-
-        $scope.setFilterCodecType = function(codecType) {
-            $scope.codecType = codecType;
-            $scope.codecTypeName = codecType || 'Alla';
-            $('#codecTypes li').removeClass('active');
-            $('#codecTypes li:contains(' + $scope.codecTypeName + ')').addClass('active');
-            $sessionStorage.codecType = $scope.codecType;
-        }
-
-        $scope.showSipInfo = function(id, $event) {
-            $event.preventDefault();
-            $uibModal.open({
-                templateUrl: 'sipInfo.html',
-                controller: 'sipInfoController',
-                resolve: { sipid: function () { return id; } }
-            }).result.catch(function (res) {
-                console.log('Closed modal', res);
-                if (!(res === 'cancel' || res === 'escape key press')) {
-                    //throw res;
-                }
-            });
-        }
+        }).result.catch(function(res) {
+            console.log('Closed modal', res);
+            if (!(res === 'cancel' || res === 'escape key press')) {
+                //throw res;
+            }
+        });
+    };
 
         $scope.$on("$destroy",
             function () {
@@ -513,17 +535,17 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
                 $scope.refreshOldFiltered();
             });
 
-        $scope.searchKeyUp = function(keyCode) {
-            if (keyCode === 27) {
-                // when escape = 27 is pressed clear field
-                $scope.searchString = "";
-            }
+    $scope.searchKeyUp = function(keyCode) {
+        if (keyCode === 27) {
+            // when escape = 27 is pressed clear field
+            $scope.searchString = "";
         }
+    };
 
         // Night-mode, full-overview , shift + i = 73, ctrl + i = 9
         $scope.uiStateNightmode = false;
         $scope.keyPressed = function(e) {
-            if(e.which==9) {
+            if(e.which === 9) {
                 console.log("Triggered nightmode");
                 $scope.uiStateNightmode = !$scope.uiStateNightmode;
             }
@@ -542,12 +564,12 @@ function convertVuToPercentage(value) {
     return p > 100 ? 100 : (p < 0 ? 0 : p);
 }
 
-var fallback = function (lastValue, newValue) {
+var fallback = function(lastValue, newValue) {
     var updateInterval = 500; // i ms
     var decayRate = 12.0; // i dB/s
     var maxDecay = decayRate * updateInterval / 1000;
     return newValue >= lastValue ? newValue : Math.max(newValue, lastValue - maxDecay);
-}
+};
 
 function makeUrlAbsolute(url) {
     if (typeof url == 'undefined' || url === null) {

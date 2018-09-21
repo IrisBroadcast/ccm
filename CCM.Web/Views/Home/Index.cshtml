@@ -144,7 +144,7 @@
                                      ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.CallId">
                                     <div class="col-md-5">
                                         <span class="list-ccm--type-id" ng-style="{'background-color': call.FromCodecTypeColor}" title="{{call.FromCodecTypeName}}">&nbsp;</span>
-                                        <a class="list-ccm--sip-name" ng-if="call.FromId.length" href="#" ng-click="showSipInfo(call.FromId, $event)" title="{{call.FromSip}}">{{call.FromDisplayName}}</a>
+                                        <a class="list-ccm--sip-name" ng-if="call.FromId.length" href="#" ng-click="showSipInfo(call.FromId, call.FromSip, $event)" title="{{call.FromSip}}">{{call.FromDisplayName}}</a>
                                         <span class="list-ccm--sip-name" ng-if="!call.FromId.length" title="{{call.FromSip}}">{{call.FromDisplayName}}</span>
                                         <span class="list-ccm--sip-location" ng-if="call.FromLocationName.length" title="{{call.FromLocationShortName}}">({{call.FromLocationName}})</span>
                                         <div class="list-ccm--sip-comment">{{call.FromComment}}</div>
@@ -153,7 +153,7 @@
                                     <div class="col-md-5">
                                         <span class="glyphicon glyphicon-arrow-right list-ccm--call-dir-icon"></span>
                                         <span class="list-ccm--type-id" ng-style="{'background-color': call.ToCodecTypeColor}" title="{{call.ToCodecTypeName}}">&nbsp;</span>
-                                        <a class="list-ccm--sip-name-to" ng-if="call.ToId.length" href="#" ng-click="showSipInfo(call.ToId, $event)" title="{{call.ToSip}}">{{call.ToDisplayName}}</a>
+                                        <a class="list-ccm--sip-name-to" ng-if="call.ToId.length" href="#" ng-click="showSipInfo(call.ToId, call.ToSip, $event)" title="{{call.ToSip}}">{{call.ToDisplayName}}</a>
                                         <span class="list-ccm--sip-name-to" ng-if="!call.ToId.length" title="{{call.ToSip}}">{{call.ToDisplayName}}</span>
                                         <span class="list-ccm--sip-location" ng-if="call.ToLocationName.length" title="{{call.ToLocationShortName}}">({{call.ToLocationName}})</span>
                                         <div class="list-ccm--sip-comment-to">{{call.ToComment}}</div>
@@ -182,7 +182,7 @@
                                 <div class="row panel-body-item list-ccm--bg" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter ) track by $index">
                                     <div class="col-md-5">
                                         <span ng-style="{'background-color': call.FromCodecTypeColor}" class="list-ccm--type-id" title="{{call.FromCodecTypeName}}">&nbsp;</span>
-                                        <a ng-if="call.FromId.length" href="#" ng-click="showSipInfo(call.FromId, $event)" class="list-ccm--sip-name list-ccm--old-call" title="{{call.FromSip}}">{{call.FromDisplayName}}</a>
+                                        <a ng-if="call.FromId.length" href="#" ng-click="showSipInfo(call.FromId, call.FromSip, $event)" class="list-ccm--sip-name list-ccm--old-call" title="{{call.FromSip}}">{{call.FromDisplayName}}</a>
                                         <span ng-if="!call.FromId.length" class="list-ccm--old-call" title="{{call.FromSip}}">{{call.FromDisplayName}}</span>
                                         <span ng-if="call.FromLocationName.length" title="{{call.FromLocationShortName}}" class="list-ccm--sip-location">({{call.FromLocationName}})</span>
                                     </div>
@@ -190,7 +190,7 @@
                                     <div class="col-md-4">
                                         <span class="glyphicon glyphicon-arrow-right list-ccm--old-call list-ccm--call-dir-icon"></span>
                                         <span ng-style="{'background-color': call.ToCodecTypeColor}" class="list-ccm--type-id" title="{{call.ToCodecTypeName}}">&nbsp;</span>
-                                        <a ng-if="call.ToId.length" href="#" ng-click="showSipInfo(call.ToId, $event)" class="list-ccm--sip-name-to list-ccm--old-call" title="{{call.ToSip}}">{{call.ToDisplayName}}</a>
+                                        <a ng-if="call.ToId.length" href="#" ng-click="showSipInfo(call.ToId, call.ToSip, $event)" class="list-ccm--sip-name-to list-ccm--old-call" title="{{call.ToSip}}">{{call.ToDisplayName}}</a>
                                         <span ng-if="!call.ToId.length" class="list-ccm--sip-name-to list-ccm--old-call" title="{{call.ToSip}}">{{call.ToDisplayName}}</span>
                                         <span ng-if="call.ToLocationName.length" title="{{call.ToLocationShortName}}" class="list-ccm--sip-location">({{call.ToLocationName}})</span>
                                     </div>
@@ -220,10 +220,10 @@
                                 <div class="row panel-body-item " ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by sip.Id " ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.InCall]">
                                     <div class="col-md-3" title="{{sip.Sip}}">
                                         <span title="{{sip.CodecTypeName}}" class="list-ccm--reg-ua-type-id" ng-style="{'background-color': sip.CodecTypeColor}">&nbsp;</span>
-                                        <a ng-click="showSipInfo(sip.Id, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name">{{sip.DisplayName}}</a>
+                                        <a ng-click="showSipInfo(sip.Id, sip.Sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name">{{sip.DisplayName}}</a>
                                         <span ng-if="sip.InCall">
                                             <span class="glyphicon glyphicon-arrow-right list-ccm--reg-ua-call-dir-icon"></span>
-                                            <a ng-if="sip.InCallWithId.length" ng-click="showSipInfo(sip.InCallWithId, $event)" href="#"
+                                            <a ng-if="sip.InCallWithId.length" ng-click="showSipInfo(sip.InCallWithId, sip.InCallWithSip, $event)" href="#"
                                                title="{{sip.InCallWithSip}}" class="list-ccm--reg-ua-name-to">
                                                 {{sip.InCallWithName}}
                                             </a>
@@ -358,10 +358,10 @@
             <!-- Codec control -->
             <div class="tab-pane ccm-ui-pop-tab--control" id="control">
                 <ul class="nav nav-tabs">
-                    <li class="active" id="inputsTab"><a href="#inputtab" data-toggle="tab">@Resources.Inputs</a></li>
-                    <li id="adminTab"><a href="#admintab" data-toggle="tab">@Resources.Administration</a></li>
-                    <li><a href="#statusTab" data-toggle="tab">Status</a></li>
-                    <li><a href="#audioModeTab" data-toggle="tab">Audio mode</a></li>
+                    <li class="active"><a href="#inputtab" data-toggle="tab">@Resources.Inputs</a></li>
+                    <li><a href="#rebootTab" data-toggle="tab">@Resources.Reboot</a></li>
+                    <li><a href="#statusTab" data-toggle="tab">@Resources.Line_Status</a></li>
+                    <li><a href="#audioModeTab" data-toggle="tab">@Resources.Audio_Mode</a></li>
                 </ul>
 
                 <div class="tab-content">
@@ -371,8 +371,11 @@
                         <div class="col-md-12">
                             <div class="row">
                                 <div class="ccm-ui-popmixer--unit" ng-repeat="input in inputs track by input.id">
-                                    <button class="btn" ng-class="input.stateClass" ng-disabled="input.disabled" ng-click="toggleInput(input)">
-                                        ON{{input.number}}
+                                    <button class="btn" 
+                                            ng-class="{'btn-primary': input.enabled == true && !input.disabled, 'btn-default': input.enabled == false && !input.disabled }" 
+                                            ng-disabled="input.disabled" 
+                                            ng-click="toggleInputEnabled(input)">
+                                        ON {{input.number}}
                                     </button>
                                     <div class="widgets">
                                         <div class="level-gain">
@@ -402,7 +405,9 @@
 
                         <div class="row">
                             <div class="ccm-ui-popmixer--unit-gpo col-md-6">
-                                <button ng-repeat="gpo in gpos" class="btn gpo" ng-class="{'btn-success': gpo.Active == true, 'btn-default': gpo.Active == false }" ng-click="setGpo(gpo)">{{gpo.Name}}</button>
+                                <button ng-repeat="gpo in gpos" class="btn gpo" 
+                                        ng-class="{'btn-success': gpo.active == true, 'btn-default': gpo.active == false }" 
+                                        ng-click="setGpo(gpo)">{{gpo.name}}</button>
                             </div>
 
                             <div class="ccm-ui-popmixer--unit-vu col-md-6">
@@ -419,23 +424,8 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="admintab">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h4>@Resources.Codec_Presets</h4>
-                                <div>@Resources.Loaded_Preset: {{loadedPreset}}</div>
-                                <div>
-                                    <select class="form-control" ng-model="presetToLoad" ng-options="preset.Name for preset in info.CodecPresets track by preset.CodecPresetId"></select>
-                                    <button class="btn btn-default" ng-click="loadPreset(presetToLoad)">@Resources.Load</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <hr />
-                        </div>
-
-                        <div class="row">
+                    <div class="tab-pane" id="rebootTab">
+                        <div class="row" style="min-height: 110px;">
                             <div class="col-md-12">
                                 <div>
                                     <label>

@@ -534,6 +534,8 @@
     <Content Include="Images\codeccontrol-logo-green.svg" />
     <Content Include="Images\codeccontrol-logo-original.svg" />
     <Content Include="Images\MicrophoneHot.png" />
+    <Content Include="lib\aspnet\signalr\dist\browser\signalr.js" />
+    <Content Include="lib\aspnet\signalr\dist\browser\signalr.min.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js">
       <DependentUpon>angular.js</DependentUpon>
@@ -633,6 +635,7 @@
     <Content Include="Content\_bootstrap-datetimepicker.less" />
     <Content Include="Content\bootstrap-datetimepicker-build.less" />
     <Content Include="Images\ccm-logo-original.ai" />
+    <Content Include="libman.json" />
     <None Include="Properties\PublishProfiles\Publish release.pubxml" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js">
       <DependentUpon>bootstrap-datetimepicker.js</DependentUpon>
@@ -679,6 +682,7 @@
     <Content Include="Scripts\moment-with-locales.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\ngStorage.js" />
+    <Content Include="Scripts\signalr.js" />
     <Content Include="Scripts\src\studiomonitor.js" />
     <Content Include="Scripts\src\codeccontrol.js" />
     <Content Include="Scripts\src\statistics.js" />

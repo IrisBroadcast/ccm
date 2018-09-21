@@ -6,6 +6,7 @@
     var logoClass = (env == "Test" ? "logo-test" : "logo");
     string deployVersion = Assembly.GetAssembly(typeof(CCM.Core.Entities.Call)).GetName().Version.ToString(3);
     string buildDateString = @ConfigurationManager.AppSettings["BuildDate"];
+    string codecControlHost = @ConfigurationManager.AppSettings["CodecControlHost"];
 }
 <!DOCTYPE html>
 <html>
@@ -101,7 +102,7 @@
                         </li>
                     }
                 </ul>
-                
+
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Searchbar -->
                     <li>
@@ -130,5 +131,9 @@
 
     @Scripts.Render("~/bundles/ccm")
     @RenderSection("scripts", required: false)
+
+    <script>
+    window.codecControlHost = @Html.Raw("'" + codecControlHost + "';")
+    </script>
 </body>
 </html>

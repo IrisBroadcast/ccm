@@ -1,16 +1,13 @@
 using System;
 using System.Linq;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.Kamailio;
 using CCM.Core.Kamailio.Messages;
-using CCM.Core.Kamailio.Parser;
 using CCM.Core.Managers;
 using CCM.Core.Service;
 using CCM.Data;
 using CCM.Data.Repositories;
-using LazyCache;
 using Ninject;
 using NUnit.Framework;
 
@@ -36,9 +33,6 @@ namespace CCM.Tests.ServiceTests.SipMessageHandlerTests
             kernel.Bind<ILocationManager>().To<LocationManager>();
             kernel.Bind<ILocationRepository>().To<LocationRepository>();
             kernel.Bind<IMetaRepository>().To<MetaRepository>();
-            kernel.Bind<IAppCache>().To<CachingService>();
-            kernel.Bind<IKamailioMessageParser>().To<KamailioMessageParser>();
-            kernel.Bind<IKamailioDataParser>().To<KamailioDataParser>();
             return kernel;
         }
 

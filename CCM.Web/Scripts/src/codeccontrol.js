@@ -1,12 +1,11 @@
-﻿/* *******************************************************
- * Codec control frontpage */
-ccmControllers.controller('sipInfoController', function ($scope, $http, $interval, $uibModalInstance, sipid, $timeout) {
+﻿
+ccmControllers.controller('sipInfoController', function ($scope, $http, $interval, $uibModalInstance, sipid, sipAddress) {
 
-    var vutimer;
-    //var inputTimeoutHandle;
-
+    $scope.codecControlHost = window.codecControlHost;
     $scope.codecOnline = false;  // 'true' if codec is reachable
     $scope.sipid = sipid;
+    $scope.sipAddress = sipAddress;
+    $scope.info = {};
     $scope.txL = -96;
     $scope.txR = -96;
     $scope.rxL = -96;
@@ -14,7 +13,6 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
     $scope.rebootconfirm1 = false;
     $scope.rebootconfirm2 = false;
     $scope.canAx = "ActiveXObject" in window;
-    $scope.loadedPreset = '';
     $scope.presetToLoad = '';
     $scope.selectedLine = '';
     $scope.gpos = [];
@@ -22,7 +20,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
     $scope.lines = [];
     $scope.lineStatusArea = '';
     $scope.audioModeArea = '';
-    $scope.lastUpdate = new Date("1970-01-01"); // Last update initially long time ago
+    $scope.signalrConnection = null;
 
     $scope.setCodecIsOnline = function (codecIsOnline) {
         // Codec is reachable
@@ -31,231 +29,168 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
 
         if (codecIsOnline) {
             $scope.getAvailableGpos();
-            $scope.getLoadedPreset();
-            $scope.getInputData();
-            $scope.startVuTimer();
+            $scope.getAudioStatus();
+            $scope.startAudioUpdate();
         }
     };
 
+    $scope.startAudioUpdate = function () {
+
+        $scope.signalrConnection = new signalR.HubConnectionBuilder()
+            .withUrl($scope.codecControlHost + "/audioStatusHub")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        $scope.signalrConnection.on("AudioStatus", function (sipAddress, audioStatus) {
+            console.log("AudioStatus received", sipAddress, audioStatus);
+            if (sipAddress === $scope.sipAddress) {
+                $scope.updateAudioStatus(audioStatus);
+            }
+        });
+
+        $scope.signalrConnection.start()
+            .then(function (result) {
+                console.log("signalr started");
+
+                $scope.signalrConnection.invoke("Subscribe", $scope.sipAddress).catch(function (err) {
+                    return console.error(err.toString());
+                });
+            })
+            .catch(function (err) {
+                return console.error(err.toString()
+                );
+            });
+    };
+
     $scope.setInputValue = function (i, data) {
-        console.info("Codec " + sipid + " level data, input " + i, data);
+        console.info(`Input ${i}`, data);
         var input = $scope.inputs[i];
 
-        if (data.Error) {
-            input.error = data.Error;
+        if (data.error) {
+            input.error = data.error;
             input.disabled = 'disabled';
-            input.stateClass = '';
-            //input.upValue = $scope.info.InputGainStep;
-            //input.downValue = -$scope.info.InputGainStep;
         } else {
-            input.value = data.GainLevel;
-            input.enabled = data.Enabled;
+            input.value = data.gainLevel;
+            input.enabled = data.enabled;
             input.disabled = '';
-            input.stateClass = input.enabled ? 'btn-primary' : 'btn-default';
         }
     };
 
     $scope.getAvailableGpos = function () {
         console.info('Getting GPOs');
-        $http.post('/api/codeccontrol/GetAvailableGpos', { id: sipid })
+        $http.get($scope.codecControlHost + '/api/codeccontrol/getavailablegpos?sipaddress=' + $scope.sipAddress)
             .then(function (response) { // on success
                 console.info('Available GPOs', response.data);
-                $scope.gpos = response.data.Gpos;
+                $scope.gpos = response.data.gpos;
             },
-                function () { // on error
-                    $scope.gpos = [];
-                });
-    };
-
-    $scope.getLoadedPreset = function () {
-        console.info('Getting presets');
-        $http.post('/api/codeccontrol/GetLoadedPreset', { id: sipid }).then(function (response) {
-            if (response.data.LoadedPreset !== null) {
-                $scope.loadedPreset = response.data.LoadedPreset;
-            } else {
-                $scope.loadedPreset = '';
-            }
-        });
-    };
-
-    $scope.loadPreset = function (preset) {
-        if (typeof (preset) === 'object') {
-            $http.post('/api/codeccontrol/LoadPreset', { id: sipid, name: preset.Name }).then(function (response) {
-                $scope.getLoadedPreset();
+            function () { // on error
+                $scope.gpos = [];
             });
-        }
     };
 
     $scope.getLineStatus = function (line) {
-        if (typeof (line) === 'object') {
-            $http.get('/api/codeccontrol/GetLineStatus?id=' + sipid + '&line=' + line.number).then(function (response) {
+        $http.get($scope.codecControlHost + '/api/codeccontrol/getlinestatus?sipaddress=' + $scope.sipAddress)
+            .then(function (response) {
                 var data = response.data;
                 console.log(data);
-                var msg = "LineStatus: " + data.LineStatusDto.Name + ". DisconnectReason: " + data.DisconnectReasonDto.Name + " (" + data.DisconnectReasonDto.Value + ").\r\n";
+                var msg = "LineStatus: " + data.lineStatus + ". DisconnectReason: " + data.disconnectReasonDescription + " (" + data.disconnectReasonCode + ").\r\n";
                 $scope.lineStatusArea = msg + $scope.lineStatusArea;
             });
-        }
     };
 
     $scope.getAudioMode = function () {
-        $http.get('/api/codeccontrol/GetAudioMode?id=' + sipid).then(function (response) {
+        $http.get($scope.codecControlHost + '/api/codeccontrol/GetAudioMode?sipaddress=' + $scope.sipAddress).then(function (response) {
             var data = response.data;
-            console.log(data);
             var msg;
             if (data.Error) {
                 msg = data.Error;
             } else {
-                msg = "AudioMode: Encoder=" + data.EncoderAudioModeString + " (" + data.EncoderAudioMode + ")" + ", Decoder=" + data.DecoderAudioModeString + " (" + data.DecoderAudioMode + ")";
+                msg = "AudioMode: Encoder=" + data.encoderAudioModeString + " (" + data.encoderAudioMode + ")" + ", Decoder=" + data.decoderAudioModeString + " (" + data.decoderAudioMode + ")";
             }
             $scope.audioModeArea = msg + "\r\n" + $scope.audioModeArea;
         });
     };
 
     $scope.setGpo = function (gpo) {
-        var active = gpo.Active ? false : true;
-        $http({ url: '/api/codeccontrol/SetGpo', method: "GET", params: { id: sipid, number: gpo.Number, active: active } })
+        var newState = gpo.active ? false : true;
+        $http.post($scope.codecControlHost + '/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: newState })
             .then(function (response) {
                 console.log("Codec GPO data: ", response.data);
-                gpo.Active = response.data.Active;
+                gpo.active = response.data.active;
             });
     };
 
-    $scope.startVuTimer = function () {
-        if (angular.isDefined(vutimer)) return;
-
-        vutimer = $interval(function () {
-            if ($scope.shouldUpdateGui()) {
-                console.log("Should update now");
-                $scope.lastUpdate = new Date(Date.now() + 10000); // If not changed, next update will be in 10 seconds
-                $scope.getInputData();
-            }
-        }, 100);
-    };
-
-    $scope.shouldUpdateGui = function () {
-        // Returns true when it's time to update
-        let now = Date.now();
-        let updateTime = new Date($scope.lastUpdate + 300);
-        //console.log("Should update?", now, updateTime);
-        return !!(
-            $('#codecControlTab').hasClass('active') &&
-                $('#inputsTab').hasClass('active') &&
-                now > updateTime
-        );
-    }
-
-    $scope.getInputData = function () {
+    $scope.getAudioStatus = function () {
         console.info('Getting codec audio status');
 
-        var nrOfInputs = $scope.inputs.length;
-
-        $http.get('/api/codeccontrol/GetAudioStatus?id=' + sipid + '&nrOfInputs=' + nrOfInputs).then(function (response) {
-            var data = response.data;
-            console.log("Audio status", data);
-
-            for (var i = 0; i < nrOfInputs; i++) {
-                var inputStatus = data.InputStatuses[i];
-                $scope.setInputValue(i, inputStatus);
-            }
-
-            for (var j = 0; j < $scope.gpos.length; j++) {
-                var gpo = $scope.gpos[j];
-                var gpoData = !!data.Gpos[j];
-                console.log("GPO", gpo, gpoData);
-                gpo.Active = gpoData;
-            }
-
-            console.info("* Codec VU-data", data.VuValues);
-            // Values is presented in db where 0 = Fullscale +18db, -18 = Test 0dB, -96 = min-level
-            $scope.txL = fallback($scope.txL, convertVuToPercentage(data.VuValues.TxLeft));
-            $scope.txR = fallback($scope.txR, convertVuToPercentage(data.VuValues.TxRight));
-            $scope.rxL = fallback($scope.rxL, convertVuToPercentage(data.VuValues.RxLeft));
-            $scope.rxR = fallback($scope.rxR, convertVuToPercentage(data.VuValues.RxRight));
-            console.info("VU values", $scope.txL, $scope.txR, $scope.rxL,$scope.rxR);
-            $scope.lastUpdate = Date.now();
-
+        $http.get($scope.codecControlHost + '/api/codeccontrol/getaudiostatus?sipaddress=' + $scope.sipAddress).then(function (response) {
+            var audioStatus = response.data;
+            $scope.updateAudioStatus(audioStatus);
         });
 
     };
-    $scope.stopVuTimer = function () {
-        if (angular.isDefined(vutimer)) {
-            $interval.cancel(vutimer);
-            vutimer = undefined;
+
+    $scope.updateAudioStatus = function (audioStatus) {
+        //console.log("Audio status", audioStatus);
+
+        var nrOfInputs = $scope.inputs.length;
+
+        for (var i = 0; i < nrOfInputs; i++) {
+            var inputStatus = audioStatus.inputStatus[i];
+            $scope.setInputValue(i, inputStatus);
         }
 
-        $scope.txL = 0;
-        $scope.txR = 0;
-        $scope.rxL = 0;
-        $scope.rxR = 0;
+        for (var j = 0; j < $scope.gpos.length; j++) {
+            var gpo = $scope.gpos[j];
+            var gpoActive = !!audioStatus.gpos[j];
+            //console.log("GPO " + j, gpo, gpoActive);
+            gpo.Active = gpoActive;
+        }
+
+        console.info("* Codec VU-data", audioStatus.vuValues);
+        // Values is presented in dB where 0 = Fullscale +18db, -18 = Test 0dB, -96 = min-level
+        $scope.txL = fallback($scope.txL, convertVuToPercentage(audioStatus.vuValues.txLeft));
+        $scope.txR = fallback($scope.txR, convertVuToPercentage(audioStatus.vuValues.txRight));
+        $scope.rxL = fallback($scope.rxL, convertVuToPercentage(audioStatus.vuValues.rxLeft));
+        $scope.rxR = fallback($scope.rxR, convertVuToPercentage(audioStatus.vuValues.rxRight));
+        //console.info("VU values", $scope.txL, $scope.txR, $scope.rxL, $scope.rxR);
+
     };
 
-    //$scope.checkInputValues = function () {
-    //    // TODO: Använd callback då användaren väljer / väljer bort tabben
-    //    console.info('Check input values');
-    //    if ($('#codecControlTab').hasClass('active') && $('#inputsTab').hasClass('active')) {
-    //        $scope.getInputData();
-    //    }
-
-    //    console.info('Set input timeout');
-    //    inputTimeoutHandle = $timeout(function () {
-    //        $scope.checkInputValues();
-    //    }, 1000);
-
-    //};
-
-    //$scope.disableInputChecking = function () {
-    //    if (angular.isDefined(inputTimeoutHandle)) {
-    //        $timeout.cancel(inputTimeoutHandle);
-    //        inputTimeoutHandle = undefined;
-    //    }
-    //};
-
-    //$scope.getVuValues = function () {
-    //    $http.get('/api/codeccontrol/GetVuValues?id=' + sipid).then(
-    //        function (response) {
-    //            var data = response.data;
-    //            if (data.Error) {
-    //                // Do nothing
-    //                console.error('* Codec error when getting vu values');
-    //            } else {
-    //                console.info("* Codec VU-data", data);
-    //                // Values is presented in db where 0 = Fullscale +18db, -18 = Test 0dB, -96 = min-level
-    //                $scope.txL = fallback($scope.txL, convertVuToPercentage(data.TxLeft));
-    //                $scope.txR = fallback($scope.txR, convertVuToPercentage(data.TxRight));
-    //                $scope.rxL = fallback($scope.rxL, convertVuToPercentage(data.RxLeft));
-    //                $scope.rxR = fallback($scope.rxR, convertVuToPercentage(data.RxRight));
-    //            }
-    //        });
-    //};
-
-    $scope.toggleInput = function (input) {
+    $scope.toggleInputEnabled = function (input) {
         var enabled = input.enabled ? false : true;
-        $http.post('/api/codeccontrol/SetInputEnabled', { id: $scope.sipid, input: input.id, enabled: enabled })
+        $http.post($scope.codecControlHost + '/api/codeccontrol/setinputenabled', { sipAddress: $scope.sipAddress, input: input.id, enabled: enabled })
             .then(function (response) {
-            }
-            , function (response) {
+                let isEnabled = response.data.enabled;
+                console.log("SetInputEnabled", input.id, isEnabled);
+                input.enabled = isEnabled;
             });
-
-        input.enabled = input.enabled ? false : true;
-        input.stateClass = input.enabled ? 'btn-primary' : 'btn-default';
     };
 
     $scope.setGainLevel = function (input, value) {
-        $http.post('/api/codeccontrol/SetInputGainLevel', { id: $scope.sipid, input: input.id, level: input.value + value })
+        $http.post($scope.codecControlHost + '/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: input.id, level: input.value + value })
             .then(function (response) {
                 var data = response.data;
-                if (data.error) {
-                    // Do nothing
-                } else {
-                    input.value = data.GainLevel;
-                }
+                input.value = data.gainLevel;
             });
     };
 
-    $scope.cancel = function () {
-        // TODO: in use?
-        $uibModalInstance.dismiss('cancel');
+    $scope.reboot = function () {
+        this.rebootconfirm1 = false;
+        this.rebootconfirm2 = false;
+        $http.post($scope.codecControlHost + '/api/codeccontrol/reboot', { sipaddress: $scope.sipAddress });
     };
+
+    $scope.checkCodecAvailable = function () {
+        console.info('Checking if codec is online');
+        $http.get($scope.codecControlHost + '/api/codeccontrol/isavailable?sipaddress=' + $scope.sipAddress)
+            .then(function (result) {
+                $scope.setCodecIsOnline(result.data);
+            })
+            .catch(function (err) {
+                console.error(err);
+            });
+    }; 
 
     $scope.openAdmin = function (link, width, height, scrollbars) {
         if (width <= 0) {
@@ -270,58 +205,58 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
         return false;
     };
 
-    $scope.reboot = function (info) {
-        this.rebootconfirm1 = false;
-        this.rebootconfirm2 = false;
-        $http.post('/api/codeccontrol/RebootCodec', { id: info.Id });
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
     };
 
     $scope.$on("$destroy", function () {
-        console.log("Destroy called, stop input checking, stop VU");
-        $scope.stopVuTimer();
+        console.log("Destroy called.");
+
+        if ($scope.signalrConnection) {
+            $scope.signalrConnection.invoke("Unsubscribe", null)
+                .then(function () { console.log("Unsubscribed"); })
+                .catch(function (err) { return console.error(err.toString()); }
+                );
+        }
     });
 
-    console.info('Getting Codec information for ' + $scope.sipid);
+    console.info('Getting Codec information for ' + sipAddress);
 
-    $http.get('/api/registeredsipdetails/GetRegisteredSipInfo?id=' + $scope.sipid)
-        .then(function (response) { // on success
-            console.info('Codec information', response.data);
-            $scope.info = response.data;
+    $http.get('/api/registeredsipdetails/GetRegisteredSipInfo?id=' + $scope.sipid).then(function (response) {
+        let info = response.data;
+        console.info('Codec information', info);
+        $scope.info = info;
 
-            if ($scope.info.IsAuthenticated && $scope.info.CodecControl) {
-                console.info('* Codec-control is Authenticated');
+        if (info.IsAuthenticated && info.CodecControl) {
 
-                if ($scope.info.Inputs) {
-                    var inputs = [];
-                    for (var i = 0; i < $scope.info.Inputs; i++) {
-                        var input = { id: i, number: i + 1, value: 0, enabled: false, disabled: 'disabled', stateClass: '' };
-                        inputs.push(input);
-                    }
-                    $scope.inputs = inputs;
+            if (info.Inputs) {
+                var inputs = [];
+                for (var i = 0; i < info.Inputs; i++) {
+                    var input = { id: i, number: i + 1, value: 0, enabled: false, disabled: 'disabled' };
+                    inputs.push(input);
                 }
-
-                if ($scope.info.Lines) {
-                    var lines = [];
-                    for (var j = 0; j < $scope.info.Lines; j++) {
-                        var line = { id: j, number: j + 1 };
-                        lines.push(line);
-                    }
-                    $scope.lines = lines;
-                    if (lines.length > 0) {
-                        $scope.selectedLine = lines[0];
-                    }
-                }
-
-                console.info('Checking if codec is online');
-                $http.get('/api/codeccontrol/CheckCodecAvailable?id=' + sipid).then(function (result) {
-                    // if this not working locally, try disabling adblocker in browser 
-                    $scope.setCodecIsOnline(result.data);
-                });
-  
-            } else {
-                console.info('* Codec-control is not Authorized');
+                $scope.inputs = inputs;
             }
-        },
+
+            if (info.Lines) {
+                var lines = [];
+                for (var j = 0; j < info.Lines; j++) {
+                    var line = { id: j, number: j + 1 };
+                    lines.push(line);
+                }
+                $scope.lines = lines;
+
+                if (lines.length > 0) {
+                    $scope.selectedLine = lines[0];
+                }
+            }
+
+            $scope.checkCodecAvailable();
+
+        } else {
+            console.info('* Codec-control is not Authorized');
+        }
+    },
         function () { // on error
             console.info("Codec information is missing");
         });

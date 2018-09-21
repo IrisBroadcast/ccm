@@ -1726,6 +1726,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Antal GPO:er.
+        /// </summary>
+        public static string NrOfGpos {
+            get {
+                return ResourceManager.GetString("NrOfGpos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Av.
         /// </summary>
         public static string Off {

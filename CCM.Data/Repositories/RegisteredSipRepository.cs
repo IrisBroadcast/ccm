@@ -481,7 +481,8 @@ namespace CCM.Data.Repositories
                     Ip = rs.IP,
                     Api = rs.UserAgent?.Api ?? string.Empty,
                     GpoNames = rs.UserAgent?.GpoNames ?? string.Empty,
-                    NrOfInputs = rs.UserAgent?.Inputs ?? 0
+                    NrOfInputs = rs.UserAgent?.Inputs ?? 0,
+                    NrOfGpos = rs.UserAgent?.NrOfGpos ?? 0
                 }).ToList();
 
                 return list;
