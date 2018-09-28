@@ -84,3 +84,4 @@ site.css
 site.min.css 
 colorpicker.css
 colorpicker.min.css
+*.log
