@@ -13,5 +13,6 @@ namespace CCM.Core.Interfaces.Repositories
         List<RegisteredSipDto> GetCachedRegisteredSips();
         KamailioMessageHandlerResult DeleteRegisteredSip(string sipAddress);
         List<CodecInformation> GetCodecInformationList();
+        CodecInformation GetCodecInformation(string sipAddress);
     }
 }

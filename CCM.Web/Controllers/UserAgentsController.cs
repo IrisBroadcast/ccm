@@ -15,7 +15,7 @@ namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
     public class UserAgentsController : BaseController
-    {
+    { 
         private readonly ICodecPresetRepository _codecPresetRepository;
         private readonly IUserAgentRepository _userAgentRepository;
         private readonly IProfileRepository _profileRepository;

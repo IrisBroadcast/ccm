@@ -20,5 +20,10 @@ namespace CCM.Web.Controllers.ApiExternal
             return codecInformationList;
         }
 
+        public CodecInformation Get(string sipAddress)
+        {
+            var codecInformation = _registeredSipRepository.GetCodecInformation(sipAddress);
+            return codecInformation;
+        }
     }
 }

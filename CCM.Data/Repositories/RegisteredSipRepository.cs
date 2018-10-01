@@ -27,11 +27,8 @@ namespace CCM.Data.Repositories
         public ILocationManager LocationManager { get; set; }
         public ISettingsManager SettingsManager { get; set; }
 
-        public RegisteredSipRepository(
-            ISettingsManager settingsManager,
-            ILocationManager locationManager,
-            IMetaRepository metaRepository, 
-            IAppCache cache)
+        public RegisteredSipRepository(ISettingsManager settingsManager, ILocationManager locationManager,
+            IMetaRepository metaRepository, IAppCache cache)
             : base(cache)
         {
             _metaRepository = metaRepository;
@@ -88,7 +85,7 @@ namespace CCM.Data.Repositories
                             return KamailioMessageHandlerResult.NothingChanged;
                         }
 
-                        dbSip = new RegisteredSipEntity { Id = Guid.NewGuid(), Updated = DateTime.UtcNow };
+                        dbSip = new RegisteredSipEntity {Id = Guid.NewGuid(), Updated = DateTime.UtcNow};
                         db.RegisteredSips.Add(dbSip);
                         //registeredSip.Id = dbSip.Id;
                     }
@@ -110,7 +107,7 @@ namespace CCM.Data.Repositories
                         : DateTime.UtcNow;
 
                     dbSip.UserAgentId = userAgentId;
-                    dbSip.Location_LocationId = locationId != Guid.Empty ? locationId : (Guid?)null;
+                    dbSip.Location_LocationId = locationId != Guid.Empty ? locationId : (Guid?) null;
                     dbSip.User_UserId = accountId;
 
                     dbSip.SIP = registeredSip.SIP;
@@ -126,7 +123,7 @@ namespace CCM.Data.Repositories
                     var changeStatus = GetChangeStatus(db, dbSip);
                     db.SaveChanges();
 
-                    return new KamailioMessageHandlerResult { ChangedObjectId = dbSip.Id, ChangeStatus = changeStatus };
+                    return new KamailioMessageHandlerResult {ChangedObjectId = dbSip.Id, ChangeStatus = changeStatus};
                 }
             }
             catch (Exception ex)
@@ -404,8 +401,7 @@ namespace CCM.Data.Repositories
             return regSip;
         }
 
-        private List<KeyValuePair<string, string>> GetMetaData(
-            List<MetaType> metaList,
+        private List<KeyValuePair<string, string>> GetMetaData(List<MetaType> metaList,
             Entities.RegisteredSipEntity sip)
         {
             metaList = metaList ?? new List<MetaType>();
@@ -486,6 +482,34 @@ namespace CCM.Data.Repositories
                 }).ToList();
 
                 return list;
+            }
+        }
+
+        public CodecInformation GetCodecInformation(string sipAddress)
+        {
+            sipAddress = (sipAddress ?? string.Empty).ToLower().Trim();
+            DateTime maxAge = DateTime.UtcNow.AddSeconds(-SettingsManager.MaxRegistrationAge);
+
+            using (var db = GetDbContext())
+            {
+                var registration = db.RegisteredSips
+                    .Include(rs => rs.UserAgent)
+                    .Where(r => r.SIP.ToLower() == sipAddress)
+                    .Where(r => r.Updated >= maxAge)
+                    .OrderByDescending(rs => rs.Updated)
+                    .FirstOrDefault();
+
+                return registration == null
+                    ? null
+                    : new CodecInformation()
+                    {
+                        SipAddress = registration.SIP.ToLower(),
+                        Ip = registration.IP,
+                        Api = registration.UserAgent?.Api ?? string.Empty,
+                        GpoNames = registration.UserAgent?.GpoNames ?? string.Empty,
+                        NrOfInputs = registration.UserAgent?.Inputs ?? 0,
+                        NrOfGpos = registration.UserAgent?.NrOfGpos ?? 0
+                    };
             }
         }
 

@@ -67,5 +67,11 @@ namespace CCM.Core.Cache
         {
             return _internalRepository.GetCodecInformationList();
         }
+
+        public CodecInformation GetCodecInformation(string sipAddress)
+        {
+            return _internalRepository.GetCodecInformation(sipAddress);
+        }
+
     }
 }
