@@ -1,7 +1,8 @@
-﻿
-ccmControllers.controller('sipInfoController', function ($scope, $http, $interval, $uibModalInstance, sipid, sipAddress) {
+﻿ccmControllers.controller('sipInfoController', function ($scope, $http, $interval, $uibModalInstance, sipid, sipAddress) {
 
     $scope.codecControlHost = window.codecControlHost;
+    $scope.userName = window.codecControlUserName;
+    $scope.password = window.codecControlPassword;
     $scope.codecOnline = false;  // 'true' if codec is reachable
     $scope.sipid = sipid;
     $scope.sipAddress = sipAddress;
@@ -113,10 +114,10 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
 
     $scope.setGpo = function (gpo) {
         var newState = gpo.active ? false : true;
-        $http.post($scope.codecControlHost + '/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: newState })
-            .then(function (response) {
-                console.log("Codec GPO data: ", response.data);
-                gpo.active = response.data.active;
+        $scope.httpPost('/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: newState })
+            .then(function (data) {
+                console.log("Codec GPO data: ", data);
+                gpo.active = data.active;
             });
     };
 
@@ -159,18 +160,18 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
 
     $scope.toggleInputEnabled = function (input) {
         var enabled = input.enabled ? false : true;
-        $http.post($scope.codecControlHost + '/api/codeccontrol/setinputenabled', { sipAddress: $scope.sipAddress, input: input.id, enabled: enabled })
-            .then(function (response) {
-                let isEnabled = response.data.enabled;
-                console.log("SetInputEnabled", input.id, isEnabled);
-                input.enabled = isEnabled;
-            });
+        let data = { sipAddress: $scope.sipAddress, input: input.id, enabled: enabled };
+        $scope.httpPost('/api/codeccontrol/setinputenabled', data).then(function (data) {
+            let isEnabled = data.enabled;
+            console.log("SetInputEnabled", input.id, isEnabled);
+            input.enabled = isEnabled;
+        });
     };
 
+
     $scope.setGainLevel = function (input, value) {
-        $http.post($scope.codecControlHost + '/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: input.id, level: input.value + value })
-            .then(function (response) {
-                var data = response.data;
+        $scope.httpPost('/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: input.id, level: input.value + value })
+            .then(function (data) {
                 input.value = data.gainLevel;
             });
     };
@@ -178,7 +179,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
     $scope.reboot = function () {
         this.rebootconfirm1 = false;
         this.rebootconfirm2 = false;
-        $http.post($scope.codecControlHost + '/api/codeccontrol/reboot', { sipaddress: $scope.sipAddress });
+        $scope.httpPost('/api/codeccontrol/reboot', { sipaddress: $scope.sipAddress });
     };
 
     $scope.checkCodecAvailable = function () {
@@ -190,7 +191,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             .catch(function (err) {
                 console.error(err);
             });
-    }; 
+    };
 
     $scope.openAdmin = function (link, width, height, scrollbars) {
         if (width <= 0) {
@@ -219,6 +220,17 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
                 );
         }
     });
+
+    $scope.httpPost = function (apiPath, data) {
+
+        var authorizationBasic = window.btoa($scope.userName + ':' + $scope.password);
+        const headers = { 'Authorization': 'Basic ' + authorizationBasic };
+
+        return $http.post($scope.codecControlHost + apiPath, data, { headers }).then(function (response) {
+            return response.data;
+        });
+
+    };
 
     console.info('Getting Codec information for ' + sipAddress);
 

@@ -395,18 +395,8 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
     $scope.refreshOldFiltered = function() {
         var region = $scope.region ? $scope.region : "";
         var codecType = $scope.codecType ? $scope.codecType : "";
-        console.log("Getting filtered cancelled/hungup calls, region: ",
-            region,
-            ", type: ",
-            codecType,
-            ", search: ",
-            $scope.searchString);
-        $http.get('/api/OldCallFiltered?region=' +
-                encodeURI(region) +
-                '&codecType=' +
-                encodeURI(codecType) +
-                '&search=' +
-                encodeURI($scope.searchString))
+        console.log("Getting filtered cancelled/hungup calls, region: ", region, ", type: ", codecType, ", search: ", $scope.searchString);
+        $http.get(`/api/OldCallFiltered?region=${encodeURI(region)}&codecType=${encodeURI(codecType)}&search=${encodeURI($scope.searchString)}`)
             .then(function(response) {
                     var oldCalls = response.data;
                     console.log("Recieved cancelled/hungup calls from server: ", oldCalls.length);

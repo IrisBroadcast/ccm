@@ -7,6 +7,8 @@
     string deployVersion = Assembly.GetAssembly(typeof(CCM.Core.Entities.Call)).GetName().Version.ToString(3);
     string buildDateString = @ConfigurationManager.AppSettings["BuildDate"];
     string codecControlHost = @ConfigurationManager.AppSettings["CodecControlHost"];
+    string codecControlUserName = @ConfigurationManager.AppSettings["CodecControlUserName"];
+    string codecControlPassword = @ConfigurationManager.AppSettings["CodecControlPassword"];
 }
 <!DOCTYPE html>
 <html>
@@ -133,7 +135,9 @@
     @RenderSection("scripts", required: false)
 
     <script>
-    window.codecControlHost = @Html.Raw("'" + codecControlHost + "';")
+    window.codecControlHost = @Html.Raw("'" + codecControlHost + "'");
+    window.codecControlUserName = @Html.Raw("'" + codecControlUserName + "'");
+    window.codecControlPassword = @Html.Raw("'" + codecControlPassword + "'");
     </script>
 </body>
 </html>
