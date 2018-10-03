@@ -3,7 +3,7 @@
 /* *******************************************************
  * Codec control for studio page */
 ccmControllers.controller('studioMonitorController',
-    function ($scope, $http, $sce, $interval, $timeout, backendHubProxy) {
+    function ($scope, $http, $sce, $interval, $timeout, $window, backendHubProxy) {
 
         var audioStatusUpdateInterval = 500; // Uppdateringsintervall för ingångar, GPO:er och VU-mätare i ms
         var audioStatusTimeoutHandle;
@@ -13,7 +13,9 @@ ccmControllers.controller('studioMonitorController',
 
         var inactivityTimeoutHandle;
 
-        $scope.codecControlHost = window.codecControlHost;
+        $scope.codecControlHost = $window.codecControlHost;
+        $scope.codecControlUserName = $window.codecControlUserName;
+        $scope.codecControlPassword = $window.codecControlPassword;
         $scope.studioId = null;
         $scope.sipid = null;
         $scope.isInCall = false;
@@ -197,10 +199,10 @@ ccmControllers.controller('studioMonitorController',
 
         $scope.setGpo = function (gpo) {
             var active = gpo.active ? false : true;
-            $http.post($scope.codecControlHost + '/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: active })
-                .then(function (response) {
-                    console.log("Codec GPO data: ", response.data);
-                    gpo.active = response.data.active;
+            $scope.httpPost($scope.codecControlHost + '/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: active })
+                .then(function (data) {
+                    console.log("Codec GPO data: ", data);
+                    gpo.active = data.active;
                 });
         };
 
@@ -227,9 +229,8 @@ ccmControllers.controller('studioMonitorController',
         $scope.setGainLevel = function (inputNumber, newValue) {
             $scope.stopUpdateAudioStatus();
             console.info("* Codec SetGainLevel", inputNumber, newValue);
-            $http.post($scope.codecControlHost + '/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: inputNumber, level: newValue })
-                .then(function (response) {
-                    var data = response.data;
+            $scope.httpPost($scope.codecControlHost + '/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: inputNumber, level: newValue })
+                .then(function (data) {
                     var input = $scope.inputs[inputNumber];
                     input.value = data.gainLevel;
                     //$scope.updateAudioStatus();
@@ -283,11 +284,10 @@ ccmControllers.controller('studioMonitorController',
         };
 
         $scope.setInputEnabled = function (inputNumber, enabled) {
-            $http.post($scope.codecControlHost + '/api/codeccontrol/setinputenabled', { sipAddress: $scope.sipAddress, input: inputNumber, enabled: enabled })
-                .then(function (response) {
-                    var result = response.data;
-                    console.log("SetInputEnabled", result);
-                    $scope.inputs[inputNumber].enabled = result.enabled;
+            $scope.httpPost($scope.codecControlHost + '/api/codeccontrol/setinputenabled', { sipAddress: $scope.sipAddress, input: inputNumber, enabled: enabled })
+                .then(function (data) {
+                    console.log("SetInputEnabled", data);
+                    $scope.inputs[inputNumber].enabled = data.enabled;
                 },
                 function (response) {
                     console.error('* Codec SetInputEnabled failed');
@@ -346,5 +346,14 @@ ccmControllers.controller('studioMonitorController',
                 $scope.stopUpdateAudioStatus();
                 codecStatusHub.stop();
             });
+
+        $scope.httpPost = function (apiPath, data) {
+            var authorizationBasic = $window.btoa($scope.codecControlUserName + ':' + $scope.codecControlPassword);
+            const headers = { 'Authorization': 'Basic ' + authorizationBasic };
+
+            return $http.post($scope.codecControlHost + apiPath, data, { headers }).then(function (response) {
+                return response.data;
+            });
+        };
 
     });
