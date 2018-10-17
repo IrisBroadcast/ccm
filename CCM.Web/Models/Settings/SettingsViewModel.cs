@@ -27,7 +27,7 @@
 using System.Collections.Generic;
 using CCM.Core.Entities;
 
-namespace CCM.Web.Models
+namespace CCM.Web.Models.Settings
 {
     public class SettingsViewModel
     {

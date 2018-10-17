@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,14 @@
  */
 
 using CCM.Core.Kamailio;
+using CCM.Core.Kamailio.Messages;
 
 namespace CCM.Core.Interfaces.Managers
 {
     public interface ISipMessageManager
     {
-        KamailioMessageHandlerResult HandleMessage(string message);
+        //KamailioMessageHandlerResult HandleMessage(KamailioMessageBase sipMessage);
+        KamailioMessageHandlerResult HandleSipMessage(KamailioMessageBase sipMessage);
     }
+
 }

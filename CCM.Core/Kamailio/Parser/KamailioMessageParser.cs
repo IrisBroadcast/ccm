@@ -28,6 +28,7 @@ using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using CCM.Core.Interfaces;
+using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Kamailio.Messages;
 using NLog;
 
@@ -113,13 +114,13 @@ namespace CCM.Core.Kamailio.Parser
                 ToDisplayName = ParseDisplayName(kamailioData.GetField("tn")),
                 Expires = ParseInt(kamailioData.GetField("Expires"), DefaultExpireValue),
 
-                // Anv�nds inte
-                ToUsername = kamailioData.GetField("rU"),
-                RequestedSip = new SipUri(kamailioData.GetField("ru")),
-                ReceivedIp = kamailioData.GetField("Ri"),
-                ReceivedPort = ParseInt(kamailioData.GetField("Rp")),
-                FromDisplayName = ParseDisplayName(kamailioData.GetField("fn")),
-                CallId = kamailioData.GetField("ci"),
+                // Används inte
+                //ToUsername = kamailioData.GetField("rU"),
+                //RequestedSip = new SipUri(kamailioData.GetField("ru")),
+                //ReceivedIp = kamailioData.GetField("Ri"),
+                //ReceivedPort = ParseInt(kamailioData.GetField("Rp")),
+                //FromDisplayName = ParseDisplayName(kamailioData.GetField("fn")),
+                //CallId = kamailioData.GetField("ci"),
             };
 
             return registration;

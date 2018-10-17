@@ -38,5 +38,7 @@ namespace CCM.Core.Interfaces.Managers
         int LatestCallCount { get; }
         int MaxRegistrationAge { get; }
         bool CodecControlActive { get; }
+        bool UseOldKamailioEvent { get; }
+        bool UseSipEvent { get; }
     }
 }

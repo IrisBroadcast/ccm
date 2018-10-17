@@ -54,10 +54,10 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
         [Test]
         public void should_unescape_display_name2()
         {
-            var msg = "\\\"V�xj� 007\\\"";
+            var msg = "\\\"Växjö 007\\\"";
             var unescaped = KamailioMessageParser.ParseDisplayName(msg);
 
-            Assert.AreEqual("V�xj� 007", unescaped);
+            Assert.AreEqual("Växjö 007", unescaped);
         }
 
         [Test]

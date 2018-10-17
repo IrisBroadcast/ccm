@@ -46,7 +46,7 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
         public void should_handle_string_without_divider()
         {
             var sut = new KamailioDataParser();
-            var data = sut.ParseToKamailioData("en str�ng utan pipetecken");
+            var data = sut.ParseToKamailioData("en sträng utan pipetecken");
 
             Assert.IsNull(data);
         }

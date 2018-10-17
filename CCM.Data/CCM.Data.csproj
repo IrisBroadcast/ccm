@@ -98,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CCMDbContext.cs" />
+    <Content Include="ChangeScripts\2018-10-17\settings_data.sql" />
     <Compile Include="Entities\CallEntity.cs" />
     <Compile Include="Entities\CallHistoryEntity.cs" />
     <Compile Include="Entities\CityEntity.cs" />
@@ -155,8 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="ChangeScripts\2017-07-06\MySql\ccm-migration server2.ndtfpremium" />
-    <None Include="ChangeScripts\2017-07-06\MySql\ccm-migration.ndtfpremium" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -165,17 +164,7 @@
       <Name>CCM.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="ChangeScripts\2017-07-06\MySql\0. Byt namn på foreign keys i CodecPresetUserAgents.sql" />
-    <Content Include="ChangeScripts\2017-07-06\MySql\1 Skapa db.sql" />
-    <Content Include="ChangeScripts\2017-07-06\MySql\2. Ändringsscript Jerring.sql" />
-    <Content Include="ChangeScripts\2017-07-06\MySql\3. Ändringsscript Tellemar.sql" />
-    <Content Include="ChangeScripts\2017-04-20\1.ProfilGrupper.sql" />
-    <Content Include="ChangeScripts\2017-04-20\2.ProfilGrupperIndelning.sql" />
-    <Content Include="ChangeScripts\2018-04-09\2. Efter deploy.sql" />
-    <Content Include="ChangeScripts\2018-04-09\Create ccmusers.sql" />
-    <Content Include="ChangeScripts\2018-09-19\1. Ny kolumn UserAgents.Gpos.sql" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

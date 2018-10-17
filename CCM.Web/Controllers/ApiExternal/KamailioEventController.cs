@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,12 +24,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Kamailio;
+using CCM.Core.Kamailio.Messages;
 using CCM.Web.Infrastructure.SignalR;
 using NLog;
 
@@ -40,14 +40,19 @@ namespace CCM.Web.Controllers.ApiExternal
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly ISipMessageManager _sipMessageManager;
+        private readonly IKamailioMessageParser _kamailioMessageParser;
         private readonly IGuiHubUpdater _guiHubUpdater;
         private readonly IStatusHubUpdater _statusHubUpdater;
+        private readonly ISettingsManager _settingsManager;
 
-        public KamailioEventController(ISipMessageManager sipMessageManager, IGuiHubUpdater guiHubUpdater, IStatusHubUpdater statusHubUpdater)
+        public KamailioEventController(ISipMessageManager sipMessageManager, IKamailioMessageParser kamailioMessageParser,
+            IGuiHubUpdater guiHubUpdater, IStatusHubUpdater statusHubUpdater, ISettingsManager settingsManager)
         {
             _sipMessageManager = sipMessageManager;
+            _kamailioMessageParser = kamailioMessageParser;
             _guiHubUpdater = guiHubUpdater;
             _statusHubUpdater = statusHubUpdater;
+            _settingsManager = settingsManager;
         }
 
         // For test
@@ -58,6 +63,11 @@ namespace CCM.Web.Controllers.ApiExternal
 
         public IHttpActionResult Post([FromBody] string message)
         {
+            if (!_settingsManager.UseOldKamailioEvent)
+            {
+                return Ok();
+            }
+
             log.Debug("Incoming Kamailio message: {0}", message);
 
             if (string.IsNullOrWhiteSpace(message))
@@ -66,7 +76,16 @@ namespace CCM.Web.Controllers.ApiExternal
                 return BadRequest();
             }
 
-            KamailioMessageHandlerResult result = _sipMessageManager.HandleMessage(message);
+            KamailioMessageBase sipMessage = _kamailioMessageParser.Parse(message);
+
+            if (sipMessage == null)
+            {
+                log.Warn("Incorrect Kamailio message format: {0}", message);
+                return BadRequest();
+            }
+
+            KamailioMessageHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
+            log.Debug("Handled Kamailio message with result {0}. {1}", result?.ChangeStatus, sipMessage.ToDebugString());
 
             if (result == null)
             {

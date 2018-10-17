@@ -31,6 +31,7 @@ using CCM.Core.Interfaces.Managers;
 using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models;
+using CCM.Web.Models.Settings;
 
 namespace CCM.Web.Controllers
 {

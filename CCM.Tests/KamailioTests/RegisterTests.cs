@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,15 +27,15 @@
 using System;
 using CCM.Core.Kamailio;
 using CCM.Core.Kamailio.Messages;
+using CCM.Core.Kamailio.Parser;
 using CCM.Data.Repositories;
 using Ninject;
 using NUnit.Framework;
 
-namespace CCM.Tests.ServiceTests.SipMessageHandlerTests
+namespace CCM.Tests.KamailioTests
 {
-
-    [TestFixture, Ignore("")]
-    public class SipMessageManagerTests : SipMessageHandlerTestsBase
+    [TestFixture, Explicit]
+    public class RegistrationTests : SipMessageHandlerTestsBase
     {
         [SetUp]
         public void Setup()
@@ -44,12 +44,62 @@ namespace CCM.Tests.ServiceTests.SipMessageHandlerTests
             _sipRep = kernel.Get<RegisteredSipRepository>();
         }
 
+
+        [Test]
+        public void should_register_växjö_10()
+        {
+            var sipEvent = CreateSipRegisterEvent("192.0.2.82", "ProntoNet LC v6.8.1", "vaxjo-10@acip.example.com", "Växjö 10");
+            var sipMessage = new KamailioJsonMessageParser().Parse(sipEvent);
+
+            _sipMessageManager.HandleSipMessage(sipMessage);
+            var sipRep = kernel.Get<RegisteredSipRepository>();
+            var sip = sipRep.Single(rs => rs.SIP == "vaxjo-10@acip.example.com");
+
+            Assert.IsNotNull(sip);
+            Assert.AreEqual("192.0.2.82", sip.IP);
+            Assert.AreEqual("RH Växjö", sip.Location.Name);
+            Assert.AreEqual("ProntoNet", sip.UserAgent.Name);
+            Assert.AreEqual("vaxjo-10@acip.example.com", sip.User.UserName);
+        }
+     
+
+
+        [Test]
+        public void should_register_new_codec()
+        {
+            // ASSIGN
+            var userName = "patpet2@acip.example.com";
+
+            // Delete any already registered codec
+            DeleteRegisteredSip(userName);
+
+            var ipAddress = GetRandomLocationIpAddress();
+            var displayName = "Test";
+
+            var sipEvent = CreateSipRegisterEvent(ipAddress, "ME-UMAC2-M/0.255", userName, displayName);
+            var sipMessage = new KamailioJsonMessageParser().Parse(sipEvent);
+
+            // ACT
+            KamailioMessageHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
+
+            // ASSERT
+            Assert.AreEqual(KamailioMessageChangeStatus.CodecAdded, result.ChangeStatus);
+
+            var sip = _sipRep.Single(rs => rs.SIP == userName);
+            Assert.AreEqual(ipAddress, sip.IP);
+            Assert.AreEqual(userName, sip.User.UserName);
+
+            // Clean up
+            DeleteRegisteredSip(sip.Id);
+        }
+
+
         [Test]
         public void test_codec_registration()
         {
             var userName = "patpet2@acip.example.com";
 
-            DeleteExisting(userName);
+            DeleteRegisteredSip(userName);
 
             // Add new
             var sipMessage = new KamailioRegistrationMessage()
@@ -105,7 +155,6 @@ namespace CCM.Tests.ServiceTests.SipMessageHandlerTests
             Assert.AreEqual(KamailioMessageChangeStatus.NothingChanged, result.ChangeStatus);
 
         }
-
-      
+        
     }
 }

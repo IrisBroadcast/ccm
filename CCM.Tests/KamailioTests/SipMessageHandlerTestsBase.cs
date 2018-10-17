@@ -26,18 +26,23 @@
 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
+using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.Kamailio;
 using CCM.Core.Kamailio.Messages;
+using CCM.Core.Kamailio.Parser;
 using CCM.Core.Managers;
 using CCM.Core.Service;
 using CCM.Data;
+using CCM.Data.Entities;
 using CCM.Data.Repositories;
+using LazyCache;
 using Ninject;
 using NUnit.Framework;
 
-namespace CCM.Tests.ServiceTests.SipMessageHandlerTests
+namespace CCM.Tests.KamailioTests
 {
     public class SipMessageHandlerTestsBase
     {
@@ -59,6 +64,11 @@ namespace CCM.Tests.ServiceTests.SipMessageHandlerTests
             kernel.Bind<ILocationManager>().To<LocationManager>();
             kernel.Bind<ILocationRepository>().To<LocationRepository>();
             kernel.Bind<IMetaRepository>().To<MetaRepository>();
+            kernel.Bind<IAppCache>().To<CachingService>();
+            kernel.Bind<IKamailioMessageParser>().To<KamailioMessageParser>();
+            kernel.Bind<IKamailioDataParser>().To<KamailioDataParser>();
+            kernel.Bind<IKamailioJsonMessageParser>().To<KamailioJsonMessageParser>();
+
             return kernel;
         }
 
@@ -70,25 +80,41 @@ namespace CCM.Tests.ServiceTests.SipMessageHandlerTests
         }
         #endregion
 
-        public void DeleteExisting(string userName)
+        public void DeleteRegisteredSip(string userName)
         {
-            var existingSip = _sipRep.Single(rs => rs.SIP == userName);
-            if (existingSip != null)
+            DeleteRegisteredSip(r => r.Username == userName);
+        }
+
+        public void DeleteRegisteredSip(Guid guid)
+        {
+            DeleteRegisteredSip(r => r.Id == guid);
+        }
+
+        private void DeleteRegisteredSip(Expression<Func<RegisteredSipEntity, bool>> expression)
+        {
+            using (var db = new CcmDbContext(new CachingService()))
             {
-                _sipRep.DeleteRegisteredSip(existingSip.Id);
+                var regSip = db.RegisteredSips.SingleOrDefault(expression);
+                if (regSip != null)
+                {
+                    db.RegisteredSips.Remove(regSip);
+                    db.SaveChanges();
+                }
+                
             }
         }
 
-        public KamailioRegistrationMessage CreateSipMessage(string ip, string userAgent, string sip, string displayName)
+        public KamailioSipEvent CreateSipRegisterEvent(string ip, string userAgent, string sip, string displayName)
         {
-            return new KamailioRegistrationMessage
+            return new KamailioSipEvent()
             {
-                Ip = ip,
-                Port = 5060,
-                UnixTimeStamp = GetUnixTimeStamp(DateTime.Now),
-                Sip = new SipUri(sip),
-                UserAgent = userAgent,
-                Username = sip,
+                Event = KamilioEventType.Register,
+                SenderIp = ip,
+                SenderPort = 5060,
+                TimeStamp = GetUnixTimeStamp(DateTime.Now),
+                FromUri = sip,
+                UserAgentHeader = userAgent,
+                AuthUser = sip,
                 ToDisplayName = displayName,
                 Expires = 60
             };

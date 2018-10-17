@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,38 +24,17 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using CCM.Core.Entities;
 using CCM.Core.Kamailio;
 using CCM.Core.Kamailio.Messages;
-using CCM.Core.Managers;
-using CCM.Tests.ServiceTests.SipMessageHandlerTests;
 using Ninject;
 using NUnit.Framework;
 
-namespace CCM.Tests.ServiceTests
+namespace CCM.Tests.KamailioTests
 {
-    [TestFixture, Ignore("")]
-    public class KamailioAddDataTests : SipMessageHandlerTestsBase
+    [TestFixture, Explicit]
+    public class DialogTests : SipMessageHandlerTestsBase
     {
-
-        [Test, Explicit]
-        public void register_växjö_10()
-        {
-            var sipMessageManager = kernel.Get<KamailioMessageManager>();
-            var sipMessage = CreateSipMessage("192.0.2.82", "ProntoNet LC v6.8.1", "vaxjo-10@acip.example.com", "Växjö 10");
-            sipMessageManager.RegisterSip(sipMessage);
-        }
-
-        [Test, Explicit]
-        public void register_växjö_11()
-        {
-            var sipMessageManager = kernel.Get<KamailioMessageManager>();
-            var sipMessage = CreateSipMessage("192.0.2.83", "ProntoNet LC v6.8.1", "vaxjo-11@acip.example.com", "Växjö 11");
-            sipMessageManager.RegisterSip(sipMessage);
-        }
-
-        [Test, Explicit]
+        [Test]
         public void StartCall()
         {
             var sipMessageManager = kernel.Get<KamailioMessageManager>();
@@ -74,7 +53,6 @@ namespace CCM.Tests.ServiceTests
                 FromTag = "FromTagTest"
             };
         }
-
 
     }
 }

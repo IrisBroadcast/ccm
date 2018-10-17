@@ -45,6 +45,8 @@ namespace CCM.Tests.CodecControlTests
         public string SipDomain { get; private set; }
         public int LatestCallCount { get; private set; }
         public int MaxRegistrationAge { get; private set; }
-        public bool CodecControlActive { get { return true; } }
+        public bool CodecControlActive => true;
+        public bool UseOldKamailioEvent => false;
+        public bool UseSipEvent => true;
     }
 }

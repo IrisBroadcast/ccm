@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@ using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.Kamailio;
 using CCM.Core.Kamailio.Messages;
-using CCM.Core.Kamailio.Parser;
 using CCM.Core.Managers;
 using CCM.Data.Repositories;
 using LazyCache;
@@ -44,7 +43,7 @@ namespace CCM.Tests
     {
         private readonly KamailioMessageManager _kamailioMessageManager;
         private readonly IRegisteredSipRepository _registeredSipRepository;
-        private ICallRepository _callRepository;
+        private readonly ICallRepository _callRepository;
 
         public CallEndedTests()
         {
@@ -60,8 +59,7 @@ namespace CCM.Tests
                 new CachedCallRepository(
                     new CachingService(), 
                     new CallRepository(new CallHistoryRepository(new CachingService()), settingsManager, new CachingService())
-                    ),
-                new KamailioMessageParser(new KamailioDataParser())
+                    )
             );
 
             _callRepository = new CallRepository(new CallHistoryRepository(new CachingService()), settingsManager, new CachingService());
@@ -74,12 +72,6 @@ namespace CCM.Tests
                     new CachingService()
                     )
             );
-
-            //kamailioMessageManager = new KamailioMessageManager(
-            //    GetRegisteredSipRepository(),
-            //    new CallRepository(new CallHistoryRepository(), new SettingsManager(new SettingsRepository())),
-            //    new KamailioMessageParser(new KamailioDataParser())
-            //);
         }
 
         [Test, Explicit]

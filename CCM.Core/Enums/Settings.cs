@@ -31,6 +31,8 @@ namespace CCM.Core.Enums
         MaxRegistrationAge,
         SIPDomain,
         LatestCallCount,
-        CodecControlActive 
+        CodecControlActive,
+        UseOldKamailioEvent,
+        UseSipEvent
     }
 }

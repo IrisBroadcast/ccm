@@ -49,6 +49,8 @@ namespace CCM.Core.Managers
         public int LatestCallCount => GetSetting<int>(SettingsEnum.LatestCallCount);
         public int MaxRegistrationAge => GetSetting<int>(SettingsEnum.MaxRegistrationAge);
         public bool CodecControlActive => GetSetting<bool>(SettingsEnum.CodecControlActive);
+        public bool UseOldKamailioEvent => GetSetting<bool>(SettingsEnum.UseOldKamailioEvent);
+        public bool UseSipEvent => GetSetting<bool>(SettingsEnum.UseSipEvent);
 
         public List<Setting> GetSettings()
         {

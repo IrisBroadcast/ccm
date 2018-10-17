@@ -31,6 +31,7 @@ using CCM.CodecControl;
 using CCM.Core.Cache;
 using CCM.Core.CodecControl.Interfaces;
 using CCM.Core.Interfaces;
+using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.Interfaces.Repositories.Specialized;

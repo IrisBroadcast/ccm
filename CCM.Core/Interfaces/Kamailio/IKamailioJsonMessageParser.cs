@@ -24,12 +24,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using CCM.Core.Kamailio;
 using CCM.Core.Kamailio.Messages;
 
-namespace CCM.Core.Interfaces
+namespace CCM.Core.Interfaces.Kamailio
 {
-    public interface IKamailioMessageParser
+    public interface IKamailioJsonMessageParser
     {
-        KamailioMessageBase Parse(string message);
+        KamailioMessageBase Parse(KamailioSipEvent sipEvent);
     }
+
 }

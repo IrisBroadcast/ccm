@@ -128,18 +128,16 @@
     <Compile Include="CodecControlTests\IkusNet\IkusnetTests.cs" />
     <Compile Include="CodecControlTests\Umac\UmacTests.cs" />
     <Compile Include="ControllerTests\External\AccountControllerTests.cs" />
+    <Compile Include="KamailioTests\DialogTests.cs" />
+    <Compile Include="KamailioTests\RegisterTests.cs" />
+    <Compile Include="KamailioTests\SipMessageHandlerTestsBase.cs" />
     <Compile Include="MetadataHelperTests.cs" />
     <Compile Include="Helpers\TestdataGenerator.cs" />
     <Compile Include="RepositoryTests\MetaRepositoryTests.cs" />
     <Compile Include="RepositoryTests\StatisticsManagerTests.cs" />
     <Compile Include="RepositoryTests\UserRepositoryTests.cs" />
-    <Compile Include="ServiceTests\KamailioAddDataTests.cs" />
-    <Compile Include="ServiceTests\SipMessageHandlerTests\HandleMessageTests.cs" />
-    <Compile Include="ServiceTests\SipMessageHandlerTests\SipMessageHandlerTestsBase.cs" />
-    <Compile Include="ServiceTests\SipMessageHandlerTests\SipMessageManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceTests\DiscoveryServiceTests.cs" />
-    <Compile Include="ServiceTests\SipMessageHandlerTests\KamailioEventTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

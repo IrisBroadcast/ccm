@@ -30,6 +30,13 @@ namespace CCM.Core.Kamailio.Messages
     {
         Request, // Kodarregistrering
         Dialog, // Samtal
-        RegExpire // Registrering har gï¿½tt ut
+        RegExpire // Registrering har gått ut
+    }
+
+    public enum KamilioEventType
+    {
+        Register,
+        Dialog,
+        RegExpire
     }
 }

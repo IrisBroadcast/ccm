@@ -27,6 +27,7 @@
 using System;
 using System.Linq;
 using CCM.Core.Interfaces;
+using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Kamailio.Messages;
 using NLog;
 

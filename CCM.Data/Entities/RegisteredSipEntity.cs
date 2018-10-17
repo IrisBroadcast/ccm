@@ -41,6 +41,7 @@ namespace CCM.Data.Entities
         public string SIP { get; set; }
 
         [MetaProperty]
+        [Column("UserAgentHead")]
         public string UserAgentHead { get; set; }
 
         [MetaProperty]
@@ -50,6 +51,7 @@ namespace CCM.Data.Entities
         public string DisplayName { get; set; }
 
         [MetaProperty]
+        [Column("IP")]
         public string IP { get; set; }
 
         [MetaProperty]
@@ -67,13 +69,13 @@ namespace CCM.Data.Entities
         public Guid? User_UserId { get; set; }
 
         [MetaType]
-        [ForeignKey("User_UserId")]
+        [ForeignKey(nameof(User_UserId))]
         public virtual SipAccountEntity User { get; set; }
 
         public Guid? UserAgentId { get; set; }
 
         [MetaType]
-        [ForeignKey("UserAgentId")]
+        [ForeignKey(nameof(UserAgentId))]
         public virtual UserAgentEntity UserAgent { get; set; }
     }
 }

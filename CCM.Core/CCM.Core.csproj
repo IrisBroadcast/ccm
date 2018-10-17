@@ -159,7 +159,8 @@
     <Compile Include="Helpers\HttpService.cs" />
     <Compile Include="Helpers\IpAddressComparer.cs" />
     <Compile Include="Interfaces\IDiscoveryService.cs" />
-    <Compile Include="Interfaces\IKamailioMessageParser.cs" />
+    <Compile Include="Interfaces\Kamailio\IKamailioJsonMessageParser.cs" />
+    <Compile Include="Interfaces\Kamailio\IKamailioMessageParser.cs" />
     <Compile Include="Interfaces\Managers\ISipAccountManager.cs" />
     <Compile Include="Interfaces\Repositories\ISipAccountRepository.cs" />
     <Compile Include="Interfaces\Repositories\IProfileGroupRepository.cs" />
@@ -167,9 +168,10 @@
     <Compile Include="Interfaces\Repositories\IStudioRepository.cs" />
     <Compile Include="Interfaces\Repositories\Specialized\ILocationInfoRepository.cs" />
     <Compile Include="Interfaces\Repositories\Specialized\IRegisteredSipDetailsRepository.cs" />
+    <Compile Include="Kamailio\KamailioSipEvent.cs" />
     <Compile Include="Kamailio\Messages\DialogStatus.cs" />
     <Compile Include="Kamailio\Messages\KamailioRegistrationExpireMessage.cs" />
-    <Compile Include="Interfaces\IKamailioDataParser.cs" />
+    <Compile Include="Interfaces\Kamailio\IKamailioDataParser.cs" />
     <Compile Include="Kamailio\Parser\KamailioData.cs" />
     <Compile Include="Entities\AvailableFilter.cs" />
     <Compile Include="Entities\AvailableMetaType.cs" />
@@ -211,6 +213,7 @@
     <Compile Include="Kamailio\Messages\KamailioDialogMessage.cs" />
     <Compile Include="Kamailio\Messages\KamailioMessageBase.cs" />
     <Compile Include="Kamailio\Parser\KamailioDataParser.cs" />
+    <Compile Include="Kamailio\Parser\KamailioJsonMessageParser.cs" />
     <Compile Include="Kamailio\Parser\KamailioMessageParser.cs" />
     <Compile Include="Kamailio\Messages\KamailioMessageType.cs" />
     <Compile Include="Kamailio\Messages\KamailioRegistrationMessage.cs" />
