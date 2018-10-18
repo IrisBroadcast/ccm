@@ -29,7 +29,7 @@ using CCM.Core.Entities.Base;
 
 namespace CCM.Core.Entities
 {
-    public class City : CoreEntityBase
+    public class City : CoreEntityWithTimestamps
     {
         public string Name { get; set; }
         public List<Location> Locations { get; set; }

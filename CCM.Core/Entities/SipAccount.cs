@@ -30,7 +30,7 @@ using CCM.Core.Interfaces;
 
 namespace CCM.Core.Entities
 {
-    public class SipAccount : CoreEntityBase, ISipFilter
+    public class SipAccount : CoreEntityWithTimestamps, ISipFilter
     {
         public string UserName { get; set; }
         public string DisplayName { get; set; }

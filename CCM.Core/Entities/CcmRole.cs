@@ -28,7 +28,7 @@ using CCM.Core.Entities.Base;
 
 namespace CCM.Core.Entities
 {
-    public class CcmRole : CoreEntityBase
+    public class CcmRole : CoreEntityWithTimestamps
     {
         public string Name { get; set; }
 

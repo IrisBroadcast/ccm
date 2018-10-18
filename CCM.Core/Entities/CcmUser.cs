@@ -29,7 +29,7 @@ using CCM.Core.Interfaces;
 
 namespace CCM.Core.Entities
 {
-    public class CcmUser : CoreEntityBase, ISipFilter
+    public class CcmUser : CoreEntityWithTimestamps, ISipFilter
     {
         public string UserName { get; set; }
         public string FirstName { get; set; }
