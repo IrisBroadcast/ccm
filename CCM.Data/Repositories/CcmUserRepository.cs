@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
@@ -222,11 +221,6 @@ namespace CCM.Data.Repositories
             }
 
         }
-        
-        public static string AsHexString(byte[] bytes)
-        {
-            return string.Concat("0x", Array.ConvertAll(bytes, x => x.ToString("X2")));
-        }
-    }
 
+    }
 }

@@ -61,12 +61,5 @@ namespace CCM.UnitTests
             Assert.AreEqual(string.Empty, s2);
         }
 
-        [Test]
-        public void Test_AsHexString()
-        {
-            var bytes = CryptoHelper.GenerateSaltBytes();
-            var s = CcmUserRepository.AsHexString(bytes);
-            Console.WriteLine(s);
-        }
     }
 }
