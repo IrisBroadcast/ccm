@@ -43,7 +43,5 @@ namespace CCM.Core.Interfaces.Repositories
         bool Delete(Guid userId);
         CcmRole GetUserRole(CcmUser ccmUser);
         Task<bool> AuthenticateAsync(string username, string password);
-        void ImportLocalPasswords();
-        void ImportCcmUserPasswords(List<UserInfo> userInfoList);
     }
 }

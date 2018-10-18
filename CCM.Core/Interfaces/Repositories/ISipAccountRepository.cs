@@ -44,7 +44,5 @@ namespace CCM.Core.Interfaces.Repositories
         void UpdatePassword(Guid id, string password);
         void Delete(Guid id);
         Task<bool> AuthenticateAsync(string username, string password);
-        void ImportSipAccountPasswords(List<UserInfo> userInfoList);
-        
     }
 }

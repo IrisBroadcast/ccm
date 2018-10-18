@@ -30,7 +30,6 @@ using System.Web.Http;
 using System.Web.Http.Results;
 using System.Web.Http.Routing;
 using CCM.Core.Managers;
-using CCM.Data.Radius;
 using CCM.Data.Repositories;
 using CCM.Web.Controllers.ApiExternal;
 using CCM.Web.Models.ApiExternal;

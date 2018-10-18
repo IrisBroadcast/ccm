@@ -239,7 +239,6 @@
     <Compile Include="Interfaces\Repositories\IRegionRepository.cs" />
     <Compile Include="Interfaces\Repositories\ILocationRepository.cs" />
     <Compile Include="Interfaces\Repositories\IOwnersRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IRadiusUserRepository.cs" />
     <Compile Include="Interfaces\Repositories\ISettingsRepository.cs" />
     <Compile Include="Interfaces\Repositories\IProfileRepository.cs" />
     <Compile Include="Interfaces\Repositories\IUserAgentRepository.cs" />

@@ -34,7 +34,6 @@ using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.Managers;
 using CCM.Core.Service;
-using CCM.Data.Radius;
 using CCM.Data.Repositories;
 using LazyCache;
 using Newtonsoft.Json;
@@ -55,7 +54,6 @@ namespace CCM.Tests.ServiceTests
             var kernel = new StandardKernel();
             kernel.Bind<IAppCache>().To<CachingService>();
             kernel.Bind<IRegisteredSipRepository>().To<RegisteredSipRepository>();
-            kernel.Bind<IRadiusUserRepository>().To<RadiusUserRepository>();
             kernel.Bind<ICcmUserRepository>().To<CcmUserRepository>();
             kernel.Bind<ISettingsRepository>().To<SettingsRepository>();
             kernel.Bind<ISettingsManager>().To<SettingsManager>();

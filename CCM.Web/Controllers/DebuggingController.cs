@@ -28,7 +28,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Runtime.Caching;
 using System.Web.Mvc;
 using CCM.Core.Entities;
@@ -41,140 +40,41 @@ using NLog.Targets;
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
-    [Route("debug")]
+    [RoutePrefix("debug")]
     public class DebuggingController : Controller
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly IRadiusUserRepository _radiusUserRepository;
         private readonly ICcmUserRepository _ccmUserRepository;
         private readonly ISipAccountRepository _sipAccountRepository;
 
-        public DebuggingController(IRadiusUserRepository radiusUserRepository, ICcmUserRepository ccmUserRepository, ISipAccountRepository sipAccountRepository)
+        public DebuggingController(ICcmUserRepository ccmUserRepository, ISipAccountRepository sipAccountRepository)
         {
-            _radiusUserRepository = radiusUserRepository;
             _ccmUserRepository = ccmUserRepository;
             _sipAccountRepository = sipAccountRepository;
         }
 
+        [Route("")]
         public ActionResult Index()
         {
             return View();
         }
 
+        [Route("getccmusers")]
         public ActionResult GetCcmUsers()
         {
             List<CcmUser> users = _ccmUserRepository.GetAll();
             return View(users);
         }
 
+        [Route("getsipaccounts")]
         public ActionResult GetSipAccounts()
         {
             var accounts = _sipAccountRepository.GetAll();
             return View(accounts);
         }
 
-        public ActionResult GetRadiusUsers()
-        {
-            List<RadiusUser> users = _radiusUserRepository.GetUsers();
-            return View(users);
-        }
-
-        public ActionResult GetRadiusUsersInfo()
-        {
-            List<Dictionary<string, object>> users = _radiusUserRepository.GetUsersInfo();
-            return Json(users, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult GetRadiusCcmUserList()
-        {
-            var users = _radiusUserRepository.GetUserPasswords();
-            return Json(users, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult GetRadiusSipAccountList()
-        {
-            var users = _radiusUserRepository.GetSipAccountPasswords();
-            return Json(users, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult ImportLocalPasswords(string key)
-        {
-            if (key != "skruvsallad")
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid key");
-            }
-
-            EnableLoggingTarget(out var target, out var loggingRule);
-            
-            try
-            {
-                _ccmUserRepository.ImportLocalPasswords();
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Fel då lokala lösenord importerades");
-            }
-
-            DisableLoggingTarget(loggingRule);
-
-            ViewBag.Title = "Import CCM User Password";
-            return View("ShowLog", target.Logs);
-        }
-
-        public ActionResult ImportCcmUserPasswords(string key)
-        {
-            if (key != "skruvsallad")
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid key");
-            }
-
-            EnableLoggingTarget(out var target, out var loggingRule);
-
-            try
-            {
-                List<UserInfo> userList = _radiusUserRepository.GetUserPasswords();
-                _ccmUserRepository.ImportCcmUserPasswords(userList);
-
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Fel då CCM-användares lösenord importerades");
-            }
-
-            DisableLoggingTarget(loggingRule);
-
-            ViewBag.Title = "Import CCM User Password";
-            return View("ShowLog", target.Logs);
-
-        }
-
-        public ActionResult ImportSipAccountPasswords(string key)
-        {
-            if (key != "skruvsallad")
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid key");
-            }
-
-            EnableLoggingTarget(out var target, out var loggingRule);
-
-            try
-            {
-                List<UserInfo> sipAccountList = _radiusUserRepository.GetSipAccountPasswords();
-                _sipAccountRepository.ImportSipAccountPasswords(sipAccountList);
-
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Fel då lösenord för SIP-konton importerades");
-            }
-
-            DisableLoggingTarget(loggingRule);
-
-            ViewBag.Title = "Import SIP Accounts Password";
-            return View("ShowLog", target.Logs);
-        }
-
+        [Route("logtest")]
         public ActionResult LogTest()
         {
             EnableLoggingTarget(out var target, out var loggingRule);
@@ -209,16 +109,19 @@ namespace CCM.Web.Controllers
             LogManager.ReconfigExistingLoggers();
         }
 
+        [Route("whoami")]
         public ActionResult WhoAmI()
         {
             return View();
         }
 
+        [Route("cacheinfo")]
         public ActionResult CacheInfo()
         {
             return View();
         }
 
+        [Route("getcacheinfo")]
         public ActionResult GetCacheInfo()
         {
             var memoryCache = MemoryCache.Default;

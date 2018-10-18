@@ -39,7 +39,6 @@ using CCM.Core.Kamailio;
 using CCM.Core.Kamailio.Parser;
 using CCM.Core.Managers;
 using CCM.Core.Service;
-using CCM.Data.Radius;
 using CCM.Data.Repositories;
 using CCM.Data.Repositories.Specialized;
 using CCM.Web.Infrastructure.SignalR;
@@ -81,7 +80,6 @@ namespace CCM.Web.Infrastructure
             _kernel.Bind<ISipMessageManager>().To<KamailioMessageManager>();
             _kernel.Bind<ISimpleRegisteredSipRepository>().To<SimpleRegisteredSipRepository>();
             _kernel.Bind<IRegisteredSipDetailsRepository>().To<RegisteredSipDetailsRepository>();
-            _kernel.Bind<IRadiusUserRepository>().To<RadiusUserRepository>();
             _kernel.Bind<ISipAccountManager>().To<SipAccountManager>();
             _kernel.Bind<ICcmUserRepository>().To<CcmUserRepository>();
             _kernel.Bind<ISipAccountRepository>().To<SipAccountRepository>();

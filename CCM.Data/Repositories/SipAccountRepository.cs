@@ -233,49 +233,6 @@ namespace CCM.Data.Repositories
                 dbAccount.Password = account.Password;
             }
         }
-
-        public void ImportSipAccountPasswords(List<UserInfo> userInfoList)
-        {
-            log.Info("Importerar lösenord för {0} SIP-konton", userInfoList.Count);
-
-            try
-            {
-                using (var db = GetDbContext())
-                {
-                    foreach (var userInfo in userInfoList)
-                    {
-                        var dbUser = db.SipAccounts.SingleOrDefault(u => u.UserName == userInfo.UserName);
-
-                        if (dbUser == null)
-                        {
-                            log.Warn("SIP-konto {0} saknas i CCM:s databas. Lägger till kontot.", userInfo.UserName);
-                            var dbAccount = new SipAccountEntity
-                            {
-                                UserName = userInfo.UserName,
-                                DisplayName = "",
-                                Comment = "Konto importerat från Radius",
-                                CodecType = db.CodecTypes.SingleOrDefault(c => c.Name == "Test"),
-                                AccountLocked = false,
-                                AccountType = SipAccountType.SipAccount,
-                                Password = userInfo.Password
-                            };
-
-                            db.SipAccounts.Add(dbAccount);
-                        }
-                        else
-                        {
-                            log.Info("Importerar lösenord för SIP-konto {0}", dbUser.UserName);
-                            dbUser.Password = userInfo.Password;
-                        }
-                    }
-                    db.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Fel då lösenord för SIP-konton importerades");
-            }
-        }
         
     }
 }

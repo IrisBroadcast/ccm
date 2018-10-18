@@ -222,87 +222,10 @@ namespace CCM.Data.Repositories
             }
 
         }
-
-        public void ImportLocalPasswords()
-        {
-            log.Info("Importerar lokala lösenord");
-
-            using (var db = GetDbContext())
-            {
-                var localPasswords = db.LocalPasswords.ToList();
-
-                log.Info("Hittade {0} lokala lösenord", localPasswords.Count);
-
-                foreach (var lp in localPasswords)
-                {
-                    var dbUser = db.Users.SingleOrDefault(u => u.Id == lp.UserId);
-
-                    if (dbUser == null)
-                    {
-                        log.Warn("Kontot med id {0} saknas som CCM-användare", lp.UserId);
-                    }
-                    else
-                    {
-                        log.Info("Importerar lokalt lösenord för {0}", dbUser.UserName);
-                        dbUser.PasswordHash = lp.Password;
-                        var saltBytes = Encoding.UTF8.GetBytes(lp.Salt);
-                        dbUser.Salt = Convert.ToBase64String(saltBytes);
-                    }
-                }
-
-                db.SaveChanges();
-            }
-        }
-
-        public void ImportCcmUserPasswords(List<UserInfo> userInfoList)
-        {
-            log.Info("Importerar lösenord för {0} CCM-användare", userInfoList.Count);
-
-            try
-            {
-                using (var db = GetDbContext())
-                {
-                    foreach (var userInfo in userInfoList)
-                    {
-                        var dbUser = db.Users.SingleOrDefault(u => u.UserName.ToLower() == userInfo.UserName.ToLower());
-
-                        if (dbUser == null)
-                        {
-                            log.Warn("Användare {0} saknas i CCM:s databas", userInfo.UserName);
-                        }
-                        else
-                        {
-                            log.Info("Importerar lösenord för CCM-användare {0}", dbUser.UserName);
-
-                            // Convert radius hash to password hash + salt
-                            var radiusHash = userInfo.Password;
-                            byte[] radiusHashBytes = Convert.FromBase64String(radiusHash);
-                            log.Debug("Radius Hash:" + radiusHash + " " + AsHexString(radiusHashBytes));
-
-                            var pwdHash = radiusHashBytes.Take(16).ToArray();
-                            var pwdHashString = Convert.ToBase64String(pwdHash);
-                            log.Debug("PwdHash:" + pwdHashString + " " + AsHexString(pwdHash));
-
-                            var saltBytes = radiusHashBytes.Skip(16).ToArray();
-                            var salt64 = Convert.ToBase64String(saltBytes);
-                            log.Debug("Salt:" + salt64 + " " + AsHexString(saltBytes));
-
-                            dbUser.PasswordHash = pwdHashString;
-                            dbUser.Salt = salt64;
-                        }
-                    }
-                    db.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, "Fel då lösenord för CCM-användare importerades");
-            }
-        }
-
+        
         public static string AsHexString(byte[] bytes)
         {
-            return String.Concat("0x", Array.ConvertAll(bytes, x => x.ToString("X2")));
+            return string.Concat("0x", Array.ConvertAll(bytes, x => x.ToString("X2")));
         }
     }
 
