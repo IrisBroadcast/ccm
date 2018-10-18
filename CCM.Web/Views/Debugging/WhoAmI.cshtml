@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "WhoAmI";
+}
+
+<h2>WhoAmI</h2>
+
+@if (Request.IsAuthenticated)
+{
+    <div>
+        Inloggad som @User.Identity.Name
+    </div>
+    <div>
+        Admin: @User.IsInRole("Admin")
+    </div>                                 
+}
+else
+{
+    <div>Utloggad</div>
+}

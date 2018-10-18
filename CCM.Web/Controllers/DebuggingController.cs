@@ -41,7 +41,8 @@ using NLog.Targets;
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
-    public class DebugController : Controller
+    [Route("debug")]
+    public class DebuggingController : Controller
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
@@ -49,7 +50,7 @@ namespace CCM.Web.Controllers
         private readonly ICcmUserRepository _ccmUserRepository;
         private readonly ISipAccountRepository _sipAccountRepository;
 
-        public DebugController(IRadiusUserRepository radiusUserRepository, ICcmUserRepository ccmUserRepository, ISipAccountRepository sipAccountRepository)
+        public DebuggingController(IRadiusUserRepository radiusUserRepository, ICcmUserRepository ccmUserRepository, ISipAccountRepository sipAccountRepository)
         {
             _radiusUserRepository = radiusUserRepository;
             _ccmUserRepository = ccmUserRepository;

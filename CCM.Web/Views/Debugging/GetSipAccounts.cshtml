@@ -1,0 +1,48 @@
+﻿@model IEnumerable<CCM.Core.Entities.SipAccount>
+
+@{
+    ViewBag.Title = "SIP Accounts";
+}
+
+<h2>SIP-konton</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DisplayName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Comment)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AccountLocked)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AccountType)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DisplayName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Comment)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AccountLocked)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AccountType)
+        </td>
+    </tr>
+}
+
+</table>

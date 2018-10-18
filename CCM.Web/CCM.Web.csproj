@@ -318,7 +318,7 @@
     <Compile Include="Controllers\Api\OngoingCallController.cs" />
     <Compile Include="Controllers\Api\RegisteredSipsOverviewController.cs" />
     <Compile Include="Controllers\CallController.cs" />
-    <Compile Include="Controllers\DebugController.cs" />
+    <Compile Include="Controllers\DebuggingController.cs" />
     <Compile Include="Controllers\Api\RegisteredSipDetailsController.cs" />
     <Compile Include="Models\ApiExternal\CodecState.cs" />
     <Compile Include="Models\ApiExternal\HangupParameters.cs" />
@@ -757,15 +757,14 @@
     <Content Include="Views\Presets\Create.cshtml" />
     <Content Include="Views\Presets\Edit.cshtml" />
     <Content Include="Views\Presets\Delete.cshtml" />
-    <Content Include="Views\Debug\Index.cshtml" />
-    <Content Include="Views\Debug\GetRadiusUsers.cshtml" />
-    <Content Include="Views\Debug\GetCCMUsers.cshtml" />
+    <Content Include="Views\Debugging\Index.cshtml" />
+    <Content Include="Views\Debugging\GetCCMUsers.cshtml" />
     <Content Include="Views\Log\Index.cshtml" />
     <Content Include="Views\Log\Level.cshtml" />
-    <Content Include="Views\Debug\CacheInfo.cshtml">
+    <Content Include="Views\Debugging\CacheInfo.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Views\Debug\GetCacheInfo.cshtml" />
+    <Content Include="Views\Debugging\GetCacheInfo.cshtml" />
     <Content Include="Views\Statistics\Index.cshtml" />
     <Content Include="Views\Statistics\GetLocationSim24HourChart.cshtml" />
     <Content Include="Views\Statistics\LocationStatisticsTable.cshtml" />
@@ -795,9 +794,9 @@
     <Content Include="Views\SipAccount\CreateEdit.cshtml" />
     <Content Include="Views\SipAccount\Delete.cshtml" />
     <Content Include="Views\SipAccount\Index.cshtml" />
-    <Content Include="Views\Debug\GetSipAccounts.cshtml" />
-    <Content Include="Views\Debug\WhoAmI.cshtml" />
-    <Content Include="Views\Debug\ShowLog.cshtml" />
+    <Content Include="Views\Debugging\GetSipAccounts.cshtml" />
+    <Content Include="Views\Debugging\WhoAmI.cshtml" />
+    <Content Include="Views\Debugging\ShowLog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\CodecControl\" />
