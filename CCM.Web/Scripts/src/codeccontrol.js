@@ -35,6 +35,25 @@
         }
     };
 
+    $scope.startSignalrConnection = function () {
+        if (!$scope.signalrConnection) console.error('SignalrConnection must be configured before it can be started.');
+
+        console.log('Starting signalr connection', $scope.signalrConnection);
+
+        $scope.signalrConnection.start()
+            .then(function (result) {
+                console.log("Signalr started");
+
+                $scope.signalrConnection.invoke("Subscribe", $scope.sipAddress).catch(function (err) {
+                    return console.error(err.toString());
+                });
+            })
+            .catch(function (err) {
+                setTimeout($scope.startSignalrConnection, 3000);
+                return console.error(err.toString());
+            });
+    };
+
     $scope.startAudioUpdate = function () {
 
         $scope.signalrConnection = new signalR.HubConnectionBuilder()
@@ -49,18 +68,12 @@
             }
         });
 
-        $scope.signalrConnection.start()
-            .then(function (result) {
-                console.log("signalr started");
+        $scope.signalrConnection.onclose(function (e) {
+            console.log('Signalr connection closed.');
+            setTimeout($scope.startSignalrConnection, 3000);
+        });
 
-                $scope.signalrConnection.invoke("Subscribe", $scope.sipAddress).catch(function (err) {
-                    return console.error(err.toString());
-                });
-            })
-            .catch(function (err) {
-                return console.error(err.toString()
-                );
-            });
+        $scope.startSignalrConnection();
     };
 
     $scope.setInputValue = function (i, data) {
