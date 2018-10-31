@@ -149,9 +149,13 @@
 
         var nrOfInputs = $scope.inputs.length;
 
-        for (var i = 0; i < nrOfInputs; i++) {
-            var inputStatus = audioStatus.inputStatus[i];
-            $scope.setInputValue(i, inputStatus);
+        if (!audioStatus.inputStatus.length !== nrOfInputs) {
+            console.warn('InputStatus length: ' + audioStatus.inputStatus.length + ' does not match nr of inputs: ' + nrOfInputs);
+        } else {
+            for (var i = 0; i < nrOfInputs; i++) {
+                var inputStatus = audioStatus.inputStatus[i];
+                $scope.setInputValue(i, inputStatus);
+            }
         }
 
         for (var j = 0; j < $scope.gpos.length; j++) {
