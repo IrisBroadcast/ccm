@@ -34,6 +34,7 @@ namespace CCM.Web
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new LogErrorsAttribute());
+            filters.Add(new ElapsedTimeFilter());
         }
     }
 }

@@ -30,6 +30,7 @@ using NLog;
 
 namespace CCM.Web.Infrastructure.MvcFilters
 {
+    
     public class ElapsedTimeFilter : IActionFilter
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();

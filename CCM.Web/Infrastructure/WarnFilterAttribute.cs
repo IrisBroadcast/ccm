@@ -1,3 +1,4 @@
+#region Copyright
 /*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
@@ -23,50 +24,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+ #endregion
 
-using System;
-using System.Diagnostics;
-using System.Security.Claims;
-using System.Web.Http;
-using System.Web;
-using System.Web.Helpers;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
-using CCM.Web.Infrastructure;
-using CCM.Web.Infrastructure.MvcFilters;
-using CCM.WebCommon.Infrastructure.WebApi;
+using System.Web.Http.Controllers;
 using NLog;
 
-namespace CCM.Web
+namespace CCM.Web.Controllers.Api
 {
-    public class MvcApplication : HttpApplication
+    public class WarnFilterAttribute : System.Web.Http.Filters.ActionFilterAttribute
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        protected void Application_Start()
+        public override void OnActionExecuting(HttpActionContext actionContext)
         {
-            AutoMapperWebConfiguration.Configure();
-
-            // INFO: Ordningen på registreringarna är viktig. WebApi före Mvc.
-            
-            // WebApi
-            GlobalConfiguration.Configure(WebApiConfig.Register);
-            GlobalConfiguration.Configuration.Filters.Add(new StopwatchAttribute());
-            GlobalConfiguration.Configuration.Filters.Add(new ActivityIdAttribute());
-
-            // Mvc
-            AreaRegistration.RegisterAllAreas();
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
-            AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
-        }
-
-        protected void Application_BeginRequest(object sender, EventArgs e)
-        {
-            // For logging
-            Trace.CorrelationManager.ActivityId = Guid.NewGuid();
+            var request = actionContext.Request;
+            log.Warn($"Request to deprecated CodecControl. {request}");
         }
 
     }

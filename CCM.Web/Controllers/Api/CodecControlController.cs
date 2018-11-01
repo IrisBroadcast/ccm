@@ -36,12 +36,15 @@ using CCM.Core.CodecControl.Interfaces;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories.Specialized;
 using CCM.Web.Authentication;
+using CCM.Web.Infrastructure.MvcFilters;
 using CCM.Web.Models.CodecControl;
 using CCM.Web.Models.CodecControl.Base;
 using NLog;
 
 namespace CCM.Web.Controllers.Api
 {
+    [WarnFilter]
+    [Obsolete]
     public class CodecControlController : ApiController
     {
         #region Constructor and members
@@ -138,7 +141,7 @@ namespace CCM.Web.Controllers.Api
             var model = Mapper.Map<Models.CodecControl.AudioStatusViewModel>(audioStatus);
             return model;
         }
-        
+
         [CcmAuthorize(Roles = "Admin, Remote")]
         [ActionName("GetInputGainAndStatus")]
         [HttpGet]
@@ -147,7 +150,7 @@ namespace CCM.Web.Controllers.Api
             CodecInformation codecInformation = GetCodecInformationById(id);
             if (codecInformation == null)
             {
-                return new InputGainAndStatusViewModel {Error = Resources.No_Codec_Found};
+                return new InputGainAndStatusViewModel { Error = Resources.No_Codec_Found };
             }
 
             try
@@ -238,7 +241,7 @@ namespace CCM.Web.Controllers.Api
                 return new LineStatusViewModel() { Error = Resources.Unable_To_Connect_To_Codec };
             }
         }
-        
+
         [CcmAuthorize(Roles = "Admin, Remote")]
         [ActionName("GetLoadedPreset")]
         [HttpPost]
@@ -330,7 +333,7 @@ namespace CCM.Web.Controllers.Api
                 log.Warn(ex, "Exception when sending codec control command to " + codecInformation.SipAddress);
                 return new AudioModeViewModel() { Error = Resources.Unable_To_Connect_To_Codec };
             }
-           
+
         }
 
         [CcmAuthorize(Roles = "Admin, Remote")]
@@ -411,7 +414,7 @@ namespace CCM.Web.Controllers.Api
             {
                 return new InputGainLevelViewModel() { Error = Resources.No_Codec_Found };
             }
-            
+
             try
             {
                 var gainLevel = await _codecManager.SetInputGainLevelAsync(codecInformation, input, level);
@@ -505,7 +508,7 @@ namespace CCM.Web.Controllers.Api
                 return new GpoViewModel() { Error = Resources.Unable_To_Connect_To_Codec };
             }
         }
-        
+
         private CodecInformation GetCodecInformationBySipAddress(string sipAddress)
         {
             var codecInfo = _codecInformationRepository.GetCodecInformationBySipAddress(sipAddress);
