@@ -91,7 +91,7 @@ namespace CCM.Core.Kamailio.Parser
                 HangupReason = kamailioData.GetField("hr")
             };
 
-            // Fix f�r tomt ru-f�lt i kamailio-data
+            // Fix för tomt ru-fält i kamailio-data
             if (dialog.ToSipUri == null || string.IsNullOrEmpty(dialog.ToSipUri.User))
             {
                 dialog.ToSipUri = new SipUri(kamailioData.GetField("tu"));
@@ -109,6 +109,7 @@ namespace CCM.Core.Kamailio.Parser
                 Port = ParseInt(kamailioData.GetField("sp")),
                 UnixTimeStamp = ParseLong(kamailioData.GetField("TS")),
                 Sip = new SipUri(kamailioData.GetField("fu")),
+                FromDisplayName = ParseDisplayName(kamailioData.GetField("fn")),
                 UserAgent = kamailioData.GetField("ua"),
                 Username = kamailioData.GetField("Au"),
                 ToDisplayName = ParseDisplayName(kamailioData.GetField("tn")),
@@ -119,7 +120,6 @@ namespace CCM.Core.Kamailio.Parser
                 //RequestedSip = new SipUri(kamailioData.GetField("ru")),
                 //ReceivedIp = kamailioData.GetField("Ri"),
                 //ReceivedPort = ParseInt(kamailioData.GetField("Rp")),
-                //FromDisplayName = ParseDisplayName(kamailioData.GetField("fn")),
                 //CallId = kamailioData.GetField("ci"),
             };
 
