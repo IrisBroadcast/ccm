@@ -233,7 +233,6 @@ ccmControllers.controller('studioMonitorController',
                 .then(function (data) {
                     var input = $scope.inputs[inputNumber];
                     input.value = data.gainLevel;
-                    //$scope.updateAudioStatus();
                 },
                 function (error) {
                     // Do nothing
@@ -245,7 +244,7 @@ ccmControllers.controller('studioMonitorController',
             return $http.get($scope.codecControlHost + '/api/codeccontrol/getaudiostatus?sipaddress=' + $scope.sipAddress)
                 .then(function (response) {
                     let audioStatus = response.data;
-                    console.log("* Codec GetAudioStatus: ", audioStatus);
+                    //console.log("* Codec GetAudioStatus: ", audioStatus);
 
                     for (var i = 0; i < audioStatus.inputStatus.length; i++) {
                         var inputData = audioStatus.inputStatus[i];
@@ -270,7 +269,7 @@ ccmControllers.controller('studioMonitorController',
                     $scope.playMessageButtonDisabled = hasActiveGpo; // Disable play button when any GPO is active
 
                     var vuData = response.data.vuValues;
-                    console.info("* got VU-data: ", vuData);
+                    //console.info("* got VU-data: ", vuData);
 
                     // Värdena är i db där 0 = Fullscale +18db, -18 = Test 0dB, -96 = min-nivå
                     $scope.txL = fallback($scope.txL, convertVuToPercentage(vuData.txLeft));
@@ -288,16 +287,15 @@ ccmControllers.controller('studioMonitorController',
         $scope.setInputEnabled = function (inputNumber, enabled) {
             $scope.httpPost('/api/codeccontrol/setinputenabled', { sipAddress: $scope.sipAddress, input: inputNumber, enabled: enabled })
                 .then(function (data) {
-                    console.log("SetInputEnabled", data);
+                    //console.log("SetInputEnabled", data);
                     $scope.inputs[inputNumber].enabled = data.enabled;
                 },
                 function (response) {
-                    console.error('* Codec SetInputEnabled failed');
+                    console.error('Codec SetInputEnabled failed');
                 });
         };
 
         $scope.updateAudioStatus = function () {
-            console.log("updateAudioStatus");
             $scope.getAudioStatus().then(function () {
                 if (!angular.isDefined(audioStatusTimeoutHandle)) {
                     audioStatusTimeoutHandle = $timeout(function () {

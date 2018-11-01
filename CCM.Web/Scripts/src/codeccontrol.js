@@ -62,7 +62,7 @@
             .build();
 
         $scope.signalrConnection.on("AudioStatus", function (sipAddress, audioStatus) {
-            console.log("AudioStatus received", sipAddress, audioStatus);
+            //console.log("AudioStatus received", sipAddress, audioStatus);
             if (sipAddress === $scope.sipAddress) {
                 $scope.updateAudioStatus(audioStatus);
             }
@@ -77,7 +77,6 @@
     };
 
     $scope.setInputValue = function (inputStatus) {
-        //console.info('setInputValue', inputStatus);
         var input = $scope.inputs[inputStatus.index];
 
         if (input) {
@@ -147,7 +146,7 @@
     };
 
     $scope.updateAudioStatus = function (audioStatus) {
-        console.log("Audio status", audioStatus);
+        //console.log("Audio status", audioStatus);
 
         for (var i = 0; i < audioStatus.inputStatus.length; i++) {
             $scope.setInputValue(audioStatus.inputStatus[i]);
@@ -157,19 +156,15 @@
             var gpoData = audioStatus.gpos[j];
             var gpo = $scope.gpos[gpoData.index];
             if (gpo) {
-                console.log("gpo", gpo, gpoData);
                 gpo.active = gpoData.active;
             }
         }
 
-        console.info("* Codec VU-data", audioStatus.vuValues);
         // Values is presented in dB where 0 = Fullscale +18db, -18 = Test 0dB, -96 = min-level
         $scope.txL = fallback($scope.txL, convertVuToPercentage(audioStatus.vuValues.txLeft));
         $scope.txR = fallback($scope.txR, convertVuToPercentage(audioStatus.vuValues.txRight));
         $scope.rxL = fallback($scope.rxL, convertVuToPercentage(audioStatus.vuValues.rxLeft));
         $scope.rxR = fallback($scope.rxR, convertVuToPercentage(audioStatus.vuValues.rxRight));
-        //console.info("VU values", $scope.txL, $scope.txR, $scope.rxL, $scope.rxR);
-
     };
 
     $scope.toggleInputEnabled = function (input) {
@@ -280,7 +275,7 @@
             $scope.checkCodecAvailable();
 
         } else {
-            console.info('* Codec-control is not Authorized');
+            console.info('Codec-control is not Authorized');
         }
     },
         function () { // on error
