@@ -199,7 +199,7 @@ ccmControllers.controller('studioMonitorController',
 
         $scope.setGpo = function (gpo) {
             var active = gpo.active ? false : true;
-            $scope.httpPost($scope.codecControlHost + '/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: active })
+            $scope.httpPost('/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: active })
                 .then(function (data) {
                     console.log("Codec GPO data: ", data);
                     gpo.active = data.active;
@@ -229,7 +229,7 @@ ccmControllers.controller('studioMonitorController',
         $scope.setGainLevel = function (inputNumber, newValue) {
             $scope.stopUpdateAudioStatus();
             console.info("* Codec SetGainLevel", inputNumber, newValue);
-            $scope.httpPost($scope.codecControlHost + '/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: inputNumber, level: newValue })
+            $scope.httpPost('/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: inputNumber, level: newValue })
                 .then(function (data) {
                     var input = $scope.inputs[inputNumber];
                     input.value = data.gainLevel;
@@ -244,23 +244,25 @@ ccmControllers.controller('studioMonitorController',
         $scope.getAudioStatus = function () {
             return $http.get($scope.codecControlHost + '/api/codeccontrol/getaudiostatus?sipaddress=' + $scope.sipAddress)
                 .then(function (response) {
-                    let data = response.data;
-                    console.log("* Codec GetAudioStatus: ", data);
+                    let audioStatus = response.data;
+                    console.log("* Codec GetAudioStatus: ", audioStatus);
 
-                    for (var i = 0; i < $scope.nrOfMicrophones; i++) {
-                        var inputData = data.inputStatus[i];
+                    for (var i = 0; i < audioStatus.inputStatus.length; i++) {
+                        var inputData = audioStatus.inputStatus[i];
                         var input = $scope.inputs[i];
-                        input.value = inputData.gainLevel;
-                        input.enabled = inputData.enabled;
+                        if (input) {
+                            input.value = inputData.gainLevel;
+                            input.enabled = inputData.enabled;
+                        }
                     }
 
-                    var gpoData = response.data.GpoValues;
-
                     var hasActiveGpo = false;
-                    for (var j = 0; j < $scope.nrOfGpos; j++) {
-                        var gpo = $scope.gpos[j];
-                        if (gpoData[j] !== undefined && gpoData[j] !== null) {
-                            gpo.active = gpoData[j].active;
+
+                    for (var j = 0; j < audioStatus.gpos.length; j++) {
+                        var gpoData = audioStatus.gpos[j];
+                        var gpo = $scope.gpos[gpoData.index];
+                        if (gpo) {
+                            gpo.active = gpoData.active;
                             hasActiveGpo = hasActiveGpo || gpo.active;
                         }
                     }
@@ -284,7 +286,7 @@ ccmControllers.controller('studioMonitorController',
         };
 
         $scope.setInputEnabled = function (inputNumber, enabled) {
-            $scope.httpPost($scope.codecControlHost + '/api/codeccontrol/setinputenabled', { sipAddress: $scope.sipAddress, input: inputNumber, enabled: enabled })
+            $scope.httpPost('/api/codeccontrol/setinputenabled', { sipAddress: $scope.sipAddress, input: inputNumber, enabled: enabled })
                 .then(function (data) {
                     console.log("SetInputEnabled", data);
                     $scope.inputs[inputNumber].enabled = data.enabled;

@@ -76,17 +76,19 @@
         $scope.startSignalrConnection();
     };
 
-    $scope.setInputValue = function (i, data) {
-        console.info(`Input ${i}`, data);
-        var input = $scope.inputs[i];
+    $scope.setInputValue = function (inputStatus) {
+        //console.info('setInputValue', inputStatus);
+        var input = $scope.inputs[inputStatus.index];
 
-        if (data.error) {
-            input.error = data.error;
-            input.disabled = 'disabled';
-        } else {
-            input.value = data.gainLevel;
-            input.enabled = data.enabled;
-            input.disabled = '';
+        if (input) {
+            if (inputStatus.error) {
+                input.error = inputStatus.error;
+                input.disabled = 'disabled';
+            } else {
+                input.value = inputStatus.gainLevel;
+                input.enabled = inputStatus.enabled;
+                input.disabled = '';
+            }
         }
     };
 
@@ -145,24 +147,19 @@
     };
 
     $scope.updateAudioStatus = function (audioStatus) {
-        //console.log("Audio status", audioStatus);
+        console.log("Audio status", audioStatus);
 
-        var nrOfInputs = $scope.inputs.length;
-
-        if (!audioStatus.inputStatus.length !== nrOfInputs) {
-            console.warn('InputStatus length: ' + audioStatus.inputStatus.length + ' does not match nr of inputs: ' + nrOfInputs);
-        } else {
-            for (var i = 0; i < nrOfInputs; i++) {
-                var inputStatus = audioStatus.inputStatus[i];
-                $scope.setInputValue(i, inputStatus);
-            }
+        for (var i = 0; i < audioStatus.inputStatus.length; i++) {
+            $scope.setInputValue(audioStatus.inputStatus[i]);
         }
 
-        for (var j = 0; j < $scope.gpos.length; j++) {
-            var gpo = $scope.gpos[j];
-            var gpoActive = !!audioStatus.gpos[j];
-            //console.log("GPO " + j, gpo, gpoActive);
-            gpo.Active = gpoActive;
+        for (var j = 0; j < audioStatus.gpos.length; j++) {
+            var gpoData = audioStatus.gpos[j];
+            var gpo = $scope.gpos[gpoData.index];
+            if (gpo) {
+                console.log("gpo", gpo, gpoData);
+                gpo.active = gpoData.active;
+            }
         }
 
         console.info("* Codec VU-data", audioStatus.vuValues);
