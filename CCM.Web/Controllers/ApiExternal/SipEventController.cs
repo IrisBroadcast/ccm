@@ -60,7 +60,7 @@ namespace CCM.Web.Controllers.ApiExternal
         // For test
         public string Get()
         {
-            return "Hello. I'm a SIP event receiver";
+            return $"Hello. I'm a SIP event receiver. UseSipEvent={_settingsManager.UseSipEvent}";
         }
 
         public IHttpActionResult Post(KamailioSipEvent sipEvent)

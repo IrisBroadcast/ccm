@@ -58,7 +58,7 @@ namespace CCM.Web.Controllers.ApiExternal
         // For test
         public string Get()
         {
-            return "Hello. I'm a Kamailio event receiver";
+            return $"Hello. I'm a Kamailio event receiver. UseKamailioEvent={_settingsManager.UseOldKamailioEvent}";
         }
 
         public IHttpActionResult Post([FromBody] string message)
