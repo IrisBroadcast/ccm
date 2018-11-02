@@ -70,26 +70,28 @@ namespace CCM.Web.Controllers.ApiExternal
                 return Ok();
             }
 
+            log.Trace(Request);
+
             using (new TimeMeasurer("Incoming SIP event"))
             {
                 if (sipEvent == null)
                 {
-                    log.Warn("Kamailio event controller received empty data");
+                    log.Warn("SIP event controller received empty data");
                     return BadRequest();
                 }
 
-                log.Debug("Incoming SIP message from Kamailio: {0}", sipEvent.ToString());
+                log.Debug("Incoming SIP message: {0}", sipEvent.ToString());
 
                 KamailioMessageBase sipMessage = _kamailioJsonMessageParser.Parse(sipEvent);
 
                 if (sipMessage == null)
                 {
-                    log.Warn("Incorrect Kamailio message format: {0}", sipEvent);
+                    log.Warn("Incorrect SIP message format: {0}", sipEvent);
                     return BadRequest();
                 }
 
                 KamailioMessageHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-                log.Debug("Handled Kamailio message with result {0}. {1}", result.ChangeStatus, sipEvent);
+                log.Debug("Handled SIP message with result {0}. {1}", result.ChangeStatus, sipEvent);
 
                 if (result.ChangeStatus != KamailioMessageChangeStatus.NothingChanged)
                 {
