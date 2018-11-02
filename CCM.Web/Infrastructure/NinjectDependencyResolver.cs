@@ -104,6 +104,7 @@ namespace CCM.Web.Infrastructure
             _kernel.Bind<IStatusHubUpdater>().To<CodecStatusHubUpdater>();
             _kernel.Bind<ICodecInformationRepository>().To<CodecInformationRepository>();
             _kernel.Bind<IKamailioMessageParser>().To<KamailioMessageParser>();
+            _kernel.Bind<IKamailioJsonMessageParser>().To<KamailioJsonMessageParser>();
             _kernel.Bind<IKamailioDataParser>().To<KamailioDataParser>();
             _kernel.Bind<ICallHistoryRepository>().To<CallHistoryRepository>();
             _kernel.Bind<IDiscoveryService>().To<DiscoveryService>();
