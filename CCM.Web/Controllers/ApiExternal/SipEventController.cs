@@ -24,6 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.IO;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using CCM.Core.Helpers;
@@ -63,7 +65,7 @@ namespace CCM.Web.Controllers.ApiExternal
             return $"Hello. I'm a SIP event receiver. UseSipEvent={_settingsManager.UseSipEvent}";
         }
 
-        public IHttpActionResult Post(KamailioSipEvent sipEvent)
+        public async Task<IHttpActionResult> Post(KamailioSipEvent sipEvent)
         {
             if (!_settingsManager.UseSipEvent)
             {
@@ -72,6 +74,12 @@ namespace CCM.Web.Controllers.ApiExternal
 
             log.Trace(Request);
 
+            Stream stream = await Request.Content.ReadAsStreamAsync();
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var body = await Request.Content.ReadAsStringAsync();
+            log.Trace($"Body {body}");
+            
             using (new TimeMeasurer("Incoming SIP event"))
             {
                 if (sipEvent == null)

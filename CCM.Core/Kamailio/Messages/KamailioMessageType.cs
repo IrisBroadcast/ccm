@@ -35,6 +35,7 @@ namespace CCM.Core.Kamailio.Messages
 
     public enum KamilioEventType
     {
+        Unknown = 0,
         Register,
         Dialog,
         RegExpire
