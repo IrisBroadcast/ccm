@@ -87,10 +87,10 @@ namespace CCM.Data.Repositories
 
         public KamailioMessageHandlerResult UpdateRegisteredSip(RegisteredSip registeredSip)
         {
-            // Returnerar värde som indikerar om 
-            // 1. Kodaren lagts till
-            // 2. Kodaren fanns sedan tidigare men har på relevant sätt uppdaterad information
-            // 3. Kodaren fanns sedan tidigare men registreringen i identisk. = NothingChanged
+            // Return value indicates if
+            // 1. Codec been added
+            // 2. Codec existed but registration has relevant changes
+            // 3. Codec existed and registration is identical = NothingChanged
 
             if (registeredSip == null)
             {
@@ -107,20 +107,15 @@ namespace CCM.Data.Repositories
                     {
                         if (registeredSip.Expires == 0)
                         {
-                            // Avregistrering av ej registrerad kodare. Gör ingenting.
+                            // Unregistration of not registered codec. Do nothing.
                             return KamailioMessageHandlerResult.NothingChanged;
                         }
 
                         dbSip = new RegisteredSipEntity {Id = Guid.NewGuid(), Updated = DateTime.UtcNow};
                         db.RegisteredSips.Add(dbSip);
-                        //registeredSip.Id = dbSip.Id;
                     }
-                    //else
-                    //{
-                    //registeredSip.Id = dbSip.Id;
-                    //}
 
-                    // Matcha och mappa
+                    // Match and map
                     var registeredSipUsername = (registeredSip.Username ?? string.Empty).ToLower().Trim();
                     var sipAccount = db.SipAccounts.FirstOrDefault(u => u.UserName.ToLower() == registeredSipUsername);
                     var accountId = sipAccount?.Id;
@@ -226,20 +221,19 @@ namespace CCM.Data.Repositories
         }
 
         /// <summary>
-        /// Returnerar true om kodare i databasen indikerar att den var utgången.
+        /// Returns true if registration time expired
         /// </summary>
         private bool CodecWasExpired(DbEntityEntry<RegisteredSipEntity> entry)
         {
             var maxRegistrationAge = SettingsManager.MaxRegistrationAge;
             var expireTime = DateTime.UtcNow.AddSeconds(-maxRegistrationAge);
-            // Using lambda for safer refactoring
             return entry.OriginalValues.GetValue<DateTime>(nameof(entry.Entity.Updated)) < expireTime;
         }
 
         private bool HasRelevantChange(DbEntityEntry<RegisteredSipEntity> entry)
         {
             var changedProperties = GetChangedProperties(entry);
-            // Remove not relevant properties
+            // Remove non-relevant properties
             changedProperties.Remove(nameof(entry.Entity.Updated));
             changedProperties.Remove(nameof(entry.Entity.ServerTimeStamp));
             changedProperties.Remove(nameof(entry.Entity.Expires));
@@ -261,7 +255,7 @@ namespace CCM.Data.Repositories
         {
             using (var db = GetDbContext())
             {
-                Entities.RegisteredSipEntity dbRegisteredSip = db.RegisteredSips.SingleOrDefault(expression);
+                RegisteredSipEntity dbRegisteredSip = db.RegisteredSips.SingleOrDefault(expression);
 
                 return dbRegisteredSip == null
                     ? null
@@ -290,10 +284,10 @@ namespace CCM.Data.Repositories
                 List<MetaType> metaList = _metaRepository.GetAll();
                 using (var db = GetDbContext())
                 {
-                    if (log.IsTraceEnabled)
-                    {
-                        db.Database.Log = s => { log.Trace("EF Log GetCachedRegisteredSips: {0}", s); };
-                    }
+                    //if (log.IsTraceEnabled)
+                    //{
+                    //    db.Database.Log = s => { log.Trace("EF Log GetCachedRegisteredSips: {0}", s); };
+                    //}
 
                     IQueryable<RegisteredSipEntity> query = db.RegisteredSips
                         .Include(rs => rs.Location)
@@ -375,7 +369,7 @@ namespace CCM.Data.Repositories
             }
         }
 
-        private RegisteredSipDto MapToRegisteredSipDto(Entities.RegisteredSipEntity dbSip, List<MetaType> metaList)
+        private RegisteredSipDto MapToRegisteredSipDto(RegisteredSipEntity dbSip, List<MetaType> metaList)
         {
             if (dbSip == null)
                 return null;
@@ -427,8 +421,7 @@ namespace CCM.Data.Repositories
             return regSip;
         }
 
-        private List<KeyValuePair<string, string>> GetMetaData(List<MetaType> metaList,
-            Entities.RegisteredSipEntity sip)
+        private List<KeyValuePair<string, string>> GetMetaData(List<MetaType> metaList, RegisteredSipEntity sip)
         {
             metaList = metaList ?? new List<MetaType>();
 

@@ -31,7 +31,6 @@ namespace CCM.Core.Interfaces.Managers
 {
     public interface ISipMessageManager
     {
-        //KamailioMessageHandlerResult HandleMessage(KamailioMessageBase sipMessage);
         KamailioMessageHandlerResult HandleSipMessage(KamailioMessageBase sipMessage);
     }
 

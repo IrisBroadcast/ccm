@@ -60,13 +60,13 @@ namespace CCM.Web.Infrastructure.SignalR
 
                 if (callInfo != null)
                 {
-                    log.Warn("Call started. From:{0} To:{1}", callInfo.FromId, callInfo.ToId);
+                    log.Info("Call started. From:{0} To:{1}", callInfo.FromId, callInfo.ToId);
                     UpdateCodecStatusByGuid(callInfo.FromId);
                     UpdateCodecStatusByGuid(callInfo.ToId);
                 }
                 else
                 {
-                    log.Warn("Call started but was not found in database. Call Id:{0}", callId);
+                    log.Info("Call started but was not found in database. Call Id:{0}", callId);
                 }
             }
 
@@ -84,7 +84,7 @@ namespace CCM.Web.Infrastructure.SignalR
                 }
                 else
                 {
-                    log.Warn("Call closed but was not found in call history. Call Id:{0}", callId);
+                    log.Info("Call closed but was not found in call history. Call Id:{0}", callId);
                 }
             }
 
@@ -100,7 +100,7 @@ namespace CCM.Web.Infrastructure.SignalR
                 CodecStatusHub.UpdateCodecStatus(codecStatus);
             }
 
-            log.Info("StatusHub is updating. status={0}, id={1}", updateResult.ChangeStatus, updateResult.ChangedObjectId);
+            log.Debug("StatusHub is updating. status={0}, id={1}", updateResult.ChangeStatus, updateResult.ChangedObjectId);
         }
 
         private void UpdateCodecStatusByGuid(Guid id)
