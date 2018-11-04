@@ -73,11 +73,14 @@ namespace CCM.Web.Controllers.ApiExternal
             }
 
             // Trace logging
-            Stream stream = await Request.Content.ReadAsStreamAsync();
-            stream.Seek(0, SeekOrigin.Begin);
-            var body = await Request.Content.ReadAsStringAsync();
-            log.Trace($"Request {Request} Body {body}");
-            
+            if (log.IsTraceEnabled)
+            {
+                Stream stream = await Request.Content.ReadAsStreamAsync();
+                stream.Seek(0, SeekOrigin.Begin);
+                var body = await Request.Content.ReadAsStringAsync();
+                log.Trace($"Request {Request} Body {body}");
+            }
+
             using (new TimeMeasurer("Incoming SIP event"))
             {
                 if (sipEvent == null)
