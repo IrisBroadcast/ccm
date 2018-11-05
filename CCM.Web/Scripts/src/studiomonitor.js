@@ -148,8 +148,8 @@ ccmControllers.controller('studioMonitorController',
                 .then(
                     function (response) {
                         let data = response.data;
+                        console.debug('Codec available: ', data);
                         let isAvailable = data.isAvailable;
-                        console.info('Codec available: ', isAvailable);
                         return isAvailable;
                     },
                     function () {

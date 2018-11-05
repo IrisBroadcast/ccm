@@ -194,10 +194,10 @@
     $scope.checkCodecAvailable = function () {
         console.info('Checking if codec is online');
         $http.get($scope.codecControlHost + '/api/codeccontrol/isavailable?sipaddress=' + $scope.sipAddress)
-            .then(function (result) {
-                let data = response.data;
+            .then(function (response) {
+                var data = response.data;
+                console.debug('Codec available: ', data);
                 let isAvailable = data.isAvailable;
-                console.info('Codec available: ', isAvailable);
                 $scope.setCodecIsOnline(isAvailable);
             })
             .catch(function (err) {
