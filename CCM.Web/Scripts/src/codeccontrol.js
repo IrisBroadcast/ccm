@@ -195,7 +195,10 @@
         console.info('Checking if codec is online');
         $http.get($scope.codecControlHost + '/api/codeccontrol/isavailable?sipaddress=' + $scope.sipAddress)
             .then(function (result) {
-                $scope.setCodecIsOnline(result.data);
+                let data = response.data;
+                let isAvailable = data.isAvailable;
+                console.info('Codec available: ', isAvailable);
+                $scope.setCodecIsOnline(isAvailable);
             })
             .catch(function (err) {
                 console.error(err);

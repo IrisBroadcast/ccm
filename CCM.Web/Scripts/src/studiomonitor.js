@@ -147,8 +147,10 @@ ccmControllers.controller('studioMonitorController',
             return $http.get($scope.codecControlHost + '/api/codeccontrol/isavailable?sipaddress=' + $scope.sipAddress)
                 .then(
                     function (response) {
-                        console.info('Codec available: ', response.data);
-                        return response.data;
+                        let data = response.data;
+                        let isAvailable = data.isAvailable;
+                        console.info('Codec available: ', isAvailable);
+                        return isAvailable;
                     },
                     function () {
                         console.error('Codec is not available');
