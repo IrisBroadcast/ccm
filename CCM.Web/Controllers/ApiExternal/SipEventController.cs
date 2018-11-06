@@ -100,7 +100,7 @@ namespace CCM.Web.Controllers.ApiExternal
                 }
 
                 KamailioMessageHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-                log.Debug("Handled SIP message with result {0}. {1}", result.ChangeStatus, sipEvent);
+                log.Debug("Handled SIP message with result {0}. {1}", result.ChangeStatus, sipMessage.ToDebugString());
 
                 if (result.ChangeStatus != KamailioMessageChangeStatus.NothingChanged)
                 {
