@@ -100,7 +100,7 @@ namespace CCM.Tests.KamailioTests
                     db.RegisteredSips.Remove(regSip);
                     db.SaveChanges();
                 }
-                
+
             }
         }
 
@@ -109,8 +109,11 @@ namespace CCM.Tests.KamailioTests
             return new KamailioSipEvent()
             {
                 Event = KamilioEventType.Register,
-                SenderIp = ip,
-                SenderPort = 5060,
+                Ip = new IpInfo()
+                {
+                    SenderIp = ip,
+                    SenderPort = 5060
+                },
                 TimeStamp = GetUnixTimeStamp(DateTime.Now),
                 FromUri = sip,
                 UserAgentHeader = userAgent,

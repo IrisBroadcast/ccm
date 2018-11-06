@@ -63,8 +63,8 @@ namespace CCM.Core.Kamailio.Parser
                 UserAgent = kamailioData.UserAgentHeader,
                 //PhysicalCodecUri = new SipUri(kamailioData.PoolUri),
 
-                Ip = kamailioData.SenderIp,
-                Port = kamailioData.SenderPort,
+                Ip = kamailioData.Ip.SenderIp,
+                Port = kamailioData.Ip.SenderPort,
                 Expires = kamailioData.Expires,
                 UnixTimeStamp = kamailioData.TimeStamp
             };
@@ -77,7 +77,7 @@ namespace CCM.Core.Kamailio.Parser
             var expire = new KamailioRegistrationExpireMessage()
             {
                 SipAddress = new SipUri(kamailioData.FromUri),
-                ReceivedIp = kamailioData.SenderIp
+                ReceivedIp = kamailioData.Ip.SenderIp
             };
 
             return expire;

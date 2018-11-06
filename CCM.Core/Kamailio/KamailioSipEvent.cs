@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Web.UI;
 using CCM.Core.Kamailio.Messages;
 using Newtonsoft.Json;
 
@@ -39,25 +40,20 @@ namespace CCM.Core.Kamailio
         [JsonProperty(PropertyName = "expires")] public int Expires { get; set; }
         [JsonProperty(PropertyName = "method")] public string Method { get; set; } // "REGISTER"
         [JsonProperty(PropertyName = "from_uri")] public string FromUri { get; set; } // "sip:test1249@contrib.sr.se" Json-parameter heter from_uri i dialog-meddelande
+        [JsonProperty(PropertyName = "from_displayName")] public string FromDisplayName { get; set; } // "Karlstad 11"
+        [JsonProperty(PropertyName = "to_uri")] public string ToUri { get; set; } // "<null>"
+        [JsonProperty(PropertyName = "to_displayName")] public string ToDisplayName { get; set; } // "<null>"
         [JsonProperty(PropertyName = "auth_user")] public string AuthUser { get; set; } // "test1249"
         [JsonProperty(PropertyName = "user_agent")] public string UserAgentHeader { get; set; } // "Asterisk PBX 11.13"
         [JsonProperty(PropertyName = "requesturi")] public string RequestUri { get; set; } // "sip:contrib.sr.se" Json-parameter heter request_uri i dialog-meddelande
         [JsonProperty(PropertyName = "contact_uri")] public string ContactUri { get; set; } // "<sip:1249@192.121.194.213:5080>"
         [JsonProperty(PropertyName = "call_id")] public string CallId { get; set; } // "338a@contrib.sr.se"
-        [JsonProperty(PropertyName = "to_displayName")] public string ToDisplayName { get; set; } // "<null>"
-        [JsonProperty(PropertyName = "from_displayName")] public string FromDisplayName { get; set; } // "Karlstad 11"
-
-        [JsonProperty(PropertyName = "sender_ip")] public string SenderIp { get; set; } // "192.121.194.213"
-        [JsonProperty(PropertyName = "sender_port")] public int SenderPort { get; set; } // "5080"
-        [JsonProperty(PropertyName = "our_ip")] public string OurIp { get; set; } // 192.121.194.200
-        [JsonProperty(PropertyName = "our_port")] public int OurPort { get; set; } // "5060"
 
         // Från Dialog start
         [JsonProperty(PropertyName = "sipserver")] public string SipServer { get; set; } // "ulandsort.sr.se"
         [JsonProperty(PropertyName = "dialog_state")] public string DialogState { get; set; } // "start"
         [JsonProperty(PropertyName = "dhash_id")] public string DialogHashId { get; set; } // "10300"
         [JsonProperty(PropertyName = "dhash_ent")] public string DialogHashEntry { get; set; } // "2697"
-        [JsonProperty(PropertyName = "to_uri")] public string ToUri { get; set; } // "sip:studio-pool-004@contrib.sr.se"
         [JsonProperty(PropertyName = "pool_uri")] public string PoolUri { get; set; } // "sip:studio-pool-004@contrib.sr.se"
         [JsonProperty(PropertyName = "to_tag")] public string ToTag { get; set; } // "<null>"
         [JsonProperty(PropertyName = "from_tag")] public string FromTag { get; set; } // "svE1Cx0ksdjnQ-Csidg60B6H02bNXbfQ"
@@ -67,6 +63,17 @@ namespace CCM.Core.Kamailio
 
         // Från Dialog End
         [JsonProperty(PropertyName = "hangup_reason")] public string HangupReason { get; set; } // "NORMAL"
+
+        [JsonProperty(PropertyName = "ip")] public IpInfo Ip { get; set; }
+    }
+
+    public class IpInfo
+    {
+        [JsonProperty(PropertyName = "sender_ip")] public string SenderIp { get; set; } // "192.121.194.213"
+        [JsonProperty(PropertyName = "sender_port")] public int SenderPort { get; set; } // "5080"
+        [JsonProperty(PropertyName = "our_ip")] public string OurIp { get; set; } // 192.121.194.200
+        [JsonProperty(PropertyName = "our_port")] public int OurPort { get; set; } // "5060"
+
     }
 
 }
