@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,14 +24,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.SipEvent;
-using CCM.Core.SipEvent.Messages;
-
-namespace CCM.Core.Interfaces.Managers
+namespace CCM.Core.SipEvent.Messages
 {
-    public interface ISipMessageManager
+    public enum DialogStatus
     {
-        SipEventHandlerResult HandleSipMessage(KamailioMessageBase sipMessage);
+        Start,
+        End,
+        SingleBye
     }
-
 }

@@ -30,10 +30,10 @@ using CCM.Core.Entities;
 using CCM.Core.Extensions;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Kamailio.Messages;
+using CCM.Core.SipEvent.Messages;
 using NLog;
 
-namespace CCM.Core.Kamailio
+namespace CCM.Core.SipEvent
 {
     public class KamailioMessageManager : ISipMessageManager
     {
@@ -47,63 +47,8 @@ namespace CCM.Core.Kamailio
             _sipRepository = sipRepository;
             _callRepository = callRepository;
         }
-
-        //public KamailioMessageHandlerResult HandleMessage(KamailioMessageBase sipMessage)
-        //{
-        //    if (log.IsInfoEnabled)
-        //    {
-        //        log.Debug("Parsed Kamailio Message {0}", sipMessage.ToDebugString());
-        //    }
-
-        //    if (sipMessage is KamailioRegistrationMessage)
-        //    {
-        //        var regMessage = (KamailioRegistrationMessage)sipMessage;
-
-        //        if (regMessage.Expires == 0)
-        //        {
-        //            return UnregisterCodec(new KamailioRegistrationExpireMessage()
-        //            {
-        //                SipAddress = regMessage.Sip
-        //            });
-        //        }
-        //        else
-        //        {
-        //            return RegisterSip((KamailioRegistrationMessage)sipMessage);
-        //        }
-        //    }
-
-
-        //    if (sipMessage is KamailioRegistrationExpireMessage)
-        //    {
-        //        return UnregisterCodec((KamailioRegistrationExpireMessage)sipMessage);
-        //    }
-
-        //    var dialogMessage = sipMessage as KamailioDialogMessage;
-        //    if (dialogMessage != null)
-        //    {
-        //        if (dialogMessage.Status == DialogStatus.Start)
-        //        {
-        //            return RegisterCall(dialogMessage);
-        //        }
-        //        if (dialogMessage.Status == DialogStatus.End)
-        //        {
-        //            // TODO: Check hangup reason. Only close calls where reason = Normal
-        //            return CloseCall(dialogMessage);
-        //        }
-        //        if (dialogMessage.Status == DialogStatus.SingleBye)
-        //        {
-        //            // TODO: Handle single bye message
-        //            // TODO: Close call
-        //            log.Info("Received SingleBye command from Kamailio. {0}", sipMessage);
-        //            return NothingChangedResult;
-        //        }
-        //    }
-
-        //    log.Info("Unhandled Kamailio message: {0}", sipMessage.ToDebugString());
-        //    return NothingChangedResult;
-        //}
-
-        public KamailioMessageHandlerResult HandleSipMessage(KamailioMessageBase sipMessage)
+        
+        public SipEventHandlerResult HandleSipMessage(KamailioMessageBase sipMessage)
         {
             if (log.IsInfoEnabled)
             {
@@ -112,7 +57,7 @@ namespace CCM.Core.Kamailio
 
             switch (sipMessage)
             {
-                case KamailioRegistrationMessage regMessage:
+                case SipRegistrationMessage regMessage:
                 {
                     if (regMessage.Expires == 0)
                     {
@@ -130,7 +75,7 @@ namespace CCM.Core.Kamailio
             }
         }
 
-        public KamailioMessageHandlerResult RegisterSip(KamailioRegistrationMessage sipMessage)
+        public SipEventHandlerResult RegisterSip(SipRegistrationMessage sipMessage)
         {
             var sip = new RegisteredSip
             {
@@ -147,12 +92,12 @@ namespace CCM.Core.Kamailio
             return _sipRepository.UpdateRegisteredSip(sip);
         }
 
-        private KamailioMessageHandlerResult UnregisterCodec(KamailioRegistrationExpireMessage expireMessage)
+        private SipEventHandlerResult UnregisterCodec(KamailioRegistrationExpireMessage expireMessage)
         {
             return _sipRepository.DeleteRegisteredSip(expireMessage.SipAddress.UserAtHost);
         }
 
-        private KamailioMessageHandlerResult HandleDialog(KamailioDialogMessage kamailioDialogMessage)
+        private SipEventHandlerResult HandleDialog(KamailioDialogMessage kamailioDialogMessage)
         {
             switch (kamailioDialogMessage.Status)
             {
@@ -160,10 +105,10 @@ namespace CCM.Core.Kamailio
                     return RegisterCall(kamailioDialogMessage);
                 case DialogStatus.End:
                     // TODO: Check hangup reason. Only close calls where reason = Normal
+                    // TODO: Handle timeout message and add warning to call but don't end it
                     return CloseCall(kamailioDialogMessage);
                 case DialogStatus.SingleBye:
-                    // TODO: Handle single bye message
-                    // TODO: Close call
+                    // TODO: Handle single bye message and close call
                     log.Info("Received SingleBye command from Kamailio. {0}", kamailioDialogMessage);
                     return NothingChangedResult;
                 default:
@@ -171,7 +116,7 @@ namespace CCM.Core.Kamailio
             }
         }
 
-        public KamailioMessageHandlerResult RegisterCall(KamailioDialogMessage sipMessage)
+        public SipEventHandlerResult RegisterCall(KamailioDialogMessage sipMessage)
         {
             log.Debug("Register call from {0} to {1}, call id \"{2}\", hash id:\"{3}\", hash entry:\"{4}\"",
                 sipMessage.FromSipUri.UserAtHost, sipMessage.ToSipUri.UserAtHost, sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
@@ -206,10 +151,10 @@ namespace CCM.Core.Kamailio
             call.FromTag = sipMessage.FromTag;
             call.IsPhoneCall = sipMessage.FromSipUri.User.IsNumeric() || sipMessage.ToSipUri.User.IsNumeric(); // Sätts till true om någon parts adress är numeriskt. 
             _callRepository.UpdateCall(call);
-            return SipMessageResult(KamailioMessageChangeStatus.CallStarted, call.Id);
+            return SipMessageResult(SipEventChangeStatus.CallStarted, call.Id);
         }
 
-        public KamailioMessageHandlerResult CloseCall(KamailioDialogMessage sipMessage)
+        public SipEventHandlerResult CloseCall(KamailioDialogMessage sipMessage)
         {
             log.Debug("Closing call with id:\"{0}\", hash id:\"{1}\", hash entry:\"{2}\"", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
 
@@ -230,7 +175,7 @@ namespace CCM.Core.Kamailio
                 }
 
                 _callRepository.CloseCall(call.Id);
-                return SipMessageResult(KamailioMessageChangeStatus.CallClosed, call.Id);
+                return SipMessageResult(SipEventChangeStatus.CallClosed, call.Id);
             }
             catch (Exception ex)
             {
@@ -239,9 +184,9 @@ namespace CCM.Core.Kamailio
             }
         }
         
-        private KamailioMessageHandlerResult NothingChangedResult => SipMessageResult(KamailioMessageChangeStatus.NothingChanged);
-        private KamailioMessageHandlerResult SipMessageResult(KamailioMessageChangeStatus status) { return new KamailioMessageHandlerResult() { ChangeStatus = status }; }
-        private KamailioMessageHandlerResult SipMessageResult(KamailioMessageChangeStatus status, Guid id) { return new KamailioMessageHandlerResult() { ChangeStatus = status, ChangedObjectId = id }; }
+        private SipEventHandlerResult NothingChangedResult => SipMessageResult(SipEventChangeStatus.NothingChanged);
+        private SipEventHandlerResult SipMessageResult(SipEventChangeStatus status) { return new SipEventHandlerResult() { ChangeStatus = status }; }
+        private SipEventHandlerResult SipMessageResult(SipEventChangeStatus status, Guid id) { return new SipEventHandlerResult() { ChangeStatus = status, ChangedObjectId = id }; }
 
     }
 }

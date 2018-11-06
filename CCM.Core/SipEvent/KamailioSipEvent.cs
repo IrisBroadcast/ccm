@@ -24,16 +24,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Web.UI;
-using CCM.Core.Kamailio.Messages;
+using CCM.Core.SipEvent.Messages;
 using Newtonsoft.Json;
 
-namespace CCM.Core.Kamailio
+namespace CCM.Core.SipEvent
 {
     public class KamailioSipEvent
     {
         // Från Register
-        [JsonProperty(PropertyName = "event")] public KamilioEventType Event { get; set; } // "register"
+        [JsonProperty(PropertyName = "event")] public SipEventType Event { get; set; } // "register"
         [JsonProperty(PropertyName = "timestamp")] public long TimeStamp { get; set; }
         [JsonProperty(PropertyName = "registrar")] public string Registrar { get; set; } // "ulandsort.sr.se"
         [JsonProperty(PropertyName = "regtype")] public string RegType { get; set; } // "rereg"

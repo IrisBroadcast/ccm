@@ -24,16 +24,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace CCM.Core.Kamailio.Messages
+namespace CCM.Core.SipEvent.Messages
 {
-    public enum KamailioMessageType
-    {
-        Request, // Kodarregistrering
-        Dialog, // Samtal
-        RegExpire // Registrering har gått ut
-    }
-
-    public enum KamilioEventType
+    public enum SipEventType
     {
         Unknown = 0,
         Register,

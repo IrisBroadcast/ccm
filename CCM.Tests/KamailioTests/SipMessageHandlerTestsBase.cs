@@ -30,11 +30,11 @@ using System.Linq.Expressions;
 using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Kamailio;
-using CCM.Core.Kamailio.Messages;
-using CCM.Core.Kamailio.Parser;
 using CCM.Core.Managers;
 using CCM.Core.Service;
+using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Parser;
 using CCM.Data;
 using CCM.Data.Entities;
 using CCM.Data.Repositories;
@@ -67,7 +67,7 @@ namespace CCM.Tests.KamailioTests
             kernel.Bind<IAppCache>().To<CachingService>();
             kernel.Bind<IKamailioMessageParser>().To<KamailioMessageParser>();
             kernel.Bind<IKamailioDataParser>().To<KamailioDataParser>();
-            kernel.Bind<IKamailioJsonMessageParser>().To<KamailioJsonMessageParser>();
+            kernel.Bind<ISipEventParser>().To<SipEventParser>();
 
             return kernel;
         }
@@ -108,7 +108,7 @@ namespace CCM.Tests.KamailioTests
         {
             return new KamailioSipEvent()
             {
-                Event = KamilioEventType.Register,
+                Event = SipEventType.Register,
                 Ip = new IpInfo()
                 {
                     SenderIp = ip,

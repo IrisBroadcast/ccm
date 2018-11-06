@@ -24,8 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.Kamailio.Messages;
-using CCM.Core.Kamailio.Parser;
+using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Parser;
 using NUnit.Framework;
 
 namespace CCM.UnitTests.CCM.Core.Kamailio

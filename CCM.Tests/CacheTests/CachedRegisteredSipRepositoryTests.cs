@@ -30,8 +30,8 @@ using System.Threading;
 using CCM.Core.Cache;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Kamailio;
 using CCM.Core.Managers;
+using CCM.Core.SipEvent;
 using CCM.Data.Repositories;
 using LazyCache;
 using NUnit.Framework;
@@ -84,7 +84,7 @@ namespace CCM.Tests.CacheTests
             };
 
             var changeStatus = repo.UpdateRegisteredSip(newSip);
-            Assert.AreEqual(KamailioMessageChangeStatus.NothingChanged, changeStatus);
+            Assert.AreEqual(SipEventChangeStatus.NothingChanged, changeStatus);
 
             sipOnline = repo.GetCachedRegisteredSips().First();
             var updated2 = sipOnline.Updated;

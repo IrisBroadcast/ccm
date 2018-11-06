@@ -159,7 +159,7 @@
     <Compile Include="Helpers\HttpService.cs" />
     <Compile Include="Helpers\IpAddressComparer.cs" />
     <Compile Include="Interfaces\IDiscoveryService.cs" />
-    <Compile Include="Interfaces\Kamailio\IKamailioJsonMessageParser.cs" />
+    <Compile Include="Interfaces\Kamailio\ISipEventParser.cs" />
     <Compile Include="Interfaces\Kamailio\IKamailioMessageParser.cs" />
     <Compile Include="Interfaces\Managers\ISipAccountManager.cs" />
     <Compile Include="Interfaces\Repositories\ISipAccountRepository.cs" />
@@ -168,11 +168,12 @@
     <Compile Include="Interfaces\Repositories\IStudioRepository.cs" />
     <Compile Include="Interfaces\Repositories\Specialized\ILocationInfoRepository.cs" />
     <Compile Include="Interfaces\Repositories\Specialized\IRegisteredSipDetailsRepository.cs" />
-    <Compile Include="Kamailio\KamailioSipEvent.cs" />
-    <Compile Include="Kamailio\Messages\DialogStatus.cs" />
-    <Compile Include="Kamailio\Messages\KamailioRegistrationExpireMessage.cs" />
+    <Compile Include="SipEvent\KamailioSipEvent.cs" />
+    <Compile Include="SipEvent\Messages\DialogStatus.cs" />
+    <Compile Include="SipEvent\Messages\SipEventType.cs" />
+    <Compile Include="SipEvent\Messages\SipRegistrationExpireMessage.cs" />
     <Compile Include="Interfaces\Kamailio\IKamailioDataParser.cs" />
-    <Compile Include="Kamailio\Parser\KamailioData.cs" />
+    <Compile Include="SipEvent\Parser\KamailioData.cs" />
     <Compile Include="Entities\AvailableFilter.cs" />
     <Compile Include="Entities\AvailableMetaType.cs" />
     <Compile Include="Entities\CallHistory.cs" />
@@ -210,16 +211,16 @@
     <Compile Include="Interfaces\Repositories\Specialized\ICodecInformationRepository.cs" />
     <Compile Include="Interfaces\Repositories\ILogRepository.cs" />
     <Compile Include="Interfaces\Repositories\ISimpleRegisteredSipRepository.cs" />
-    <Compile Include="Kamailio\Messages\KamailioDialogMessage.cs" />
-    <Compile Include="Kamailio\Messages\KamailioMessageBase.cs" />
-    <Compile Include="Kamailio\Parser\KamailioDataParser.cs" />
-    <Compile Include="Kamailio\Parser\KamailioJsonMessageParser.cs" />
-    <Compile Include="Kamailio\Parser\KamailioMessageParser.cs" />
-    <Compile Include="Kamailio\Messages\KamailioMessageType.cs" />
-    <Compile Include="Kamailio\Messages\KamailioRegistrationMessage.cs" />
-    <Compile Include="Kamailio\SipUri.cs" />
-    <Compile Include="Kamailio\KamailioMessageChangeStatus.cs" />
-    <Compile Include="Kamailio\KamailioMessageHandlerResult.cs" />
+    <Compile Include="SipEvent\Messages\SipDialogMessage.cs" />
+    <Compile Include="SipEvent\Messages\SipMessageBase.cs" />
+    <Compile Include="SipEvent\Parser\KamailioDataParser.cs" />
+    <Compile Include="SipEvent\Parser\SipEventParser.cs" />
+    <Compile Include="SipEvent\Parser\KamailioMessageParser.cs" />
+    <Compile Include="SipEvent\Messages\SipEventMessageType.cs" />
+    <Compile Include="SipEvent\Messages\SipRegistrationMessage.cs" />
+    <Compile Include="SipEvent\SipUri.cs" />
+    <Compile Include="SipEvent\SipEventChangeStatus.cs" />
+    <Compile Include="SipEvent\SipEventHandlerResult.cs" />
     <Compile Include="Managers\SipAccountManager.cs" />
     <Compile Include="Managers\LogLevelManager.cs" />
     <Compile Include="Interfaces\ISipFilter.cs" />
@@ -259,7 +260,7 @@
     <Compile Include="Entities\CcmUser.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Kamailio\KamailioMessageManager.cs" />
+    <Compile Include="SipEvent\KamailioMessageManager.cs" />
     <Compile Include="Service\DiscoveryService.cs" />
   </ItemGroup>
   <ItemGroup>

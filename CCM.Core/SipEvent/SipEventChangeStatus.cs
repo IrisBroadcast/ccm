@@ -24,14 +24,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.Kamailio;
-using CCM.Core.Kamailio.Messages;
-
-namespace CCM.Core.Interfaces.Kamailio
+namespace CCM.Core.SipEvent
 {
-    public interface IKamailioJsonMessageParser
+    public enum SipEventChangeStatus
     {
-        KamailioMessageBase Parse(KamailioSipEvent sipEvent);
+        NothingChanged = 0,
+        CallStarted,
+        CallClosed,
+        CodecAdded,
+        CodecUpdated,
+        CodecRemoved
     }
-
 }

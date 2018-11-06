@@ -30,7 +30,7 @@ using System.Web.Mvc;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Kamailio;
+using CCM.Core.SipEvent;
 using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
 using CCM.Web.Infrastructure.SignalR;
@@ -96,9 +96,9 @@ namespace CCM.Web.Controllers
                 _sipAccountManager.UpdateComment(model.SipAccountId, model.Comment);
             }
 
-            var updateResult = new KamailioMessageHandlerResult()
+            var updateResult = new SipEventHandlerResult()
             {
-                ChangeStatus = KamailioMessageChangeStatus.CodecUpdated,
+                ChangeStatus = SipEventChangeStatus.CodecUpdated,
                 ChangedObjectId = model.SipAccountId
             };
 

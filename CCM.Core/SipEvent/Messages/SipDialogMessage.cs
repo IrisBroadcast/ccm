@@ -24,7 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace CCM.Core.Kamailio.Messages
+namespace CCM.Core.SipEvent.Messages
 {
     public class KamailioDialogMessage : KamailioMessageBase
     {

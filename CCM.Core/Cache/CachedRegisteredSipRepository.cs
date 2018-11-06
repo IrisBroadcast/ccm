@@ -29,11 +29,11 @@ using System.Collections.Generic;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Kamailio;
 using LazyCache;
 using NLog;
 using System.Linq;
 using CCM.Core.CodecControl.Entities;
+using CCM.Core.SipEvent;
 
 namespace CCM.Core.Cache
 {
@@ -52,12 +52,12 @@ namespace CCM.Core.Cache
         }
         #endregion
 
-        public KamailioMessageHandlerResult UpdateRegisteredSip(RegisteredSip registeredSip)
+        public SipEventHandlerResult UpdateRegisteredSip(RegisteredSip registeredSip)
         {
             var result = _internalRepository.UpdateRegisteredSip(registeredSip);
 
             // When reregistration of codec already in cache, just update timestamp
-            if (result.ChangeStatus == KamailioMessageChangeStatus.NothingChanged && result.ChangedObjectId != Guid.Empty)
+            if (result.ChangeStatus == SipEventChangeStatus.NothingChanged && result.ChangedObjectId != Guid.Empty)
             {
                 var regSip = GetCachedRegisteredSips().FirstOrDefault(rs => rs.Id == result.ChangedObjectId);
                 if (regSip != null)
@@ -77,11 +77,11 @@ namespace CCM.Core.Cache
             return _lazyCache.GetOrAddRegisteredSips(() => _internalRepository.GetCachedRegisteredSips());
         }
         
-        public KamailioMessageHandlerResult DeleteRegisteredSip(string sipAddress)
+        public SipEventHandlerResult DeleteRegisteredSip(string sipAddress)
         {
             var result = _internalRepository.DeleteRegisteredSip(sipAddress);
 
-            if (result.ChangeStatus == KamailioMessageChangeStatus.CodecRemoved)
+            if (result.ChangeStatus == SipEventChangeStatus.CodecRemoved)
             {
                 _lazyCache.ClearRegisteredSips();
             }

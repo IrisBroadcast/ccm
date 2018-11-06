@@ -24,16 +24,47 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace CCM.Core.Kamailio.Messages
-{
-    public class KamailioRegistrationExpireMessage : KamailioMessageBase
-    {
-        public SipUri SipAddress { get; set; }         // Sip-URL
-        public string ReceivedIp { get; set; }  // Ip-nummer som meddelandet skickades ifr�n
+using System;
+using System.Linq;
+using CCM.Core.Interfaces.Kamailio;
+using CCM.Core.SipEvent.Messages;
+using NLog;
 
-        public override string ToDebugString()
+namespace CCM.Core.SipEvent.Parser
+{
+    public class KamailioDataParser : IKamailioDataParser
+    {
+        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        public KamailioData ParseToKamailioData(string message)
         {
-            return string.Format("SipAddress:{0}, ReceivedIp:{1}", SipAddress, ReceivedIp);
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                log.Warn("Message body empty");
+                return null;
+            }
+
+            string[] dataFields = message.Split('|');
+
+            if (dataFields.Length == 0)
+            {
+                return null;
+            }
+
+            SipEventMessageType msgType;
+            if (!Enum.TryParse(dataFields[0], true, out msgType))
+            {
+                log.Warn("Unable to get message type from {0}", dataFields[0]);
+                return null;
+            }
+
+            var fieldsDictionary = dataFields
+                .Select(x => x.Split(new[] { "::" }, StringSplitOptions.None))
+                .Where(x => x.Length == 2 && !String.IsNullOrEmpty(x[0].Trim()))
+                .ToDictionary(x => x[0].Trim(), x => x[1] == "<null>" ? string.Empty : x[1].Trim());
+
+            return new KamailioData { MessageType = msgType, Fields = fieldsDictionary };
         }
+
     }
 }

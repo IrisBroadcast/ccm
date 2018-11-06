@@ -24,21 +24,16 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
+using System.Collections.Generic;
+using CCM.Core.SipEvent.Messages;
 
-namespace CCM.Core.Kamailio
+namespace CCM.Core.SipEvent.Parser
 {
-    public class KamailioMessageHandlerResult
+    public class KamailioData
     {
-        public KamailioMessageChangeStatus ChangeStatus { get; set; }
-        public Guid ChangedObjectId { get; set; }
-        public string SipAddress { get; set; }
+        public SipEventMessageType MessageType { get; set; }
+        public Dictionary<string, string> Fields { get; set; }
 
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", ChangeStatus, ChangedObjectId);
-        }
-
-        public static KamailioMessageHandlerResult NothingChanged => new KamailioMessageHandlerResult { ChangeStatus = KamailioMessageChangeStatus.NothingChanged };
+        public string GetField(string field) { return Fields.ContainsKey(field) ? Fields[field] : string.Empty; }
     }
 }

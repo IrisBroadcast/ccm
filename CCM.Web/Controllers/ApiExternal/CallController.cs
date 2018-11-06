@@ -31,7 +31,7 @@ using CCM.Core.CodecControl.Entities;
 using CCM.Core.CodecControl.Interfaces;
 using CCM.Core.Extensions;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Kamailio;
+using CCM.Core.SipEvent;
 using CCM.Web.Models.ApiExternal;
 using CCM.WebCommon.Authentication;
 using NLog;

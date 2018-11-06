@@ -24,8 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.Kamailio;
-using CCM.Core.Kamailio.Messages;
+using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Messages;
 using Ninject;
 using NUnit.Framework;
 

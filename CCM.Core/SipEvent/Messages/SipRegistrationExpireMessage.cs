@@ -24,10 +24,16 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace CCM.Core.Kamailio.Messages
+namespace CCM.Core.SipEvent.Messages
 {
-    public abstract class KamailioMessageBase
+    public class KamailioRegistrationExpireMessage : KamailioMessageBase
     {
-        public abstract string ToDebugString();
+        public SipUri SipAddress { get; set; }         // Sip-URL
+        public string ReceivedIp { get; set; }  // Ip-nummer som meddelandet skickades ifr�n
+
+        public override string ToDebugString()
+        {
+            return string.Format("SipAddress:{0}, ReceivedIp:{1}", SipAddress, ReceivedIp);
+        }
     }
 }

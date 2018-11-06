@@ -25,14 +25,12 @@
  */
 
 using System;
-using System.Reflection;
 using System.Text.RegularExpressions;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Kamailio;
-using CCM.Core.Kamailio.Messages;
+using CCM.Core.SipEvent.Messages;
 using NLog;
 
-namespace CCM.Core.Kamailio.Parser
+namespace CCM.Core.SipEvent.Parser
 {
     public class KamailioMessageParser : IKamailioMessageParser
     {
@@ -56,11 +54,11 @@ namespace CCM.Core.Kamailio.Parser
 
             switch (kamailioData.MessageType)
             {
-                case KamailioMessageType.Request:
+                case SipEventMessageType.Request:
                     return ParseRegistration(kamailioData);
-                case KamailioMessageType.Dialog:
+                case SipEventMessageType.Dialog:
                     return ParseDialog(kamailioData);
-                case KamailioMessageType.RegExpire:
+                case SipEventMessageType.RegExpire:
                     return ParseRegExpire(kamailioData);
             }
             return null;
@@ -100,10 +98,10 @@ namespace CCM.Core.Kamailio.Parser
             return dialog;
         }
 
-        private KamailioRegistrationMessage ParseRegistration(KamailioData kamailioData)
+        private SipRegistrationMessage ParseRegistration(KamailioData kamailioData)
         {
             
-            var registration = new KamailioRegistrationMessage()
+            var registration = new SipRegistrationMessage()
             {
                 Ip = kamailioData.GetField("si"),
                 Port = ParseInt(kamailioData.GetField("sp")),

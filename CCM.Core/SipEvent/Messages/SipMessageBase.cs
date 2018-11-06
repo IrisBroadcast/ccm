@@ -24,15 +24,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace CCM.Core.Kamailio
+namespace CCM.Core.SipEvent.Messages
 {
-    public enum KamailioMessageChangeStatus
+    public abstract class KamailioMessageBase
     {
-        NothingChanged = 0,
-        CallStarted,
-        CallClosed,
-        CodecAdded,
-        CodecUpdated,
-        CodecRemoved
+        public abstract string ToDebugString();
     }
 }

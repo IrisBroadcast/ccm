@@ -28,7 +28,7 @@ using System;
 using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Kamailio;
+using CCM.Core.SipEvent;
 using CCM.Web.Hubs;
 using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
@@ -50,9 +50,9 @@ namespace CCM.Web.Infrastructure.SignalR
             _callHistoryRepository = callHistoryRepository;
         }
 
-        public void Update(KamailioMessageHandlerResult updateResult)
+        public void Update(SipEventHandlerResult updateResult)
         {
-            if (updateResult.ChangeStatus == KamailioMessageChangeStatus.CallStarted)
+            if (updateResult.ChangeStatus == SipEventChangeStatus.CallStarted)
             {
                 // Load call and update to and from codecs
                 var callId = updateResult.ChangedObjectId;
@@ -70,7 +70,7 @@ namespace CCM.Web.Infrastructure.SignalR
                 }
             }
 
-            if (updateResult.ChangeStatus == KamailioMessageChangeStatus.CallClosed)
+            if (updateResult.ChangeStatus == SipEventChangeStatus.CallClosed)
             {
                 // Load call and update to and from codecs
                 var callId = updateResult.ChangedObjectId;
@@ -88,13 +88,13 @@ namespace CCM.Web.Infrastructure.SignalR
                 }
             }
 
-            if (updateResult.ChangeStatus == KamailioMessageChangeStatus.CodecAdded ||
-                updateResult.ChangeStatus == KamailioMessageChangeStatus.CodecUpdated)
+            if (updateResult.ChangeStatus == SipEventChangeStatus.CodecAdded ||
+                updateResult.ChangeStatus == SipEventChangeStatus.CodecUpdated)
             {
                 UpdateCodecStatusByGuid(updateResult.ChangedObjectId);
             }
 
-            if (updateResult.ChangeStatus == KamailioMessageChangeStatus.CodecRemoved)
+            if (updateResult.ChangeStatus == SipEventChangeStatus.CodecRemoved)
             {
                 var codecStatus = new CodecStatus { State = CodecState.NotRegistered, SipAddress = updateResult.SipAddress };
                 CodecStatusHub.UpdateCodecStatus(codecStatus);

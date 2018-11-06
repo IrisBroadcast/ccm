@@ -31,7 +31,7 @@ using CCM.Core.Cache;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Kamailio;
+using CCM.Core.SipEvent;
 using FakeItEasy;
 using LazyCache;
 using NUnit.Framework;
@@ -78,10 +78,10 @@ namespace CCM.UnitTests.CCM.Core.Cache
         {
             var newRegisteredSip = new RegisteredSip() { SIP = "c" };
             A.CallTo(() => _internalRegisteredSipRepository.UpdateRegisteredSip(newRegisteredSip)).Returns(
-                new KamailioMessageHandlerResult()
+                new SipEventHandlerResult()
                 {
                     ChangedObjectId = Guid.NewGuid(),
-                    ChangeStatus = KamailioMessageChangeStatus.CodecAdded
+                    ChangeStatus = SipEventChangeStatus.CodecAdded
                 });
 
             _sut.GetCachedRegisteredSips();
@@ -105,10 +105,10 @@ namespace CCM.UnitTests.CCM.Core.Cache
             A.CallTo(() => _internalRegisteredSipRepository.GetCachedRegisteredSips()).Returns(internalList);
 
             A.CallTo(() => _internalRegisteredSipRepository.UpdateRegisteredSip(registeredSip)).Returns(
-                new KamailioMessageHandlerResult()
+                new SipEventHandlerResult()
                 {
                     ChangedObjectId = internalList[0].Id,
-                    ChangeStatus = KamailioMessageChangeStatus.NothingChanged
+                    ChangeStatus = SipEventChangeStatus.NothingChanged
                 });
 
             // Act
@@ -171,10 +171,10 @@ namespace CCM.UnitTests.CCM.Core.Cache
             A.CallTo(() => _internalRegisteredSipRepository.GetCachedRegisteredSips()).Returns(internalList);
 
             A.CallTo(() => _internalRegisteredSipRepository.UpdateRegisteredSip(A<RegisteredSip>.Ignored)).Returns(
-                new KamailioMessageHandlerResult()
+                new SipEventHandlerResult()
                 {
                     ChangedObjectId = Guid.NewGuid(),
-                    ChangeStatus = KamailioMessageChangeStatus.CodecAdded
+                    ChangeStatus = SipEventChangeStatus.CodecAdded
                 });
 
             // Act
@@ -204,7 +204,7 @@ namespace CCM.UnitTests.CCM.Core.Cache
             A.CallTo(() => _internalRegisteredSipRepository.GetCachedRegisteredSips()).Returns(new List<RegisteredSipDto> { registeredSipDto });
 
             A.CallTo(() => _internalRegisteredSipRepository.UpdateRegisteredSip(A<RegisteredSip>.Ignored))
-                .Returns( new KamailioMessageHandlerResult { ChangedObjectId = registeredSipDto.Id, ChangeStatus = KamailioMessageChangeStatus.CodecRemoved });
+                .Returns( new SipEventHandlerResult { ChangedObjectId = registeredSipDto.Id, ChangeStatus = SipEventChangeStatus.CodecRemoved });
 
             // Act
             _sut.GetCachedRegisteredSips();

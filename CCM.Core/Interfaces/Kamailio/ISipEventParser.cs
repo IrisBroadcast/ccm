@@ -24,28 +24,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace CCM.Core.Kamailio.Messages
-{
-    public class KamailioRegistrationMessage : KamailioMessageBase
-    {
-        public SipUri Sip { get; set; }
-        public string FromDisplayName { get; set; }
-        public string Ip { get; set; }
-        public int Port { get; set; }
-        //public SipUri RequestedSip { get; set; }
-        //public string ReceivedIp { get; set; } // Används inte
-        //public int ReceivedPort { get; set; } // Används inte
-        public string UserAgent { get; set; }
-        //public string ToUsername { get; set; } // Används inte
-        public string Username { get; set; }
-        //public string CallId { get; set; }
-        public string ToDisplayName { get; set; }
-        public long UnixTimeStamp { get; set; }
-        public int Expires { get; set; }
+using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Messages;
 
-        public override string ToDebugString()
-        {
-            return $"SIP:{Sip}, IP:{Ip}, Port:{Port}, UserAgent:{UserAgent}, Username:{Username}, ToDisplayName:{ToDisplayName}, UnixTimeStamp:{UnixTimeStamp}, Expires:{Expires}";
-        }
+namespace CCM.Core.Interfaces.Kamailio
+{
+    public interface ISipEventParser
+    {
+        KamailioMessageBase Parse(KamailioSipEvent sipEvent);
     }
+
 }

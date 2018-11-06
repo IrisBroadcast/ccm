@@ -31,8 +31,8 @@ using System.Web.Http.Cors;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
-using CCM.Core.Kamailio;
-using CCM.Core.Kamailio.Messages;
+using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Messages;
 using CCM.Web.Infrastructure.SignalR;
 using NLog;
 
@@ -43,16 +43,16 @@ namespace CCM.Web.Controllers.ApiExternal
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly IKamailioJsonMessageParser _kamailioJsonMessageParser;
+        private readonly ISipEventParser _sipEventParser;
         private readonly ISipMessageManager _sipMessageManager;
         private readonly IGuiHubUpdater _guiHubUpdater;
         private readonly IStatusHubUpdater _statusHubUpdater;
         private readonly ISettingsManager _settingsManager;
 
-        public SipEventController(IKamailioJsonMessageParser kamailioJsonMessageParser, ISipMessageManager sipMessageManager,
+        public SipEventController(ISipEventParser sipEventParser, ISipMessageManager sipMessageManager,
             IGuiHubUpdater guiHubUpdater, IStatusHubUpdater statusHubUpdater, ISettingsManager settingsManager)
         {
-            _kamailioJsonMessageParser = kamailioJsonMessageParser;
+            _sipEventParser = sipEventParser;
             _sipMessageManager = sipMessageManager;
             _guiHubUpdater = guiHubUpdater;
             _statusHubUpdater = statusHubUpdater;
@@ -91,7 +91,7 @@ namespace CCM.Web.Controllers.ApiExternal
 
                 log.Debug("Incoming SIP message: {0}", sipEvent.ToString());
 
-                KamailioMessageBase sipMessage = _kamailioJsonMessageParser.Parse(sipEvent);
+                KamailioMessageBase sipMessage = _sipEventParser.Parse(sipEvent);
 
                 if (sipMessage == null)
                 {
@@ -99,10 +99,10 @@ namespace CCM.Web.Controllers.ApiExternal
                     return BadRequest();
                 }
 
-                KamailioMessageHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
+                SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
                 log.Debug("Handled SIP message with result {0}. {1}", result.ChangeStatus, sipMessage.ToDebugString());
 
-                if (result.ChangeStatus != KamailioMessageChangeStatus.NothingChanged)
+                if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
                 {
                     _guiHubUpdater.Update(result); // First web gui
                     _statusHubUpdater.Update(result); // Then codec status to external clients

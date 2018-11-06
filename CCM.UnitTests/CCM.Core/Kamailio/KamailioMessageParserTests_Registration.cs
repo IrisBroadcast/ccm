@@ -24,8 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.Kamailio.Messages;
-using CCM.Core.Kamailio.Parser;
+using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Parser;
 using NUnit.Framework;
 
 namespace CCM.UnitTests.CCM.Core.Kamailio
@@ -41,7 +41,7 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
             var sut = new KamailioMessageParser(new KamailioDataParser());
             var message = sut.Parse(msg);
 
-            var requestMessage = message as KamailioRegistrationMessage;
+            var requestMessage = message as SipRegistrationMessage;
             Assert.IsNotNull(requestMessage);
             Assert.AreEqual("vaxjo-04@acip.example.com", requestMessage.Sip.UserAtHost);
             Assert.AreEqual("192.0.2.86", requestMessage.Ip);
@@ -57,7 +57,7 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
             var sut = new KamailioMessageParser(new KamailioDataParser());
             var message = sut.Parse(msg);
 
-            var requestMessage = message as KamailioRegistrationMessage;
+            var requestMessage = message as SipRegistrationMessage;
             Assert.IsNotNull(requestMessage);
             Assert.AreEqual("Växjö 06", requestMessage.ToDisplayName);
         }
@@ -79,7 +79,7 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
             var sut = new KamailioMessageParser(new KamailioDataParser());
             var message = sut.Parse(msg);
 
-            var requestMessage = message as KamailioRegistrationMessage;
+            var requestMessage = message as SipRegistrationMessage;
             Assert.IsNotNull(requestMessage);
             Assert.AreEqual(120, requestMessage.Expires);
         }
@@ -92,7 +92,7 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
             var sut = CreateKamailioMessageParser();
             var message = sut.Parse(msg);
 
-            var requestMessage = message as KamailioRegistrationMessage;
+            var requestMessage = message as SipRegistrationMessage;
             Assert.IsNotNull(requestMessage);
             Assert.AreEqual(120, requestMessage.Expires);
         }

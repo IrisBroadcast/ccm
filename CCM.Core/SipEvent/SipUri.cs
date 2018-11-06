@@ -27,7 +27,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace CCM.Core.Kamailio
+namespace CCM.Core.SipEvent
 {
     public class SipUri
     {

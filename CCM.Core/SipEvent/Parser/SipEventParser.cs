@@ -26,12 +26,12 @@
 
 using System.Text.RegularExpressions;
 using CCM.Core.Interfaces.Kamailio;
-using CCM.Core.Kamailio.Messages;
+using CCM.Core.SipEvent.Messages;
 using NLog;
 
-namespace CCM.Core.Kamailio.Parser
+namespace CCM.Core.SipEvent.Parser
 {
-    public class KamailioJsonMessageParser : IKamailioJsonMessageParser
+    public class SipEventParser : ISipEventParser
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
@@ -40,21 +40,21 @@ namespace CCM.Core.Kamailio.Parser
         {
             switch (sipEvent.Event)
             {
-                case KamilioEventType.Register:
+                case SipEventType.Register:
                     return ParseRegistration(sipEvent);
-                case KamilioEventType.Dialog:
+                case SipEventType.Dialog:
                     return ParseDialog(sipEvent);
-                case KamilioEventType.RegExpire:
+                case SipEventType.RegExpire:
                     return ParseRegExpire(sipEvent);
             }
             return null;
         }
 
 
-        private KamailioRegistrationMessage ParseRegistration(KamailioSipEvent kamailioData)
+        private SipRegistrationMessage ParseRegistration(KamailioSipEvent kamailioData)
         {
 
-            var registration = new KamailioRegistrationMessage()
+            var registration = new SipRegistrationMessage()
             {
                 Sip = new SipUri(kamailioData.FromUri),
                 Username = kamailioData.AuthUser,

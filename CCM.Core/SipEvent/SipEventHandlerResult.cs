@@ -24,12 +24,21 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace CCM.Core.Kamailio.Messages
+using System;
+
+namespace CCM.Core.SipEvent
 {
-    public enum DialogStatus
+    public class SipEventHandlerResult
     {
-        Start,
-        End,
-        SingleBye
+        public SipEventChangeStatus ChangeStatus { get; set; }
+        public Guid ChangedObjectId { get; set; }
+        public string SipAddress { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", ChangeStatus, ChangedObjectId);
+        }
+
+        public static SipEventHandlerResult NothingChanged => new SipEventHandlerResult { ChangeStatus = SipEventChangeStatus.NothingChanged };
     }
 }

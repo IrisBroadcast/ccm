@@ -24,7 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.Kamailio.Messages;
+using CCM.Core.SipEvent.Messages;
 
 namespace CCM.Core.Interfaces.Kamailio
 {

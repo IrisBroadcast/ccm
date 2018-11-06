@@ -24,8 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.Kamailio.Messages;
-using CCM.Core.Kamailio.Parser;
+using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Parser;
 using NUnit.Framework;
 
 namespace CCM.UnitTests.CCM.Core.Kamailio
@@ -58,7 +58,7 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
             var data = sut.ParseToKamailioData("dialog|");
 
             Assert.IsNotNull(data);
-            Assert.AreEqual(KamailioMessageType.Dialog, data.MessageType);
+            Assert.AreEqual(SipEventMessageType.Dialog, data.MessageType);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
             var sut = new KamailioDataParser();
             var data = sut.ParseToKamailioData("dialog|dstat::start|hashid::abc|hashent::def|ci::ghi");
 
-            Assert.AreEqual(KamailioMessageType.Dialog, data.MessageType);
+            Assert.AreEqual(SipEventMessageType.Dialog, data.MessageType);
             Assert.AreEqual("start", data.Fields["dstat"]);
             Assert.AreEqual("abc", data.Fields["hashid"]);
             Assert.AreEqual("def", data.Fields["hashent"]);

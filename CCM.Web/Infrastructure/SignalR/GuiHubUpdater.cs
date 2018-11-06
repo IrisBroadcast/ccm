@@ -24,7 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.Kamailio;
+using CCM.Core.SipEvent;
 using CCM.Web.Hubs;
 using NLog;
 
@@ -37,26 +37,26 @@ namespace CCM.Web.Infrastructure.SignalR
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public void Update(KamailioMessageHandlerResult updateResult)
+        public void Update(SipEventHandlerResult updateResult)
         {
             log.Debug("GuiHubUpdater is updating. status={0}, id={1}", updateResult.ChangeStatus, updateResult.ChangedObjectId);
 
-            if (updateResult.ChangeStatus == KamailioMessageChangeStatus.CallStarted)
+            if (updateResult.ChangeStatus == SipEventChangeStatus.CallStarted)
             {
                 WebGuiHub.ThrottlingUpdateOngoingCalls();
                 WebGuiHub.ThrottlingUpdateCodecsOnline();
             }
 
-            if (updateResult.ChangeStatus == KamailioMessageChangeStatus.CallClosed)
+            if (updateResult.ChangeStatus == SipEventChangeStatus.CallClosed)
             {
                 WebGuiHub.ThrottlingUpdateOngoingCalls();
                 WebGuiHub.ThrottlingUpdateOldCalls();
                 WebGuiHub.ThrottlingUpdateCodecsOnline();
             }
 
-            if (updateResult.ChangeStatus == KamailioMessageChangeStatus.CodecAdded || 
-                updateResult.ChangeStatus == KamailioMessageChangeStatus.CodecUpdated ||
-                updateResult.ChangeStatus == KamailioMessageChangeStatus.CodecRemoved)
+            if (updateResult.ChangeStatus == SipEventChangeStatus.CodecAdded || 
+                updateResult.ChangeStatus == SipEventChangeStatus.CodecUpdated ||
+                updateResult.ChangeStatus == SipEventChangeStatus.CodecRemoved)
             {
                 WebGuiHub.ThrottlingUpdateCodecsOnline();
             }

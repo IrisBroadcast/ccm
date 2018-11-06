@@ -37,7 +37,7 @@ using CCM.Core.Enums;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Kamailio;
+using CCM.Core.SipEvent;
 using CCM.Data.Entities;
 using CCM.Data.Helpers;
 using LazyCache;
@@ -85,7 +85,7 @@ namespace CCM.Data.Repositories
             }
         }
 
-        public KamailioMessageHandlerResult UpdateRegisteredSip(RegisteredSip registeredSip)
+        public SipEventHandlerResult UpdateRegisteredSip(RegisteredSip registeredSip)
         {
             // Return value indicates if
             // 1. Codec been added
@@ -94,7 +94,7 @@ namespace CCM.Data.Repositories
 
             if (registeredSip == null)
             {
-                return KamailioMessageHandlerResult.NothingChanged;
+                return SipEventHandlerResult.NothingChanged;
             }
 
             try
@@ -108,7 +108,7 @@ namespace CCM.Data.Repositories
                         if (registeredSip.Expires == 0)
                         {
                             // Unregistration of not registered codec. Do nothing.
-                            return KamailioMessageHandlerResult.NothingChanged;
+                            return SipEventHandlerResult.NothingChanged;
                         }
 
                         dbSip = new RegisteredSipEntity {Id = Guid.NewGuid(), Updated = DateTime.UtcNow};
@@ -144,21 +144,21 @@ namespace CCM.Data.Repositories
                     var changeStatus = GetChangeStatus(db, dbSip);
                     db.SaveChanges();
 
-                    return new KamailioMessageHandlerResult {ChangedObjectId = dbSip.Id, ChangeStatus = changeStatus};
+                    return new SipEventHandlerResult {ChangedObjectId = dbSip.Id, ChangeStatus = changeStatus};
                 }
             }
             catch (Exception ex)
             {
                 log.Error(ex, "Error while updating registered sip {0}", registeredSip.SIP);
-                return KamailioMessageHandlerResult.NothingChanged;
+                return SipEventHandlerResult.NothingChanged;
             }
         }
 
-        public KamailioMessageHandlerResult DeleteRegisteredSip(string sipAddress)
+        public SipEventHandlerResult DeleteRegisteredSip(string sipAddress)
         {
             if (string.IsNullOrEmpty(sipAddress))
             {
-                return KamailioMessageHandlerResult.NothingChanged;
+                return SipEventHandlerResult.NothingChanged;
             }
 
             sipAddress = sipAddress.ToLower();
@@ -173,9 +173,9 @@ namespace CCM.Data.Repositories
 
                     if (!dbSips.Any())
                     {
-                        return new KamailioMessageHandlerResult
+                        return new SipEventHandlerResult
                         {
-                            ChangeStatus = KamailioMessageChangeStatus.NothingChanged,
+                            ChangeStatus = SipEventChangeStatus.NothingChanged,
                             SipAddress = sipAddress
                         };
                     }
@@ -183,9 +183,9 @@ namespace CCM.Data.Repositories
                     var changedObjectId = dbSips.FirstOrDefault()?.Id ?? Guid.Empty;
                     db.RegisteredSips.RemoveRange(dbSips);
                     db.SaveChanges();
-                    return new KamailioMessageHandlerResult
+                    return new SipEventHandlerResult
                     {
-                        ChangeStatus = KamailioMessageChangeStatus.CodecRemoved,
+                        ChangeStatus = SipEventChangeStatus.CodecRemoved,
                         ChangedObjectId = changedObjectId,
                         SipAddress = sipAddress
                     };
@@ -194,30 +194,30 @@ namespace CCM.Data.Repositories
             catch (Exception ex)
             {
                 log.Error(ex, "Error while unregistering codec with sip address {0}", sipAddress);
-                return KamailioMessageHandlerResult.NothingChanged;
+                return SipEventHandlerResult.NothingChanged;
             }
         }
 
-        private KamailioMessageChangeStatus GetChangeStatus(CcmDbContext cxt, Entities.RegisteredSipEntity dbSip)
+        private SipEventChangeStatus GetChangeStatus(CcmDbContext cxt, Entities.RegisteredSipEntity dbSip)
         {
             var entry = cxt.Entry(dbSip);
 
             if (entry.State == EntityState.Added || CodecWasExpired(entry))
             {
-                return KamailioMessageChangeStatus.CodecAdded;
+                return SipEventChangeStatus.CodecAdded;
             }
 
             if (entry.State == EntityState.Modified && dbSip.Expires == 0)
             {
-                return KamailioMessageChangeStatus.CodecRemoved;
+                return SipEventChangeStatus.CodecRemoved;
             }
 
             if (entry.State == EntityState.Modified && HasRelevantChange(entry))
             {
-                return KamailioMessageChangeStatus.CodecUpdated;
+                return SipEventChangeStatus.CodecUpdated;
             }
 
-            return KamailioMessageChangeStatus.NothingChanged;
+            return SipEventChangeStatus.NothingChanged;
         }
 
         /// <summary>

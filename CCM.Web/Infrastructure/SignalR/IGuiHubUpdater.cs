@@ -24,12 +24,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.Kamailio;
+using CCM.Core.SipEvent;
 
 namespace CCM.Web.Infrastructure.SignalR
 {
     public interface IGuiHubUpdater
     {
-        void Update(KamailioMessageHandlerResult updateResult);
+        void Update(SipEventHandlerResult updateResult);
     }
 }

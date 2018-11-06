@@ -28,8 +28,8 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
-using CCM.Core.Kamailio;
-using CCM.Core.Kamailio.Messages;
+using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Messages;
 using CCM.Web.Infrastructure.SignalR;
 using NLog;
 
@@ -84,14 +84,14 @@ namespace CCM.Web.Controllers.ApiExternal
                 return BadRequest();
             }
 
-            KamailioMessageHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
+            SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
             log.Debug("Handled Kamailio message with result {0}. {1}", result?.ChangeStatus, sipMessage.ToDebugString());
 
             if (result == null)
             {
                 log.Warn("Kamailio message was handled but result was null");
             }
-            else if (result.ChangeStatus != KamailioMessageChangeStatus.NothingChanged)
+            else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
             {
                 _guiHubUpdater.Update(result); // First web gui
                 _statusHubUpdater.Update(result); // Then codec status to external clients
