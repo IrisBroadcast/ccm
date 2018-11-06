@@ -91,7 +91,7 @@ namespace CCM.Web.Controllers.ApiExternal
 
                 log.Debug("Incoming SIP message: {0}", sipEvent.ToString());
 
-                KamailioMessageBase sipMessage = _sipEventParser.Parse(sipEvent);
+                var sipMessage = _sipEventParser.Parse(sipEvent);
 
                 if (sipMessage == null)
                 {

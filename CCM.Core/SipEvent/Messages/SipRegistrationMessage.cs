@@ -33,7 +33,7 @@ namespace CCM.Core.SipEvent.Messages
         public string Ip { get; set; }
         public int Port { get; set; }
         public string UserAgent { get; set; }
-        public string Username { get; set; }
+        public string Username { get; set; } // Obsolete. To be removed. Sip used both as sip address and user name
         public string ToDisplayName { get; set; }
         public long UnixTimeStamp { get; set; }
         public int Expires { get; set; }

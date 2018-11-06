@@ -57,7 +57,7 @@ namespace CCM.Core.SipEvent.Parser
             var registration = new SipRegistrationMessage()
             {
                 Sip = new SipUri(kamailioData.FromUri),
-                Username = kamailioData.AuthUser,
+                Username = kamailioData.AuthUser, // Obsolete. To be removed.
                 FromDisplayName = ParseDisplayName(kamailioData.FromDisplayName),
                 ToDisplayName = ParseDisplayName(kamailioData.ToDisplayName),
                 UserAgent = kamailioData.UserAgentHeader,
