@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Text.RegularExpressions;
 using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.SipEvent.Messages;
@@ -85,37 +86,25 @@ namespace CCM.Core.SipEvent.Parser
 
         private KamailioDialogMessage ParseDialog(KamailioSipEvent kamailioData)
         {
-            // TODO: Parse correct fields
-
-            DialogStatus dialogStatus = DialogStatus.Start;
-            //if (!Enum.TryParse(kamailioData.GetField("dstat"), true, out dialogStatus))
-            //{
-            //    log.Warn("Unable to parse dstat field of Kamailio dialog message");
-            //    return null;
-            //}
+            if (!Enum.TryParse(kamailioData.DialogState, true, out DialogStatus dialogStatus))
+            {
+                log.Warn($"Dialog state field = {kamailioData.DialogState} of Kamailio dialog message");
+                return null;
+            }
 
             var dialog = new KamailioDialogMessage
             {
-
                 Status = dialogStatus,
                 CallId = kamailioData.CallId,
-                //HashId = kamailioData.GetField("hashid"),
-                //HashEntry = kamailioData.GetField("hashent"),
+                HashId = kamailioData.DialogHashId,
+                HashEntry = kamailioData.DialogHashEntry,
                 FromDisplayName = ParseDisplayName(kamailioData.FromUri),
                 ToDisplayName = ParseDisplayName(kamailioData.ToDisplayName),
                 FromSipUri = new SipUri(kamailioData.FromUri),
-                //ToSipUri = new SipUri(kamailioData.GetField("ru")),
-                //FromTag = kamailioData.GetField("fot"),
-                //ToTag = kamailioData.GetField("tot"),
-                //Sdp = kamailioData.GetField("sdp"),
-                //HangupReason = kamailioData.GetField("hr")
+                ToSipUri = new SipUri(kamailioData.ToUri),
+                FromTag = kamailioData.FromTag,
+                ToTag = kamailioData.ToTag,
             };
-
-            // Fix för tomt ru-fält i kamailio-data
-            //if (dialog.ToSipUri == null || string.IsNullOrEmpty(dialog.ToSipUri.User))
-            //{
-            //    dialog.ToSipUri = new SipUri(kamailioData.GetField("tu"));
-            //}
 
             return dialog;
         }
