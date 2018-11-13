@@ -120,7 +120,8 @@
             if (data.Error) {
                 msg = data.Error;
             } else {
-                msg = "AudioMode: Encoder=" + data.encoderAudioModeString + " (" + data.encoderAudioMode + ")" + ", Decoder=" + data.decoderAudioModeString + " (" + data.decoderAudioMode + ")";
+                msg = "AudioMode: Encoder=" + data.encoderAudioModeDescription + " (" + data.encoderAudioMode + ")" +
+                    ", Decoder=" + data.decoderAudioModeDescription + " (" + data.decoderAudioMode + ")";
             }
             $scope.audioModeArea = msg + "\r\n" + $scope.audioModeArea;
         });
