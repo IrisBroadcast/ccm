@@ -353,7 +353,7 @@ ccmControllers.controller('studioMonitorController',
             var authorizationBasic = $window.btoa($scope.codecControlUserName + ':' + $scope.codecControlPassword);
             const headers = { 'Authorization': 'Basic ' + authorizationBasic };
 
-            return $http.post($scope.codecControlHost + apiPath, data, { headers }).then(function (response) {
+            return $http.post($scope.codecControlHost + apiPath, data, { headers: headers }).then(function (response) {
                 return response.data;
             });
         };
