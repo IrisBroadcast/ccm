@@ -35,6 +35,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using CCM.Web.Infrastructure;
 using CCM.Web.Infrastructure.MvcFilters;
+using CCM.Web.Infrastructure.WebApiFilters;
 using CCM.WebCommon.Infrastructure.WebApi;
 using NLog;
 
@@ -48,10 +49,11 @@ namespace CCM.Web
         {
             AutoMapperWebConfiguration.Configure();
 
-            // INFO: Ordningen på registreringarna är viktig. WebApi före Mvc.
+            // INFO: The order of the registrations are important. Web API before MVC.
             
             // WebApi
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            GlobalConfiguration.Configuration.Filters.Add(new ApiExceptionFilter());
             GlobalConfiguration.Configuration.Filters.Add(new StopwatchAttribute());
             GlobalConfiguration.Configuration.Filters.Add(new ActivityIdAttribute());
 

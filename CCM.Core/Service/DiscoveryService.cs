@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Caching;
 using CCM.Core.Cache;
 using CCM.Core.Discovery;
 using CCM.Core.Entities;
@@ -125,12 +124,12 @@ namespace CCM.Core.Service
         private IList<ProfileNameAndSdp> GetProfilesForRegisteredSip(string sipId)
         {
             var regSip = _registeredSipRepository.GetCachedRegisteredSips().FirstOrDefault(s => s.Sip == sipId);
-            var profileNames = regSip != null ? regSip.Profiles : new List<string>();
+            var profileNames = regSip?.Profiles ?? new List<string>();
             return _cache.GetProfiles(_profileRepository.GetAllProfileNamesAndSdp).Where(p => profileNames.Contains(p.Name)).ToList();
         }
 
         /// <summary>
-        /// Returnerar lista med kodare online filtrerat p� filterparametrar
+        /// Returnerar lista med kodare online filtrerat på filterparametrar
         /// </summary>
         private IList<RegisteredSipDto> GetFilteredSipsOnline(IList<FilterSelection> filterSelections)
         {
@@ -152,7 +151,7 @@ namespace CCM.Core.Service
         }
 
         /// <summary>
-        /// Returnerar en lista med de filter som efterfr�gats samt deras filter-v�rdet
+        /// Returnerar en lista med de filter som efterfrågats samt deras filter-värde
         /// </summary>
         private List<FilterSelection> GetFilteringValues(IList<KeyValuePair<string, string>> selectedFilters)
         {
@@ -178,7 +177,7 @@ namespace CCM.Core.Service
 
                 foreach (var callee in callees)
                 {
-                    // INFO: Viktigt att ordningen p� gemensamma profiler baseras p� callee's profilordning.
+                    // INFO: Viktigt att ordningen på gemensamma profiler baseras på callee's profilordning.
                     var matchingProfiles = callee.Profiles.Intersect(callerProfileNames).ToList();
 
                     if (matchingProfiles.Any())

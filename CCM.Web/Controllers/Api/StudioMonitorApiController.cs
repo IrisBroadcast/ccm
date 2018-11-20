@@ -34,6 +34,7 @@ using CCM.Core.CodecControl.Entities;
 using CCM.Core.CodecControl.Interfaces;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.Interfaces.Repositories.Specialized;
+using CCM.Web.Infrastructure.WebApiFilters;
 using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
 using CCM.Web.Models.CodecControl;

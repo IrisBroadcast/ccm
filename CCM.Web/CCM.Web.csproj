@@ -267,7 +267,8 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ApiExternal\SipEventController.cs" />
     <Compile Include="Controllers\Api\StudioMonitorApiController.cs" />
-    <Compile Include="Controllers\Api\StudioMonitorExceptionFilterAttribute.cs" />
+    <Compile Include="Infrastructure\WebApiFilters\ApiExceptionFilter.cs" />
+    <Compile Include="Infrastructure\WebApiFilters\StudioMonitorExceptionFilterAttribute.cs" />
     <Compile Include="Controllers\Api\TestController.cs" />
     <Compile Include="Extensions\EnumHelpers.cs" />
     <Compile Include="Hubs\HubBase.cs" />

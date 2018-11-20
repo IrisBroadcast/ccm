@@ -28,7 +28,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http.Filters;
 
-namespace CCM.Web.Controllers.Api
+namespace CCM.Web.Infrastructure.WebApiFilters
 {
     public class StudioMonitorExceptionFilterAttribute : ExceptionFilterAttribute
     {
