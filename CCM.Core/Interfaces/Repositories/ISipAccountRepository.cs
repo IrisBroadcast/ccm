@@ -34,6 +34,7 @@ namespace CCM.Core.Interfaces.Repositories
     public interface ISipAccountRepository
     {
         SipAccount GetById(Guid id);
+        SipAccount GetByRegisteredSipId(Guid registeredSipId);
         SipAccount GetByUserName(string userName);
         List<SipAccount> GetAllIncludingRelations();
         List<SipAccount> GetAll();

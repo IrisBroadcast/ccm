@@ -52,7 +52,7 @@ namespace CCM.Data.Repositories
         {
             using (var db = GetDbContext())
             {
-                Entities.RegisteredSipEntity dbSip = db.RegisteredSips
+                RegisteredSipEntity dbSip = db.RegisteredSips
                     .Include(rs => rs.User)
                     .SingleOrDefault(r => r.Id == id);
 

@@ -33,11 +33,10 @@
         event.preventDefault();
 
         var $form = $(this);
+        var sipAccountId = $form.find("input[name='SipAccountId']").val();
         var comment = $form.find("input[name='Comment']").val();
-        var sipId = $form.find("input[name='RegisteredSipId']").val();
-        var sipUsername = $form.find("input[name='RegisteredSipUserName']").val();
         var requestVerificationToken = $form.find("input[name='__RequestVerificationToken']").val();
-        var data = { RegisteredSipId: sipId, RegisteredSipUserName: sipUsername, Comment: comment, __RequestVerificationToken: requestVerificationToken };
+        var data = { SipAccountId: sipAccountId, Comment: comment, __RequestVerificationToken: requestVerificationToken };
 
         $.post("/Home/EditRegisteredSipComment", data)
             .done(function (data) {

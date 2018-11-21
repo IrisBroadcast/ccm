@@ -97,6 +97,17 @@ namespace CCM.Data.Repositories
             }
         }
 
+        public SipAccount GetByRegisteredSipId(Guid registeredSipId)
+        {
+            using (var db = GetDbContext())
+            {
+                var regSip = db.RegisteredSips
+                    .Include(s => s.User)
+                    .SingleOrDefault(s => s.Id == registeredSipId);
+                return MapToSipAccount(regSip?.User);
+            }
+        }
+
         public List<SipAccount> GetAllIncludingRelations()
         {
             using (var db = GetDbContext())
@@ -185,9 +196,7 @@ namespace CCM.Data.Repositories
                 return user != null;
             }
         }
-
-       
-
+        
         private SipAccount MapToSipAccount(SipAccountEntity dbAccount)
         {
             return dbAccount == null ? null : new SipAccount

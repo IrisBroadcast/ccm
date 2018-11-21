@@ -90,6 +90,11 @@ namespace CCM.Core.Managers
             _sipAccountRepository.Update(account);
         }
 
+        public SipAccount GetByRegisteredSip(Guid registeredSipId)
+        {
+            return _sipAccountRepository.GetByRegisteredSipId(registeredSipId);
+        }
+
         public void UpdateComment(Guid id, string comment)
         {
             _sipAccountRepository.UpdateComment(id, comment);

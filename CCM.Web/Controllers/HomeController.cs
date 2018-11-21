@@ -76,14 +76,11 @@ namespace CCM.Web.Controllers
         [HttpGet]
         public ActionResult EditRegisteredSipComment(Guid id)
         {
-            var sip = _registeredSipRepository.GetCachedRegisteredSips().FirstOrDefault(rs => rs.Id == id);
+            var sipAccount = _sipAccountManager.GetByRegisteredSip(id);
 
-            if (sip == null)
-            {
-                return null;
-            }
-
-            return PartialView("_SipCommentForm", new SipAccountComment { Comment = sip.Comment, SipAccountId = sip.Id });
+            return sipAccount == null ? 
+                null : 
+                PartialView("_SipCommentForm", new SipAccountComment { Comment = sipAccount.Comment, SipAccountId = sipAccount.Id });
         }
 
         [ValidateAntiForgeryToken]
