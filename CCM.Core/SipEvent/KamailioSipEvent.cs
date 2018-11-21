@@ -39,9 +39,9 @@ namespace CCM.Core.SipEvent
         [JsonProperty(PropertyName = "expires")] public int Expires { get; set; }
         [JsonProperty(PropertyName = "method")] public string Method { get; set; } // "REGISTER"
         [JsonProperty(PropertyName = "from_uri")] public string FromUri { get; set; } // "sip:test1249@contrib.sr.se" Json-parameter heter from_uri i dialog-meddelande
-        [JsonProperty(PropertyName = "from_displayName")] public string FromDisplayName { get; set; } // "Karlstad 11"
+        [JsonProperty(PropertyName = "from_displayname")] public string FromDisplayName { get; set; } // "Karlstad 11"
         [JsonProperty(PropertyName = "to_uri")] public string ToUri { get; set; } // "<null>"
-        [JsonProperty(PropertyName = "to_displayName")] public string ToDisplayName { get; set; } // "<null>"
+        [JsonProperty(PropertyName = "to_displayname")] public string ToDisplayName { get; set; } // "<null>"
         [JsonProperty(PropertyName = "auth_user")] public string AuthUser { get; set; } // "test1249"
         [JsonProperty(PropertyName = "user_agent")] public string UserAgentHeader { get; set; } // "Asterisk PBX 11.13"
         [JsonProperty(PropertyName = "requesturi")] public string RequestUri { get; set; } // "sip:contrib.sr.se" Json-parameter heter request_uri i dialog-meddelande
