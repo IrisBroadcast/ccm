@@ -98,7 +98,7 @@ namespace CCM.Core.SipEvent.Parser
                 CallId = kamailioData.CallId,
                 HashId = kamailioData.DialogHashId,
                 HashEntry = kamailioData.DialogHashEntry,
-                FromDisplayName = ParseDisplayName(kamailioData.FromUri),
+                FromDisplayName = ParseDisplayName(kamailioData.FromDisplayName),
                 ToDisplayName = ParseDisplayName(kamailioData.ToDisplayName),
                 FromSipUri = new SipUri(kamailioData.FromUri),
                 ToSipUri = new SipUri(kamailioData.ToUri),

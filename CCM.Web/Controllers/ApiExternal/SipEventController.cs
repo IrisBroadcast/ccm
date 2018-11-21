@@ -32,7 +32,6 @@ using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.SipEvent;
-using CCM.Core.SipEvent.Messages;
 using CCM.Web.Infrastructure.SignalR;
 using NLog;
 
