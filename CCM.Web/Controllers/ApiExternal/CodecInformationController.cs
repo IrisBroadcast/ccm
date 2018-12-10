@@ -26,7 +26,7 @@
 
 using System.Collections.Generic;
 using System.Web.Http;
-using CCM.Core.CodecControl.Entities;
+using CCM.Core.Codec;
 using CCM.Core.Interfaces.Repositories;
 
 namespace CCM.Web.Controllers.ApiExternal
@@ -42,14 +42,12 @@ namespace CCM.Web.Controllers.ApiExternal
 
         public IList<CodecInformation> Get()
         {
-            var codecInformationList = _registeredSipRepository.GetCodecInformationList();
-            return codecInformationList;
+            return _registeredSipRepository.GetCodecInformationList();
         }
 
         public CodecInformation Get(string sipAddress)
         {
-            var codecInformation = _registeredSipRepository.GetCodecInformation(sipAddress);
-            return codecInformation;
+            return _registeredSipRepository.GetCodecInformation(sipAddress);
         }
     }
 }

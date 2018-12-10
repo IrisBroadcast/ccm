@@ -121,16 +121,7 @@
     <Compile Include="Cache\CcmCache.cs" />
     <Compile Include="Cache\ICcmCache.cs" />
     <Compile Include="Cache\LazyCacheExtensions.cs" />
-    <Compile Include="CodecControl\Entities\AudioMode.cs" />
-    <Compile Include="CodecControl\Entities\AudioStatus.cs" />
-    <Compile Include="CodecControl\Entities\InputStatus.cs" />
-    <Compile Include="CodecControl\Entities\OutputStatus.cs" />
-    <Compile Include="CodecControl\Enums\AudioAlgorithm.cs" />
-    <Compile Include="CodecControl\Entities\CodecApiInformation.cs" />
-    <Compile Include="CodecControl\Entities\CodecInformation.cs" />
-    <Compile Include="CodecControl\Entities\VuValues.cs" />
-    <Compile Include="CodecControl\Enums\DisconnectReason.cs" />
-    <Compile Include="CodecControl\Enums\LineStatusCode.cs" />
+    <Compile Include="Codec\CodecInformation.cs" />
     <Compile Include="Entities\Base\CoreEntityWithTimestamps.cs" />
     <Compile Include="Entities\CallInfo.cs" />
     <Compile Include="Entities\LogInfo.cs" />
@@ -178,7 +169,6 @@
     <Compile Include="Entities\AvailableMetaType.cs" />
     <Compile Include="Entities\CallHistory.cs" />
     <Compile Include="Entities\City.cs" />
-    <Compile Include="CodecControl\Entities\LineStatus.cs" />
     <Compile Include="Entities\CodecPreset.cs" />
     <Compile Include="Entities\CodecType.cs" />
     <Compile Include="Entities\Base\CoreEntityBase.cs" />
@@ -208,7 +198,6 @@
     <Compile Include="Helpers\DisplayNameHelper.cs" />
     <Compile Include="Helpers\MetadataHelper.cs" />
     <Compile Include="Helpers\TimeMeasurer.cs" />
-    <Compile Include="Interfaces\Repositories\Specialized\ICodecInformationRepository.cs" />
     <Compile Include="Interfaces\Repositories\ILogRepository.cs" />
     <Compile Include="Interfaces\Repositories\ISimpleRegisteredSipRepository.cs" />
     <Compile Include="SipEvent\Messages\SipDialogMessage.cs" />
@@ -225,7 +214,6 @@
     <Compile Include="Managers\LogLevelManager.cs" />
     <Compile Include="Interfaces\ISipFilter.cs" />
     <Compile Include="Interfaces\Managers\IStatisticsManager.cs" />
-    <Compile Include="CodecControl\Interfaces\ICodecManager.cs" />
     <Compile Include="Interfaces\Managers\IFilterManager.cs" />
     <Compile Include="Interfaces\Managers\ILocationManager.cs" />
     <Compile Include="Interfaces\Managers\ISettingsManager.cs" />

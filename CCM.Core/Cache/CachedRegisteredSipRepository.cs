@@ -32,7 +32,7 @@ using CCM.Core.Interfaces.Repositories;
 using LazyCache;
 using NLog;
 using System.Linq;
-using CCM.Core.CodecControl.Entities;
+using CCM.Core.Codec;
 using CCM.Core.SipEvent;
 
 namespace CCM.Core.Cache
