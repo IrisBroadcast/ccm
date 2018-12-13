@@ -24,22 +24,29 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Web.Http.ExceptionHandling;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http.Filters;
 using NLog;
 
 namespace CCM.WebCommon.Infrastructure.WebApi
 {
-    public class WebApiExceptionLogger : ExceptionLogger
+    public class ApiExceptionFilter : ExceptionFilterAttribute
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public override void Log(ExceptionLoggerContext context)
+        public override void OnException(HttpActionExecutedContext actionExecutedContext)
         {
-            if (context.Exception != null)
-            {
-                log.Error(context.Exception, "Error on api call to " + context.Request.RequestUri);
-            }
+            var ex = actionExecutedContext.Exception;
+            log.Warn(ex, "Exception in API controller method");
 
+            actionExecutedContext.Response = new HttpResponseMessage()
+            {
+                Content = new StringContent("An error occured and has been logged.", System.Text.Encoding.UTF8, "text/plain"),
+                StatusCode = HttpStatusCode.InternalServerError
+            };
+
+            base.OnException(actionExecutedContext);
         }
     }
 }

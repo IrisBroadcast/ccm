@@ -34,8 +34,6 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using CCM.Web.Infrastructure;
-using CCM.Web.Infrastructure.MvcFilters;
-using CCM.Web.Infrastructure.WebApiFilters;
 using CCM.WebCommon.Infrastructure.WebApi;
 using NLog;
 

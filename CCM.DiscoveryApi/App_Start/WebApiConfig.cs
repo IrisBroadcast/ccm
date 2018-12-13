@@ -24,12 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Net;
 using System.Web.Http;
 using System.Web.Http.Cors;
-using System.Web.Http.ExceptionHandling;
-using CCM.WebCommon.Infrastructure;
-using CCM.WebCommon.Infrastructure.WebApi;
 
 namespace CCM.DiscoveryApi
 {
@@ -52,9 +48,6 @@ namespace CCM.DiscoveryApi
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new {id = RouteParameter.Optional}
                 );
-
-            config.Services.Add(typeof(IExceptionLogger), new WebApiExceptionLogger());
-            config.Filters.Add(new StopwatchAttribute());
         }
     }
 }

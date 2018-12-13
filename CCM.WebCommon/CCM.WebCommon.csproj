@@ -83,7 +83,7 @@
     <Compile Include="Authentication\BasicAuthenticationHelper.cs" />
     <Compile Include="Authentication\Credentials.cs" />
     <Compile Include="Infrastructure\WebApi\ActivityIdAttribute.cs" />
-    <Compile Include="Infrastructure\WebApi\WebApiExceptionLogger.cs" />
+    <Compile Include="Infrastructure\WebApi\ApiExceptionFilter.cs" />
     <Compile Include="Infrastructure\WebApi\StopwatchAttribute.cs" />
     <Compile Include="Infrastructure\WebApi\ValidateModelAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

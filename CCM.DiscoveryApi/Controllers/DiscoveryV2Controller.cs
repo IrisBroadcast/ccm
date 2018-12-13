@@ -24,9 +24,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using CCM.Core.Discovery;
@@ -101,14 +103,14 @@ namespace CCM.DiscoveryApi.Controllers
 
             var result = new UserAgentsResultV2
             {
-                Profiles = uaResult.Profiles.Select(p => new ProfileDtoV2 { Name = p.Name, Sdp = p.Sdp }).ToList(),
-                UserAgents = uaResult.UserAgents.Select(ua => new UserAgentDtoV2
+                Profiles = uaResult?.Profiles?.Select(p => new ProfileDtoV2 { Name = p.Name, Sdp = p.Sdp }).ToList() ?? new List<ProfileDtoV2>(),
+                UserAgents = uaResult?.UserAgents?.Select(ua => new UserAgentDtoV2
                 {
                     SipId = ua.SipId,
                     ConnectedTo = ua.ConnectedTo,
                     Profiles = ua.Profiles,
-                    MetaData = ua.MetaData.Select(m => new KeyValuePairDtoV2(m.Key, m.Value)).ToList()
-                }).ToList()
+                    MetaData = ua.MetaData?.Select(m => new KeyValuePairDtoV2(m.Key, m.Value)).ToList() ?? new List<KeyValuePairDtoV2>()
+                }).ToList() ?? new List<UserAgentDtoV2>()
             };
 
             return result;

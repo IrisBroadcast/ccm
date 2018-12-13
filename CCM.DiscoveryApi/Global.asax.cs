@@ -34,7 +34,8 @@ namespace CCM.DiscoveryApi
     {
         protected void Application_Start()
         {
-            //GlobalConfiguration.Configuration.Filters.Add(new StopwatchAttribute());
+            GlobalConfiguration.Configuration.Filters.Add(new StopwatchAttribute());
+            GlobalConfiguration.Configuration.Filters.Add(new ApiExceptionFilter());
             GlobalConfiguration.Configure(WebApiConfig.Register);
         }
     }
