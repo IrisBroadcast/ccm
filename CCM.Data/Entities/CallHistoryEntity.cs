@@ -30,7 +30,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CCM.Data.Entities
 {
-
     [Table("CallHistories")]
     public class CallHistoryEntity
     {

@@ -33,13 +33,12 @@ using CCM.Data.Entities.Base;
 
 namespace CCM.Data.Entities
 {
-    // Kodarmodell
+    // Codec Model
     [Table("UserAgents")]
     public class UserAgentEntity : EntityBase, ISipFilter
     {
         [MetaType]
         public string Name { get; set; }
-
         public string Identifier { get; set; }
         public MatchType MatchType { get; set; }
         public string Image { get; set; }
@@ -49,7 +48,6 @@ namespace CCM.Data.Entities
         /// True if this UserAgent uses ActiveX for web interface.
         /// </summary>
         public bool Ax { get; set; }
-
         public int Width { get; set; }
         public int Height { get; set; }
         public string Api { get; set; }

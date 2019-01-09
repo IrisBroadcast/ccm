@@ -94,7 +94,6 @@ namespace CCM.Data.Repositories
             }
         }
 
-
         public Profile GetById(Guid id)
         {
             using (var db = GetDbContext())

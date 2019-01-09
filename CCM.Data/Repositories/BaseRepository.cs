@@ -106,9 +106,7 @@ namespace CCM.Data.Repositories
         }
 
         public abstract T MapToCoreObject(TU dbEntity);
-
     }
-
 
     public abstract class BaseRepository
     {

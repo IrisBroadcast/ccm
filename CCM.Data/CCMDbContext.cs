@@ -25,6 +25,7 @@
  */
 
 using System;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading;
@@ -44,7 +45,19 @@ namespace CCM.Data
         public CcmDbContext(IAppCache cache)
         {
             _cache = cache;
-            Database.SetInitializer<CcmDbContext>(null);
+            
+            if(ConfigurationManager.AppSettings["Environment"] == "Initiate")
+            {
+                //Database create database with any off these
+                //Database.SetInitializer<CcmDbContext>(new CreateDatabaseIfNotExists<CcmDbContext>());
+                //Database.SetInitializer<CcmDbContext>(new DropCreateDatabaseIfModelChanges<CcmDbContext>());
+                Database.SetInitializer<CcmDbContext>(new DropCreateDatabaseAlways<CcmDbContext>());
+            }
+            else
+            {
+                //Database initial creation (off) use for production
+                Database.SetInitializer<CcmDbContext>(null);
+            }
         }
 
         public DbSet<RegisteredSipEntity> RegisteredSips { get; set; }
@@ -84,7 +97,7 @@ namespace CCM.Data
 
         protected string CurrentUserName()
         {
-            return Thread.CurrentPrincipal?.Identity?.Name ?? "okänt";
+            return Thread.CurrentPrincipal?.Identity?.Name ?? "okänt"; // TODO: Change to English?
         }
 
         public override int SaveChanges()
@@ -117,7 +130,7 @@ namespace CCM.Data
 
             if (shouldInvalidateCache)
             {
-                log.Debug("Föränding i konfigureringsdata sparad till databasen. Triggar full uppdatering av lokal cache");
+                log.Debug("Changes in configuration-data saved to database. Trigger full cache update.");
                 _cache.FullReload();
             }
 

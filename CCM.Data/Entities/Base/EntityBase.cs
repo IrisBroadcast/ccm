@@ -29,8 +29,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CCM.Data.Entities.Base
 {
-    
-
     public abstract class EntityBase
     {
         [Key]
@@ -39,6 +37,5 @@ namespace CCM.Data.Entities.Base
         public DateTime CreatedOn { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime UpdatedOn { get; set; }
-
     }
 }

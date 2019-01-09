@@ -129,7 +129,7 @@ namespace CCM.Data.Repositories
                     .Include(ct => ct.Users)
                     .Include(ct => ct.Users.Select(u => u.Owner))
                     .ToList();
-
+                
                 return dbCodecTypes
                     .Select(dbCodecType => MapToCodecType(dbCodecType, includeUsers))
                     .OrderBy(c => c.Name)
