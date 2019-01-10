@@ -49,9 +49,9 @@ namespace CCM.Data
             if(ConfigurationManager.AppSettings["Environment"] == "Initiate")
             {
                 //Database create database with any off these
-                //Database.SetInitializer<CcmDbContext>(new CreateDatabaseIfNotExists<CcmDbContext>());
+                Database.SetInitializer<CcmDbContext>(new CreateDatabaseIfNotExists<CcmDbContext>());
                 //Database.SetInitializer<CcmDbContext>(new DropCreateDatabaseIfModelChanges<CcmDbContext>());
-                Database.SetInitializer<CcmDbContext>(new DropCreateDatabaseAlways<CcmDbContext>());
+                //Database.SetInitializer<CcmDbContext>(new DropCreateDatabaseAlways<CcmDbContext>());
             }
             else
             {

@@ -100,7 +100,6 @@ namespace CCM.Tests.KamailioTests
                     db.RegisteredSips.Remove(regSip);
                     db.SaveChanges();
                 }
-
             }
         }
 

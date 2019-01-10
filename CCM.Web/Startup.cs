@@ -59,8 +59,6 @@ namespace CCM.Web
 
             ServicePointManager.ServerCertificateValidationCallback = CertificateHelper.ServerCertificateValidationCallback;
         }
-
-
     }
 }
 
