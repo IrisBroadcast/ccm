@@ -11,7 +11,7 @@
     string codecControlPassword = @ConfigurationManager.AppSettings["CodecControlPassword"];
 }
 <!DOCTYPE html>
-<html>
+<html ng-app="ccm">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +27,9 @@
     @Styles.Render("~/Content/css")
     @RenderSection("head", required: false)
 </head>
-<body ng-app="ccm">
+
+<body @RenderSection("BodyAttributes", false)>
+
     @RenderSection("bodyTop", false)
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
