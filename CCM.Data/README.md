@@ -34,7 +34,7 @@ On first run and build it should be created. Then you can change back your Envir
 
 ### Verify state
 
-Open Visual Studio
+* Open Visual Studio
 * View -&gt; Server Explorer
 * The server should be visible in the Server Explorer under “Data Connections”.
 * If the database-server is not visible?
