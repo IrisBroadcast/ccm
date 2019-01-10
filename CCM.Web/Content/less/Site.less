@@ -375,10 +375,10 @@ input[type="checkbox"].input-validation-error {
     transition:5s linear all;
     opacity: 1;
 }
+
 .feedback-banner.ng-hide {
   opacity: 0;
 }
-
 
 .vertical-align--unknown-size {
     position: fixed;
@@ -395,12 +395,15 @@ input[type="checkbox"].input-validation-error {
 .list-ccm-tab-ongoing-count {
     font-weight: 800;
 }
+
 .list-ccm-tab-ongoing-text {
 
 }
+
 .list-ccm-tab-registered-count {
     font-weight: 800;
 }
+
 .list-ccm-tab-registered-text {
 
 }
@@ -412,7 +415,6 @@ input[type="checkbox"].input-validation-error {
         font-weight: 800;
     }
 }
-
 
 .panel-body-lp {
     .panel-body;
@@ -445,13 +447,20 @@ input[type="checkbox"].input-validation-error {
         &:hover {
             background: @color-hover-table;
         }
-
         /* Ongoing calls */
         .list-ccm--type-id {
-
         }
 
         .list-ccm--sip-name, .list-ccm--sip-name-to {
+            font-weight: bold;
+            color: @text-color-default;
+
+            @media (min-width: @screen-lg-min) {
+                font-size: 1em;
+            }
+        }
+
+        .list-ccm--sip-name--history, .list-ccm--sip-name-to--history {
             font-weight: bold;
             color: @text-color-default;
 
@@ -507,27 +516,23 @@ input[type="checkbox"].input-validation-error {
             position: absolute;
             left: -15px;
 
-            @media (max-width: 925px) { 
+            @media (max-width: 925px) {
                 display: none;
             }
         }
 
-        .list-ccm--old-call {
+        .list-ccm--call-dir-icon--history {
             color: @text-color-disable;
             font-weight: bold;
-
-            @media (min-width: @screen-lg-min) {
-            }
         }
 
-        .list-ccm--old-call-time {
+        .list-ccm--time--history {
             font-size: 14px;
         }
-
         /* Registered */
         .list-ccm--reg-ua-name {
-
         }
+
         .list-ccm--reg-ua-comment {
             @media (max-width: @screen-xs-max) {
                 font-weight: bold;
@@ -537,6 +542,7 @@ input[type="checkbox"].input-validation-error {
 
         .list-ccm--reg-ua-comment--edit {
             cursor: pointer;
+
             span {
                 border-bottom: 1px dashed @border-color-editable;
             }
@@ -545,6 +551,7 @@ input[type="checkbox"].input-validation-error {
         .list-ccm--reg-ua-comment--edit-empty {
             /* If comment is editable but empty */
             cursor: cell;
+
             span {
                 border-bottom: 1px dashed @border-color-editable;
                 width: 20px;
@@ -553,12 +560,12 @@ input[type="checkbox"].input-validation-error {
         }
 
         .list-ccm--reg-ua-location {
-            
         }
 
         .list-ccm--reg-ua-name-to {
             font-weight: bold;
         }
+
         .list-ccm--reg-ua-name-to--less {
             font-weight: bold;
         }
@@ -571,9 +578,7 @@ input[type="checkbox"].input-validation-error {
         }
 
         .list-ccm--reg-ua-call-dir-icon {
-
         }
-
     }
 
     .list-ccm--bg {
@@ -838,6 +843,7 @@ list-ccm-inlineicon */
 .list-ccm-icongroup:before, .list-ccm-icongroup:after {
 
 }
+
 .list-ccm-icongroup {
     position: absolute;
     top: 0;
@@ -924,10 +930,53 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 /* *******************************************************
  * Full-overview, for big-screen presentation */
 .full-overview {
-    font-size: 18px;
     background: black;
-    min-height: 100vh;
-    margin-bottom: -20px;
+    scrollbar-face-color: #646464;
+    scrollbar-base-color: #646464;
+    scrollbar-3dlight-color: #646464;
+    scrollbar-highlight-color: #646464;
+    scrollbar-track-color: #000;
+    scrollbar-arrow-color: #000;
+    scrollbar-shadow-color: #646464;
+    scrollbar-dark-shadow-color: #646464;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+        height: 3px;
+    }
+
+    &::-webkit-scrollbar-button {
+        background-color: #222222;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: #646464;
+    }
+
+    &::-webkit-scrollbar-track-piece {
+        background-color: #000;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        height: 50px;
+        background-color: #131313;
+        border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-corner {
+        background-color: #646464;
+    }
+
+    &::-webkit-resizer {
+        background-color: #666;
+    }
+
+    .ccm-main-container {
+        font-size: 18px;
+        background: black;
+        min-height: 100vh;
+        margin-bottom: -20px;
+    }
 
     hr {
         margin-top: 0;
@@ -936,7 +985,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         border-top: 0 solid #eee;
     }
 
-    .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+    .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
         color: #fff;
         background-color: #222222;
     }
@@ -950,7 +999,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         border-color: transparent;
     }
 
-    .panel-default>.panel-heading {
+    .panel-default > .panel-heading {
         background-color: transparent;
         color: @text-color-inverted;
     }
@@ -985,8 +1034,18 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         display: block;
     }
 
+    .list-ccm-tab--biglist {
+        .list-ccm-tab-ongoing-count, .list-ccm-tab-registered-count {
+            font-size: 120%;
+        }
+
+        .list-ccm-tab-ongoing-text, .list-ccm-tab-registered-text {
+            display: inline-block;
+        }
+    }
+
     .list-ccm-navigation {
-        display:none;
+        display: none;
     }
 
     .list-ccm-container {
@@ -1027,7 +1086,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         }
 
         .list-ccm--call-dir-icon {
-            display:none;
+            display: none;
         }
 
         .panel-body-item {
@@ -1066,7 +1125,16 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
                 }
             }
 
-            .list-ccm--sip-location {
+            .list-ccm--sip-name--history, .list-ccm--sip-name-to--history {
+                font-weight: bold;
+                color: #282828;
+
+                @media (min-width: @screen-lg-min) {
+                    font-size: 1em;
+                }
+            }
+
+            .list-ccm--sip-location, .list-ccm--sip-location--history {
                 font-size: 16px;
                 color: #686868;
             }
@@ -1089,23 +1157,21 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 
             .list-ccm--ongoing-time {
                 color: #4dff94;
+
                 @media (min-width: @screen-lg-min) {
                     font-size: 18px;
                     color: #4dff94;
                 }
             }
 
-            .list-ccm--old-call {
-                color: #cacaca;
+            .list-ccm--call-dir-icon--history {
+                color: #282828;
                 font-weight: bold;
-
-                @media (min-width: @screen-lg-min) {
-                    font-size: 18px;
-                }
             }
 
-            .list-ccm--old-call-time {
+            .list-ccm--time--history {
                 font-size: 1em;
+                color: #4e4816;
             }
         }
 
@@ -1128,7 +1194,6 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
             .list-ccm--sip-name, .list-ccm--sip-name-to, .list-ccm--reg-ua-name {
                 color: #fff !important;
             }
-
             /*&:nth-child(1) {
                 .list-ccm--sip-location {
                     display:block;
@@ -1143,7 +1208,6 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
                     margin-left: 0 !important;
                 }
             }*/
-
             &:nth-child(odd) {
                 background-color: #313131;
                 color: #fff;

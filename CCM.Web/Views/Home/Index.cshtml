@@ -16,9 +16,13 @@
 {
 }
 
+@section BodyAttributes {
+    ng-controller="overviewController" ng-class="{ 'full-overview' : uiStateNightmode }"
+}
+
 @section bodyTop
 {
-    <div ng-controller="overviewController" ng-class="{'full-overview' : uiStateNightmode }">
+    <div class="ccm-main-container">
         <shortcut></shortcut>
         <div class="feedback-banner" id="userFeedback" ng-hide="socketStatusHubGui.socketStatus">
             @Resources.Socket_Connection_Is_Lost_With_Server, @Resources.Socket_Connection_Reconnect_Attempts: {{socketStatusHubGui.reconnectAttempts}}
@@ -109,7 +113,7 @@
             </div>
         </div>
         <div class="col-md-10 list-ccm-container">
-            <ul class="nav nav-pills nav-justified list-ccm-tabs">
+            <ul class="nav nav-pills nav-justified list-ccm-tabs" ng-class="{ 'list-ccm-tab--biglist' : filteredRegisteredSips.length > 21 }">
                 <!-- Ongoing calls headline -->
                 <li class="active list-ccm-tab-ongoing">
                     <a href="#ongoing" data-toggle="tab">
@@ -158,6 +162,7 @@
                                         <span class="list-ccm--sip-location" ng-if="call.ToLocationName.length" title="{{call.ToLocationShortName}}">({{call.ToLocationName}})</span>
                                         <div class="list-ccm--sip-comment-to">{{call.ToComment}}</div>
                                     </div>
+
                                     <div class="col-md-2 text-right">
                                         @if (User.IsInRole(Roles.Admin))
                                         {
@@ -181,22 +186,23 @@
                             <div class="panel-body-lp list-ccm-calls-history">
                                 <div class="row panel-body-item list-ccm--bg" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter ) track by $index">
                                     <div class="col-md-5">
-                                        <span ng-style="{'background-color': call.FromCodecTypeColor}" class="list-ccm--type-id" title="{{call.FromCodecTypeName}}">&nbsp;</span>
-                                        <a ng-if="call.FromId.length" href="#" ng-click="showSipInfo(call.FromId, call.FromSip, $event)" class="list-ccm--sip-name list-ccm--old-call" title="{{call.FromSip}}">{{call.FromDisplayName}}</a>
-                                        <span ng-if="!call.FromId.length" class="list-ccm--old-call" title="{{call.FromSip}}">{{call.FromDisplayName}}</span>
-                                        <span ng-if="call.FromLocationName.length" title="{{call.FromLocationShortName}}" class="list-ccm--sip-location">({{call.FromLocationName}})</span>
+                                        <span class="list-ccm--type-id" ng-style="{'background-color': call.FromCodecTypeColor}" title="{{call.FromCodecTypeName}}">&nbsp;</span>
+                                        <a class="list-ccm--sip-name--history" ng-if="call.FromId.length" href="#" ng-click="showSipInfo(call.FromId, call.FromSip, $event)" title="{{call.FromSip}}">{{call.FromDisplayName}}</a>
+                                        <span class="list-ccm--sip-name--history" ng-if="!call.FromId.length" title="{{call.FromSip}}">{{call.FromDisplayName}}</span>
+                                        <span class="list-ccm--sip-location--history" ng-if="call.FromLocationName.length" title="{{call.FromLocationShortName}}">({{call.FromLocationName}})</span>
                                     </div>
 
                                     <div class="col-md-4">
-                                        <span class="glyphicon glyphicon-arrow-right list-ccm--old-call list-ccm--call-dir-icon"></span>
-                                        <span ng-style="{'background-color': call.ToCodecTypeColor}" class="list-ccm--type-id" title="{{call.ToCodecTypeName}}">&nbsp;</span>
-                                        <a ng-if="call.ToId.length" href="#" ng-click="showSipInfo(call.ToId, call.ToSip, $event)" class="list-ccm--sip-name-to list-ccm--old-call" title="{{call.ToSip}}">{{call.ToDisplayName}}</a>
-                                        <span ng-if="!call.ToId.length" class="list-ccm--sip-name-to list-ccm--old-call" title="{{call.ToSip}}">{{call.ToDisplayName}}</span>
-                                        <span ng-if="call.ToLocationName.length" title="{{call.ToLocationShortName}}" class="list-ccm--sip-location">({{call.ToLocationName}})</span>
+                                        <span class="glyphicon glyphicon-arrow-right list-ccm--call-dir-icon list-ccm--call-dir-icon--history"></span>
+                                        <span class="list-ccm--type-id" ng-style="{'background-color': call.ToCodecTypeColor}" title="{{call.ToCodecTypeName}}">&nbsp;</span>
+                                        <a class="list-ccm--sip-name-to--history" ng-if="call.ToId.length" href="#" ng-click="showSipInfo(call.ToId, call.ToSip, $event)" title="{{call.ToSip}}">{{call.ToDisplayName}}</a>
+                                        <span class="list-ccm--sip-name-to--history" ng-if="!call.ToId.length" title="{{call.ToSip}}">{{call.ToDisplayName}}</span>
+                                        <span class="list-ccm--sip-location--history" ng-if="call.ToLocationName.length" title="{{call.ToLocationShortName}}">({{call.ToLocationName}})</span>
                                     </div>
+
                                     <div class="col-md-3 text-right" ng-class="'class'|callTimeWarning:10000:call.Started:call.Ended">
-                                        <div class="list-ccm--old-call-time" title="{{ call.Duration }}">{{call.Started | date:'yyyy-MM-dd HH:mm:ss' }}</div>
-                                        <div class="list-ccm--old-call-time" title="{{ call.Duration }}">{{call.Ended | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+                                        <div class="list-ccm--time--history" title="{{ call.Duration }}">{{call.Started | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+                                        <div class="list-ccm--time--history" title="{{ call.Duration }}">{{call.Ended | date:'yyyy-MM-dd HH:mm:ss' }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -371,9 +377,9 @@
                         <div class="col-md-12">
                             <div class="row">
                                 <div class="ccm-ui-popmixer--unit" ng-repeat="input in inputs track by input.id">
-                                    <button class="btn" 
-                                            ng-class="{'btn-primary': input.enabled == true && !input.disabled, 'btn-default': input.enabled == false && !input.disabled }" 
-                                            ng-disabled="input.disabled" 
+                                    <button class="btn"
+                                            ng-class="{'btn-primary': input.enabled == true && !input.disabled, 'btn-default': input.enabled == false && !input.disabled }"
+                                            ng-disabled="input.disabled"
                                             ng-click="toggleInputEnabled(input)">
                                         ON {{input.number}}
                                     </button>
@@ -405,9 +411,11 @@
 
                         <div class="row">
                             <div class="ccm-ui-popmixer--unit-gpo col-md-6">
-                                <button ng-repeat="gpo in gpos" class="btn gpo" 
-                                        ng-class="{'btn-success': gpo.active == true, 'btn-default': gpo.active == false }" 
-                                        ng-click="setGpo(gpo)">{{gpo.name}}</button>
+                                <button ng-repeat="gpo in gpos" class="btn gpo"
+                                        ng-class="{'btn-success': gpo.active == true, 'btn-default': gpo.active == false }"
+                                        ng-click="setGpo(gpo)">
+                                    {{gpo.name}}
+                                </button>
                             </div>
 
                             <div class="ccm-ui-popmixer--unit-vu col-md-6">
@@ -476,7 +484,6 @@
     </div>
 
 </script>
-
 
 @section bodyBottom
 {
