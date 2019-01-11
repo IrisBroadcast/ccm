@@ -900,4 +900,13 @@
   <data name="NrOfGpos" xml:space="preserve">
     <value>Antal GPO:er</value>
   </data>
+  <data name="No_Items_In_Filtered_Call_History" xml:space="preserve">
+    <value>Ingen samtalshistorik</value>
+  </data>
+  <data name="No_Ongoing_Calls" xml:space="preserve">
+    <value>Inga pågående samtal</value>
+  </data>
+  <data name="No_Registered_User_Agents" xml:space="preserve">
+    <value>Inga registrerade enheter</value>
+  </data>
 </root>

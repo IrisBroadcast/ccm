@@ -1726,6 +1726,33 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ingen samtalshistorik.
+        /// </summary>
+        public static string No_Items_In_Filtered_Call_History {
+            get {
+                return ResourceManager.GetString("No_Items_In_Filtered_Call_History", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inga pågående samtal.
+        /// </summary>
+        public static string No_Ongoing_Calls {
+            get {
+                return ResourceManager.GetString("No_Ongoing_Calls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inga registrerade enheter.
+        /// </summary>
+        public static string No_Registered_User_Agents {
+            get {
+                return ResourceManager.GetString("No_Registered_User_Agents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Antal GPO:er.
         /// </summary>
         public static string NrOfGpos {

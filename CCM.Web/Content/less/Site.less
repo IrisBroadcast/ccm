@@ -27,6 +27,8 @@
 @list-row-even: #f7f7f7;
 @list-active-odd: #7be64d;
 @list-active-even: #20DB20;
+@list-row-feedback-bg: #f8f8f8;
+@list-row-feedback-color: #848ba0;
 
 @text-header-bg: #e9e9e9;
 @text-selection-bg: #bdc3c7;
@@ -430,6 +432,16 @@ input[type="checkbox"].input-validation-error {
 
     .panel-body-item {
         .list-group-item;
+
+        &.user-feedback-row {
+            background-color: @list-row-feedback-bg;
+            text-align: center;
+
+            &:hover {
+                background-color: @list-row-feedback-bg !important;
+            }
+        }
+
         padding: 10px 0;
         border-width: 0px 0px 1px 0px;
         border-color: @border-color-main;
@@ -578,6 +590,16 @@ input[type="checkbox"].input-validation-error {
         }
 
         .list-ccm--reg-ua-call-dir-icon {
+        }
+
+        .list-ccm--user-feedback {
+            font-weight: bold;
+            color: @list-row-feedback-color;
+            text-align: center;
+
+            @media (min-width: @screen-lg-min) {
+                font-size: 1em;
+            }
         }
     }
 

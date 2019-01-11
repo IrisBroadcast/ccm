@@ -113,7 +113,7 @@
             </div>
         </div>
         <div class="col-md-10 list-ccm-container">
-            <ul class="nav nav-pills nav-justified list-ccm-tabs" ng-class="{ 'list-ccm-tab--biglist' : filteredRegisteredSips.length > 21 }">
+            <ul class="nav nav-pills nav-justified list-ccm-tabs" ng-class="{ 'list-ccm-tab--biglist' : filteredOnGoingCalls.length > 21 }">
                 <!-- Ongoing calls headline -->
                 <li class="active list-ccm-tab-ongoing">
                     <a href="#ongoing" data-toggle="tab">
@@ -137,15 +137,17 @@
                         <div class="panel panel-default list-ccm-calls">
                             <div class="panel-heading list-ccm-heading list-ccm-tab-panel-heading">
                                 <div class="row">
-                                    <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead-sort' : ongoingCallSort.column == 'FromDisplayName'}">@Resources.Caller</div>
-                                    <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('ToDisplayName')" ng-class="{'list-ccm-thead-sort' : ongoingCallSort.column == 'ToDisplayName'}">@Resources.Callee</div>
+                                    <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'FromDisplayName'}">@Resources.Caller</div>
+                                    <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('ToDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'ToDisplayName'}">@Resources.Callee</div>
                                     <div class="col-md-2 list-ccm-thead-headline text-right" ng-click="changeOngoingCallSorting('DurationSeconds')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'DurationSeconds'}">@Resources.Call_Duration&nbsp;<span class="glyphicon glyphicon-time" aria-hidden="true"></span></div>
                                 </div>
                             </div>
+
                             <!-- Ongoing calls -->
                             <div class="panel-body-lp list-ccm-calls-ongoing">
                                 <div class="row panel-body-item list-ccm--bg-active"
                                      ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.CallId">
+                                    
                                     <div class="col-md-5">
                                         <span class="list-ccm--type-id" ng-style="{'background-color': call.FromCodecTypeColor}" title="{{call.FromCodecTypeName}}">&nbsp;</span>
                                         <a class="list-ccm--sip-name" ng-if="call.FromId.length" href="#" ng-click="showSipInfo(call.FromId, call.FromSip, $event)" title="{{call.FromSip}}">{{call.FromDisplayName}}</a>
@@ -174,6 +176,15 @@
                                         }
                                     </div>
                                 </div>
+
+                                <div class="row panel-body-item list-ccm--bg user-feedback-row" ng-hide="filteredOnGoingCalls.length">
+                                    <div class="col-md-12">
+                                        <span class="list-ccm--user-feedback">
+                                            @Resources.No_Ongoing_Calls
+                                        </span>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="panel-heading list-ccm-heading list-ccm-tab-panel-heading">
                                 <div class="row">
@@ -182,6 +193,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <!-- Old calls / History -->
                             <div class="panel-body-lp list-ccm-calls-history">
                                 <div class="row panel-body-item list-ccm--bg" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter ) track by $index">
@@ -205,6 +217,14 @@
                                         <div class="list-ccm--time--history" title="{{ call.Duration }}">{{call.Ended | date:'yyyy-MM-dd HH:mm:ss' }}</div>
                                     </div>
                                 </div>
+
+                                <div class="row panel-body-item list-ccm--bg user-feedback-row" ng-hide="filteredOldCalls.length">
+                                    <div class="col-md-12">
+                                        <span class="list-ccm--user-feedback">
+                                            @Resources.No_Items_In_Filtered_Call_History
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -223,6 +243,7 @@
 
                             <!-- RegisteredSips -->
                             <div class="panel-body-lp list-ccm-registered-uas">
+
                                 <div class="row panel-body-item " ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by sip.Id " ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.InCall]">
                                     <div class="col-md-3" title="{{sip.Sip}}">
                                         <span title="{{sip.CodecTypeName}}" class="list-ccm--reg-ua-type-id" ng-style="{'background-color': sip.CodecTypeColor}">&nbsp;</span>
@@ -251,6 +272,14 @@
                                     }
                                     <div class="col-md-1 list-ccm--reg-ua-logo-small" ng-if="sip.Image.length > 0">
                                         <img ng-src="@Url.Content("~/Images/Agents")/{{sip.Image}}" alt="" />
+                                    </div>
+                                </div>
+
+                                <div class="row panel-body-item list-ccm--bg user-feedback-row" ng-hide="filteredRegisteredSips.length">
+                                    <div class="col-md-12">
+                                        <span class="list-ccm--user-feedback">
+                                            @Resources.No_Registered_User_Agents
+                                        </span>
                                     </div>
                                 </div>
 
