@@ -74,7 +74,6 @@ namespace CCM.Data
         public DbSet<UserAgentEntity> UserAgents { get; set; }
         public DbSet<RegionEntity> Regions { get; set; }
         public DbSet<FilterEntity> Filters { get; set; }
-        public DbSet<LocalPasswordEntity> LocalPasswords { get; set; }
         public DbSet<CodecTypeEntity> CodecTypes { get; set; }
         public DbSet<CityEntity> Cities { get; set; }
         public DbSet<UserAgentProfileOrderEntity> UserAgentProfileOrders { get; set; }
