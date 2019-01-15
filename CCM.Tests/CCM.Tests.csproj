@@ -122,11 +122,6 @@
     <Compile Include="CacheTests\CachedRegisteredSipRepositoryTests.cs" />
     <Compile Include="CacheTests\ProfileCacheTests.cs" />
     <Compile Include="CallEndedTests.cs" />
-    <Compile Include="CodecControlTests\Baresip\BaresipApiTests.cs" />
-    <Compile Include="CodecControlTests\DummySettingsManager.cs" />
-    <Compile Include="CodecControlTests\IkusNet\IkusNetApiTests.cs" />
-    <Compile Include="CodecControlTests\IkusNet\IkusnetTests.cs" />
-    <Compile Include="CodecControlTests\Umac\UmacTests.cs" />
     <Compile Include="ControllerTests\External\AccountControllerTests.cs" />
     <Compile Include="KamailioTests\DialogTests.cs" />
     <Compile Include="KamailioTests\RegisterTests.cs" />
@@ -147,10 +142,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CCM.CodecControl\CCM.CodecControl.csproj">
-      <Project>{90fce828-3bfe-4879-b8d2-ae0df4677d25}</Project>
-      <Name>CCM.CodecControl</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CCM.Core\CCM.Core.csproj">
       <Project>{2b04cc56-7dfe-40f0-ba17-21d8b93e0b75}</Project>
       <Name>CCM.Core</Name>

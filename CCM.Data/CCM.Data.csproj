@@ -145,7 +145,6 @@
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\SettingsRepository.cs" />
     <Compile Include="Repositories\SimpleRegisteredSipRepository.cs" />
-    <Compile Include="Repositories\Specialized\CodecInformationRepository.cs" />
     <Compile Include="Repositories\Specialized\LocationInfoRepository.cs" />
     <Compile Include="Repositories\Specialized\RegisteredSipDetailsRepository.cs" />
     <Compile Include="Repositories\UserAgentRepository.cs" />

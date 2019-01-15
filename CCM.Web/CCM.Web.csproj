@@ -268,11 +268,9 @@
     <Compile Include="Controllers\ApiExternal\SipEventController.cs" />
     <Compile Include="Controllers\Api\StudioMonitorApiController.cs" />
     <Compile Include="Infrastructure\WebApiFilters\StudioMonitorExceptionFilterAttribute.cs" />
-    <Compile Include="Controllers\Api\TestController.cs" />
     <Compile Include="Extensions\EnumHelpers.cs" />
     <Compile Include="Hubs\HubBase.cs" />
     <Compile Include="Infrastructure\SipAccountBasicAuthenticationAttribute.cs" />
-    <Compile Include="Models\CodecControl\AudioStatusViewModel.cs" />
     <Compile Include="Models\Home\RegisteredSipComment.cs" />
     <Compile Include="Models\Log\LevelModel.cs" />
     <Compile Include="Models\Log\CcmApplications.cs" />
@@ -291,8 +289,6 @@
     <Compile Include="Hubs\Throttler.cs" />
     <Compile Include="Infrastructure\MvcFilters\ElapsedTimeFilter.cs" />
     <Compile Include="Mappers\RegisteredSipOverviewDtoMapper.cs" />
-    <Compile Include="Models\CodecControl\AudioModeViewModel.cs" />
-    <Compile Include="Models\CodecControl\SetInputEnabledParameters.cs" />
     <Compile Include="Infrastructure\CamelCaseControllerConfigAttribute.cs" />
     <Compile Include="Models\Log\LogViewModel.cs" />
     <Compile Include="Mappers\CodecStatusMapper.cs" />
@@ -305,15 +301,12 @@
     <Compile Include="Infrastructure\SignalR\CodecStatusHubUpdater.cs" />
     <Compile Include="Models\ApiExternal\AddUserParameters.cs" />
     <Compile Include="Controllers\ApiExternal\AccountController.cs" />
-    <Compile Include="Controllers\ApiExternal\HangupController.cs" />
-    <Compile Include="Controllers\ApiExternal\CallController.cs" />
     <Compile Include="Hubs\WebGuiHub.cs" />
     <Compile Include="Models\ApiExternal\CallParameters.cs" />
     <Compile Include="Models\ApiExternal\CodecInfo.cs" />
     <Compile Include="Controllers\ApiExternal\CodecsOnlineController.cs" />
     <Compile Include="Models\ApiExternal\CodecStatus.cs" />
     <Compile Include="Controllers\ApiExternal\CodecStatusController.cs" />
-    <Compile Include="Controllers\Api\CodecControlController.cs" />
     <Compile Include="Controllers\ApiExternal\KamailioEventController.cs" />
     <Compile Include="Controllers\Api\OldCallController.cs" />
     <Compile Include="Controllers\Api\OngoingCallController.cs" />
@@ -323,7 +316,6 @@
     <Compile Include="Controllers\Api\RegisteredSipDetailsController.cs" />
     <Compile Include="Models\ApiExternal\CodecState.cs" />
     <Compile Include="Models\ApiExternal\HangupParameters.cs" />
-    <Compile Include="Models\CodecControl\Base\CodecViewModelBase.cs" />
     <Compile Include="Extensions\EnumDto.cs" />
     <Compile Include="Models\Home\RegisteredSipOverviewDto.cs" />
     <Compile Include="Models\Profile\GuidSortIndexTuple.cs" />
@@ -366,14 +358,6 @@
     <Compile Include="Models\Account\ExternalLoginConfirmationViewModel.cs" />
     <Compile Include="Models\Filter\FilterFormViewModel.cs" />
     <Compile Include="Models\Filter\FilterViewModel.cs" />
-    <Compile Include="Models\CodecControl\AvailableGposViewModel.cs" />
-    <Compile Include="Models\CodecControl\GpoViewModel.cs" />
-    <Compile Include="Models\CodecControl\InputGainAndStatusViewModel.cs" />
-    <Compile Include="Models\CodecControl\InputGainLevelViewModel.cs" />
-    <Compile Include="Models\CodecControl\InputStatusViewModel.cs" />
-    <Compile Include="Models\CodecControl\LineStatusViewModel.cs" />
-    <Compile Include="Models\CodecControl\PresetViewModel.cs" />
-    <Compile Include="Models\CodecControl\VuValuesViewModel.cs" />
     <Compile Include="Models\Location\LocationIndexViewModel.cs" />
     <Compile Include="Models\Meta\MetaFormViewModel.cs" />
     <Compile Include="Models\Meta\MetaViewModel.cs" />
@@ -809,10 +793,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CCM.CodecControl\CCM.CodecControl.csproj">
-      <Project>{90FCE828-3BFE-4879-B8D2-AE0DF4677D25}</Project>
-      <Name>CCM.CodecControl</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CCM.Core\CCM.Core.csproj">
       <Project>{2B04CC56-7DFE-40F0-BA17-21D8B93E0B75}</Project>
       <Name>CCM.Core</Name>

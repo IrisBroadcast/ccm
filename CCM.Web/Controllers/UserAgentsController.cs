@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
-using CCM.CodecControl;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
@@ -45,6 +44,16 @@ namespace CCM.Web.Controllers
         private readonly ICodecPresetRepository _codecPresetRepository;
         private readonly IUserAgentRepository _userAgentRepository;
         private readonly IProfileRepository _profileRepository;
+
+
+        // Must be in sync with implemented API:s in CodecControl
+        public static List<CodecApiInformation> AvailableApis => new List<CodecApiInformation>
+        {
+            new CodecApiInformation { DisplayName = "Prodys IkusNet", Name = "IkusNet" },
+            new CodecApiInformation { DisplayName = "Prodys IkusNet ST", Name = "IkusNetSt" },
+            new CodecApiInformation { DisplayName = "Mandozzi Umac", Name = "Umac" },
+            new CodecApiInformation { DisplayName = "Baresip Proprietary", Name = "BaresipRest" }
+        };
 
         public UserAgentsController(IUserAgentRepository userAgentRepository, IProfileRepository profileRepository, ICodecPresetRepository codecPresetRepository)
         {
@@ -170,7 +179,7 @@ namespace CCM.Web.Controllers
         private void GetCodecApiValues(UserAgentViewModel model)
         {
             model.CodecApis = new Dictionary<string, string> {{string.Empty, string.Empty}};
-            foreach (var availableApi in CodecManager.AvailableApis.Values)
+            foreach (var availableApi in AvailableApis)
             {
                 model.CodecApis.Add(availableApi.DisplayName, availableApi.Name);
             }
@@ -182,6 +191,7 @@ namespace CCM.Web.Controllers
             model.InputDbInListMax = 100;
         }
 
+      
         private UserAgent GetUserAgentFromViewModel(UserAgentViewModel model)
         {
             var userAgent = new UserAgent
@@ -309,4 +319,11 @@ namespace CCM.Web.Controllers
             }
         }
     }
+
+    public class CodecApiInformation
+    {
+        public string DisplayName { get; set; }
+        public string Name { get; set; }
+    }
+
 }

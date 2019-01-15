@@ -27,9 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using CCM.CodecControl;
 using CCM.Core.Cache;
-using CCM.Core.CodecControl.Interfaces;
 using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
@@ -96,13 +94,11 @@ namespace CCM.Web.Infrastructure
             _kernel.Bind<ICodecTypeRepository>().To<CodecTypeRepository>();
             _kernel.Bind<ICityRepository>().To<CityRepository>();
             _kernel.Bind<IMetaRepository>().To<MetaRepository>();
-            _kernel.Bind<ICodecManager>().To<CodecManager>();
             _kernel.Bind<IStatisticsManager>().To<StatisticsManager>();
             _kernel.Bind<ICodecPresetRepository>().To<CodecPresetRepository>();
             _kernel.Bind<ILogRepository>().To<LogRepository>();
             _kernel.Bind<IGuiHubUpdater>().To<GuiHubUpdater>();
             _kernel.Bind<IStatusHubUpdater>().To<CodecStatusHubUpdater>();
-            _kernel.Bind<ICodecInformationRepository>().To<CodecInformationRepository>();
             _kernel.Bind<IKamailioMessageParser>().To<KamailioMessageParser>();
             _kernel.Bind<ISipEventParser>().To<SipEventParser>();
             _kernel.Bind<IKamailioDataParser>().To<KamailioDataParser>();

@@ -30,11 +30,7 @@ using CCM.Data.Entities;
 using CCM.Web.Models.Profile;
 using CCM.Web.Models.Studio;
 using CCM.Web.Models.UserAgents;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using CCM.Core.CodecControl.Entities;
-using CCM.Web.Models.CodecControl;
 using CCM.Web.Models.StudioMonitor;
 
 
@@ -136,9 +132,6 @@ namespace CCM.Web.Infrastructure
                     .ForMember(x => x.CreatedBy, opt => opt.Ignore())
                     .ForMember(x => x.UpdatedOn, opt => opt.Ignore())
                     .ForMember(x => x.UpdatedBy, opt => opt.Ignore());
-
-                cfg.CreateMap<AudioStatus, AudioStatusViewModel>()
-                    .ForMember(x => x.Error, opt => opt.Ignore());
             });
 
             Mapper.Configuration.CompileMappings();

@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using CCM.Core.CodecControl.Entities;
+using CCM.Core.Codec;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
 using CCM.Core.SipEvent;

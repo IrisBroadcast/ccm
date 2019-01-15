@@ -24,27 +24,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.ComponentModel;
-
-namespace CCM.Core.CodecControl.Enums
+namespace CCM.Core.Codec
 {
-    public enum LineStatusCode
+    public class CodecInformation
     {
-        [Description("Ingen tillgänglig förbindelse möjlig")]NoPhysicalLine = 0,
-        [Description("Nedkopplad")]Disconnected,
-        [Description("Kopplar ned")]Disconnecting,
-        [Description("Ringer")]Calling, // Ringer upp
-        [Description("Mottagning av samtal")]ReceivingCall,
-        [Description("Samtal uppringt")]ConnectedCalled, // Uppkopplad. Ringde upp samtalet.
-        [Description("Samtal mottaget")]ConnectedReceived, // Uppkopplad. Tog emot samtalet.
-        [Description("Ej tillgänglig")]NotAvailable,
-        [Description("Förhandlar om dynamisk IP-adresstilldelning")]NegotiatingDhcp,
-        [Description("Återansluter")]Reconnecting,
-        [Description("Testar förbindelsen")]ConnectedTestingLine,
-        [Description("Laddar upp filen")]ConnectedUploadingFile,
-        [Description("Laddar ner filen")]ConnectedDownloadingFile,
-        [Description("Initiering")]Initializing,
-        [Description("Kan inte läsa status")]ErrorGettingStatus = 333
+        public string SipAddress { get; set; }
+        public string Ip { get; set; }
+        public string Api { get; set; }
+        public string GpoNames { get; set; }
+        public int NrOfInputs { get; set; }
+        public int NrOfGpos { get; set; }
     }
-    
 }

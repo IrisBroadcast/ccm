@@ -30,7 +30,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
-using CCM.Core.CodecControl.Entities;
+using CCM.Core.Codec;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Enums;
