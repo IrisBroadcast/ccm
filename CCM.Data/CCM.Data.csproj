@@ -113,7 +113,6 @@
     <Compile Include="Entities\ProfileGroupEntity.cs" />
     <Compile Include="Entities\ProfileGroupProfileOrderEntity.cs" />
     <Compile Include="Entities\RegionEntity.cs" />
-    <Compile Include="Entities\LocalPasswordEntity.cs" />
     <Compile Include="Entities\OwnerEntity.cs" />
     <Compile Include="Entities\ProfileEntity.cs" />
     <Compile Include="Entities\RegisteredSipEntity.cs" />

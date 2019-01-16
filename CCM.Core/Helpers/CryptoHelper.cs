@@ -43,6 +43,7 @@ namespace CCM.Core.Helpers
         public static string Md5HashSaltedPassword(string password)
         {
             // Returnerar en sträng med hashen av lösenord + slumpmässigt salt. Strängen innehåller hash + saltet.
+            // Returns string with a hash of 'password' + 'random salt'. 
 
             var rng = new RNGCryptoServiceProvider();
 

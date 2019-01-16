@@ -128,7 +128,6 @@ namespace CCM.Core.Managers
             return sipStatistics;
         }
 
-
         public IList<DateBasedStatistics> GetCodecTypeStatistics(DateTime startDate, DateTime endDate, Guid codecTypeId)
         {
             var codecTypeStatistics = new List<DateBasedStatistics>();

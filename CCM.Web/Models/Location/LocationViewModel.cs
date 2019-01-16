@@ -80,6 +80,7 @@ namespace CCM.Web.Models.Location
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
+            // TODO: Englishfy
             if (!string.IsNullOrWhiteSpace(Net))
             {
                 if (Cidr == null)

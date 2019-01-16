@@ -65,7 +65,7 @@ namespace CCM.Web.Controllers
                     Scheme = "http",
                     Host = studio.CameraAddress,
                     UserName = studio.CameraUsername,
-                    Password = !string.IsNullOrEmpty(studio.CameraUsername) ? studio.CameraPassword : string.Empty // Lösenord utan användarnamn ger ogiltig url.
+                    Password = !string.IsNullOrEmpty(studio.CameraUsername) ? studio.CameraPassword : string.Empty // Password without username gives invalid URL
                 }.Uri;
 
                 vm.CameraVideoUrl = new Uri(baseUrl, studio.CameraVideoUrl).ToString();

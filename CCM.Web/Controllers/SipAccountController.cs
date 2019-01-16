@@ -62,7 +62,7 @@ namespace CCM.Web.Controllers
                 ? _sipAccountManager.GetAll()
                 : _sipAccountManager.Find(search);
 
-            var defaultCodecType = new CodecType() { Id = Guid.NewGuid(), Name = "Oklassificerade" };
+            var defaultCodecType = new CodecType() { Id = Guid.NewGuid(), Name = "Oklassificerade" }; // TODO: Englishfy
             sipAccounts.ForEach(a => { a.CodecType = a.CodecType ?? defaultCodecType; });
 
             sipAccounts =sipAccounts.OrderBy(a => a.CodecType.Name ?? string.Empty).ThenBy(a => a.UserName ?? string.Empty).ToList();
@@ -160,7 +160,6 @@ namespace CCM.Web.Controllers
                     {
                         ModelState.AddModelError("CreateUser", "Användaren kunde inte sparas");
                     }
-                    
                 }
             }
 

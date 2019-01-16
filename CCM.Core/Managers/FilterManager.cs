@@ -49,6 +49,7 @@ namespace CCM.Core.Managers
 
         /// <summary>
         /// Hämtar lista med egenskaper hos CachedRegisteredSip-objektet som är möjliga att filtrera på.
+        /// Get's a list with properties in the CachedRegisteredSip-object, that's possible to base filter on
         /// </summary>
         /// <returns></returns>
         public List<AvailableFilter> GetFilterProperties()
@@ -99,7 +100,7 @@ namespace CCM.Core.Managers
         }
 
         /// <summary>
-        /// Hämtar aktiva filter inklusive lista med deras möjliga val
+        /// Get's active filters and a list with it's possible selections
         /// </summary>
         /// <returns></returns>
         public List<AvailableFilter> GetAvailableFiltersIncludingOptions()

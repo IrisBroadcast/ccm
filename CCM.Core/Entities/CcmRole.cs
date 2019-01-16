@@ -35,7 +35,5 @@ namespace CCM.Core.Entities
         public CcmRole()
         {
         }
-
-
     }
 }

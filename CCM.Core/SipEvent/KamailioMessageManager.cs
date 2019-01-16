@@ -129,7 +129,8 @@ namespace CCM.Core.SipEvent
 
             var call = new Call();
 
-            // Om user-delen är numerisk antar vi att det är ett telefonnummer (trots att sip-adresser egentligen kan vara numeriska)
+            // Om user-delen är numerisk antar vi att det är ett telefonnummer
+            // (trots att sip-adresser egentligen kan vara numeriska)
             var fromSip = sipMessage.FromSipUri.User.IsNumeric() ? sipMessage.FromSipUri.User : sipMessage.FromSipUri.UserAtHost;
             var from = _sipRepository.GetCachedRegisteredSips().SingleOrDefault(rs => rs.Sip == fromSip);
             call.FromSip = fromSip;

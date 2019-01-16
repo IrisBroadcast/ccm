@@ -26,9 +26,11 @@
 
 using System;
 using System.Linq;
+using System.Resources;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Extensions;
+using CCM.Core.Properties;
 
 namespace CCM.Core.Helpers
 {
@@ -81,19 +83,18 @@ namespace CCM.Core.Helpers
 
             if (username.IsNumeric())
             {
-                // Telefonnummer
+                // Phone number
                 if (username.Length <= 6)
                 {
-                    // Intern anknytning
+                    // Internal short phone number
                     return username;
                 }
 
-                return "Externt nummer";
+                return Resources.External_Phone_Number;
             }
             
             return s;
         }
-
 
         public static string AnonymizeDisplayName(string s)
         {
@@ -108,19 +109,17 @@ namespace CCM.Core.Helpers
 
             if (username.IsNumeric())
             {
-                // Telefonnummer
+                // Phone number
                 if (username.Length <= 6)
                 {
-                    // Intern anknytning
+                    // Internal short phone number
                     return string.Format("Ank {0}", username);
                 }
 
-                return "Externt nummer";
+                return Resources.External_Phone_Number;
             }
 
             return s;
         }
-
-        
     }
 }

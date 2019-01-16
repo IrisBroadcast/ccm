@@ -100,12 +100,11 @@ namespace CCM.Core.Service
 
                 if (sipsOnline == null) { return new UserAgentsResultDto() { Profiles = new List<ProfileDto>(), UserAgents = new List<UserAgentDto>() }; }
 
-                // Exkludera egna kodaren
+                // Exclude 'yourself'
                 sipsOnline = sipsOnline.Where(sip => sip.Sip != caller).ToList();
 
-                // Eventuellt exkludera kodare i samtal
+                // Exclude user-agents in call
                 sipsOnline = includeCodecsInCall ? sipsOnline : sipsOnline.Where(sip => !sip.InCall).ToList();
-
             }
             else
             {
@@ -129,7 +128,7 @@ namespace CCM.Core.Service
         }
 
         /// <summary>
-        /// Returnerar lista med kodare online filtrerat på filterparametrar
+        /// Returns a list with online codecs / user-agents based on filter parameters
         /// </summary>
         private IList<RegisteredSipDto> GetFilteredSipsOnline(IList<FilterSelection> filterSelections)
         {
@@ -147,11 +146,10 @@ namespace CCM.Core.Service
 
             log.Debug("Found {0} registered sips.", registeredSips.Count);
             return registeredSips;
-
         }
 
         /// <summary>
-        /// Returnerar en lista med de filter som efterfrågats samt deras filter-värde
+        /// Returns a list with the filter properties and their filter value thats been selected
         /// </summary>
         private List<FilterSelection> GetFilteringValues(IList<KeyValuePair<string, string>> selectedFilters)
         {
@@ -166,7 +164,6 @@ namespace CCM.Core.Service
             return filterSelections;
         }
 
-
         private UserAgentsResultDto ProfilesAndUserAgents(IEnumerable<RegisteredSipDto> callees, IList<ProfileDto> callerProfiles)
         {
             var userAgents = new List<UserAgentDto>();
@@ -178,6 +175,7 @@ namespace CCM.Core.Service
                 foreach (var callee in callees)
                 {
                     // INFO: Viktigt att ordningen på gemensamma profiler baseras på callee's profilordning.
+                    // INFO: !Important! The order of common profiles MUST be based on callee's profile order
                     var matchingProfiles = callee.Profiles.Intersect(callerProfileNames).ToList();
 
                     if (matchingProfiles.Any())

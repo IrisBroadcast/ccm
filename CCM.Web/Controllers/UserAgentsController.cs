@@ -191,7 +191,6 @@ namespace CCM.Web.Controllers
             model.InputDbInListMax = 100;
         }
 
-      
         private UserAgent GetUserAgentFromViewModel(UserAgentViewModel model)
         {
             var userAgent = new UserAgent

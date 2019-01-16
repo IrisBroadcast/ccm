@@ -139,11 +139,11 @@ namespace CCM.Web.Controllers
             };
 
             Debug.WriteLine($"Cache name: {name}");
-            Debug.WriteLine($"Antal cachade objekt: {count}");
+            Debug.WriteLine($"Cache count objects: {count}");
             Debug.WriteLine($"Cache hash code: {hashCode}");
             Debug.WriteLine("");
 
-            Debug.WriteLine("Cachens innehåll");
+            Debug.WriteLine("Cache content");
 
             var cacheEnumberable = (IEnumerable)memoryCache;
             foreach (DictionaryEntry item in cacheEnumberable)
@@ -159,13 +159,13 @@ namespace CCM.Web.Controllers
                 };
                 model.CachedItems.Add(cachedItem);
 
-                Debug.WriteLine($"Cachenyckel: {cachedItem.CacheKey}");
-                Debug.WriteLine($"Cachad type: {cachedItem.CachedType}");
+                Debug.WriteLine($"Cached key: {cachedItem.CacheKey}");
+                Debug.WriteLine($"Cached type: {cachedItem.CachedType}");
 
                 if (cachedList != null)
                 {
-                    Debug.WriteLine("Cachat objekt är en lista");
-                    Debug.WriteLine($"Antal objekt i cachad lista: {cachedItem.ListCount}");
+                    Debug.WriteLine("Object cashed is a list");
+                    Debug.WriteLine($"Items in cached list count: {cachedItem.ListCount}");
 
                     foreach (var listItem in cachedList)
                     {
