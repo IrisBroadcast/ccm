@@ -35,6 +35,25 @@ in english, has not been produced - like how-to's, installation
 guides and FAQs. Join the discussion on the github issue tracker
 and the coming mailing lists to help us. 
 
+### Requirements
+
+- Minimum support and tested MySQL 5.7
+- Visual Studio 2017
+- Minimum Microsoft Windows Server 20XX
+
+### How to get started
+
+(If you want codec control, set up that project separetely.)
+
+1. Open the Visual Studio solution and get the nuget packages required.
+2. The application is built as follows:
+-- CCM.Core : Core Helpers, Entities and models, Kamalio connection
+-- CCM.Data : Database
+-- CCM.Web  : Frontend and API Discovery response
+4. Set up the database of choice, instructions here [database setup](CCM.Data/README.md)
+4. Run the application
+5. Set up messages from your SIP-registrar (e.g Kamalio) to start recieving data at your enpoint
+
 License
 =======
 
