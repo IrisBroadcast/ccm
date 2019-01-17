@@ -70,8 +70,6 @@ namespace CCM.WebCommon.Infrastructure.WebApi
                     log.Trace("END Request to {0} took {1} ms", actionExecutedContext.Request.RequestUri.AbsolutePath, stopwatch.ElapsedMilliseconds);
                 }
             }
-
         }
     }
-
 }

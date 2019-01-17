@@ -110,7 +110,6 @@ namespace CCM.WebCommon.Authentication
 
         protected abstract Task<IPrincipal> AuthenticateAsync(string userName, string password, CancellationToken cancellationToken);
 
-
         public Task ChallengeAsync(HttpAuthenticationChallengeContext context, CancellationToken cancellationToken)
         {
             return Task.FromResult(0);

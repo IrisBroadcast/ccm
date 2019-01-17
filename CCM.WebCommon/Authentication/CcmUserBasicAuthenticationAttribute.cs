@@ -39,7 +39,8 @@ namespace CCM.WebCommon.Authentication
 {
     public class CcmUserBasicAuthenticationAttribute : BasicAuthenticationAttributeBase
     {
-        // Anv�nds i api-metoder f�r anv�ndarhantering/call/hangup. Authenticerar ett CCM-konto
+        // Used in API-methods for user-management / call / hangup
+        // Authenticates a CCM-account
 
         public ICcmUserRepository UserRepository => new CcmUserRepository(new CachingService());
         //[Inject]

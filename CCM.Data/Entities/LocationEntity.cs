@@ -45,7 +45,8 @@ namespace CCM.Data.Entities
 
         // IP v4
         public string Net_Address_v4 { get; set; }
-        public byte? Cidr { get; set; } // CIDR = Classless Inter-Domain Routing. Bestämmer storleken på nätet
+        // CIDR = Classless Inter-Domain Routing. Decides the network size.
+        public byte? Cidr { get; set; }
 
         // IP v6
         public string Net_Address_v6 { get; set; }
