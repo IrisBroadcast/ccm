@@ -47,10 +47,10 @@ and the coming mailing lists to help us.
 
 1. Open the Visual Studio solution and get the nuget packages required.
 2. The application is built as follows:
--- CCM.Core			: Core Helpers, Entities and models, Kamalio connection
--- CCM.Data			: Database
--- CCM.DiscoveryApi : API Discovery interface
--- CCM.Web			: Administrative interface and frontend
++ CCM.Core			: Core Helpers, Entities and models, Kamalio connection
++ CCM.Data			: Database
++ CCM.DiscoveryApi : API Discovery interface
++ CCM.Web			: Administrative interface and frontend
 4. Set up the database of choice, instructions here [database setup](CCM.Data/README.md)
 4. Run the application
 5. Set up messages from your SIP-registrar (e.g Kamalio) to start recieving data at your enpoint
