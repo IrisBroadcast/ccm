@@ -82,7 +82,7 @@ namespace CCM.Data.Repositories
 
                 if (profileGroup.Id != Guid.Empty)
                 {
-                    // Uppdatera
+                    // Update
                     dbProfileGroup = db.ProfileGroups.SingleOrDefault(g => g.Id == profileGroup.Id);
                     if (dbProfileGroup == null)
                     {
@@ -123,7 +123,7 @@ namespace CCM.Data.Repositories
                 }
                 else
                 {
-                    // Ny
+                    // New
                     profileGroup.Id = Guid.NewGuid();
                     dbProfileGroup = Mapper.Map<ProfileGroupEntity>(profileGroup);
                     dbProfileGroup.OrderedProfiles = new List<ProfileGroupProfileOrdersEntity>();

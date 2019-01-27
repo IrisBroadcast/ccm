@@ -31,6 +31,7 @@ namespace CCM.Web.Models.Studio
 {
     public class StudioViewModel
     {
+        // TODO: Make English translation
         public Guid Id { get; set; }
 
         [Required]
@@ -52,6 +53,7 @@ namespace CCM.Web.Models.Studio
 
         [Display(Name = "Lösenord", Description = "")]
         public string CameraPassword { get; set; }
+
         [Display(Name="Sökväg video", Description = "")]
         public string CameraVideoUrl { get; set; }
 
@@ -79,7 +81,7 @@ namespace CCM.Web.Models.Studio
         [Display(Name = "Förvald ingångsnivå")]
         public string AudioInputDefaultGain { get; set; }
 
-        [Display(Name = "Antal GPOs")]
+        [Display(ResourceType = typeof(Resources), Name = "Nr_Of_Gpos")]
         public int NrOfGpos { get; set; }
 
         [Display(Name = "GPO Namnlista")]

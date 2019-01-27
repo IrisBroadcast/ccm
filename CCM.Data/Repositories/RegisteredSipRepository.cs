@@ -450,7 +450,7 @@ namespace CCM.Data.Repositories
                 .ToList();
 
             var dbUserAgent = allUserAgents.FirstOrDefault(u =>
-                u.MatchType == MatchType.BeginsWith && userAgent.StartsWith(u.Identifier));
+                u.MatchType == MatchType.Begins_With && userAgent.StartsWith(u.Identifier));
 
             if (dbUserAgent != null)
             {
@@ -458,7 +458,7 @@ namespace CCM.Data.Repositories
             }
 
             dbUserAgent = allUserAgents.FirstOrDefault(u =>
-                u.MatchType == MatchType.EndsWith && userAgent.EndsWith(u.Identifier));
+                u.MatchType == MatchType.Ends_With && userAgent.EndsWith(u.Identifier));
 
             if (dbUserAgent != null)
             {

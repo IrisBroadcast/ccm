@@ -60,7 +60,6 @@ namespace CCM.Core.SipEvent.Messages
                     FromDisplayName, FromSipUri != null ? FromSipUri.UserAtHost : string.Empty,
                     ToDisplayName, ToSipUri != null ? ToSipUri.UserAtHost : string.Empty,
                     FromTag, ToTag);
-
             }
 
             return string.Format("CallId:{0}, HashId:{1}, HashEntry:{2}, FromDisplayName:{3} FromSip:{4}, ToDisplayName:{5} ToSip:{6}, FromTag:{7}, ToTag:{8}", 

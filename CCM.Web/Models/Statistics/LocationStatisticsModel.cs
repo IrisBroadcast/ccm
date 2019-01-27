@@ -51,9 +51,9 @@ namespace CCM.Web.Models.Statistics
         {
             get
             {
-                if (Mode == LocationStatisticsMode.MaxSimultaneousCalls) return Resources.Stats_NumberOfSimultaneousCalls;
-                if (Mode == LocationStatisticsMode.TotaltTimeForCalls) return Resources.Stats_TotalCallTimeInMinutes;
-                return Resources.Stats_NumberOfCalls;
+                if (Mode == LocationStatisticsMode.MaxSimultaneousCalls) return Resources.Stats_Number_Of_Simultaneous_Calls;
+                if (Mode == LocationStatisticsMode.TotaltTimeForCalls) return Resources.Stats_Total_Call_Time_In_Minutes;
+                return Resources.Stats_Number_Of_Calls;
             }
         }
 
@@ -111,8 +111,8 @@ namespace CCM.Web.Models.Statistics
             var dates = stats.MaxSimultaneousEventDates.ToList();
             var sb = new StringBuilder();
             var format = dates.Count > 1
-                ? Resources.Stats_SimultaneousCallsToolTipM
-                : Resources.Stats_SimultaneousCallsToolTip1;
+                ? Resources.Stats_Simultaneous_Calls_At_X_Occasions_Tool_Tip
+                : Resources.Stats_Simultaneous_Calls_At_One_Occasion_Tool_Tip;
             sb.AppendFormat(format, stats.MaxSimultaneousCalls, dates.Count);
             dates.ForEach(d => sb.AppendLine().AppendFormat("{0:yyyy-MM-dd}", d));
             return sb.ToString();

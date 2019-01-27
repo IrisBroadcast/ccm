@@ -3,7 +3,7 @@
 @model IList<CCM.Core.Entities.ProfileGroup>
 
 @{
-    ViewBag.Title = Resources.ProfileGroups;
+    ViewBag.Title = Resources.Profile_Groups;
 }
 
 @section scripts {
@@ -41,7 +41,7 @@
     <nav class="navbar navbar-default" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
-                <span class="navbar-brand">@Resources.ProfileGroups</span>
+                <span class="navbar-brand">@Resources.Profile_Groups</span>
             </div>
             <div class="navbar admin-page" >
                 @if (User.IsInRole(Roles.Admin))

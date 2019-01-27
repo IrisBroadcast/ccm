@@ -132,9 +132,6 @@
   <data name="Cancel" xml:space="preserve">
     <value>Avbryt</value>
   </data>
-  <data name="CcmUser" xml:space="preserve">
-    <value>CCM</value>
-  </data>
   <data name="Comment" xml:space="preserve">
     <value>Kommentar</value>
   </data>
@@ -171,7 +168,7 @@
   <data name="New_Account" xml:space="preserve">
     <value>Nytt konto</value>
   </data>
-  <data name="OngoingCalls" xml:space="preserve">
+  <data name="Ongoing_Calls" xml:space="preserve">
     <value>Pågående samtal</value>
   </data>
   <data name="Password" xml:space="preserve">
@@ -186,7 +183,7 @@
   <data name="Password_To_Short" xml:space="preserve">
     <value>Lösenordet är för kort</value>
   </data>
-  <data name="RegisteredSips" xml:space="preserve">
+  <data name="Registered_Sips" xml:space="preserve">
     <value>Registrerade enheter</value>
   </data>
   <data name="Save" xml:space="preserve">
@@ -255,19 +252,19 @@
   <data name="New_ProfileGroup" xml:space="preserve">
     <value>Ny profilgrupp</value>
   </data>
-  <data name="ProfileGroup" xml:space="preserve">
+  <data name="Profile_Group" xml:space="preserve">
     <value>Profilgrupp</value>
   </data>
   <data name="Profiles" xml:space="preserve">
     <value>Profiler</value>
   </data>
-  <data name="ProfileGroups" xml:space="preserve">
+  <data name="Profile_Groups" xml:space="preserve">
     <value>Profilgrupper</value>
   </data>
   <data name="SDP" xml:space="preserve">
     <value>SDP</value>
   </data>
-  <data name="Cidr" xml:space="preserve">
+  <data name="Cidr_V4" xml:space="preserve">
     <value>CIDR IPv4</value>
   </data>
   <data name="Delete_Location" xml:space="preserve">
@@ -339,16 +336,17 @@
   <data name="Delete_UserAgent_Are_You_Sure" xml:space="preserve">
     <value>Är du säker på att du vill ta bort denna kodarmodell?</value>
   </data>
-  <data name="BeginsWith" xml:space="preserve">
+  <data name="Begins_With" xml:space="preserve">
     <value>Börjar med</value>
   </data>
   <data name="Contains" xml:space="preserve">
     <value>Innehåller</value>
   </data>
-  <data name="EndsWith" xml:space="preserve">
+  <data name="Ends_With" xml:space="preserve">
     <value>Slutar med</value>
+    <comment>probably not in use</comment>
   </data>
-  <data name="IdentifyType" xml:space="preserve">
+  <data name="Identify_Type" xml:space="preserve">
     <value>Identifieringstyp</value>
   </data>
   <data name="In_Call_With" xml:space="preserve">
@@ -456,7 +454,7 @@
   <data name="Close" xml:space="preserve">
     <value>Stäng</value>
   </data>
-  <data name="ConnectedTo" xml:space="preserve">
+  <data name="Connected_To" xml:space="preserve">
     <value>Ansluten till</value>
   </data>
   <data name="Web_Interface" xml:space="preserve">
@@ -576,9 +574,6 @@
   <data name="Wide_Overview" xml:space="preserve">
     <value>Bred översikt</value>
   </data>
-  <data name="SpeedTest" xml:space="preserve">
-    <value>Hastighetsmätning</value>
-  </data>
   <data name="Information" xml:space="preserve">
     <value>Information</value>
   </data>
@@ -587,9 +582,6 @@
   </data>
   <data name="Codec_I_Am_Sure" xml:space="preserve">
     <value>Jag är säker på att jag vill</value>
-  </data>
-  <data name="Hangup" xml:space="preserve">
-    <value>Lägg på</value>
   </data>
   <data name="Reboot" xml:space="preserve">
     <value>Starta om</value>
@@ -600,7 +592,7 @@
   <data name="Codec_Control_Settings" xml:space="preserve">
     <value>Inställningar kodarkontroll</value>
   </data>
-  <data name="AudioInputs" xml:space="preserve">
+  <data name="Audio_Inputs" xml:space="preserve">
     <value>Ljudingångar</value>
   </data>
   <data name="Inputs" xml:space="preserve">
@@ -635,9 +627,6 @@
   </data>
   <data name="Turn_On_Off" xml:space="preserve">
     <value>Slå Av/På</value>
-  </data>
-  <data name="ErrorGettingStatus" xml:space="preserve">
-    <value>Det uppstod ett fel när kodaren skulle kontaktas</value>
   </data>
   <data name="LineStatus_Calling" xml:space="preserve">
     <value>Ringer</value>
@@ -777,7 +766,7 @@
   <data name="Loaded_Preset" xml:space="preserve">
     <value>Laddad preset</value>
   </data>
-  <data name="CodecGPO" xml:space="preserve">
+  <data name="Codec_GPO" xml:space="preserve">
     <value>GPO</value>
   </data>
   <data name="No_Gpo_Found" xml:space="preserve">
@@ -795,7 +784,7 @@
   <data name="Use_Scrollbars" xml:space="preserve">
     <value>Rullningslister</value>
   </data>
-  <data name="CidrV6" xml:space="preserve">
+  <data name="Cidr_V6" xml:space="preserve">
     <value>CIDR IPv6</value>
   </data>
   <data name="NetV6" xml:space="preserve">
@@ -810,28 +799,28 @@
   <data name="Hour" xml:space="preserve">
     <value>Timme</value>
   </data>
-  <data name="Stats_MaxInPeriod" xml:space="preserve">
+  <data name="Stats_Max_In_Period" xml:space="preserve">
     <value>Max under perioden</value>
   </data>
-  <data name="Stats_MedianInPeriod" xml:space="preserve">
+  <data name="Stats_Median_In_Period" xml:space="preserve">
     <value>Median för perioden</value>
   </data>
-  <data name="Stats_NumberOfCalls" xml:space="preserve">
+  <data name="Stats_Number_Of_Calls" xml:space="preserve">
     <value>Samtal (antal)</value>
   </data>
-  <data name="Stats_NumberOfSimultaneousCalls" xml:space="preserve">
+  <data name="Stats_Number_Of_Simultaneous_Calls" xml:space="preserve">
     <value>Samtidiga samtal (maxantal)</value>
   </data>
-  <data name="Stats_TimeOfDay" xml:space="preserve">
+  <data name="Stats_Time_Of_Day" xml:space="preserve">
     <value>Tid på dygnet</value>
   </data>
-  <data name="Stats_TotalCallTimeInMinutes" xml:space="preserve">
+  <data name="Stats_Total_Call_Time_In_Minutes" xml:space="preserve">
     <value>Total samtalstid (minuter)</value>
   </data>
-  <data name="Stats_SimultaneousCallsToolTip1" xml:space="preserve">
+  <data name="Stats_Simultaneous_Calls_At_One_Occasion_Tool_Tip" xml:space="preserve">
     <value>{0} samtidiga samtal vid ett tillfälle:</value>
   </data>
-  <data name="Stats_SimultaneousCallsToolTipM" xml:space="preserve">
+  <data name="Stats_Simultaneous_Calls_At_X_Occasions_Tool_Tip" xml:space="preserve">
     <value>{0} samtidiga samtal vid {1} tillfällen:</value>
   </data>
   <data name="Group" xml:space="preserve">
@@ -849,25 +838,25 @@
   <data name="Identifier_Required" xml:space="preserve">
     <value>Du måste ange en identifierare</value>
   </data>
-  <data name="ProfileGroup_Required" xml:space="preserve">
+  <data name="Profile_Group_Required" xml:space="preserve">
     <value>Du måste ange en profilgrupp</value>
   </data>
   <data name="Edit_ProfileGroup" xml:space="preserve">
     <value>Ändra profilgrupp</value>
   </data>
-  <data name="RemoveStudio" xml:space="preserve">
+  <data name="Remove_Studio" xml:space="preserve">
     <value>Ta bort studio</value>
   </data>
-  <data name="RemoveStudioAreYouSure" xml:space="preserve">
+  <data name="Remove_Studio_Are_You_Sure" xml:space="preserve">
     <value>Är du säker på att du vill ta bort denna studio</value>
   </data>
-  <data name="HangUp_I_Have_Booked" xml:space="preserve">
+  <data name="Hang_Up_I_Have_Booked" xml:space="preserve">
     <value>Jag har bokat denna studio enligt gällande rutin</value>
   </data>
-  <data name="HangUp_I_Have_Checked" xml:space="preserve">
+  <data name="Hang_Up_I_Have_Checked" xml:space="preserve">
     <value>Jag har kontrollerat att studion är tom och ingen verksamhet pågår</value>
   </data>
-  <data name="HangUp_Studio" xml:space="preserve">
+  <data name="Hang_Up_Studio" xml:space="preserve">
     <value>Koppla ner studio</value>
   </data>
   <data name="Edit_User" xml:space="preserve">
@@ -894,10 +883,10 @@
   <data name="User_Name_Already_Taken" xml:space="preserve">
     <value>Användarnamnet är upptaget</value>
   </data>
-  <data name="ExtensionNumber" xml:space="preserve">
+  <data name="Extension_Number" xml:space="preserve">
     <value>Anknytningsnummer</value>
   </data>
-  <data name="NrOfGpos" xml:space="preserve">
+  <data name="Nr_Of_Gpos" xml:space="preserve">
     <value>Antal GPO:er</value>
   </data>
   <data name="No_Items_In_Filtered_Call_History" xml:space="preserve">
@@ -908,5 +897,9 @@
   </data>
   <data name="No_Registered_User_Agents" xml:space="preserve">
     <value>Inga registrerade enheter</value>
+  </data>
+  <data name="Counting_Pieces" xml:space="preserve">
+    <value>st</value>
+    <comment>Pieces, counting amount</comment>
   </data>
 </root>

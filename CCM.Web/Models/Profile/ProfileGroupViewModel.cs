@@ -34,7 +34,7 @@ namespace CCM.Web.Models.Profile
     public class ProfileGroupViewModel
     {
         public Guid Id { get; set; }
-
+        // TODO: English.
         [Required]
         [MaxLength(40, ErrorMessage = "Namnet är för långt")]
         [Display(Name = "Gruppnamn")]
@@ -45,7 +45,6 @@ namespace CCM.Web.Models.Profile
 
         [Display(ResourceType = typeof(Resources), Name = "Profiles")]
         public List<ProfileListItemViewModel> Profiles { get; set; }
-
 
         public ProfileGroupViewModel()
         {

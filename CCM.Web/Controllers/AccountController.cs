@@ -99,7 +99,6 @@ namespace CCM.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
         private void SignIn(CcmUser user, bool isPersistent)
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);

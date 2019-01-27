@@ -118,14 +118,14 @@
                 <li class="active list-ccm-tab-ongoing">
                     <a href="#ongoing" data-toggle="tab">
                         <!-- &nbsp; -->
-                        <span id="callCount" class="list-ccm-tab-ongoing-count">{{filteredOnGoingCalls.length}}</span>&nbsp;<span class="list-ccm-tab-ongoing-text">@Resources.OngoingCalls</span>
+                        <span id="callCount" class="list-ccm-tab-ongoing-count">{{filteredOnGoingCalls.length}}</span>&nbsp;<span class="list-ccm-tab-ongoing-text">@Resources.Ongoing_Calls</span>
                         <div class="selected-name">&nbsp;</div>
                     </a>
                 </li>
                 <!-- Registered UAs headline -->
                 <li class="list-ccm-tab-registered">
                     <a href="#registered" data-toggle="tab">
-                        <span id="registeredCount" class="list-ccm-tab-registered-count">{{filteredRegisteredSips.length}}</span>&nbsp;<span class="list-ccm-tab-registered-text">@Resources.RegisteredSips</span>
+                        <span id="registeredCount" class="list-ccm-tab-registered-count">{{filteredRegisteredSips.length}}</span>&nbsp;<span class="list-ccm-tab-registered-text">@Resources.Registered_Sips</span>
                         <div class="selected-name">&nbsp;</div>
                     </a>
                 </li>
@@ -241,7 +241,7 @@
                                 </div>
                             </div>
 
-                            <!-- RegisteredSips -->
+                            <!-- Registered Sips -->
                             <div class="panel-body-lp list-ccm-registered-uas">
 
                                 <div class="row panel-body-item " ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by sip.Id " ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.InCall]">
@@ -329,7 +329,7 @@
                     <label class="col-md-3">@Resources.Status</label>
                     <div class="col-lg-9">
                         <div ng-show="info.InCall">
-                            @Resources.ConnectedTo:&nbsp;{{info.InCallWithName}}
+                            @Resources.Connected_To:&nbsp;{{info.InCallWithName}}
                         </div>
                         <div ng-hide="info.InCall">
                             @Resources.Disconnected

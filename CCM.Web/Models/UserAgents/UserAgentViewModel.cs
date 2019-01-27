@@ -57,7 +57,7 @@ namespace CCM.Web.Models.UserAgents
         [Display(ResourceType = typeof(Resources), Name = "Height")]
         public int Height { get; set; }
 
-        [Display(ResourceType = typeof(Resources), Name = "IdentifyType")]
+        [Display(ResourceType = typeof(Resources), Name = "Identify_Type")]
         public MatchType MatchType { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "Profiles")]
@@ -80,7 +80,7 @@ namespace CCM.Web.Models.UserAgents
         public int Inputs { get; set; }
         public int GposInList { get; set; }
 
-        [Display(ResourceType = typeof(Resources), Name = "NrOfGpos")]
+        [Display(ResourceType = typeof(Resources), Name = "Nr_Of_Gpos")]
         public int NrOfGpos { get; set; }
 
         public int InputsInList { get; set; }

@@ -1,9 +1,9 @@
 ﻿@model CCM.Web.Models.StudioMonitor.HangUpStudioViewModel
 @{
-    ViewBag.Title = Resources.HangUp_Studio;
+    ViewBag.Title = Resources.Hang_Up_Studio;
 }
 
-<h2>@Resources.HangUp_Studio</h2>
+<h2>@Resources.Hang_Up_Studio</h2>
 
 @using (Html.BeginForm("DoHangUp", "StudioMonitor", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
@@ -23,7 +23,7 @@
     <div class="form-group">
         <div class="">
              @Html.ActionLink(Resources.Cancel, "Index", "StudioMonitor",  new { id = Model.StudioId}, new { @class = "btn btn-default" })
-            <button type="submit" class="btn btn-primary">@Resources.HangUp_Studio</button>
+            <button type="submit" class="btn btn-primary">@Resources.Hang_Up_Studio</button>
         </div>
     </div>
 }

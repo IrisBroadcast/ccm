@@ -47,7 +47,7 @@ namespace CCM.Web.Models.SipAccount
         [Display(ResourceType = typeof(Resources), Name = "Comment")]
         public string Comment { get; set; }
 
-        [Display(ResourceType = typeof(Resources), Name = "ExtensionNumber")]
+        [Display(ResourceType = typeof(Resources), Name = "Extension_Number")]
         public string ExtensionNumber { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "Account_Locked")]

@@ -184,14 +184,14 @@ namespace CCM.Web.Controllers
             var chart = new Chart(800, 600)
                 .AddTitle(Resources.Call_Simultaneous + " - " + stats.LocationName)
                 .AddLegend("")
-                .SetXAxis(Resources.Stats_TimeOfDay);
+                .SetXAxis(Resources.Stats_Time_Of_Day);
                 chart.AddSeries(
-                    name: Resources.Stats_MaxInPeriod,
+                    name: Resources.Stats_Max_In_Period,
                     chartType: "Column",
                     xValue: stats.Statistics.Select(s => s.Label).ToArray(),
                     yValues: stats.Statistics.Select(s => s.MaxSimultaneousCalls).ToArray())
                 .AddSeries(
-                    name: Resources.Stats_MedianInPeriod,
+                    name: Resources.Stats_Median_In_Period,
                     chartType: "Column",
                     xValue: stats.Statistics.Select(s => s.Label).ToArray(),
                     yValues: stats.Statistics.Select(s => s.MedianNumberOfSimultaneousCalls).ToArray())
@@ -211,7 +211,7 @@ namespace CCM.Web.Controllers
             csv.AddCsvValue(Resources.From).AddCsvSeparator().AddCsvValue(string.Format(CultureInfo.InvariantCulture, "{0:yyyy-MM-dd}", startDate)).AppendLine();
             csv.AddCsvValue(Resources.To).AddCsvSeparator().AddCsvValue(string.Format(CultureInfo.InvariantCulture, "{0:yyyy-MM-dd}", endDate)).AppendLine();
             csv.AppendLine();
-            csv.AddCsvValue(Resources.Hour).AddCsvSeparator().AddCsvValue(Resources.Stats_NumberOfSimultaneousCalls).AppendLine();
+            csv.AddCsvValue(Resources.Hour).AddCsvSeparator().AddCsvValue(Resources.Stats_Number_Of_Simultaneous_Calls).AppendLine();
             foreach (var hour in stats.Statistics)
             {
                 csv.AddCsvValue(string.Format(CultureInfo.InvariantCulture, "{0:yyyy-MM-dd HH:mm}", hour.Date.ToLocalTime()))
@@ -290,7 +290,7 @@ namespace CCM.Web.Controllers
             }
 
             var chart = new Chart(800, 600)
-                .AddTitle(chartType == DateBasedChartType.NumberOfCalls ? Resources.Stats_NumberOfCalls : Resources.Stats_TotalCallTimeInMinutes)
+                .AddTitle(chartType == DateBasedChartType.NumberOfCalls ? Resources.Stats_Number_Of_Calls : Resources.Stats_Total_Call_Time_In_Minutes)
                 .SetXAxis(title: Resources.Date)
                 .AddSeries(
                     chartType: "Column",

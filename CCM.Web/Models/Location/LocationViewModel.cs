@@ -43,20 +43,20 @@ namespace CCM.Web.Models.Location
         [Display(ResourceType = typeof(Resources), Name = "Net")]
         public string Net { get; set; }
 
-        [Display(ResourceType = typeof(Resources), Name = "Cidr")]
+        [Display(ResourceType = typeof(Resources), Name = "Cidr_V4")]
         public byte? Cidr { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "NetV6")]
         public string NetV6 { get; set; }
 
-        [Display(ResourceType = typeof(Resources), Name = "CidrV6")]
+        [Display(ResourceType = typeof(Resources), Name = "Cidr_V6")]
         public byte? CidrV6 { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "Carrier_Connection_Id")]
         public string CarrierConnectionId { get; set; }
 
-        [Display(ResourceType = typeof(Resources), Name = "ProfileGroup")]
-        [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "ProfileGroup_Required")]
+        [Display(ResourceType = typeof(Resources), Name = "Profile_Group")]
+        [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "Profile_Group_Required")]
         public Guid? ProfileGroup { get; set; }
 
         public List<ListItemViewModel> ProfileGroups { get; set; }

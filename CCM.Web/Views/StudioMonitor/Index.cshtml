@@ -14,7 +14,7 @@
     <div class="row ccm-ui-studio-header-row">
         <div class="col-md-12">
             <h3>@Model.Name <span class="ccm-ui-studio-codec-statusinfo" ng-class="isInCall ? 'ccm-ui-studio-codec-incall' : ''">{{ codecOnline ? (isInCall ? "är upptagen i samtal med " + connectedTo : "är ledig") : "kan inte nås" }}</span></h3>
-            <a ng-show="isInCall" class="btn btn-default" href="@Url.Action("HangUpStudio", new { Id = Model.StudioId })">@Resources.HangUp_Studio</a>
+            <a ng-show="isInCall" class="btn btn-default" href="@Url.Action("HangUpStudio", new { Id = Model.StudioId })">@Resources.Hang_Up_Studio</a>
             <hr />
         </div>
     </div>
