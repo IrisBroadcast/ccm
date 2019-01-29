@@ -3,7 +3,7 @@
     Layout = null;
 }
 
-<ul class="dropdown-menu">
+<ul class="dropdown-menu ccm-top-navbar-links--dropdown">
     @foreach (var studio in Model)
     {
         <li>@Html.ActionLink(studio.Name, "Index", "StudioMonitor", new { id = studio.Id }, null)</li>
