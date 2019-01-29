@@ -32,18 +32,19 @@
 
     @RenderSection("bodyTop", false)
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div class="container ccm-top-navbar-container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <!-- data-toggle="collapse" data-target=".navbar-collapse"-->
+                <button type="button" class="navbar-toggle">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
                 <a href="@Url.Action("Index", "Home")" class="@logoClass"></a>
             </div>
-            <div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse ccm-top-navbar-links">
 
-                <ul class="nav navbar-nav navbar-left">
+                <ul class="nav navbar-nav navbar-left ccm-top-navbar-links--ul">
                     <!-- Overview -->
                     <li>@Html.ActionLink(Resources.Overview, "Index", "Home")</li>
 
@@ -62,7 +63,7 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Resources.Administration</a>
 
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu ccm-top-navbar-links--dropdown">
                                 <li>@Html.ActionLink(Resources.Accounts, "Index", "SipAccount")</li>
                                 <li>@Html.ActionLink(Resources.UserAgents, "Index", "UserAgents")</li>
                                 <li>@Html.ActionLink(Resources.Profiles, "Index", "Profile")</li>
@@ -90,7 +91,7 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Resources.Administration</a>
 
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu ccm-top-navbar-links--dropdown">
                                 <li>@Html.ActionLink(Resources.UserAgents, "Index", "UserAgents")</li>
                                 <li>@Html.ActionLink(Resources.Profiles, "Index", "Profile")</li>
                                 <li>@Html.ActionLink(Resources.Profile_Groups, "Index", "ProfileGroup")</li>

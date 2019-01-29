@@ -35,61 +35,61 @@ namespace CCM.Web.Models.Studio
         public Guid Id { get; set; }
 
         [Required]
-        [MaxLength(40, ErrorMessage = "Namnet är för långt")]
-        [Display(Name = "Studionamn")]
+        [MaxLength(40, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "Studio_Error_Message_Name_Too_Long")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Studio_Name")]
         public string Name { get; set; }
 
-        [Display(Name="Ljudkodarens SIP-adress")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Audio_Codec_Sip_Address")]
         public string CodecSipAddress { get; set; }
 
-        [Display(Name = "Kamerans adress eller IP-nummer")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Camera_Host_Or_Ip_Address")]
         public string CameraAddress { get; set; }
 
-        [Display(Name = "Kamera aktiv", Description = "")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Camera_Is_In_Use")]
         public bool CameraActive { get; set; }
 
-        [Display(Name = "Användarnamn", Description = "")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Camera_User_Name")]
         public string CameraUsername { get; set; }
 
-        [Display(Name = "Lösenord", Description = "")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Camera_Password")]
         public string CameraPassword { get; set; }
 
-        [Display(Name="Sökväg video", Description = "")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Url_To_Camera_Video_Feed")]
         public string CameraVideoUrl { get; set; }
 
-        [Display(Name = "Sökväg stillbild", Description = "")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Camera_Still_Image")]
         public string CameraImageUrl { get; set; }
-        
-        [Display(Name = "Sökväg ljuduppspelning")]
+
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Camera_Audio_Url")]
         public string CameraPlayAudioUrl { get; set; }
 
-        [Display(Name = "Ljudklippens namn")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Names_Of_Audio_Clips")]
         public string AudioClipNames { get; set; }
 
-        [Display(Name = "Informationstext")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Information_Text")]
         public string InfoText { get; set; }
 
-        [Display(Name = "Sökväg till 'manual'-sidan")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Url_To_Page_With_Manual")]
         public string MoreInfoUrl { get; set; }
 
-        [Display(Name = "Antal ingångar")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Number_Of_Inputs")]
         public int NrOfAudioInputs { get; set; }
 
-        [Display(Name = "Ingångarnas namn")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Inputs_Names")]
         public string AudioInputNames { get; set; }
 
-        [Display(Name = "Förvald ingångsnivå")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Preselected_Input_Level")]
         public string AudioInputDefaultGain { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "Nr_Of_Gpos")]
         public int NrOfGpos { get; set; }
 
-        [Display(Name = "GPO Namnlista")]
+        [Display(ResourceType = typeof(Resources), Name = "Gpo_Names")]
         public string GpoNames { get; set; }
 
         [Required]
         [Range(0, 60)]
-        [Display(Name = "Antal minuter innan monitorsidan blir inaktiv")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Number_Of_Miutes_Before_Page_Gets_Inactive")]
         public int InactivityTimeout { get; set; }
     }
 }

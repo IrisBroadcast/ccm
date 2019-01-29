@@ -2176,6 +2176,177 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ljudkodarens SIP-adress.
+        /// </summary>
+        public static string Studio_Audio_Codec_Sip_Address {
+            get {
+                return ResourceManager.GetString("Studio_Audio_Codec_Sip_Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sökväg ljuduppspelning.
+        /// </summary>
+        public static string Studio_Camera_Audio_Url {
+            get {
+                return ResourceManager.GetString("Studio_Camera_Audio_Url", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kamerans adress eller IP-nummer.
+        /// </summary>
+        public static string Studio_Camera_Host_Or_Ip_Address {
+            get {
+                return ResourceManager.GetString("Studio_Camera_Host_Or_Ip_Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kamera aktiv.
+        /// </summary>
+        public static string Studio_Camera_Is_In_Use {
+            get {
+                return ResourceManager.GetString("Studio_Camera_Is_In_Use", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kameralösenord.
+        /// </summary>
+        public static string Studio_Camera_Password {
+            get {
+                return ResourceManager.GetString("Studio_Camera_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sökväg stillbild.
+        /// </summary>
+        public static string Studio_Camera_Still_Image {
+            get {
+                return ResourceManager.GetString("Studio_Camera_Still_Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Användarnamn kamera.
+        /// </summary>
+        public static string Studio_Camera_User_Name {
+            get {
+                return ResourceManager.GetString("Studio_Camera_User_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Namnet är för långt.
+        /// </summary>
+        public static string Studio_Error_Message_Name_Too_Long {
+            get {
+                return ResourceManager.GetString("Studio_Error_Message_Name_Too_Long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Informationstext.
+        /// </summary>
+        public static string Studio_Information_Text {
+            get {
+                return ResourceManager.GetString("Studio_Information_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ingångarnas namn.
+        /// </summary>
+        public static string Studio_Inputs_Names {
+            get {
+                return ResourceManager.GetString("Studio_Inputs_Names", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ljudklippens namn.
+        /// </summary>
+        public static string Studio_Names_Of_Audio_Clips {
+            get {
+                return ResourceManager.GetString("Studio_Names_Of_Audio_Clips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Antal ingångar.
+        /// </summary>
+        public static string Studio_Number_Of_Inputs {
+            get {
+                return ResourceManager.GetString("Studio_Number_Of_Inputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Antal minuter innan monitorsidan blir inaktiv.
+        /// </summary>
+        public static string Studio_Number_Of_Miutes_Before_Page_Gets_Inactive {
+            get {
+                return ResourceManager.GetString("Studio_Number_Of_Miutes_Before_Page_Gets_Inactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Förvald ingångsnivå.
+        /// </summary>
+        public static string Studio_Preselected_Input_Level {
+            get {
+                return ResourceManager.GetString("Studio_Preselected_Input_Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inställningar för webbkamera.
+        /// </summary>
+        public static string Studio_Settings_For_Web_Camera {
+            get {
+                return ResourceManager.GetString("Studio_Settings_For_Web_Camera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information.
+        /// </summary>
+        public static string Studio_Studio_Information {
+            get {
+                return ResourceManager.GetString("Studio_Studio_Information", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Studionamn.
+        /// </summary>
+        public static string Studio_Studio_Name {
+            get {
+                return ResourceManager.GetString("Studio_Studio_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sökväg video.
+        /// </summary>
+        public static string Studio_Url_To_Camera_Video_Feed {
+            get {
+                return ResourceManager.GetString("Studio_Url_To_Camera_Video_Feed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sökväg till &apos;manual&apos;-sidan.
+        /// </summary>
+        public static string Studio_Url_To_Page_With_Manual {
+            get {
+                return ResourceManager.GetString("Studio_Url_To_Page_With_Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Studior.
         /// </summary>
         public static string Studios {

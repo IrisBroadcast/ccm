@@ -902,4 +902,61 @@
     <value>st</value>
     <comment>Pieces, counting amount</comment>
   </data>
+  <data name="Studio_Audio_Codec_Sip_Address" xml:space="preserve">
+    <value>Ljudkodarens SIP-adress</value>
+  </data>
+  <data name="Studio_Camera_Audio_Url" xml:space="preserve">
+    <value>Sökväg ljuduppspelning</value>
+  </data>
+  <data name="Studio_Camera_Host_Or_Ip_Address" xml:space="preserve">
+    <value>Kamerans adress eller IP-nummer</value>
+  </data>
+  <data name="Studio_Camera_Is_In_Use" xml:space="preserve">
+    <value>Kamera aktiv</value>
+  </data>
+  <data name="Studio_Camera_Password" xml:space="preserve">
+    <value>Kameralösenord</value>
+  </data>
+  <data name="Studio_Camera_Still_Image" xml:space="preserve">
+    <value>Sökväg stillbild</value>
+  </data>
+  <data name="Studio_Camera_User_Name" xml:space="preserve">
+    <value>Användarnamn kamera</value>
+  </data>
+  <data name="Studio_Error_Message_Name_Too_Long" xml:space="preserve">
+    <value>Namnet är för långt</value>
+  </data>
+  <data name="Studio_Information_Text" xml:space="preserve">
+    <value>Informationstext</value>
+  </data>
+  <data name="Studio_Inputs_Names" xml:space="preserve">
+    <value>Ingångarnas namn</value>
+  </data>
+  <data name="Studio_Names_Of_Audio_Clips" xml:space="preserve">
+    <value>Ljudklippens namn</value>
+  </data>
+  <data name="Studio_Number_Of_Inputs" xml:space="preserve">
+    <value>Antal ingångar</value>
+  </data>
+  <data name="Studio_Number_Of_Miutes_Before_Page_Gets_Inactive" xml:space="preserve">
+    <value>Antal minuter innan monitorsidan blir inaktiv</value>
+  </data>
+  <data name="Studio_Preselected_Input_Level" xml:space="preserve">
+    <value>Förvald ingångsnivå</value>
+  </data>
+  <data name="Studio_Settings_For_Web_Camera" xml:space="preserve">
+    <value>Inställningar för webbkamera</value>
+  </data>
+  <data name="Studio_Studio_Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="Studio_Studio_Name" xml:space="preserve">
+    <value>Studionamn</value>
+  </data>
+  <data name="Studio_Url_To_Camera_Video_Feed" xml:space="preserve">
+    <value>Sökväg video</value>
+  </data>
+  <data name="Studio_Url_To_Page_With_Manual" xml:space="preserve">
+    <value>Sökväg till 'manual'-sidan</value>
+  </data>
 </root>

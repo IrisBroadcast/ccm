@@ -29,11 +29,6 @@ process for our in-house development.
 
 Documentation
 =============
-This is an area where we need help. As an in-house project
-managed by a small and dedicated team, documentation, especially
-in english, has not been produced - like how-to's, installation
-guides and FAQs. Join the discussion on the github issue tracker
-and the coming mailing lists to help us. 
 
 ### Requirements
 

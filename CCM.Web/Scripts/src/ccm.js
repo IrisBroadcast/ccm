@@ -7,3 +7,8 @@
 $(document).ready(function () {
     $(".body-content").show();
 });
+
+$('.navbar-toggle').on('click', function (e) {
+    console.log("Pressed: ", e);
+    $('.ccm-top-navbar-container').toggleClass('ccm-top-navbar-container--expanded');
+});

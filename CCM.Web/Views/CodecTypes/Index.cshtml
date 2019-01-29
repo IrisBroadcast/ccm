@@ -17,15 +17,15 @@
 }
 
 <div class="row">
-    <nav class="navbar navbar-default" role="navigation">
+    <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
         <div class="container-fluid">
-            <div class="navbar-header">
+            <div class="navbar-header ccm-sub-navbar--admin--header">
                 <span class="navbar-brand">@Resources.Codec_Types</span>
             </div>
-            <div class="navbar admin-page" >
+            <div class="navbar ccm-sub-navbar--admin--links" >
                 @if (User.IsInRole(Roles.Admin))
                 {
-                    <ul class="nav navbar-nav nav-pills">
+                    <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
                         <li>@Html.ActionLink(Resources.New_Codec_Type, "Create", "CodecTypes")</li>
                     </ul>
                 }

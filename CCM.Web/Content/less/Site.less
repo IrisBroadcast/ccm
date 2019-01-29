@@ -18,6 +18,10 @@
 @text-color-inverted: #FFFFFF;
 @text-color-disable: #808080;
 
+@color-link-on-darkbg: #9d9d9d;
+
+@bgcolor-link-admin-idle: #f3f3f3;
+
 @border-color-editable: #5ca2de;
 
 @border-color-main: #dddddd;
@@ -171,12 +175,21 @@ footer p {
     margin-bottom: 0;
 }
 
+.btn {
+    position: relative;
+}
+
 .btn .caret {
     margin-left: 0;
     position: absolute;
     right: 3%;
     top: 50%;
     transform: translateY(-50%);
+}
+
+.dropdown-toggle {
+    max-width: 600px;
+    width: 100%;
 }
 
 /* TODO: rename this and reuse */
@@ -394,19 +407,19 @@ input[type="checkbox"].input-validation-error {
     width: 100%;
 }
 
-.list-ccm-tab-ongoing-count {
+.list-ccm-tab-ongoing--count {
     font-weight: 800;
 }
 
-.list-ccm-tab-ongoing-text {
+.list-ccm-tab-ongoing--text {
 
 }
 
-.list-ccm-tab-registered-count {
+.list-ccm-tab-registered--count {
     font-weight: 800;
 }
 
-.list-ccm-tab-registered-text {
+.list-ccm-tab-registered--text {
 
 }
 
@@ -694,75 +707,17 @@ input[type="checkbox"].input-validation-error {
     }
 }
 
-.ccm-navbar-search--field {
+/* *******************************************************
+ * Navigation Bar - Top Bar */
 
-    @media (max-width: @screen-xs-max) { 
-        /* Extra small devices (phones, less than 768px),
-           No media query since this is the default in Bootstrap */
-    }
-
-    @media (max-width: @screen-sm-min) { 
-        /* Small devices (tablets, 768px and up) */
-        padding-top: 4px;
-        max-width: 100%;
-        width: 66vw !important;
-        float: left;
-    }
-
-    @media (min-width: @screen-sm-min) and (max-width: 900px) { 
-        /* Small devices (tablets, 768px and up) */
-        width: 65px !important;
-    }
-
-    @media (min-width: 900px) { 
-        /* Medium devices (desktops, 992px and up) */
-        width: 140px !important;
-    }
+.ccm-top-navbar-container {
+    transition: all 400ms ease;
+    height: 60px;
 }
 
-@media (min-width: 768px) {
-    .navbar-right {
-        margin-right: 0; 
-    }
-}
-
-@media (max-width: @screen-sm-min) {
-    .navbar-form {
-        padding: 5px 4px;
-        overflow: hidden;
-        clear: both;
-
-        .form-group {
-            float: left;
-            width: 100%;
-        }
-    }
-
-    .ccm-navbar-search {
-        .ccm-navbar-search--btn {
-            float: right;
-        }
-    }
-
-    .btn {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-.navbar-toggle {
-    margin-bottom: 0;
-    padding: 14px 10px;
-}
-
-@media (max-width: @screen-md-max) {
-    .nav-justified.filter-heading > li {
-        display: block;
-        width: 100%;
-    }
-
-    .nav-justified > li {
-        margin: 0 !important;
+@media (max-width: @screen-xs-max) {
+    .navbar-header .logo-test {
+        margin-left: 15px;
     }
 }
 
@@ -782,16 +737,114 @@ input[type="checkbox"].input-validation-error {
     font-weight: 600;
 }
 
-.navbar-nav {
+@media (max-width: @screen-xs-max) {
 
-    @media (max-width: @screen-xs-max) {
-        margin: 0 0 0 0;
+    .navbar-collapse, .ccm-top-navbar-links {
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: -15px;
+        margin-left: -15px;
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        padding-top: 3vh;
+        padding-bottom: 3vh;
+        scrollbar-face-color: #646464;
+        scrollbar-base-color: #646464;
+        scrollbar-3dlight-color: #646464;
+        scrollbar-highlight-color: #646464;
+        scrollbar-track-color: #000;
+        scrollbar-arrow-color: #000;
+        scrollbar-shadow-color: #646464;
+        scrollbar-dark-shadow-color: #646464;
 
-        li > a {
-            line-height: 30px !important;
+        &::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        &::-webkit-scrollbar-button {
+            background-color: #222222;
+            display: none;
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: #646464;
+        }
+
+        &::-webkit-scrollbar-track-piece {
+            background-color: #222222;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            height: 50vh;
+            background-color: #444444;
+            border-radius: 20px;
+        }
+
+        &::-webkit-scrollbar-corner {
+            background-color: #646464;
+        }
+
+        &::-webkit-resizer {
+            background-color: #666;
         }
     }
 
+    .ccm-top-navbar-container--expanded {
+        height: 100vh !important;
+
+        .navbar-collapse, .ccm-top-navbar-links {
+            max-height: none;
+            position: absolute;
+            top: 60px;
+            left: inherit;
+            right: inherit;
+            bottom: 0;
+            overflow-y: auto;
+            display: block;
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .navbar-right {
+        margin-right: 0; 
+    }
+}
+
+@media (max-width: @screen-xs-max) {
+    /* @screen-sm-min */
+    .navbar-form {
+        padding: 5px 4px;
+        overflow: hidden;
+        clear: both;
+
+        .form-group {
+            float: left;
+            width: 100%;
+        }
+    }
+
+    .ccm-navbar-search {
+        .ccm-navbar-search--btn {
+            float: left;
+            padding: 6px 2%;
+            margin: 0 0 0 2%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 18%;
+        }
+    }
+}
+
+.navbar-toggle {
+    margin-bottom: 0;
+    padding: 14px 10px;
+}
+
+.navbar-nav {
     li > a {
         padding: 0 4px;
         line-height: 60px;
@@ -799,9 +852,99 @@ input[type="checkbox"].input-validation-error {
     }
 }
 
-@media (max-width: @screen-xs-max) {
-    .navbar-header .logo-test {
-        margin-left: 15px;
+.ccm-top-navbar-links {
+
+    .navbar-nav {
+        li > a {
+            padding: 0 4px;
+            line-height: 60px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: @screen-xs-max) {
+            margin: 2vh 0;
+
+            li > a {
+                line-height: 35px !important;
+                padding: 0.6vh 2vw;
+            }
+        }
+    }
+
+    .navbar-nav .open .dropdown-menu > li > a, .navbar-nav .open .dropdown-menu .dropdown-header {
+        @media (max-width: @screen-xs-max) {
+            padding: 0.3vh 4vw;
+        }
+    }
+
+    .ccm-top-navbar-links--dropdown {
+        li > a {
+            padding: 0 4px;
+            line-height: 35px;
+        }
+    }
+
+}
+
+.ccm-top-navbar-account {
+
+    @media (max-width: @screen-xs-max) {
+        margin: 2vh 0;
+    }
+
+    .ccm-top-navbar-account--logout, .ccm-top-navbar-account--login {
+    }
+
+    .ccm-top-navbar-account--information {
+        margin-top: 10px;
+        color: @color-link-on-darkbg;
+        display: block;
+        text-wrap: none;
+        white-space: nowrap;
+
+        .ccm-top-navbar-account--explain-text {
+            max-width: 25vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            @media (min-width: @screen-xs-max) and (max-width: 1000px) {
+                display: none;
+            }
+        }
+    }
+}
+
+.ccm-navbar-search--field {
+
+    @media (max-width: @screen-xs-max) {
+        padding-top: 4px;
+        max-width: 100%;
+        width: 66vw !important;
+        float: left;
+        padding-top: 4px;
+        max-width: 100%;
+        width: 78% !important;
+        float: left;
+        max-width: 350px;
+    }
+
+    @media (min-width: @screen-sm-min) and (max-width: 1000px) {
+        width: 7vw !important;
+    }
+
+    @media (min-width: 1000px) {
+        width: 140px !important;
+    }
+}
+
+@media (max-width: @screen-md-max) {
+    .nav-justified.ccm-front-filter--heading > li {
+        display: block;
+        width: 100%;
+    }
+
+    .nav-justified > li {
+        margin: 0 !important;
     }
 }
 
@@ -810,13 +953,10 @@ input[type="checkbox"].input-validation-error {
     line-height: 60px;
 }
 
-.selected-name {
-    font-size: 10px;
-}
-
-.navbar.admin-page {
-    /* TODO: what is this? */
-    margin-bottom: 0;
+.ccm-front-filter--heading, .ccm-front-list--heading {
+    .selected-name {
+        font-size: 10px;
+    }
 }
 
 .dropdown-toggle {
@@ -838,6 +978,74 @@ input[type="checkbox"].input-validation-error {
     padding: 5px 25px;
     max-height: 300px;
     overflow-y: scroll;
+}
+
+/*
+.navbar.ccm-sub-navbar--admin {
+     TODO: what is this? 
+    margin-bottom: 0;
+}
+*/
+
+.ccm-sub-navbar--admin {
+    &--header {
+        padding: 0;
+        margin: 0;
+        float: none;
+        min-height: 60px;
+        .navbar-brand {
+            padding: 0 15px;
+            margin: 0;
+            line-height: 60px;
+            height: 60px;
+            font-weight: 600;
+        }
+    }
+    &--links {
+        margin-bottom: 2px;
+    }
+}
+
+.ccm-sub-navbar--admin--ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        float: left;
+    }
+
+    li > a {
+        padding: 0 6px;
+        /*margin: 2px 0;*/
+        line-height: 35px;
+        border-radius: 5px;
+        background-color: @bgcolor-link-admin-idle;
+    }
+
+    > li + li {
+        margin-left: 2px;
+    }
+
+    > .active > a {
+        box-shadow: 1px 1px 11px -5px #353535;
+        color: #fff !important;
+        background-color: #7ba2d6 !important;
+    }
+
+    @media (max-width: @screen-xs-max) {
+        li {
+            float: none;
+            width: 100%;
+            margin: 0 !important;
+        }
+        li > a {
+            padding: 0 4px;
+            margin: 2px 0;
+            line-height: 35px;
+            border-radius: 5px;
+        }
+    }
 }
 
 /* *******************************************************
@@ -1031,13 +1239,13 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         color: @text-color-inverted;
     }
 
-    .list-ccm-tab-ongoing-count {
+    .list-ccm-tab-ongoing--count {
         font-size: 280%;
         line-height: 0.5;
         color: #FFC107;
     }
 
-    .list-ccm-tab-ongoing-text {
+    .list-ccm-tab-ongoing--text {
         display: block;
     }
 
@@ -1046,22 +1254,22 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         color: @text-color-inverted;
     }
 
-    .list-ccm-tab-registered-count {
+    .list-ccm-tab-registered--count {
         font-size: 280%;
         line-height: 0.5;
         color: #FFC107;
     }
 
-    .list-ccm-tab-registered-text {
+    .list-ccm-tab-registered--text {
         display: block;
     }
 
     .list-ccm-tab--biglist {
-        .list-ccm-tab-ongoing-count, .list-ccm-tab-registered-count {
+        .list-ccm-tab-ongoing--count, .list-ccm-tab-registered--count {
             font-size: 120%;
         }
 
-        .list-ccm-tab-ongoing-text, .list-ccm-tab-registered-text {
+        .list-ccm-tab-ongoing--text, .list-ccm-tab-registered--text {
             display: inline-block;
         }
     }

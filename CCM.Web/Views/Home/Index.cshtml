@@ -44,12 +44,12 @@
     <hr />
     <div class="row">
         <div class="col-md-2 list-ccm-navigation">
-            <ul class="filter-heading nav nav-pills nav-justified">
+            <ul class="ccm-front-filter--heading nav nav-pills nav-justified">
                 <!-- Filter headlines -->
-                <li class="active">
+                <li class="active list-ccm-tab--region">
                     <a href="#regions" data-toggle="tab">@Resources.Regions<div class="selected-name">({{regionName}})</div></a>
                 </li>
-                <li class="">
+                <li class="list-ccm-tab--codectypes">
                     <a href="#codecTypes" data-toggle="tab">@Resources.Codec_Types<div class="selected-name">({{codecTypeName}})</div></a>
                 </li>
             </ul>
@@ -113,19 +113,19 @@
             </div>
         </div>
         <div class="col-md-10 list-ccm-container">
-            <ul class="nav nav-pills nav-justified list-ccm-tabs" ng-class="{ 'list-ccm-tab--biglist' : filteredOnGoingCalls.length > 21 }">
+            <ul class="ccm-front-list--heading nav nav-pills nav-justified" ng-class="{ 'list-ccm-tab--biglist' : filteredOnGoingCalls.length > 21 }">
                 <!-- Ongoing calls headline -->
                 <li class="active list-ccm-tab-ongoing">
                     <a href="#ongoing" data-toggle="tab">
                         <!-- &nbsp; -->
-                        <span id="callCount" class="list-ccm-tab-ongoing-count">{{filteredOnGoingCalls.length}}</span>&nbsp;<span class="list-ccm-tab-ongoing-text">@Resources.Ongoing_Calls</span>
+                        <span id="callCount" class="list-ccm-tab-ongoing--count">{{filteredOnGoingCalls.length}}</span>&nbsp;<span class="list-ccm-tab-ongoing--text">@Resources.Ongoing_Calls</span>
                         <div class="selected-name">&nbsp;</div>
                     </a>
                 </li>
                 <!-- Registered UAs headline -->
                 <li class="list-ccm-tab-registered">
                     <a href="#registered" data-toggle="tab">
-                        <span id="registeredCount" class="list-ccm-tab-registered-count">{{filteredRegisteredSips.length}}</span>&nbsp;<span class="list-ccm-tab-registered-text">@Resources.Registered_Sips</span>
+                        <span id="registeredCount" class="list-ccm-tab-registered--count">{{filteredRegisteredSips.length}}</span>&nbsp;<span class="list-ccm-tab-registered--text">@Resources.Registered_Sips</span>
                         <div class="selected-name">&nbsp;</div>
                     </a>
                 </li>

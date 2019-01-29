@@ -4,11 +4,17 @@
     var identity = (ClaimsIdentity)User.Identity;
     var fullNameClaim = identity.Claims.SingleOrDefault(c => c.Type == "FullName");
     var name = fullNameClaim != null ? fullNameClaim.Value : identity.Name;
-    
-    <div style="color: #9d9d9d; margin-top: 10px;">Inloggad som @name</div>
-    <div>@Html.ActionLink(@Resources.Log_Off, "LogOff", "Account", new { }, null)</div>
+
+    <div class="ccm-top-navbar-account">
+        <div class="ccm-top-navbar-account--information"><span class="ccm-top-navbar-account--explain-text">Inloggad som </span>@name</div>
+        <div class="ccm-top-navbar-account--logout">@Html.ActionLink(@Resources.Log_Off, "LogOff", "Account", new { }, null)</div>
+    </div>
 }
 else
 {
-    @Html.ActionLink(Resources.Log_In, "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+    <div class="ccm-top-navbar-account">
+        <div class="ccm-top-navbar-account--login">
+            @Html.ActionLink(Resources.Log_In, "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+        </div>
+    </div>
 }
