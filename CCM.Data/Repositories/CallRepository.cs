@@ -95,7 +95,7 @@ namespace CCM.Data.Repositories
             }
         }
 
-        public CallInfo GetCallInfo(string callId, string hashId, string hashEnt) // CallId, HashId och HashEntry är unik nyckel för samtal i Kamailio
+        public CallInfo GetCallInfo(string callId, string hashId, string hashEnt) // CallId, HashId and HashEntry is a unique key for calls in Kamailio
         {
             using (var db = GetDbContext())
             {

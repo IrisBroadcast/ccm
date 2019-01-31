@@ -170,12 +170,19 @@ namespace CCM.Core.Service
 
             try
             {
+                // TODO: Test, see if this is why error messages popping up in matching profiles later
+                if(!callerProfiles.Any())
+                {
+                    log.Error("CallerProfiles is null, can not intersect callerProfiles with callees. Expecting error.");
+                }
+
                 var callerProfileNames = callerProfiles.Select(p => p.Name).ToList();
 
                 foreach (var callee in callees)
                 {
                     // INFO: Viktigt att ordningen på gemensamma profiler baseras på callee's profilordning.
                     // INFO: !Important! The order of common profiles MUST be based on callee's profile order
+                    // INFO: Intersect, get Profiles in callee that have duplicates in callerProfileNames
                     var matchingProfiles = callee.Profiles.Intersect(callerProfileNames).ToList();
 
                     if (matchingProfiles.Any())
@@ -196,7 +203,7 @@ namespace CCM.Core.Service
             }
             catch (Exception ex)
             {
-                log.Error(ex, "Error while getting user agents.");
+                log.Error(ex, "Error while getting user agents. ");
                 return new UserAgentsResultDto();
             }
 

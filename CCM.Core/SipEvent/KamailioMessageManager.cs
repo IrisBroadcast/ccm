@@ -106,6 +106,7 @@ namespace CCM.Core.SipEvent
                 case DialogStatus.End:
                     // TODO: Check hangup reason. Only close calls where reason = Normal
                     // TODO: Handle timeout message and add warning to call but don't end it
+                    log.Info("Received End command from Kamailio. HangUp reason: {0}", kamailioDialogMessage.HangupReason);
                     return CloseCall(kamailioDialogMessage);
                 case DialogStatus.SingleBye:
                     // TODO: Handle single bye message and close call
