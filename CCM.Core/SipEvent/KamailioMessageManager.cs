@@ -123,6 +123,7 @@ namespace CCM.Core.SipEvent
 
             if (_callRepository.CallExists(sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry))
             {
+                // TODO: Find out what HashId and HashEntry is and if they are both needed
                 log.Debug("Call with id {0}, hash id:{1}, hash entry:{2} already exists", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
                 return NothingChangedResult;
             }

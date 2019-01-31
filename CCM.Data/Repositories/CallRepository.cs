@@ -88,7 +88,10 @@ namespace CCM.Data.Repositories
                     db.Calls.Remove(dbCall);
                     db.SaveChanges();
                 }
-
+                else
+                {
+                    log.Error(string.Format("Unable to save call history with the call fromSip: {0}, toSip: {1}, hash id: {2}, hash ent: {3}", dbCall.FromSip, dbCall.ToSip, dbCall.DlgHashId, dbCall.DlgHashEnt));
+                }
             }
         }
 
@@ -183,7 +186,7 @@ namespace CCM.Data.Repositories
 
                     var success = db.SaveChanges() > 0;
 
-                    if (success & call.Closed)
+                    if (success & call.Closed) // TODO: Check & or && usage
                     {
                         // Call ended. Save call history and delete call from db
                         var callHistory = MapToCallHistory(dbCall, _settingsManager.SipDomain);
@@ -194,6 +197,10 @@ namespace CCM.Data.Repositories
                             // Remove the original call
                             db.Calls.Remove(dbCall);
                             db.SaveChanges();
+                        }
+                        else
+                        {
+                            log.Error(string.Format("Unable to save call history with call id: {0}, hash id: {1}, hash ent: {2}", call.CallId, call.DlgHashId, call.DlgHashEnt));
                         }
                     }
                 }

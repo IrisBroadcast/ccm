@@ -38,6 +38,7 @@ namespace CCM.Web.Controllers.ApiExternal
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class KamailioEventController : ApiController
     {
+        // String format : Kamailio Events
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly ISipMessageManager _sipMessageManager;
         private readonly IKamailioMessageParser _kamailioMessageParser;

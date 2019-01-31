@@ -40,6 +40,7 @@ namespace CCM.Core.Cache
 
         public CachedCallRepository(IAppCache cache, ICallRepository internalRepository)
         {
+            // No calls are cached
             _lazyCache = cache;
             _internalRepository = internalRepository;
         }

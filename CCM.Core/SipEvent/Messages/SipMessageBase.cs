@@ -28,6 +28,7 @@ namespace CCM.Core.SipEvent.Messages
 {
     public abstract class KamailioMessageBase
     {
+        // TODO: rename class
         public abstract string ToDebugString();
     }
 }

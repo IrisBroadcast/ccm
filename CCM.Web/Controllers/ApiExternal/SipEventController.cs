@@ -40,6 +40,7 @@ namespace CCM.Web.Controllers.ApiExternal
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class SipEventController : ApiController
     {
+        // JSON format : Kamailio Events
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly ISipEventParser _sipEventParser;
