@@ -93,7 +93,7 @@ namespace CCM.WebCommon.Authentication
                 if (principal == null)
                 {
                     // Authentication was attempted but failed. Set ErrorResult to indicate an error.
-                    log.Debug("Invalid username or password in request for {0}, Req From: {1}, Req Host: {2}", request.RequestUri, request.Headers.From, request.Headers.Host);
+                    log.Debug("Invalid username ({0}) or password in request for {1}, Req From: {2}, Req Host: {3}", credentials.Username, request.RequestUri, request.Headers.From, request.Headers.Host);
                     context.ErrorResult = new AuthenticationFailureResult("Invalid username or password", request);
                     return;
                 }
