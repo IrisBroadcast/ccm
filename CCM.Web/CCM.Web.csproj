@@ -295,7 +295,7 @@
     <Compile Include="Extensions\HtmlExtenstions.cs" />
     <Compile Include="Authentication\CcmAuthorizeAttribute.cs" />
     <Compile Include="Hubs\CodecStatusHub.cs" />
-    <Compile Include="Infrastructure\SignalR\GuiHubUpdater.cs" />
+    <Compile Include="Infrastructure\SignalR\WebGuiHubUpdater.cs" />
     <Compile Include="Infrastructure\SignalR\IGuiHubUpdater.cs" />
     <Compile Include="Infrastructure\SignalR\IStatusHubUpdater.cs" />
     <Compile Include="Infrastructure\SignalR\CodecStatusHubUpdater.cs" />

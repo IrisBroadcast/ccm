@@ -26,7 +26,7 @@
 
 namespace CCM.Core.SipEvent.Messages
 {
-    public class SipRegistrationMessage : KamailioMessageBase
+    public class SipRegistrationMessage : SipMessageBase
     {
         public SipUri Sip { get; set; }
         public string FromDisplayName { get; set; }

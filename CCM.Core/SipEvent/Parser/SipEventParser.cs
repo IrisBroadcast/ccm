@@ -36,8 +36,7 @@ namespace CCM.Core.SipEvent.Parser
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-
-        public KamailioMessageBase Parse(KamailioSipEvent sipEvent)
+        public SipMessageBase Parse(KamailioSipEvent sipEvent)
         {
             switch (sipEvent.Event)
             {
@@ -51,14 +50,12 @@ namespace CCM.Core.SipEvent.Parser
             return null;
         }
 
-
         private SipRegistrationMessage ParseRegistration(KamailioSipEvent kamailioData)
         {
-
             var registration = new SipRegistrationMessage()
             {
                 Sip = new SipUri(kamailioData.FromUri),
-                Username = kamailioData.AuthUser, // Obsolete. To be removed.
+                Username = kamailioData.AuthUser, // TODO: Obsolete. To be removed.
                 FromDisplayName = ParseDisplayName(kamailioData.FromDisplayName),
                 ToDisplayName = ParseDisplayName(kamailioData.ToDisplayName),
                 UserAgent = kamailioData.UserAgentHeader,
@@ -73,9 +70,9 @@ namespace CCM.Core.SipEvent.Parser
             return registration;
         }
 
-        private KamailioRegistrationExpireMessage ParseRegExpire(KamailioSipEvent kamailioData)
+        private SipRegistrationExpireMessage ParseRegExpire(KamailioSipEvent kamailioData)
         {
-            var expire = new KamailioRegistrationExpireMessage()
+            var expire = new SipRegistrationExpireMessage()
             {
                 SipAddress = new SipUri(kamailioData.FromUri),
                 ReceivedIp = kamailioData.Ip.SenderIp
@@ -84,7 +81,7 @@ namespace CCM.Core.SipEvent.Parser
             return expire;
         }
 
-        private KamailioDialogMessage ParseDialog(KamailioSipEvent kamailioData)
+        private SipDialogMessage ParseDialog(KamailioSipEvent kamailioData)
         {
             if (!Enum.TryParse(kamailioData.DialogState, true, out DialogStatus dialogStatus))
             {
@@ -92,7 +89,7 @@ namespace CCM.Core.SipEvent.Parser
                 return null;
             }
 
-            var dialog = new KamailioDialogMessage
+            var dialog = new SipDialogMessage
             {
                 Status = dialogStatus,
                 CallId = kamailioData.CallId,
@@ -108,7 +105,6 @@ namespace CCM.Core.SipEvent.Parser
 
             return dialog;
         }
-
 
         public static string ParseDisplayName(string s)
         {

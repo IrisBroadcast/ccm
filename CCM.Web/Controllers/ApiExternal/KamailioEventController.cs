@@ -77,7 +77,7 @@ namespace CCM.Web.Controllers.ApiExternal
                 return BadRequest();
             }
 
-            KamailioMessageBase sipMessage = _kamailioMessageParser.Parse(message);
+            SipMessageBase sipMessage = _kamailioMessageParser.Parse(message);
 
             if (sipMessage == null)
             {

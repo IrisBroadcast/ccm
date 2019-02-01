@@ -48,7 +48,7 @@ namespace CCM.Core.SipEvent
             _callRepository = callRepository;
         }
         
-        public SipEventHandlerResult HandleSipMessage(KamailioMessageBase sipMessage)
+        public SipEventHandlerResult HandleSipMessage(SipMessageBase sipMessage)
         {
             if (log.IsInfoEnabled)
             {
@@ -61,13 +61,13 @@ namespace CCM.Core.SipEvent
                 {
                     if (regMessage.Expires == 0)
                     {
-                        return UnregisterCodec(new KamailioRegistrationExpireMessage { SipAddress = regMessage.Sip });
+                        return UnregisterCodec(new SipRegistrationExpireMessage { SipAddress = regMessage.Sip });
                     }
                     return RegisterSip(regMessage);
                 }
-                case KamailioRegistrationExpireMessage expireMessage:
+                case SipRegistrationExpireMessage expireMessage:
                     return UnregisterCodec(expireMessage);
-                case KamailioDialogMessage dialogMessage:
+                case SipDialogMessage dialogMessage:
                     return HandleDialog(dialogMessage);
                 default:
                     log.Info("Unhandled Kamailio message: {0}", sipMessage.ToDebugString());
@@ -92,32 +92,32 @@ namespace CCM.Core.SipEvent
             return _sipRepository.UpdateRegisteredSip(sip);
         }
 
-        private SipEventHandlerResult UnregisterCodec(KamailioRegistrationExpireMessage expireMessage)
+        private SipEventHandlerResult UnregisterCodec(SipRegistrationExpireMessage expireMessage)
         {
             return _sipRepository.DeleteRegisteredSip(expireMessage.SipAddress.UserAtHost);
         }
 
-        private SipEventHandlerResult HandleDialog(KamailioDialogMessage kamailioDialogMessage)
+        private SipEventHandlerResult HandleDialog(SipDialogMessage sipDialogMessage)
         {
-            switch (kamailioDialogMessage.Status)
+            switch (sipDialogMessage.Status)
             {
                 case DialogStatus.Start:
-                    return RegisterCall(kamailioDialogMessage);
+                    return RegisterCall(sipDialogMessage);
                 case DialogStatus.End:
                     // TODO: Check hangup reason. Only close calls where reason = Normal
                     // TODO: Handle timeout message and add warning to call but don't end it
-                    log.Info("Received End command from Kamailio. HangUp reason: {0}", kamailioDialogMessage.HangupReason);
-                    return CloseCall(kamailioDialogMessage);
+                    log.Info("Received End command from Kamailio. HangUp reason: {0}", sipDialogMessage.HangupReason);
+                    return CloseCall(sipDialogMessage);
                 case DialogStatus.SingleBye:
                     // TODO: Handle single bye message and close call
-                    log.Info("Received SingleBye command from Kamailio. {0}", kamailioDialogMessage);
+                    log.Info("Received SingleBye command from Kamailio. {0}", sipDialogMessage);
                     return NothingChangedResult;
                 default:
                     return NothingChangedResult;
             }
         }
 
-        public SipEventHandlerResult RegisterCall(KamailioDialogMessage sipMessage)
+        public SipEventHandlerResult RegisterCall(SipDialogMessage sipMessage)
         {
             log.Debug("Register call from {0} to {1}, call id \"{2}\", hash id:\"{3}\", hash entry:\"{4}\"",
                 sipMessage.FromSipUri.UserAtHost, sipMessage.ToSipUri.UserAtHost, sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
@@ -131,8 +131,9 @@ namespace CCM.Core.SipEvent
 
             var call = new Call();
 
-            // Om user-delen är numerisk antar vi att det är ett telefonnummer
-            // (trots att sip-adresser egentligen kan vara numeriska)
+            // If the user-part is numeric, we make the assumption 
+            // that it is a phone number (even though sip-address 
+            // can be of the numeric kind)
             var fromSip = sipMessage.FromSipUri.User.IsNumeric() ? sipMessage.FromSipUri.User : sipMessage.FromSipUri.UserAtHost;
             var from = _sipRepository.GetCachedRegisteredSips().SingleOrDefault(rs => rs.Sip == fromSip);
             call.FromSip = fromSip;
@@ -157,7 +158,7 @@ namespace CCM.Core.SipEvent
             return SipMessageResult(SipEventChangeStatus.CallStarted, call.Id);
         }
 
-        public SipEventHandlerResult CloseCall(KamailioDialogMessage sipMessage)
+        public SipEventHandlerResult CloseCall(SipDialogMessage sipMessage)
         {
             log.Debug("Closing call with id:\"{0}\", hash id:\"{1}\", hash entry:\"{2}\"", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
 

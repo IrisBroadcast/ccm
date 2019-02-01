@@ -47,7 +47,6 @@ namespace CCM.Tests
 
         public CallEndedTests()
         {
-
             var settingsManager = new SettingsManager(new SettingsRepository(new CachingService()));
             var locationManager = new LocationManager(new LocationRepository(new CachingService()));
             var metaRepository = new MetaRepository(new CachingService());
@@ -92,7 +91,7 @@ namespace CCM.Tests
                 for (int i = 0; i < 10; i++)
                 {
                     // Starta samtal
-                    var dialogMessage = new KamailioDialogMessage
+                    var dialogMessage = new SipDialogMessage
                     {
                         FromSipUri = new SipUri(codec1),
                         ToSipUri = new SipUri(codec2),

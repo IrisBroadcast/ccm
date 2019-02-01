@@ -42,7 +42,7 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
             var sut = CreateKamailioMessageParser();
             var message = sut.Parse(msg);
 
-            var dialogMessage = message as KamailioDialogMessage;
+            var dialogMessage = message as SipDialogMessage;
             Assert.IsNotNull(dialogMessage);
             Assert.AreEqual("2129973808", dialogMessage.CallId);
             Assert.AreEqual("username@acip.example.com", dialogMessage.FromSipUri.UserAtHost);
@@ -68,7 +68,7 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
             var sut = CreateKamailioMessageParser();
             var message = sut.Parse(msg);
 
-            var dialogMessage = message as KamailioDialogMessage;
+            var dialogMessage = message as SipDialogMessage;
             Assert.IsNotNull(dialogMessage);
             Assert.AreEqual("vaxjo-10@acip.example.com", dialogMessage.ToSipUri.UserAtHost);
         }

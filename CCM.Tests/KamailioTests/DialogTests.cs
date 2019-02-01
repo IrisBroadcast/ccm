@@ -42,9 +42,9 @@ namespace CCM.Tests.KamailioTests
             sipMessageManager.RegisterCall(sipMessage);
         }
 
-        public KamailioDialogMessage CreateCallStartMessage(string sip, string requestedSip)
+        public SipDialogMessage CreateCallStartMessage(string sip, string requestedSip)
         {
-            return new KamailioDialogMessage
+            return new SipDialogMessage
             {
                 FromSipUri = new SipUri(sip),
                 ToSipUri = new SipUri(requestedSip),

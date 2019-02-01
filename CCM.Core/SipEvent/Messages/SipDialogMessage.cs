@@ -26,9 +26,8 @@
 
 namespace CCM.Core.SipEvent.Messages
 {
-    public class KamailioDialogMessage : KamailioMessageBase
+    public class SipDialogMessage : SipMessageBase
     {
-        // TODO: rename class
         public DialogStatus Status { get; set; }
         public string CallId { get; set; }
         public string HashId { get; set; }

@@ -31,7 +31,7 @@ namespace CCM.Core.SipEvent
 {
     public class KamailioSipEvent
     {
-        // Från Register
+        // Topic: Registration
         [JsonProperty(PropertyName = "event")] public SipEventType Event { get; set; } // "register"
         [JsonProperty(PropertyName = "timestamp")] public long TimeStamp { get; set; }
         [JsonProperty(PropertyName = "registrar")] public string Registrar { get; set; } // "ulandsort.sr.se"
@@ -48,7 +48,7 @@ namespace CCM.Core.SipEvent
         [JsonProperty(PropertyName = "contact_uri")] public string ContactUri { get; set; } // "<sip:1249@192.121.194.213:5080>"
         [JsonProperty(PropertyName = "call_id")] public string CallId { get; set; } // "338a@contrib.sr.se"
 
-        // Från Dialog start
+        // Topic: Dialog start
         [JsonProperty(PropertyName = "sipserver")] public string SipServer { get; set; } // "ulandsort.sr.se"
         [JsonProperty(PropertyName = "dialog_state")] public string DialogState { get; set; } // "start"
         [JsonProperty(PropertyName = "dhash_id")] public string DialogHashId { get; set; } // "10300"
@@ -60,7 +60,7 @@ namespace CCM.Core.SipEvent
         [JsonProperty(PropertyName = "sdp")] public string Sdp { get; set; } // "v=0....."
         [JsonProperty(PropertyName = "debug_origuri")] public string DebugOrigUri { get; set; } // "<null>"
 
-        // Från Dialog End
+        // Topic: Dialog End
         [JsonProperty(PropertyName = "hangup_reason")] public string HangupReason { get; set; } // "NORMAL"
 
         [JsonProperty(PropertyName = "ip")] public IpInfo Ip { get; set; }

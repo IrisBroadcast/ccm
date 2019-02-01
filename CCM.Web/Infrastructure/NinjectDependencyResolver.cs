@@ -97,7 +97,7 @@ namespace CCM.Web.Infrastructure
             _kernel.Bind<IStatisticsManager>().To<StatisticsManager>();
             _kernel.Bind<ICodecPresetRepository>().To<CodecPresetRepository>();
             _kernel.Bind<ILogRepository>().To<LogRepository>();
-            _kernel.Bind<IGuiHubUpdater>().To<GuiHubUpdater>();
+            _kernel.Bind<IGuiHubUpdater>().To<WebGuiHubUpdater>();
             _kernel.Bind<IStatusHubUpdater>().To<CodecStatusHubUpdater>();
             _kernel.Bind<IKamailioMessageParser>().To<KamailioMessageParser>();
             _kernel.Bind<ISipEventParser>().To<SipEventParser>();

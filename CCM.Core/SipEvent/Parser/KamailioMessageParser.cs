@@ -38,13 +38,12 @@ namespace CCM.Core.SipEvent.Parser
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
         private const int DefaultExpireValue = 120;
 
-
         public KamailioMessageParser(IKamailioDataParser kamailioDataParser)
         {
             _kamailioDataParser = kamailioDataParser;
         }
 
-        public KamailioMessageBase Parse(string message)
+        public SipMessageBase Parse(string message)
         {
             var kamailioData = _kamailioDataParser.ParseToKamailioData(message);
             if (kamailioData == null)
@@ -64,7 +63,7 @@ namespace CCM.Core.SipEvent.Parser
             return null;
         }
 
-        private KamailioDialogMessage ParseDialog(KamailioData kamailioData)
+        private SipDialogMessage ParseDialog(KamailioData kamailioData)
         {
             DialogStatus dialogStatus;
             if (!Enum.TryParse(kamailioData.GetField("dstat"), true, out dialogStatus))
@@ -73,7 +72,7 @@ namespace CCM.Core.SipEvent.Parser
                 return null;
             }
 
-            var dialog = new KamailioDialogMessage
+            var dialog = new SipDialogMessage
             {
                 Status = dialogStatus,
                 CallId = kamailioData.GetField("ci"),
@@ -89,7 +88,7 @@ namespace CCM.Core.SipEvent.Parser
                 HangupReason = kamailioData.GetField("hr")
             };
 
-            // Fix för tomt ru-fält i kamailio-data
+            // Fix for empty ru-field in Kamailio data
             if (dialog.ToSipUri == null || string.IsNullOrEmpty(dialog.ToSipUri.User))
             {
                 dialog.ToSipUri = new SipUri(kamailioData.GetField("tu"));
@@ -124,9 +123,9 @@ namespace CCM.Core.SipEvent.Parser
             return registration;
         }
 
-        private KamailioRegistrationExpireMessage ParseRegExpire(KamailioData kamailioData)
+        private SipRegistrationExpireMessage ParseRegExpire(KamailioData kamailioData)
         {
-            var expire = new KamailioRegistrationExpireMessage()
+            var expire = new SipRegistrationExpireMessage()
             {
                 SipAddress = new SipUri(kamailioData.GetField("aor")),
                 ReceivedIp = kamailioData.GetField("ip"),

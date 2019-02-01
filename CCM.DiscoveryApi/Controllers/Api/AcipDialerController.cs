@@ -65,7 +65,6 @@ namespace CCM.DiscoveryApi.Controllers.Api
             return filters;
         }
 
-
         [HttpGet]
         [Route("profiles")]
         public async Task<List<ProfileDtoV2>> Profiles()

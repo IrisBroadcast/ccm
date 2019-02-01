@@ -30,6 +30,6 @@ namespace CCM.Core.Interfaces.Kamailio
 {
     public interface IKamailioMessageParser
     {
-        KamailioMessageBase Parse(string message);
+        SipMessageBase Parse(string message);
     }
 }

@@ -44,13 +44,14 @@ namespace CCM.Core.SipEvent
         public string Parameters { get; set; }
         public string UserAtHost { get { return string.IsNullOrEmpty(User) || string.IsNullOrEmpty(Host) ? string.Empty : string.Format("{0}@{1}", User, Host); } }
 
-        private readonly string _sipString; // Orginalstr�ngen
+        private readonly string _sipString; // Original String
 
         public SipUri(string sipAddress)
         {
             try
             {
-                // Handle display name. TODO: Hur g�r man detta med RegExp?
+                // Handle display name
+                // TODO: How to do this with regex?
                 string displayName = "";
                 if (sipAddress.Contains("<"))
                 {

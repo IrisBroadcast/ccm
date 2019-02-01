@@ -33,13 +33,13 @@ namespace CCM.Web.Infrastructure.SignalR
     /// <summary>
     /// Uppdaterar klienter via SignalR
     /// </summary>
-    public class GuiHubUpdater : IGuiHubUpdater
+    public class WebGuiHubUpdater : IGuiHubUpdater
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         public void Update(SipEventHandlerResult updateResult)
         {
-            log.Debug("GuiHubUpdater is updating. status={0}, id={1}", updateResult.ChangeStatus, updateResult.ChangedObjectId);
+            log.Debug("WebGuiHubUpdater is updating. status={0}, id={1}", updateResult.ChangeStatus, updateResult.ChangedObjectId);
 
             if (updateResult.ChangeStatus == SipEventChangeStatus.CallStarted)
             {

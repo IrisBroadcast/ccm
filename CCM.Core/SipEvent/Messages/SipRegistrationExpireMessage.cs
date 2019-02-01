@@ -26,11 +26,10 @@
 
 namespace CCM.Core.SipEvent.Messages
 {
-    public class KamailioRegistrationExpireMessage : KamailioMessageBase
+    public class SipRegistrationExpireMessage : SipMessageBase
     {
-        // TODO: rename class
-        public SipUri SipAddress { get; set; }         // Sip-URL
-        public string ReceivedIp { get; set; }  // Ip-nummer som meddelandet skickades ifr�n
+        public SipUri SipAddress { get; set; }  // Sip-URL
+        public string ReceivedIp { get; set; }  // IP-address the message was sent from
 
         public override string ToDebugString()
         {
