@@ -51,13 +51,13 @@ namespace CCM.Data.Entities
         public virtual RegisteredSipEntity FromSip { get; set; }
         public string FromUsername { get; set; }
         public string FromDisplayName { get; set; }
-        public string FromTag { get; set; } // Används inte
+        public string FromTag { get; set; } // Not in use?
         
         public Guid? ToId { get; set; }
         [ForeignKey("ToId")]
         public virtual RegisteredSipEntity ToSip { get; set; }
         public string ToUsername { get; set; }
         public string ToDisplayName { get; set; }
-        public string ToTag { get; set; } // Används inte
+        public string ToTag { get; set; } // Not in use?
     }
 }

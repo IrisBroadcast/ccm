@@ -727,6 +727,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Är du säker på att du vill ta bort denna studio.
+        /// </summary>
+        public static string Delete_Studio_Are_You_Sure {
+            get {
+                return ResourceManager.GetString("Delete_Studio_Are_You_Sure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ta bort användare.
         /// </summary>
         public static string Delete_User {
@@ -1938,15 +1947,6 @@ namespace CCM.Web {
         public static string Remove_Studio {
             get {
                 return ResourceManager.GetString("Remove_Studio", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Är du säker på att du vill ta bort denna studio.
-        /// </summary>
-        public static string Remove_Studio_Are_You_Sure {
-            get {
-                return ResourceManager.GetString("Remove_Studio_Are_You_Sure", resourceCulture);
             }
         }
         

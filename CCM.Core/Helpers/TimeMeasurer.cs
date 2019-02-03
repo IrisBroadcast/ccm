@@ -34,12 +34,11 @@ namespace CCM.Core.Helpers
 {
     public class TimeMeasurer : IDisposable
     {
+        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly LogLevel _level;
         private readonly Stopwatch _stopwatch;
         private readonly string _message;
         private readonly bool _isEnabled;
-
-        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         public TimeMeasurer(string message, bool logStartMessage = false, LogLevel level = null)
         {
@@ -83,10 +82,10 @@ namespace CCM.Core.Helpers
                 TimeSpan runTime = _stopwatch.Elapsed;
 
                 string runTimeString = runTime.TotalSeconds > 1
-                                           ? string.Format("{0} s", runTime.TotalSeconds)
-                                           : string.Format("{0} ms", runTime.TotalMilliseconds);
+                    ? string.Format("{0} s", runTime.TotalSeconds)
+                    : string.Format("{0} ms", runTime.TotalMilliseconds);
 
-                string formattedString = string.Format("END:{0} [{1}]", _message, runTimeString);
+                var formattedString = string.Format("END:{0} [{1}]", _message, runTimeString);
                 Log(formattedString);
             }
         }

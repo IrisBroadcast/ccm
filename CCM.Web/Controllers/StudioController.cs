@@ -132,7 +132,7 @@ namespace CCM.Web.Controllers
                 Id = studio.Id,
                 Name = studio.Name,
                 Title = Resources.Remove_Studio,
-                WarningText = Resources.Remove_Studio_Are_You_Sure
+                WarningText = Resources.Delete_Studio_Are_You_Sure
             };
 
             return View("../Shared/Delete", vm);

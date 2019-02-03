@@ -71,12 +71,12 @@
                         <a data-toggle="collapse" data-parent="#accordion" href="#@profilegroup.Id">
                             <div class="col-md-11">@profilegroup.Name</div>
 
-                            <div class="col-md-1 text-right">
+                            <div class="col-md-1 text-right list-ccm-icongroup">
                                 @if (User.IsInRole(Roles.Admin))
                                 {
-                                    @Html.ActionLink(" ", "Edit", "ProfileGroup", new { @id = profilegroup.Id }, new { @class = "glyphicon glyphicon-pencil" })
+                                    @Html.ActionLink(" ", "Edit", "ProfileGroup", new { @id = profilegroup.Id }, new { @class = "glyphicon glyphicon-pencil list-ccm-inlineicon" })
                                     @Html.Raw("&nbsp;&nbsp;&nbsp;")
-                                    @Html.ActionLink(" ", "Delete", "ProfileGroup", new { @id = profilegroup.Id }, new { @class = "glyphicon glyphicon-trash" })
+                                    @Html.ActionLink(" ", "Delete", "ProfileGroup", new { @id = profilegroup.Id }, new { @class = "glyphicon glyphicon-trash list-ccm-inlineicon" })
                                 }
                             </div>
                         </a>

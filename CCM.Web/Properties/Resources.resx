@@ -847,7 +847,7 @@
   <data name="Remove_Studio" xml:space="preserve">
     <value>Ta bort studio</value>
   </data>
-  <data name="Remove_Studio_Are_You_Sure" xml:space="preserve">
+  <data name="Delete_Studio_Are_You_Sure" xml:space="preserve">
     <value>Är du säker på att du vill ta bort denna studio</value>
   </data>
   <data name="Hang_Up_I_Have_Booked" xml:space="preserve">

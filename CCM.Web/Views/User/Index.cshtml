@@ -45,16 +45,18 @@
         <div class="panel-heading list-ccm-heading">
             <div class="row">
                 <div class="col-md-3">@Resources.UserName</div>
-                <div class="col-md-8">@Resources.Name / @Resources.Comment</div>
+                <div class="col-md-7">@Resources.Name - @Resources.Comment</div>
+                <div class="col-md-2">@Resources.Role</div>
             </div>
         </div>
 
         <div class="panel-body-lp">
             @foreach (var account in Model.Users)
             {
-                <div class="row panel-body-item user CcmUser">
+                <div class="row panel-body-item">
                     <div class="col-md-3">@account.UserName</div>
                     <div class="col-md-7">@account.FirstName @account.LastName @((!string.IsNullOrWhiteSpace(account.FirstName) || !string.IsNullOrWhiteSpace(account.LastName)) && !string.IsNullOrWhiteSpace(account.Comment) ? " - " : string.Empty) @account.Comment</div>
+                    <div class="col-md-1">@account.Role</div>
                     <div class="col-md-1 text-right list-ccm-icongroup">
                         @Html.ActionLink(" ", "Edit", "User", new { @id = account.Id }, new { @class = "glyphicon glyphicon-pencil list-ccm-inlineicon" })
                         @if (account.Id != currentUserId)
