@@ -1,0 +1,14 @@
+{
+    "name": "CCM",
+    "team": "Unicorn",
+    "tech": [
+        "c#",
+        "dotnet mvc",
+        "signalr",
+        "websockets",
+        "angularjs",
+        "html",
+        "less
+    ],
+    "env": []
+}
