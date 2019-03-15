@@ -7,9 +7,6 @@
     ViewBag.Title = "title";
     ViewBag.Angular = true;
     var hasWriteRights = User.Identity.IsAuthenticated && (User.IsInRole(Roles.Admin) || User.IsInRole("Remote"));
-    string env = ConfigurationManager.AppSettings["Environment"];
-    bool isStage = (env == "Stage");
-    string forceNightNode = (isStage ? "true" : "false");
 }
 
 @section head

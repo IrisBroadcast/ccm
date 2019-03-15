@@ -3,7 +3,7 @@
 @using Roles = CCM.Core.Helpers.Roles
 @{
     string env = @ConfigurationManager.AppSettings["Environment"];
-    var logoClass = (env == "Test" ? "logo-test" : "logo");
+    var logoClass = (env == "Test" ? "logo-test" : (env == "Dev" ? "logo-dev" : "logo"));
     string deployVersion = Assembly.GetAssembly(typeof(CCM.Core.Entities.Call)).GetName().Version.ToString(3);
     string buildDateString = @ConfigurationManager.AppSettings["BuildDate"];
     string codecControlHost = @ConfigurationManager.AppSettings["CodecControlHost"];
