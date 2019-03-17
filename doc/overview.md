@@ -38,13 +38,12 @@ Platforms and tools
 CCM is build on a Microsoft Windows platform interacting with a Kamailio SIP server
 running on a Linux server. 
 CCM is developed in C# using Microsoft .NET Framework 4.5. ASP.NET MVC 5 is used for
-the web services. Development is done in Microsoft Visual Studio 2013.
+the web services. Development is done in Microsoft Visual Studio 2017.
 
 For databases, the Entity Framework v6 is used.
 
 The CCM web
 -----------
-
 The web interface provides an overview of available (and registered) devices as well
 as current broadcast sessions. A user can view registration IP addresses, device types
 and for some devies, manage the device in the CCM. When searching, filters based on
@@ -53,29 +52,37 @@ region, type of device or other criteria may be applied.
 When logging in as an administrator, account management is available - both CCM web log ins
 as well as SIP accounts. 
 
-The IRIS discovery service
+The IRIS Discovery service
 --------------------------
 The IRIS discovery services, also known by the name "Active Phonebook", is used by the
 connected devices to find other available devices to set up a live session. The service
 has three main functions:
-* Profiles: List available call profiles
-* Filters: List available pre-defined search filters
-* Devices: List available devices based on applied filters and profiles
+* Profiles:	List available call profiles (Profiles is SDP's)
+* Filters:	List available pre-defined search filters (Based on location filters on IP-ranges)
+* Devices:	List available devices based on applied filters and profiles
 
 All functions require a valid authentication.
 
+IRIS Connect - Kamailio configuration
+-------------------------------------
+Please see the separate IRIS project for Kamailio
+[Github.com/irisbroadcast/Connect](https://github.com/IrisBroadcast/Connect)
+
+IRIS Codec Control
+------------------
+The codec control has become a powerful addition to CCM. Enabling the same user interface regardless of what codec the user controls. This was formerly integrated into CCM. But now it's a separate project. It uses CCM for discovery and management of devices. 
+Codec control is written in dotnet core. So this should enable you to run it on a linux platform as well.
+[Github.com/irisbroadcast/CodecControl](https://github.com/IrisBroadcast/CodecControl)
+
 Code modules
 ------------
-
 * CCM.Core:	The core of the IRIS CCM platform. 
 * CCM.Data:	Module for data storage. 
 * CCM.Web: 	The web user interface (ASP.NET MVC 5 project)
 * CCM.DiscoveryApi:	The IRIS discovery service (ASP.NET MVC 5 project)
-* CCM.CodecControl:	A module to remotely manage devices by using vendor specific API services
 * CCM.Tests:	Unit and integration tests
 		Note: The unit tests are in working shape, but the rest of the tests may or
-		may not work at this stage. Help is welcome!
-* Radius.NET:	A modified version of Radius.NET from https://github.com/frontporch/Radius.NET
+		may not work at this stage.
 
 Installation of a test platform
 ===============================
@@ -87,12 +94,7 @@ CCM
 3. Create default root user
 4. ??
 
-Radius
-------
 
-Kamailio
---------
-Please see the separate IRIS project for Kamailio
 
 
 Feedback, bugs, comments?
