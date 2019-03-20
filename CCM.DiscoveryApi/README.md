@@ -56,233 +56,123 @@ Returns a list of profile definitions that can be used for making manual calls. 
 
 #### Response
 
-Body of successful response contains a document complying with the srprecence.xsd schema, if the response contains a \&lt;filters\&gt; or a \&lt;user-agents\&gt; section, those shall be ignored.
+Body of successful response contains a document complying with the srprecence.xsd schema, if the response contains a \<filters> or a \<user-agents> section, those shall be ignored.
 
 #### Example syntax
-
-https://example.com
-
-POST /profiles HTTP/1.1
-
-Content-Type: application/x-www-form-urlencoded
-
-username=user&amp;pwdhash=DFG4FGDd23443gHGs12D5
+    https://example.com
+    POST /profiles HTTP/1.1
+    Content-Type: application/x-www-form-urlencoded
+    username=user&amp;pwdhash=DFG4FGDd23443gHGs12D5
 
 #### Example response
 
-\&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?\&gt;
-
-\&lt;sr-discovery\&gt;
-
- \&lt;profiles\&gt;
-
-  \&lt;profile name=&quot;Internal&quot;\&gt;
-
-   \&lt;localised-name lang=&quot;sv&quot;\&gt;Intern\&lt;/localised-name\&gt;
-
-   \&lt;meta-data\&gt;
-
-    \&lt;data key=&quot;IconSmall&quot;value=&quot;http://icons.example.net/InternalSmall.png&quot; /\&gt;
-
-   \&lt;/meta-data\&gt;
-
-   \&lt;sdp\&gt;v=0
-
-o=mtu-02 3599989344 3599989344 IN IP4 example.com
-
-s=mtu-02
-
-c=IN IP4 203.0.113.12
-
-t=0 0
-
-m=audio 5004 RTP/AVP 96 97
-
-a=rtpmap:96 L24/48000/2
-
-a=rtpmap:97 parityfec/48000
-
-a=fmtp:97 5006 IN IP4 203.0.113.12
-
-a=sendrecv
-
-a=ptime:4
-
-a=ebuacip:jb 0
-
-a=ebuacip:jbdef 0 fixed 6
-
-a=ebuacip:plength 96 4
-
-a=ebuacip:qosrec 34\&lt;/sdp\&gt;
-
-  \&lt;/profile\&gt;
-
-  \&lt;profile name=&quot;EWAN&quot;\&gt;
-
-   \&lt;sdp\&gt;v=0
-
-o=mtu-02 3599992693 3599992693 IN IP4 example.com
-
-s=mtu-02
-
-c=IN IP4 203.0.113.12
-
-t=0 0
-
-m=audio 5004 RTP/AVP 96
-
-a=rtpmap:96 aptx/48000/2
-
-a=fmtp:96 variant=enhanced; bitresolution=24
-
-a=sendrecv
-
-a=ptime:10
-
-a=ebuacip:jb 0
-
-a=ebuacip:jbdef 0 fixed 30
-
-a=ebuacip:plength 96 10
-
-a=ebuacip:qosrec 34\&lt;/sdp\&gt;
-
-  \&lt;/profile\&gt;
-
-  \&lt;profile name=&quot;Mobile A&quot;\&gt;
-
-   \&lt;localised-name lang=&quot;sv&quot;\&gt;Mobil A\&lt;/localised-name\&gt;
-
-   \&lt;meta-data\&gt;\&lt;data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/InternalMobileASmall.png&quot; /\&gt;\&lt;/meta-data\&gt;
-
-   \&lt;sdp\&gt;v=0
-
-o=mtu-02 3599993974 3599993974 IN IP4 example.com
-
-s=mtu-02
-
-c=IN IP4 203.0.113.12
-
-t=0 0
-
-m=audio 5004 RTP/AVP 96 97
-
-a=rtpmap:96 aptx/32000/1
-
-a=fmtp:96 variant=enhanced; bitresolution=24
-
-a=rtpmap:97 parityfec/32000
-
-a=fmtp:97 5006 IN IP4 203.0.113.12
-
-a=sendonly
-
-a=ptime:20
-
-a=ebuacip:jb 0
-
-a=ebuacip:jbdef 0 fixed 50
-
-a=ebuacip:plength 96 20
-
-a=ebuacip:qosrec 34
-
-m=audio 5004 RTP/AVP 9
-
-a=rtpmap:9 G722/8000
-
-a=recvonly
-
-a=ptime:20
-
-a=ebuacip:jb 0
-
-a=ebuacip:jbdef 0 fixed 150
-
-a=ebuacip:plength 9 20
-
-a=ebuacip:qosrec 34\&lt;/sdp\&gt;
-
-  \&lt;/profile\&gt;
-
-  \&lt;profile name=&quot;Internet HQ&quot;\&gt;
-
-   \&lt;meta-data\&gt;
-
-    \&lt;data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/InternalInternetHQSmall.png&quot; /\&gt;
-
-   \&lt;/meta-data\&gt;
-
-   \&lt;sdp\&gt;v=0
-
-o=mtu-02 3599993476 3599993476 IN IP4 example.com
-
-s=mtu-02
-
-c=IN IP4 203.0.113.12
-
-t=0 0
-
-m=audio 5004 RTP/AVP 96
-
-a=rtpmap:96 opus/48000/2
-
-a=fmtp:96 stereo=1; sprop-stereo=1;maxaveragebitrate=256000;cbr=1;useinbandfec=1
-
-a=sendrecv
-
-a=ptime:20
-
-a=ebuacip:jb 0
-
-a=ebuacip:jbdef 0 fixed 500
-
-a=ebuacip:plength 96 20
-
-a=ebuacip:qosrec 34\&lt;/sdp\&gt;
-
-  \&lt;/profile\&gt;
-
-  \&lt;profile name=&quot;Telephone&quot;\&gt;
-
-   \&lt;localised-name lang=&quot;sv&quot;\&gt;Telefon\&lt;/localised-name\&gt;
-
-   \&lt;sdp\&gt;v=0
-
-o=mtu-02 3599993974 3599993974 IN IP4 example.com
-
-s=mtu-02
-
-c=IN IP4 203.0.113.12
-
-t=0 0
-
-m=audio 5004 RTP/AVP 9 8
-
-a=rtpmap:9 G722/8000
-
-a=rtpmap:8 PCMA/8000
-
-a=sendrecv
-
-a=ptime:20
-
-a=ebuacip:jb 0
-
-a=ebuacip:jbdef 0 fixed 150
-
-a=ebuacip:plength 9 20
-
-a=ebuacip:plength 8 20
-
-a=ebuacip:qosrec 34\&lt;/sdp\&gt;
-
-  \&lt;/profile\&gt;
-
- \&lt;/profiles\&gt;
-
-\&lt;/sr-discovery\&gt;
+    \<?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?>
+    \<sr-discovery>
+    \<profiles>
+    \<profile name=&quot;Internal&quot;>
+    \<localised-name lang=&quot;sv&quot;>Intern\</localised-name>
+    \<meta-data>
+        \<data key=&quot;IconSmall&quot;value=&quot;http://icons.example.net/InternalSmall.png&quot; />
+    \</meta-data>
+    \<sdp>v=0
+    o=mtu-02 3599989344 3599989344 IN IP4 example.com
+    s=mtu-02
+    c=IN IP4 203.0.113.12
+    t=0 0
+    m=audio 5004 RTP/AVP 96 97
+    a=rtpmap:96 L24/48000/2
+    a=rtpmap:97 parityfec/48000
+    a=fmtp:97 5006 IN IP4 203.0.113.12
+    a=sendrecv
+    a=ptime:4
+    a=ebuacip:jb 0
+    a=ebuacip:jbdef 0 fixed 6
+    a=ebuacip:plength 96 4
+    a=ebuacip:qosrec 34\</sdp>
+    \</profile>
+    \<profile name=&quot;EWAN&quot;>
+    \<sdp>v=0
+    o=mtu-02 3599992693 3599992693 IN IP4 example.com
+    s=mtu-02
+    c=IN IP4 203.0.113.12
+    t=0 0
+    m=audio 5004 RTP/AVP 96
+    a=rtpmap:96 aptx/48000/2
+    a=fmtp:96 variant=enhanced; bitresolution=24
+    a=sendrecv
+    a=ptime:10
+    a=ebuacip:jb 0
+    a=ebuacip:jbdef 0 fixed 30
+    a=ebuacip:plength 96 10
+    a=ebuacip:qosrec 34\</sdp>
+    \</profile>
+    \<profile name=&quot;Mobile A&quot;>
+    \<localised-name lang=&quot;sv&quot;>Mobil A\</localised-name>
+    \<meta-data>\<data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/InternalMobileASmall.png&quot; />\</meta-data>
+    \<sdp>v=0
+    o=mtu-02 3599993974 3599993974 IN IP4 example.com
+    s=mtu-02
+    c=IN IP4 203.0.113.12
+    t=0 0
+    m=audio 5004 RTP/AVP 96 97
+    a=rtpmap:96 aptx/32000/1
+    a=fmtp:96 variant=enhanced; bitresolution=24
+    a=rtpmap:97 parityfec/32000
+    a=fmtp:97 5006 IN IP4 203.0.113.12
+    a=sendonly
+    a=ptime:20
+    a=ebuacip:jb 0
+    a=ebuacip:jbdef 0 fixed 50
+    a=ebuacip:plength 96 20
+    a=ebuacip:qosrec 34
+    m=audio 5004 RTP/AVP 9
+    a=rtpmap:9 G722/8000
+    a=recvonly
+    a=ptime:20
+    a=ebuacip:jb 0
+    a=ebuacip:jbdef 0 fixed 150
+    a=ebuacip:plength 9 20
+    a=ebuacip:qosrec 34\</sdp>
+    \</profile>
+    \<profile name=&quot;Internet HQ&quot;>
+    \<meta-data>
+        \<data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/InternalInternetHQSmall.png&quot; />
+    \</meta-data>
+    \<sdp>v=0
+    o=mtu-02 3599993476 3599993476 IN IP4 example.com
+    s=mtu-02
+    c=IN IP4 203.0.113.12
+    t=0 0
+    m=audio 5004 RTP/AVP 96
+    a=rtpmap:96 opus/48000/2
+    a=fmtp:96 stereo=1; sprop-stereo=1;maxaveragebitrate=256000;cbr=1;useinbandfec=1
+    a=sendrecv
+    a=ptime:20
+    a=ebuacip:jb 0
+    a=ebuacip:jbdef 0 fixed 500
+    a=ebuacip:plength 96 20
+    a=ebuacip:qosrec 34\</sdp>
+    \</profile>
+    \<profile name=&quot;Telephone&quot;>
+    \<localised-name lang=&quot;sv&quot;>Telefon\</localised-name>
+    \<sdp>v=0
+    o=mtu-02 3599993974 3599993974 IN IP4 example.com
+    s=mtu-02
+    c=IN IP4 203.0.113.12
+    t=0 0
+    m=audio 5004 RTP/AVP 9 8
+    a=rtpmap:9 G722/8000
+    a=rtpmap:8 PCMA/8000
+    a=sendrecv
+    a=ptime:20
+    a=ebuacip:jb 0
+    a=ebuacip:jbdef 0 fixed 150
+    a=ebuacip:plength 9 20
+    a=ebuacip:plength 8 20
+    a=ebuacip:qosrec 34\</sdp>
+    \</profile>
+    \</profiles>
+    \</sr-discovery>
 
 ### filters(username, pwdhash)
 
@@ -296,103 +186,59 @@ Returns a list of filters that can be used for calling useragents(). The returne
 
 #### Response
 
-Body of successful response contains a document complying with the sr-discovery.xsd schema, if the response contains a \&lt;profiles\&gt; or a \&lt;user-agents\&gt; section, those shall be ignored.
+Body of successful response contains a document complying with the sr-discovery.xsd schema, if the response contains a \<profiles> or a \<user-agents> section, those shall be ignored.
 
 #### Example syntax
 
-https://example.com
-
-POST /filters HTTP/1.1
-
-Content-Type: application/x-www-form-urlencoded
-
-username=user&amp;pwdhash=DFG4FGDd23443gHGs12D5
+    https://example.com
+    POST /filters HTTP/1.1
+    Content-Type: application/x-www-form-urlencoded
+    username=user&amp;pwdhash=DFG4FGDd23443gHGs12D5
 
 #### Example response
 
-\&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?\&gt;
-
-\&lt;sr-discovery\&gt;
-
- \&lt;filters\&gt;
-
-  \&lt;filter name=&quot;Location&quot;\&gt;
-
-   \&lt;localised-name lang=&quot;sv&quot;\&gt;Placering\&lt;/localised-name\&gt;
-
-   \&lt;meta-data\&gt;
-
-    \&lt;data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/LocationSmall.png&quot; /\&gt;
-
-   \&lt;/meta-data\&gt;
-
-   \&lt;option name=&quot;Filt&quot;/\&gt;
-
-   \&lt;option name=&quot;Gamla Ullevi&quot;/\&gt;
-
-   \&lt;option name=&quot;Globen&quot;\&gt;
-
-    \&lt;localised-name lang=&quot;en-UK&quot;\&gt;Stockholm Globe Arena\&lt;/localised-name\&gt;
-
-   \&lt;/option\&gt;
-
-   \&lt;option name=&quot;Hovet&quot;/\&gt;
-
-   \&lt;option name=&quot;Löfbergs Lila&quot;/\&gt;
-
-   \&lt;option name=&quot;Ospecificerad&quot;/\&gt;
-
-   \&lt;option name=&quot;RH&quot;/\&gt;
-
-   \&lt;option name=&quot;RH ADSL&quot;/\&gt;
-
-   \&lt;option name=&quot;RH WLAN&quot;/\&gt;
-
-   \&lt;option name=&quot;Strömvallen Gävle&quot;/\&gt;
-
-   \&lt;option name=&quot;Swedbank Arena&quot;/\&gt;
-
-   \&lt;option name=&quot;Wantech 3G&quot;/\&gt;
-
-  \&lt;/filter\&gt;
-
-  \&lt;filter name=&quot;Owner&quot;\&gt;
-
-   \&lt;localised-name lang=&quot;sv&quot;\&gt;Kanal/redaktion\&lt;/localised-name\&gt;
-
-   \&lt;meta-data\&gt;
-
-    \&lt;data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/OwnerSmall.png&quot; /\&gt;
-
-   \&lt;/meta-data\&gt;
-
-   \&lt;option name=&quot;DC&quot;/\&gt;
-
-   \&lt;option name=&quot;DC-TON&quot;\&gt;
-
-      \&lt;meta-data\&gt;
-
-       \&lt;data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/DCTONSmall.png&quot; /\&gt;
-
-      \&lt;/meta-data\&gt;
-
-   \&lt;/option\&gt;
-
-   \&lt;option name=&quot;Ekot&quot;/\&gt;
-
-   \&lt;option name=&quot;MTU&quot;/\&gt;
-
-   \&lt;option name=&quot;Radiosporten&quot;/\&gt;
-
-   \&lt;option name=&quot;SR Dalarna&quot;/\&gt;
-
-   \&lt;option name=&quot;SR Örebro&quot;/\&gt;
-
-  \&lt;/filter\&gt;
-
- \&lt;/filters\&gt;
-
-\&lt;/sr-discovery\&gt;
+    \<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>
+    \<sr-discovery>
+    \<filters>
+    \<filter name=&quot;Location&quot;>
+    \<localised-name lang=&quot;sv&quot;>Placering\</localised-name>
+    \<meta-data>
+        \<data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/LocationSmall.png&quot; />
+    \</meta-data>
+    \<option name=&quot;Filt&quot;/>
+    \<option name=&quot;Gamla Ullevi&quot;/>
+    \<option name=&quot;Globen&quot;>
+        \<localised-name lang=&quot;en-UK&quot;>Stockholm Globe Arena\</localised-name>
+    \</option>
+    \<option name=&quot;Hovet&quot;/>
+    \<option name=&quot;Löfbergs Lila&quot;/>
+    \<option name=&quot;Ospecificerad&quot;/>
+    \<option name=&quot;RH&quot;/>
+    \<option name=&quot;RH ADSL&quot;/>
+    \<option name=&quot;RH WLAN&quot;/>
+    \<option name=&quot;Strömvallen Gävle&quot;/>
+    \<option name=&quot;Swedbank Arena&quot;/>
+    \<option name=&quot;Wantech 3G&quot;/>
+    \</filter>
+    \<filter name=&quot;Owner&quot;>
+    \<localised-name lang=&quot;sv&quot;>Kanal/redaktion\</localised-name>
+    \<meta-data>
+        \<data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/OwnerSmall.png&quot; />
+    \</meta-data>
+    \<option name=&quot;DC&quot;/>
+    \<option name=&quot;DC-TON&quot;>
+        \<meta-data>
+        \<data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/DCTONSmall.png&quot; />
+        \</meta-data>
+    \</option>
+    \<option name=&quot;Ekot&quot;/>
+    \<option name=&quot;MTU&quot;/>
+    \<option name=&quot;Radiosporten&quot;/>
+    \<option name=&quot;SR Dalarna&quot;/>
+    \<option name=&quot;SR Örebro&quot;/>
+    \</filter>
+    \</filters>
+    \</sr-discovery>
 
 ### useragents(username, pwdhash, caller, callee, ...)
 
@@ -409,574 +255,296 @@ Returns a list of available user agents that conform to the provided filter opti
 
 #### Response
 
-Body of successful response contains a document complying with the sr-discovery.xsd schema, if the response contains a \&lt;filters\&gt; section, this shall be ignored. If the response contains a \&lt;profiles\&gt; section, these shall update existing profiles in the same way as if a call to the profiles function was made.
+Body of successful response contains a document complying with the sr-discovery.xsd schema, if the response contains a \<filters> section, this shall be ignored. If the response contains a \<profiles> section, these shall update existing profiles in the same way as if a call to the profiles function was made.
 
 #### Example syntax
 
-https://example.com
-
-POST /useragents HTTP/1.1
-
-Content-Type: application/x-www-form-urlencoded
-
-username=user&amp;pwdhash=DFG4FGDd23443gHGs12D5&amp;caller=dc%2d17%40contrib%2esr%2ese&amp;Location=Stockholm&amp;Owner=MTU
+    https://example.com
+    POST /useragents HTTP/1.1
+    Content-Type: application/x-www-form-urlencoded
+    username=user&amp;pwdhash=DFG4FGDd23443gHGs12D5&amp;caller=dc%2d17%40contrib%2esr%2ese&amp;Location=Stockholm&amp;Owner=MTU
 
 #### Example response
 
-\&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?\&gt;
-
-\&lt;sr-discovery\&gt;
-
- \&lt;profiles\&gt;
-
-  \&lt;profile name=&quot;Internal&quot;\&gt;
-
-   \&lt;localised-name lang=&quot;sv&quot;\&gt;Intern\&lt;/localised-name\&gt;
-
-   \&lt;sdp\&gt;v=0
-
-o=mtu-02 3599989344 3599989344 IN IP4 example.com
-
-s=mtu-02
-
-c=IN IP4 203.0.113.12
-
-t=0 0
-
-m=audio 5004 RTP/AVP 96 97
-
-a=rtpmap:96 L24/48000/2
-
-a=rtpmap:97 parityfec/48000
-
-a=fmtp:97 5006 IN IP4 203.0.113.12
-
-a=sendrecv
-
-a=ptime:4
-
-a=ebuacip:jb 0
-
-a=ebuacip:jbdef 0 fixed 6
-
-a=ebuacip:plength 96 4
-
-a=ebuacip:qosrec 34\&lt;/sdp\&gt;
-
-  \&lt;/profile\&gt;
-
-  \&lt;profile name=&quot;EWAN&quot;\&gt;
-
-   \&lt;sdp\&gt;v=0
-
-o=mtu-02 3599992693 3599992693 IN IP4 example.com
-
-s=mtu-02
-
-c=IN IP4 203.0.113.12
-
-t=0 0
-
-m=audio 5004 RTP/AVP 96
-
-a=rtpmap:96 aptx/48000/2
-
-a=fmtp:96 variant=enhanced; bitresolution=24
-
-a=sendrecv
-
-a=ptime:10
-
-a=ebuacip:jb 0
-
-a=ebuacip:jbdef 0 fixed 30
-
-a=ebuacip:plength 96 10
-
-a=ebuacip:qosrec 34\&lt;/sdp\&gt;
-
-  \&lt;/profile\&gt;
-
-  \&lt;profile name=&quot;Internet HQ&quot;\&gt;
-
-   \&lt;sdp\&gt;v=0
-
-o=mtu-02 3599993476 3599993476 IN IP4 example.com
-
-s=mtu-02
-
-c=IN IP4 203.0.113.12
-
-t=0 0
-
-m=audio 5004 RTP/AVP 96
-
-a=rtpmap:96 opus/48000/2
-
-a=fmtp:96 stereo=1; sprop-stereo=1;maxaveragebitrate=256000;cbr=1;useinbandfec=1
-
-a=sendrecv
-
-a=ptime:20
-
-a=ebuacip:jb 0
-
-a=ebuacip:jbdef 0 fixed 500
-
-a=ebuacip:plength 96 20
-
-a=ebuacip:qosrec 34\&lt;/sdp\&gt;
-
-  \&lt;/profile\&gt;
-
-  \&lt;profile name=&quot;Telephone&quot;\&gt;
-
-   \&lt;localised-name lang=&quot;sv&quot;\&gt;Telefon\&lt;/localised-name\&gt;
-
-   \&lt;sdp\&gt;v=0
-
-o=mtu-02 3599993974 3599993974 IN IP4 example.com
-
-s=mtu-02
-
-c=IN IP4 203.0.113.12
-
-t=0 0
-
-m=audio 5004 RTP/AVP 9 8
-
-a=rtpmap:9 G722/8000
-
-a=rtpmap:8 PCMA/8000
-
-a=sendrecv
-
-a=ptime:20
-
-a=ebuacip:jb 0
-
-a=ebuacip:jbdef 0 fixed 150
-
-a=ebuacip:plength 9 20
-
-a=ebuacip:plength 8 20
-
-a=ebuacip:qosrec 34\&lt;/sdp\&gt;
-
-  \&lt;/profile\&gt;
-
- \&lt;/profiles\&gt;
-
- \&lt;user-agents\&gt;
-
-  \&lt;user-agent sip-id=&quot;Stockholm Driftcentralen 17&amp;lt;dc-17@sip.sr.se&amp;gt;&quot;\&gt;
-
-   \&lt;profile-rec\&gt;
-
-    \&lt;profile-ref name=&quot;Internal&quot;/\&gt;
-
-    \&lt;profile-ref name=&quot;EWAN&quot;/\&gt;
-
-   \&lt;/profile-rec\&gt;
-
-   \&lt;meta-data\&gt;
-
-    \&lt;data key=&quot;Location&quot; value=&quot;Stockholm&quot;/\&gt;
-
-   \&lt;/meta-data\&gt;
-
-  \&lt;/user-agent\&gt;
-
-  \&lt;user-agent sip-id=&quot;Stockholm Driftcentralen 18&amp;lt;dc-18@sip.sr.se&amp;gt;&quot;\&gt;
-
-   \&lt;profile-rec\&gt;
-
-    \&lt;profile-ref name=&quot;Internal&quot;/\&gt;
-
-   \&lt;/profile-rec\&gt;
-
-   \&lt;meta-data\&gt;
-
-    \&lt;data key=&quot;Location&quot; value=&quot;Stockholm&quot;/\&gt;
-
-   \&lt;/meta-data\&gt;
-
-  \&lt;/user-agent\&gt;
-
-  \&lt;user-agent sip-id=&quot;Stockholm Hovet 01&amp;lt;hovet-01@sip.sr.se&amp;gt;&quot;\&gt;
-
-   \&lt;profile-rec\&gt;
-
-    \&lt;profile-ref name=&quot;EWAN&quot;/\&gt;
-
-   \&lt;/profile-rec\&gt;
-
-   \&lt;meta-data\&gt;
-
-    \&lt;data key=&quot;Location&quot; value=&quot;Stockholm&quot;/\&gt;
-
-    \&lt;data key=&quot;InputCount&quot; value=&quot;1&quot;/\&gt;
-
-   \&lt;/meta-data\&gt;
-
-  \&lt;/user-agent\&gt;
-
-  \&lt;user-agent sip-id=&quot;p1-nyc-01@sip.sr.se&quot;\&gt;
-
-   \&lt;profile-rec\&gt;
-
-    \&lt;profile-ref name=&quot;Internet HQ&quot;/\&gt;
-
-   \&lt;/profile-rec\&gt;
-
-   \&lt;meta-data\&gt;
-
-    \&lt;data key=&quot;Location&quot; value=&quot;Stockholm&quot;/\&gt;
-
-    \&lt;data key=&quot;Portable&quot; value=&quot;yes&quot;\&gt;
-
-     \&lt;localised-value lang=&quot;sv&quot;\&gt;Ja\&lt;/localised-value\&gt;
-
-    \&lt;/data\&gt;
-
-   \&lt;/meta-data\&gt;
-
-  \&lt;/user-agent\&gt;
-
-  \&lt;user-agent sip-id=&quot;voip-01@sip.sr.se&quot;\&gt;
-
-   \&lt;profile-rec\&gt;
-
-    \&lt;profile-ref name=&quot;Telephone&quot;/\&gt;
-
-   \&lt;/profile-rec\&gt;
-
-   \&lt;meta-data\&gt;
-
-    \&lt;data key=&quot;Location&quot; value=&quot;Stockholm&quot;/\&gt;
-
-   \&lt;/meta-data\&gt;
-
-  \&lt;/user-agent\&gt;
-
- \&lt;/user-agents\&gt;
-
-\&lt;/sr-discovery\&gt;
+    \<?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?>
+    \<sr-discovery>
+    \<profiles>
+    \<profile name=&quot;Internal&quot;>
+    \<localised-name lang=&quot;sv&quot;>Intern\</localised-name>
+    \<sdp>v=0
+    o=mtu-02 3599989344 3599989344 IN IP4 example.com
+    s=mtu-02
+    c=IN IP4 203.0.113.12
+    t=0 0
+    m=audio 5004 RTP/AVP 96 97
+    a=rtpmap:96 L24/48000/2
+    a=rtpmap:97 parityfec/48000
+    a=fmtp:97 5006 IN IP4 203.0.113.12
+    a=sendrecv
+    a=ptime:4
+    a=ebuacip:jb 0
+    a=ebuacip:jbdef 0 fixed 6
+    a=ebuacip:plength 96 4
+    a=ebuacip:qosrec 34\</sdp>
+    \</profile>
+    \<profile name=&quot;EWAN&quot;>
+    \<sdp>v=0
+    o=mtu-02 3599992693 3599992693 IN IP4 example.com
+    s=mtu-02
+    c=IN IP4 203.0.113.12
+    t=0 0
+    m=audio 5004 RTP/AVP 96
+    a=rtpmap:96 aptx/48000/2
+    a=fmtp:96 variant=enhanced; bitresolution=24
+    a=sendrecv
+    a=ptime:10
+    a=ebuacip:jb 0
+    a=ebuacip:jbdef 0 fixed 30
+    a=ebuacip:plength 96 10
+    a=ebuacip:qosrec 34\</sdp>
+    \</profile>
+    \<profile name=&quot;Internet HQ&quot;>
+    \<sdp>v=0
+    o=mtu-02 3599993476 3599993476 IN IP4 example.com
+    s=mtu-02
+    c=IN IP4 203.0.113.12
+    t=0 0
+    m=audio 5004 RTP/AVP 96
+    a=rtpmap:96 opus/48000/2
+    a=fmtp:96 stereo=1; sprop-stereo=1;maxaveragebitrate=256000;cbr=1;useinbandfec=1
+    a=sendrecv
+    a=ptime:20
+    a=ebuacip:jb 0
+    a=ebuacip:jbdef 0 fixed 500
+    a=ebuacip:plength 96 20
+    a=ebuacip:qosrec 34\</sdp>
+    \</profile>
+    \<profile name=&quot;Telephone&quot;>
+    \<localised-name lang=&quot;sv&quot;>Telefon\</localised-name>
+    \<sdp>v=0
+    o=mtu-02 3599993974 3599993974 IN IP4 example.com
+    s=mtu-02
+    c=IN IP4 203.0.113.12
+    t=0 0
+    m=audio 5004 RTP/AVP 9 8
+    a=rtpmap:9 G722/8000
+    a=rtpmap:8 PCMA/8000
+    a=sendrecv
+    a=ptime:20
+    a=ebuacip:jb 0
+    a=ebuacip:jbdef 0 fixed 150
+    a=ebuacip:plength 9 20
+    a=ebuacip:plength 8 20
+    a=ebuacip:qosrec 34\</sdp>
+    \</profile>
+    \</profiles>
+    \<user-agents>
+    \<user-agent sip-id=&quot;Stockholm Driftcentralen 17&amp;lt;dc-17@sip.sr.se&amp;gt;&quot;>
+    \<profile-rec>
+        \<profile-ref name=&quot;Internal&quot;/>
+        \<profile-ref name=&quot;EWAN&quot;/>
+    \</profile-rec>
+    \<meta-data>
+        \<data key=&quot;Location&quot; value=&quot;Stockholm&quot;/>
+    \</meta-data>
+    \</user-agent>
+    \<user-agent sip-id=&quot;Stockholm Driftcentralen 18&amp;lt;dc-18@sip.sr.se&amp;gt;&quot;>
+    \<profile-rec>
+        \<profile-ref name=&quot;Internal&quot;/>
+    \</profile-rec>
+    \<meta-data>
+        \<data key=&quot;Location&quot; value=&quot;Stockholm&quot;/>
+    \</meta-data>
+    \</user-agent>
+    \<user-agent sip-id=&quot;Stockholm Hovet 01&amp;lt;hovet-01@sip.sr.se&amp;gt;&quot;>
+    \<profile-rec>
+        \<profile-ref name=&quot;EWAN&quot;/>
+    \</profile-rec>
+    \<meta-data>
+        \<data key=&quot;Location&quot; value=&quot;Stockholm&quot;/>
+        \<data key=&quot;InputCount&quot; value=&quot;1&quot;/>
+    \</meta-data>
+    \</user-agent>
+    \<user-agent sip-id=&quot;p1-nyc-01@sip.sr.se&quot;>
+    \<profile-rec>
+        \<profile-ref name=&quot;Internet HQ&quot;/>
+    \</profile-rec>
+    \<meta-data>
+        \<data key=&quot;Location&quot; value=&quot;Stockholm&quot;/>
+        \<data key=&quot;Portable&quot; value=&quot;yes&quot;>
+        \<localised-value lang=&quot;sv&quot;>Ja\</localised-value>
+        \</data>
+    \</meta-data>
+    \</user-agent>
+    \<user-agent sip-id=&quot;voip-01@sip.sr.se&quot;>
+    \<profile-rec>
+        \<profile-ref name=&quot;Telephone&quot;/>
+    \</profile-rec>
+    \<meta-data>
+        \<data key=&quot;Location&quot; value=&quot;Stockholm&quot;/>
+    \</meta-data>
+    \</user-agent>
+    \</user-agents>
+    \</sr-discovery>
 
 ### sr-discovery.xsd
 
 This schema specifies the format for responses to each of the functions of the SR DiscoveryAPI.
 
-\&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?\&gt;
-
-\&lt;xs:schema elementFormDefault=&quot;qualified&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;\&gt;
-
-  \&lt;xs:element name=&quot;sr-discovery&quot;\&gt;
-
-    \&lt;xs:complexType\&gt;
-
-      \&lt;xs:sequence\&gt;
-
-        \&lt;xs:element minOccurs=&quot;0&quot; ref=&quot;profiles&quot; /\&gt;
-
-        \&lt;xs:element minOccurs=&quot;0&quot; ref=&quot;filters&quot; /\&gt;
-
-        \&lt;xs:element minOccurs=&quot;0&quot; ref=&quot;user-agents&quot; /\&gt;
-
-      \&lt;/xs:sequence\&gt;
-
-    \&lt;/xs:complexType\&gt;
-
-  \&lt;/xs:element\&gt;
-
-  \&lt;xs:element name=&quot;profiles&quot;\&gt;
-
-    \&lt;xs:annotation\&gt;
-
-      \&lt;xs:documentation\&gt;Definitions of profiles\&lt;/xs:documentation\&gt;
-
-    \&lt;/xs:annotation\&gt;
-
-    \&lt;xs:complexType\&gt;
-
-      \&lt;xs:sequence\&gt;
-
-        \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;profile&quot;\&gt;
-
-          \&lt;xs:annotation\&gt;
-
-            \&lt;xs:documentation\&gt;Definition of a profile.\&lt;/xs:documentation\&gt;
-
-          \&lt;/xs:annotation\&gt;
-
-          \&lt;xs:complexType\&gt;
-
-            \&lt;xs:sequence\&gt;
-
-              \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;localised-name&quot; /\&gt;
-
-              \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; /\&gt;
-
-              \&lt;xs:element name=&quot;sdp&quot; type=&quot;xs:string&quot; /\&gt;
-
-            \&lt;/xs:sequence\&gt;
-
-            \&lt;xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot;\&gt;
-
-              \&lt;xs:annotation\&gt;
-
-                \&lt;xs:documentation\&gt;The name of the profile. If no localised name for the current locale is found, this is the default name to fall back to. This is also the name used in all profile-ref elements.\&lt;/xs:documentation\&gt;
-
-              \&lt;/xs:annotation\&gt;
-
-            \&lt;/xs:attribute\&gt;
-
-          \&lt;/xs:complexType\&gt;
-
-        \&lt;/xs:element\&gt;
-
-      \&lt;/xs:sequence\&gt;
-
-    \&lt;/xs:complexType\&gt;
-
-  \&lt;/xs:element\&gt;
-
-  \&lt;xs:element name=&quot;filters&quot;\&gt;
-
-    \&lt;xs:annotation\&gt;
-
-      \&lt;xs:documentation\&gt;Definitions of filters and options\&lt;/xs:documentation\&gt;
-
-    \&lt;/xs:annotation\&gt;
-
-    \&lt;xs:complexType\&gt;
-
-      \&lt;xs:sequence\&gt;
-
-        \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;filter&quot;\&gt;
-
-          \&lt;xs:complexType\&gt;
-
-            \&lt;xs:sequence\&gt;
-
-              \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;localised-name&quot; /\&gt;
-
-              \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; /\&gt;
-
-              \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;option&quot;\&gt;
-
-                \&lt;xs:complexType\&gt;
-
-                  \&lt;xs:sequence\&gt;
-
-                    \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;localised-name&quot; /\&gt;
-
-                    \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; /\&gt;
-
-                  \&lt;/xs:sequence\&gt;
-
-                  \&lt;xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; /\&gt;
-
-                \&lt;/xs:complexType\&gt;
-
-              \&lt;/xs:element\&gt;
-
-            \&lt;/xs:sequence\&gt;
-
-            \&lt;xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot; /\&gt;
-
-          \&lt;/xs:complexType\&gt;
-
-        \&lt;/xs:element\&gt;
-
-      \&lt;/xs:sequence\&gt;
-
-    \&lt;/xs:complexType\&gt;
-
-  \&lt;/xs:element\&gt;
-
-  \&lt;xs:element name=&quot;user-agents&quot;\&gt;
-
-    \&lt;xs:annotation\&gt;
-
-      \&lt;xs:documentation\&gt;List of available user agents.\&lt;/xs:documentation\&gt;
-
-    \&lt;/xs:annotation\&gt;
-
-    \&lt;xs:complexType\&gt;
-
-      \&lt;xs:sequence\&gt;
-
-        \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;user-agent&quot;\&gt;
-
-          \&lt;xs:annotation\&gt;
-
-            \&lt;xs:documentation\&gt;Identification of a user agent.\&lt;/xs:documentation\&gt;
-
-          \&lt;/xs:annotation\&gt;
-
-          \&lt;xs:complexType\&gt;
-
-            \&lt;xs:sequence\&gt;
-
-              \&lt;xs:element minOccurs=&quot;0&quot; name=&quot;profile-rec&quot;\&gt;
-
-                \&lt;xs:complexType\&gt;
-
-                  \&lt;xs:sequence\&gt;
-
-                    \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;profile-ref&quot;\&gt;
-
-                      \&lt;xs:annotation\&gt;
-
-                        \&lt;xs:documentation\&gt;Reference to a recommended profile. The sequence is ordered by preference.\&lt;/xs:documentation\&gt;
-
-                      \&lt;/xs:annotation\&gt;
-
-                      \&lt;xs:complexType\&gt;
-
-                        \&lt;xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot; /\&gt;
-
-                      \&lt;/xs:complexType\&gt;
-
-                    \&lt;/xs:element\&gt;
-
-                  \&lt;/xs:sequence\&gt;
-
-                \&lt;/xs:complexType\&gt;
-
-              \&lt;/xs:element\&gt;
-
-              \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; /\&gt;
-
-            \&lt;/xs:sequence\&gt;
-
-            \&lt;xs:attribute name=&quot;sip-id&quot; type=&quot;xs:string&quot; use=&quot;required&quot;\&gt;
-
-              \&lt;xs:annotation\&gt;
-
-                \&lt;xs:documentation\&gt;SIP URI that can be used to contact this user agent. May contain a display name as per RFC 2822.\&lt;/xs:documentation\&gt;
-
-              \&lt;/xs:annotation\&gt;
-
-            \&lt;/xs:attribute\&gt;
-
-            \&lt;xs:attribute name=&quot;connected-to&quot; type=&quot;xs:string&quot; use=&quot;optional&quot;\&gt;
-
-              \&lt;xs:annotation\&gt;
-
-                \&lt;xs:documentation\&gt;Indicates the SIP URI of the user agent that this user agent is currently connected to. May contain a display name as per RFC 2822.\&lt;/xs:documentation\&gt;
-
-              \&lt;/xs:annotation\&gt;
-
-            \&lt;/xs:attribute\&gt;
-
-          \&lt;/xs:complexType\&gt;
-
-        \&lt;/xs:element\&gt;
-
-      \&lt;/xs:sequence\&gt;
-
-    \&lt;/xs:complexType\&gt;
-
-  \&lt;/xs:element\&gt;
-
-  \&lt;xs:element name=&quot;localised-name&quot;\&gt;
-
-    \&lt;xs:annotation\&gt;
-
-      \&lt;xs:documentation\&gt;Name to use in localised user interfaces.\&lt;/xs:documentation\&gt;
-
-    \&lt;/xs:annotation\&gt;
-
-    \&lt;xs:complexType\&gt;
-
-      \&lt;xs:simpleContent\&gt;
-
-        \&lt;xs:extension base=&quot;xs:string&quot;\&gt;
-
-          \&lt;xs:attribute name=&quot;lang&quot; type=&quot;xs:string&quot; use=&quot;required&quot;\&gt;
-
-            \&lt;xs:annotation\&gt;
-
-              \&lt;xs:documentation\&gt;Language identifier as defined by IETF BCP 47.\&lt;/xs:documentation\&gt;
-
-            \&lt;/xs:annotation\&gt;
-
-          \&lt;/xs:attribute\&gt;
-
-        \&lt;/xs:extension\&gt;
-
-      \&lt;/xs:simpleContent\&gt;
-
-    \&lt;/xs:complexType\&gt;
-
-  \&lt;/xs:element\&gt;
-
-  \&lt;xs:element minOccurs=&quot;0&quot; name=&quot;meta-data&quot;\&gt;
-
-    \&lt;xs:complexType\&gt;
-
-      \&lt;xs:sequence\&gt;
-
-        \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;data&quot;\&gt;
-
-          \&lt;xs:annotation\&gt;
-
-            \&lt;xs:documentation\&gt;Generic container for meta-data. TODO: There is no way to signal localised named for keys, do we need this?\&lt;/xs:documentation\&gt;
-
-          \&lt;/xs:annotation\&gt;
-
-          \&lt;xs:complexType\&gt;
-
-            \&lt;xs:sequence\&gt;
-
-              \&lt;xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;localised-value&quot;\&gt;
-
-                \&lt;xs:annotation\&gt;
-
-                  \&lt;xs:documentation\&gt;Value to use in localised user interfaces.\&lt;/xs:documentation\&gt;
-
-                \&lt;/xs:annotation\&gt;
-
-                \&lt;xs:complexType\&gt;
-
-                  \&lt;xs:simpleContent\&gt;
-
-                    \&lt;xs:extension base=&quot;xs:string&quot;\&gt;
-
-                      \&lt;xs:attribute name=&quot;lang&quot; type=&quot;xs:string&quot; use=&quot;required&quot;\&gt;
-
-                        \&lt;xs:annotation\&gt;
-
-                          \&lt;xs:documentation\&gt;Language identifier as defined by IETF BCP 47.\&lt;/xs:documentation\&gt;
-
-                        \&lt;/xs:annotation\&gt;
-
-                      \&lt;/xs:attribute\&gt;
-
-                    \&lt;/xs:extension\&gt;
-
-                  \&lt;/xs:simpleContent\&gt;
-
-                \&lt;/xs:complexType\&gt;
-
-              \&lt;/xs:element\&gt;
-
-            \&lt;/xs:sequence\&gt;
-
-            \&lt;xs:attribute name=&quot;key&quot; type=&quot;xs:string&quot; use=&quot;required&quot; /\&gt;
-
-            \&lt;xs:attribute name=&quot;value&quot; type=&quot;xs:string&quot; use=&quot;optional&quot; /\&gt;
-
-          \&lt;/xs:complexType\&gt;
-
-        \&lt;/xs:element\&gt;
-
-      \&lt;/xs:sequence\&gt;
-
-    \&lt;/xs:complexType\&gt;
-
-  \&lt;/xs:element\&gt;
-
-\&lt;/xs:schema\&gt;
+    \<?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?>
+    \<xs:schema elementFormDefault=&quot;qualified&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;>
+    \<xs:element name=&quot;sr-discovery&quot;>
+        \<xs:complexType>
+        \<xs:sequence>
+            \<xs:element minOccurs=&quot;0&quot; ref=&quot;profiles&quot; />
+            \<xs:element minOccurs=&quot;0&quot; ref=&quot;filters&quot; />
+            \<xs:element minOccurs=&quot;0&quot; ref=&quot;user-agents&quot; />
+        \</xs:sequence>
+        \</xs:complexType>
+    \</xs:element>
+    \<xs:element name=&quot;profiles&quot;>
+        \<xs:annotation>
+        \<xs:documentation>Definitions of profiles\</xs:documentation>
+        \</xs:annotation>
+        \<xs:complexType>
+        \<xs:sequence>
+            \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;profile&quot;>
+            \<xs:annotation>
+                \<xs:documentation>Definition of a profile.\</xs:documentation>
+            \</xs:annotation>
+            \<xs:complexType>
+                \<xs:sequence>
+                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;localised-name&quot; />
+                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; />
+                \<xs:element name=&quot;sdp&quot; type=&quot;xs:string&quot; />
+                \</xs:sequence>
+                \<xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot;>
+                \<xs:annotation>
+                    \<xs:documentation>The name of the profile. If no localised name for the current locale is found, this is the default name to fall back to. This is also the name used in all profile-ref elements.\</xs:documentation>
+                \</xs:annotation>
+                \</xs:attribute>
+            \</xs:complexType>
+            \</xs:element>
+        \</xs:sequence>
+        \</xs:complexType>
+    \</xs:element>
+    \<xs:element name=&quot;filters&quot;>
+        \<xs:annotation>
+        \<xs:documentation>Definitions of filters and options\</xs:documentation>
+        \</xs:annotation>
+        \<xs:complexType>
+        \<xs:sequence>
+            \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;filter&quot;>
+            \<xs:complexType>
+                \<xs:sequence>
+                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;localised-name&quot; />
+                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; />
+                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;option&quot;>
+                    \<xs:complexType>
+                    \<xs:sequence>
+                        \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;localised-name&quot; />
+                        \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; />
+                    \</xs:sequence>
+                    \<xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; />
+                    \</xs:complexType>
+                \</xs:element>
+                \</xs:sequence>
+                \<xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot; />
+            \</xs:complexType>
+            \</xs:element>
+        \</xs:sequence>
+        \</xs:complexType>
+    \</xs:element>
+    \<xs:element name=&quot;user-agents&quot;>
+        \<xs:annotation>
+        \<xs:documentation>List of available user agents.\</xs:documentation>
+        \</xs:annotation>
+        \<xs:complexType>
+        \<xs:sequence>
+            \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;user-agent&quot;>
+            \<xs:annotation>
+                \<xs:documentation>Identification of a user agent.\</xs:documentation>
+            \</xs:annotation>
+            \<xs:complexType>
+                \<xs:sequence>
+                \<xs:element minOccurs=&quot;0&quot; name=&quot;profile-rec&quot;>
+                    \<xs:complexType>
+                    \<xs:sequence>
+                        \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;profile-ref&quot;>
+                        \<xs:annotation>
+                            \<xs:documentation>Reference to a recommended profile. The sequence is ordered by preference.\</xs:documentation>
+                        \</xs:annotation>
+                        \<xs:complexType>
+                            \<xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot; />
+                        \</xs:complexType>
+                        \</xs:element>
+                    \</xs:sequence>
+                    \</xs:complexType>
+                \</xs:element>
+                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; />
+                \</xs:sequence>
+                \<xs:attribute name=&quot;sip-id&quot; type=&quot;xs:string&quot; use=&quot;required&quot;>
+                \<xs:annotation>
+                    \<xs:documentation>SIP URI that can be used to contact this user agent. May contain a display name as per RFC 2822.\</xs:documentation>
+                \</xs:annotation>
+                \</xs:attribute>
+                \<xs:attribute name=&quot;connected-to&quot; type=&quot;xs:string&quot; use=&quot;optional&quot;>
+                \<xs:annotation>
+                    \<xs:documentation>Indicates the SIP URI of the user agent that this user agent is currently connected to. May contain a display name as per RFC 2822.\</xs:documentation>
+                \</xs:annotation>
+                \</xs:attribute>
+            \</xs:complexType>
+            \</xs:element>
+        \</xs:sequence>
+        \</xs:complexType>
+    \</xs:element>
+    \<xs:element name=&quot;localised-name&quot;>
+        \<xs:annotation>
+        \<xs:documentation>Name to use in localised user interfaces.\</xs:documentation>
+        \</xs:annotation>
+        \<xs:complexType>
+        \<xs:simpleContent>
+            \<xs:extension base=&quot;xs:string&quot;>
+            \<xs:attribute name=&quot;lang&quot; type=&quot;xs:string&quot; use=&quot;required&quot;>
+                \<xs:annotation>
+                \<xs:documentation>Language identifier as defined by IETF BCP 47.\</xs:documentation>
+                \</xs:annotation>
+            \</xs:attribute>
+            \</xs:extension>
+        \</xs:simpleContent>
+        \</xs:complexType>
+    \</xs:element>
+    \<xs:element minOccurs=&quot;0&quot; name=&quot;meta-data&quot;>
+        \<xs:complexType>
+        \<xs:sequence>
+            \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;data&quot;>
+            \<xs:annotation>
+                \<xs:documentation>Generic container for meta-data. TODO: There is no way to signal localised named for keys, do we need this?\</xs:documentation>
+            \</xs:annotation>
+            \<xs:complexType>
+                \<xs:sequence>
+                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;localised-value&quot;>
+                    \<xs:annotation>
+                    \<xs:documentation>Value to use in localised user interfaces.\</xs:documentation>
+                    \</xs:annotation>
+                    \<xs:complexType>
+                    \<xs:simpleContent>
+                        \<xs:extension base=&quot;xs:string&quot;>
+                        \<xs:attribute name=&quot;lang&quot; type=&quot;xs:string&quot; use=&quot;required&quot;>
+                            \<xs:annotation>
+                            \<xs:documentation>Language identifier as defined by IETF BCP 47.\</xs:documentation>
+                            \</xs:annotation>
+                        \</xs:attribute>
+                        \</xs:extension>
+                    \</xs:simpleContent>
+                    \</xs:complexType>
+                \</xs:element>
+                \</xs:sequence>
+                \<xs:attribute name=&quot;key&quot; type=&quot;xs:string&quot; use=&quot;required&quot; />
+                \<xs:attribute name=&quot;value&quot; type=&quot;xs:string&quot; use=&quot;optional&quot; />
+            \</xs:complexType>
+            \</xs:element>
+        \</xs:sequence>
+        \</xs:complexType>
+    \</xs:element>
+    \</xs:schema>
