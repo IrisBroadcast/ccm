@@ -49,7 +49,7 @@ Some names may be localised by specifying additional strings paired with a langu
 Returns a list of profile definitions that can be used for making manual calls. The returned list may be empty; in this case the server doesn&#39;t provide any profiles and the codec has to rely on manually configured profiles. The number of profiles is unlimited.
 
 #### Parameters
-| Argument | Type | Description
+| Parameter | Type | Description
 | --- | --- | --- |
 | username | String | For authorisation with the server |
 | pwdhash | String | For authorisation with the server |
@@ -180,7 +180,7 @@ Returns a list of filters that can be used for calling useragents(). The returne
 
 #### Parameters
 
-| Argument | Type | Description
+| Parameter | Type | Description
 | --- | --- | --- |
 | username | String | For authorisation with the server |
 | pwdhash | String | For authorisation with the server |
@@ -247,7 +247,7 @@ Returns a list of available user agents that conform to the provided filter opti
 
 #### Parameters
 
-| Argument | Type | Description
+| Parameter | Type | Description
 | --- | --- | --- |
 | username | String | For authorisation with the server |
 | pwdhash | String | For authorisation with the server |
