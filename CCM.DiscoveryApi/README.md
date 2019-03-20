@@ -6,7 +6,7 @@ This document presents a simple protocol that enables devices and systems to acc
 
 ## Background
 
-Most IP codecs provide the users with &quot;phone books&quot;; these are static lists of SIP identities. While these lists are easy to use when the number of codecs is low and the users know what codecs are online and exactly where they are connected, a static phone book quickly becomes unintuitive as the number of codes increase. In instant messaging applications we have already become accustomed to seeing who we can call on screen and this is something that IP codecs could also provide.
+Most IP codecs provide the users with "phone books"; these are static lists of SIP identities. While these lists are easy to use when the number of codecs is low and the users know what codecs are online and exactly where they are connected, a static phone book quickly becomes unintuitive as the number of codes increase. In instant messaging applications we have already become accustomed to seeing who we can call on screen and this is something that IP codecs could also provide.
 
 SIP is what makes this possible. Every codec registers to a SIP registrar server, this means that we know which codecs are powered up and connected. If all calls are sent through a central SIP proxy server we also know which codecs are busy or available. If each codec could access this information, the phone book could show only codecs that are available.
 
@@ -62,19 +62,19 @@ Body of successful response contains a document complying with the srprecence.xs
     https://example.com
     POST /profiles HTTP/1.1
     Content-Type: application/x-www-form-urlencoded
-    username=user&amp;pwdhash=DFG4FGDd23443gHGs12D5
+    username=user&pwdhash=DFG4FGDd23443gHGs12D5
 
 #### Example response
 
-    \<?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?>
-    \<sr-discovery>
-    \<profiles>
-    \<profile name=&quot;Internal&quot;>
-    \<localised-name lang=&quot;sv&quot;>Intern\</localised-name>
-    \<meta-data>
-        \<data key=&quot;IconSmall&quot;value=&quot;http://icons.example.net/InternalSmall.png&quot; />
-    \</meta-data>
-    \<sdp>v=0
+    <?xml version="1.0" encoding="utf-8"?>
+    <sr-discovery>
+    <profiles>
+    <profile name="Internal">
+    <localised-name lang="sv">Intern\</localised-name>
+    <meta-data>
+        <data key="IconSmall"value="http://icons.example.net/InternalSmall.png" />
+    </meta-data>
+    <sdp>v=0
     o=mtu-02 3599989344 3599989344 IN IP4 example.com
     s=mtu-02
     c=IN IP4 203.0.113.12
@@ -89,9 +89,9 @@ Body of successful response contains a document complying with the srprecence.xs
     a=ebuacip:jbdef 0 fixed 6
     a=ebuacip:plength 96 4
     a=ebuacip:qosrec 34\</sdp>
-    \</profile>
-    \<profile name=&quot;EWAN&quot;>
-    \<sdp>v=0
+    </profile>
+    <profile name="EWAN">
+    <sdp>v=0
     o=mtu-02 3599992693 3599992693 IN IP4 example.com
     s=mtu-02
     c=IN IP4 203.0.113.12
@@ -105,11 +105,11 @@ Body of successful response contains a document complying with the srprecence.xs
     a=ebuacip:jbdef 0 fixed 30
     a=ebuacip:plength 96 10
     a=ebuacip:qosrec 34\</sdp>
-    \</profile>
-    \<profile name=&quot;Mobile A&quot;>
-    \<localised-name lang=&quot;sv&quot;>Mobil A\</localised-name>
-    \<meta-data>\<data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/InternalMobileASmall.png&quot; />\</meta-data>
-    \<sdp>v=0
+    </profile>
+    <profile name="Mobile A">
+    <localised-name lang="sv">Mobil A\</localised-name>
+    <meta-data>\<data key="IconSmall" value="http://icons.example.net/InternalMobileASmall.png" />\</meta-data>
+    <sdp>v=0
     o=mtu-02 3599993974 3599993974 IN IP4 example.com
     s=mtu-02
     c=IN IP4 203.0.113.12
@@ -133,12 +133,12 @@ Body of successful response contains a document complying with the srprecence.xs
     a=ebuacip:jbdef 0 fixed 150
     a=ebuacip:plength 9 20
     a=ebuacip:qosrec 34\</sdp>
-    \</profile>
-    \<profile name=&quot;Internet HQ&quot;>
-    \<meta-data>
-        \<data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/InternalInternetHQSmall.png&quot; />
-    \</meta-data>
-    \<sdp>v=0
+    </profile>
+    <profile name="Internet HQ">
+    <meta-data>
+        <data key="IconSmall" value="http://icons.example.net/InternalInternetHQSmall.png" />
+    </meta-data>
+    <sdp>v=0
     o=mtu-02 3599993476 3599993476 IN IP4 example.com
     s=mtu-02
     c=IN IP4 203.0.113.12
@@ -152,10 +152,10 @@ Body of successful response contains a document complying with the srprecence.xs
     a=ebuacip:jbdef 0 fixed 500
     a=ebuacip:plength 96 20
     a=ebuacip:qosrec 34\</sdp>
-    \</profile>
-    \<profile name=&quot;Telephone&quot;>
-    \<localised-name lang=&quot;sv&quot;>Telefon\</localised-name>
-    \<sdp>v=0
+    </profile>
+    <profile name="Telephone">
+    <localised-name lang="sv">Telefon\</localised-name>
+    <sdp>v=0
     o=mtu-02 3599993974 3599993974 IN IP4 example.com
     s=mtu-02
     c=IN IP4 203.0.113.12
@@ -170,9 +170,9 @@ Body of successful response contains a document complying with the srprecence.xs
     a=ebuacip:plength 9 20
     a=ebuacip:plength 8 20
     a=ebuacip:qosrec 34\</sdp>
-    \</profile>
-    \</profiles>
-    \</sr-discovery>
+    </profile>
+    </profiles>
+    </sr-discovery>
 
 ### filters(username, pwdhash)
 
@@ -193,56 +193,56 @@ Body of successful response contains a document complying with the sr-discovery.
     https://example.com
     POST /filters HTTP/1.1
     Content-Type: application/x-www-form-urlencoded
-    username=user&amp;pwdhash=DFG4FGDd23443gHGs12D5
+    username=user&pwdhash=DFG4FGDd23443gHGs12D5
 
 #### Example response
 
-    \<?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>
-    \<sr-discovery>
-    \<filters>
-    \<filter name=&quot;Location&quot;>
-    \<localised-name lang=&quot;sv&quot;>Placering\</localised-name>
-    \<meta-data>
-        \<data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/LocationSmall.png&quot; />
-    \</meta-data>
-    \<option name=&quot;Filt&quot;/>
-    \<option name=&quot;Gamla Ullevi&quot;/>
-    \<option name=&quot;Globen&quot;>
-        \<localised-name lang=&quot;en-UK&quot;>Stockholm Globe Arena\</localised-name>
-    \</option>
-    \<option name=&quot;Hovet&quot;/>
-    \<option name=&quot;Löfbergs Lila&quot;/>
-    \<option name=&quot;Ospecificerad&quot;/>
-    \<option name=&quot;RH&quot;/>
-    \<option name=&quot;RH ADSL&quot;/>
-    \<option name=&quot;RH WLAN&quot;/>
-    \<option name=&quot;Strömvallen Gävle&quot;/>
-    \<option name=&quot;Swedbank Arena&quot;/>
-    \<option name=&quot;Wantech 3G&quot;/>
-    \</filter>
-    \<filter name=&quot;Owner&quot;>
-    \<localised-name lang=&quot;sv&quot;>Kanal/redaktion\</localised-name>
-    \<meta-data>
-        \<data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/OwnerSmall.png&quot; />
-    \</meta-data>
-    \<option name=&quot;DC&quot;/>
-    \<option name=&quot;DC-TON&quot;>
-        \<meta-data>
-        \<data key=&quot;IconSmall&quot; value=&quot;http://icons.example.net/DCTONSmall.png&quot; />
-        \</meta-data>
-    \</option>
-    \<option name=&quot;Ekot&quot;/>
-    \<option name=&quot;MTU&quot;/>
-    \<option name=&quot;Radiosporten&quot;/>
-    \<option name=&quot;SR Dalarna&quot;/>
-    \<option name=&quot;SR Örebro&quot;/>
-    \</filter>
-    \</filters>
-    \</sr-discovery>
+    <?xml version="1.0" encoding="UTF-8"?>
+    <sr-discovery>
+    <filters>
+    <filter name="Location">
+    <localised-name lang="sv">Placering\</localised-name>
+    <meta-data>
+        <data key="IconSmall" value="http://icons.example.net/LocationSmall.png" />
+    </meta-data>
+    <option name="Filt"/>
+    <option name="Gamla Ullevi"/>
+    <option name="Globen">
+        <localised-name lang="en-UK">Stockholm Globe Arena\</localised-name>
+    </option>
+    <option name="Hovet"/>
+    <option name="Löfbergs Lila"/>
+    <option name="Ospecificerad"/>
+    <option name="RH"/>
+    <option name="RH ADSL"/>
+    <option name="RH WLAN"/>
+    <option name="Strömvallen Gävle"/>
+    <option name="Swedbank Arena"/>
+    <option name="Wantech 3G"/>
+    </filter>
+    <filter name="Owner">
+    <localised-name lang="sv">Kanal/redaktion\</localised-name>
+    <meta-data>
+        <data key="IconSmall" value="http://icons.example.net/OwnerSmall.png" />
+    </meta-data>
+    <option name="DC"/>
+    <option name="DC-TON">
+        <meta-data>
+        <data key="IconSmall" value="http://icons.example.net/DCTONSmall.png" />
+        </meta-data>
+    </option>
+    <option name="Ekot"/>
+    <option name="MTU"/>
+    <option name="Radiosporten"/>
+    <option name="SR Dalarna"/>
+    <option name="SR Örebro"/>
+    </filter>
+    </filters>
+    </sr-discovery>
 
 ### useragents(username, pwdhash, caller, callee, ...)
 
-Returns a list of available user agents that conform to the provided filter options. The returned list may be empty. The number of user-agents is unlimited. The filter list defines the filters that are available from the server side. It provides a name for each filter and lists all available options. In addition, each filter and option can be given several localized names for different languages. The language is specified by the &quot;lang&quot; attribute holding language name abbreviations according to IETF BCP 47. If a codec provides localised user interfaces it should use the corresponding names. If no matching language is provided by the sr-discovery server, the default name should be used.
+Returns a list of available user agents that conform to the provided filter options. The returned list may be empty. The number of user-agents is unlimited. The filter list defines the filters that are available from the server side. It provides a name for each filter and lists all available options. In addition, each filter and option can be given several localized names for different languages. The language is specified by the "lang" attribute holding language name abbreviations according to IETF BCP 47. If a codec provides localised user interfaces it should use the corresponding names. If no matching language is provided by the sr-discovery server, the default name should be used.
 
 #### Parameters
 
@@ -262,16 +262,16 @@ Body of successful response contains a document complying with the sr-discovery.
     https://example.com
     POST /useragents HTTP/1.1
     Content-Type: application/x-www-form-urlencoded
-    username=user&amp;pwdhash=DFG4FGDd23443gHGs12D5&amp;caller=dc%2d17%40contrib%2esr%2ese&amp;Location=Stockholm&amp;Owner=MTU
+    username=user&pwdhash=DFG4FGDd23443gHGs12D5&caller=dc%2d17%40contrib%2esr%2ese&Location=Stockholm&Owner=MTU
 
 #### Example response
 
-    \<?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?>
-    \<sr-discovery>
-    \<profiles>
-    \<profile name=&quot;Internal&quot;>
-    \<localised-name lang=&quot;sv&quot;>Intern\</localised-name>
-    \<sdp>v=0
+    <?xml version="1.0" encoding="utf-8"?>
+    <sr-discovery>
+    <profiles>
+    <profile name="Internal">
+    <localised-name lang="sv">Intern</localised-name>
+    <sdp>v=0
     o=mtu-02 3599989344 3599989344 IN IP4 example.com
     s=mtu-02
     c=IN IP4 203.0.113.12
@@ -286,9 +286,9 @@ Body of successful response contains a document complying with the sr-discovery.
     a=ebuacip:jbdef 0 fixed 6
     a=ebuacip:plength 96 4
     a=ebuacip:qosrec 34\</sdp>
-    \</profile>
-    \<profile name=&quot;EWAN&quot;>
-    \<sdp>v=0
+    </profile>
+    <profile name="EWAN">
+    <sdp>v=0
     o=mtu-02 3599992693 3599992693 IN IP4 example.com
     s=mtu-02
     c=IN IP4 203.0.113.12
@@ -302,9 +302,9 @@ Body of successful response contains a document complying with the sr-discovery.
     a=ebuacip:jbdef 0 fixed 30
     a=ebuacip:plength 96 10
     a=ebuacip:qosrec 34\</sdp>
-    \</profile>
-    \<profile name=&quot;Internet HQ&quot;>
-    \<sdp>v=0
+    </profile>
+    <profile name="Internet HQ">
+    <sdp>v=0
     o=mtu-02 3599993476 3599993476 IN IP4 example.com
     s=mtu-02
     c=IN IP4 203.0.113.12
@@ -318,10 +318,10 @@ Body of successful response contains a document complying with the sr-discovery.
     a=ebuacip:jbdef 0 fixed 500
     a=ebuacip:plength 96 20
     a=ebuacip:qosrec 34\</sdp>
-    \</profile>
-    \<profile name=&quot;Telephone&quot;>
-    \<localised-name lang=&quot;sv&quot;>Telefon\</localised-name>
-    \<sdp>v=0
+    </profile>
+    <profile name="Telephone">
+    <localised-name lang="sv">Telefon\</localised-name>
+    <sdp>v=0
     o=mtu-02 3599993974 3599993974 IN IP4 example.com
     s=mtu-02
     c=IN IP4 203.0.113.12
@@ -336,215 +336,215 @@ Body of successful response contains a document complying with the sr-discovery.
     a=ebuacip:plength 9 20
     a=ebuacip:plength 8 20
     a=ebuacip:qosrec 34\</sdp>
-    \</profile>
-    \</profiles>
-    \<user-agents>
-    \<user-agent sip-id=&quot;Stockholm Driftcentralen 17&amp;lt;dc-17@sip.sr.se&amp;gt;&quot;>
-    \<profile-rec>
-        \<profile-ref name=&quot;Internal&quot;/>
-        \<profile-ref name=&quot;EWAN&quot;/>
-    \</profile-rec>
-    \<meta-data>
-        \<data key=&quot;Location&quot; value=&quot;Stockholm&quot;/>
-    \</meta-data>
-    \</user-agent>
-    \<user-agent sip-id=&quot;Stockholm Driftcentralen 18&amp;lt;dc-18@sip.sr.se&amp;gt;&quot;>
-    \<profile-rec>
-        \<profile-ref name=&quot;Internal&quot;/>
-    \</profile-rec>
-    \<meta-data>
-        \<data key=&quot;Location&quot; value=&quot;Stockholm&quot;/>
-    \</meta-data>
-    \</user-agent>
-    \<user-agent sip-id=&quot;Stockholm Hovet 01&amp;lt;hovet-01@sip.sr.se&amp;gt;&quot;>
-    \<profile-rec>
-        \<profile-ref name=&quot;EWAN&quot;/>
-    \</profile-rec>
-    \<meta-data>
-        \<data key=&quot;Location&quot; value=&quot;Stockholm&quot;/>
-        \<data key=&quot;InputCount&quot; value=&quot;1&quot;/>
-    \</meta-data>
-    \</user-agent>
-    \<user-agent sip-id=&quot;p1-nyc-01@sip.sr.se&quot;>
-    \<profile-rec>
-        \<profile-ref name=&quot;Internet HQ&quot;/>
-    \</profile-rec>
-    \<meta-data>
-        \<data key=&quot;Location&quot; value=&quot;Stockholm&quot;/>
-        \<data key=&quot;Portable&quot; value=&quot;yes&quot;>
-        \<localised-value lang=&quot;sv&quot;>Ja\</localised-value>
-        \</data>
-    \</meta-data>
-    \</user-agent>
-    \<user-agent sip-id=&quot;voip-01@sip.sr.se&quot;>
-    \<profile-rec>
-        \<profile-ref name=&quot;Telephone&quot;/>
-    \</profile-rec>
-    \<meta-data>
-        \<data key=&quot;Location&quot; value=&quot;Stockholm&quot;/>
-    \</meta-data>
-    \</user-agent>
-    \</user-agents>
-    \</sr-discovery>
+    </profile>
+    </profiles>
+    <user-agents>
+    <user-agent sip-id="Stockholm Driftcentralen 17&lt;dc-17@sip.sr.se&gt;">
+    <profile-rec>
+        <profile-ref name="Internal"/>
+        <profile-ref name="EWAN"/>
+    </profile-rec>
+    <meta-data>
+        <data key="Location" value="Stockholm"/>
+    </meta-data>
+    </user-agent>
+    <user-agent sip-id="Stockholm Driftcentralen 18&lt;dc-18@sip.sr.se&gt;">
+    <profile-rec>
+        <profile-ref name="Internal"/>
+    </profile-rec>
+    <meta-data>
+        <data key="Location" value="Stockholm"/>
+    </meta-data>
+    </user-agent>
+    <user-agent sip-id="Stockholm Hovet 01&lt;hovet-01@sip.sr.se&gt;">
+    <profile-rec>
+        <profile-ref name="EWAN"/>
+    </profile-rec>
+    <meta-data>
+        <data key="Location" value="Stockholm"/>
+        <data key="InputCount" value="1"/>
+    </meta-data>
+    </user-agent>
+    <user-agent sip-id="p1-nyc-01@sip.sr.se">
+    <profile-rec>
+        <profile-ref name="Internet HQ"/>
+    </profile-rec>
+    <meta-data>
+        <data key="Location" value="Stockholm"/>
+        <data key="Portable" value="yes">
+        <localised-value lang="sv">Ja\</localised-value>
+        </data>
+    </meta-data>
+    </user-agent>
+    <user-agent sip-id="voip-01@sip.sr.se">
+    <profile-rec>
+        <profile-ref name="Telephone"/>
+    </profile-rec>
+    <meta-data>
+        <data key="Location" value="Stockholm"/>
+    </meta-data>
+    </user-agent>
+    </user-agents>
+    </sr-discovery>
 
 ### sr-discovery.xsd
 
 This schema specifies the format for responses to each of the functions of the SR DiscoveryAPI.
 
-    \<?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?>
-    \<xs:schema elementFormDefault=&quot;qualified&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;>
-    \<xs:element name=&quot;sr-discovery&quot;>
-        \<xs:complexType>
-        \<xs:sequence>
-            \<xs:element minOccurs=&quot;0&quot; ref=&quot;profiles&quot; />
-            \<xs:element minOccurs=&quot;0&quot; ref=&quot;filters&quot; />
-            \<xs:element minOccurs=&quot;0&quot; ref=&quot;user-agents&quot; />
-        \</xs:sequence>
-        \</xs:complexType>
-    \</xs:element>
-    \<xs:element name=&quot;profiles&quot;>
-        \<xs:annotation>
-        \<xs:documentation>Definitions of profiles\</xs:documentation>
-        \</xs:annotation>
-        \<xs:complexType>
-        \<xs:sequence>
-            \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;profile&quot;>
-            \<xs:annotation>
-                \<xs:documentation>Definition of a profile.\</xs:documentation>
-            \</xs:annotation>
-            \<xs:complexType>
-                \<xs:sequence>
-                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;localised-name&quot; />
-                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; />
-                \<xs:element name=&quot;sdp&quot; type=&quot;xs:string&quot; />
-                \</xs:sequence>
-                \<xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot;>
-                \<xs:annotation>
-                    \<xs:documentation>The name of the profile. If no localised name for the current locale is found, this is the default name to fall back to. This is also the name used in all profile-ref elements.\</xs:documentation>
-                \</xs:annotation>
-                \</xs:attribute>
-            \</xs:complexType>
-            \</xs:element>
-        \</xs:sequence>
-        \</xs:complexType>
-    \</xs:element>
-    \<xs:element name=&quot;filters&quot;>
-        \<xs:annotation>
-        \<xs:documentation>Definitions of filters and options\</xs:documentation>
-        \</xs:annotation>
-        \<xs:complexType>
-        \<xs:sequence>
-            \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;filter&quot;>
-            \<xs:complexType>
-                \<xs:sequence>
-                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;localised-name&quot; />
-                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; />
-                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;option&quot;>
-                    \<xs:complexType>
-                    \<xs:sequence>
-                        \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; ref=&quot;localised-name&quot; />
-                        \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; />
-                    \</xs:sequence>
-                    \<xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; />
-                    \</xs:complexType>
-                \</xs:element>
-                \</xs:sequence>
-                \<xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot; />
-            \</xs:complexType>
-            \</xs:element>
-        \</xs:sequence>
-        \</xs:complexType>
-    \</xs:element>
-    \<xs:element name=&quot;user-agents&quot;>
-        \<xs:annotation>
-        \<xs:documentation>List of available user agents.\</xs:documentation>
-        \</xs:annotation>
-        \<xs:complexType>
-        \<xs:sequence>
-            \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;user-agent&quot;>
-            \<xs:annotation>
-                \<xs:documentation>Identification of a user agent.\</xs:documentation>
-            \</xs:annotation>
-            \<xs:complexType>
-                \<xs:sequence>
-                \<xs:element minOccurs=&quot;0&quot; name=&quot;profile-rec&quot;>
-                    \<xs:complexType>
-                    \<xs:sequence>
-                        \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;profile-ref&quot;>
-                        \<xs:annotation>
-                            \<xs:documentation>Reference to a recommended profile. The sequence is ordered by preference.\</xs:documentation>
-                        \</xs:annotation>
-                        \<xs:complexType>
-                            \<xs:attribute name=&quot;name&quot; type=&quot;xs:string&quot; use=&quot;required&quot; />
-                        \</xs:complexType>
-                        \</xs:element>
-                    \</xs:sequence>
-                    \</xs:complexType>
-                \</xs:element>
-                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; ref=&quot;meta-data&quot; />
-                \</xs:sequence>
-                \<xs:attribute name=&quot;sip-id&quot; type=&quot;xs:string&quot; use=&quot;required&quot;>
-                \<xs:annotation>
-                    \<xs:documentation>SIP URI that can be used to contact this user agent. May contain a display name as per RFC 2822.\</xs:documentation>
-                \</xs:annotation>
-                \</xs:attribute>
-                \<xs:attribute name=&quot;connected-to&quot; type=&quot;xs:string&quot; use=&quot;optional&quot;>
-                \<xs:annotation>
-                    \<xs:documentation>Indicates the SIP URI of the user agent that this user agent is currently connected to. May contain a display name as per RFC 2822.\</xs:documentation>
-                \</xs:annotation>
-                \</xs:attribute>
-            \</xs:complexType>
-            \</xs:element>
-        \</xs:sequence>
-        \</xs:complexType>
-    \</xs:element>
-    \<xs:element name=&quot;localised-name&quot;>
-        \<xs:annotation>
-        \<xs:documentation>Name to use in localised user interfaces.\</xs:documentation>
-        \</xs:annotation>
-        \<xs:complexType>
-        \<xs:simpleContent>
-            \<xs:extension base=&quot;xs:string&quot;>
-            \<xs:attribute name=&quot;lang&quot; type=&quot;xs:string&quot; use=&quot;required&quot;>
-                \<xs:annotation>
-                \<xs:documentation>Language identifier as defined by IETF BCP 47.\</xs:documentation>
-                \</xs:annotation>
-            \</xs:attribute>
-            \</xs:extension>
-        \</xs:simpleContent>
-        \</xs:complexType>
-    \</xs:element>
-    \<xs:element minOccurs=&quot;0&quot; name=&quot;meta-data&quot;>
-        \<xs:complexType>
-        \<xs:sequence>
-            \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;data&quot;>
-            \<xs:annotation>
-                \<xs:documentation>Generic container for meta-data. TODO: There is no way to signal localised named for keys, do we need this?\</xs:documentation>
-            \</xs:annotation>
-            \<xs:complexType>
-                \<xs:sequence>
-                \<xs:element minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot; name=&quot;localised-value&quot;>
-                    \<xs:annotation>
-                    \<xs:documentation>Value to use in localised user interfaces.\</xs:documentation>
-                    \</xs:annotation>
-                    \<xs:complexType>
-                    \<xs:simpleContent>
-                        \<xs:extension base=&quot;xs:string&quot;>
-                        \<xs:attribute name=&quot;lang&quot; type=&quot;xs:string&quot; use=&quot;required&quot;>
-                            \<xs:annotation>
-                            \<xs:documentation>Language identifier as defined by IETF BCP 47.\</xs:documentation>
-                            \</xs:annotation>
-                        \</xs:attribute>
-                        \</xs:extension>
-                    \</xs:simpleContent>
-                    \</xs:complexType>
-                \</xs:element>
-                \</xs:sequence>
-                \<xs:attribute name=&quot;key&quot; type=&quot;xs:string&quot; use=&quot;required&quot; />
-                \<xs:attribute name=&quot;value&quot; type=&quot;xs:string&quot; use=&quot;optional&quot; />
-            \</xs:complexType>
-            \</xs:element>
-        \</xs:sequence>
-        \</xs:complexType>
-    \</xs:element>
-    \</xs:schema>
+    <?xml version="1.0" encoding="utf-8"?>
+    <xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="sr-discovery">
+        <xs:complexType>
+        <xs:sequence>
+            <xs:element minOccurs="0" ref="profiles" />
+            <xs:element minOccurs="0" ref="filters" />
+            <xs:element minOccurs="0" ref="user-agents" />
+        </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="profiles">
+        <xs:annotation>
+        <xs:documentation>Definitions of profiles\</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="profile">
+            <xs:annotation>
+                <xs:documentation>Definition of a profile.\</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+                <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="localised-name" />
+                <xs:element minOccurs="0" maxOccurs="1" ref="meta-data" />
+                <xs:element name="sdp" type="xs:string" />
+                </xs:sequence>
+                <xs:attribute name="name" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>The name of the profile. If no localised name for the current locale is found, this is the default name to fall back to. This is also the name used in all profile-ref elements.\</xs:documentation>
+                </xs:annotation>
+                </xs:attribute>
+            </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="filters">
+        <xs:annotation>
+        <xs:documentation>Definitions of filters and options\</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="filter">
+            <xs:complexType>
+                <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="localised-name" />
+                <xs:element minOccurs="0" maxOccurs="1" ref="meta-data" />
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="option">
+                    <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" maxOccurs="unbounded" ref="localised-name" />
+                        <xs:element minOccurs="0" maxOccurs="1" ref="meta-data" />
+                    </xs:sequence>
+                    <xs:attribute name="name" type="xs:string" />
+                    </xs:complexType>
+                </xs:element>
+                </xs:sequence>
+                <xs:attribute name="name" type="xs:string" use="required" />
+            </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="user-agents">
+        <xs:annotation>
+        <xs:documentation>List of available user agents.\</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="user-agent">
+            <xs:annotation>
+                <xs:documentation>Identification of a user agent.\</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+                <xs:sequence>
+                <xs:element minOccurs="0" name="profile-rec">
+                    <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" maxOccurs="unbounded" name="profile-ref">
+                        <xs:annotation>
+                            <xs:documentation>Reference to a recommended profile. The sequence is ordered by preference.\</xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:attribute name="name" type="xs:string" use="required" />
+                        </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element minOccurs="0" maxOccurs="1" ref="meta-data" />
+                </xs:sequence>
+                <xs:attribute name="sip-id" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>SIP URI that can be used to contact this user agent. May contain a display name as per RFC 2822.\</xs:documentation>
+                </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="connected-to" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>Indicates the SIP URI of the user agent that this user agent is currently connected to. May contain a display name as per RFC 2822.\</xs:documentation>
+                </xs:annotation>
+                </xs:attribute>
+            </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="localised-name">
+        <xs:annotation>
+        <xs:documentation>Name to use in localised user interfaces.\</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+            <xs:attribute name="lang" type="xs:string" use="required">
+                <xs:annotation>
+                <xs:documentation>Language identifier as defined by IETF BCP 47.\</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element minOccurs="0" name="meta-data">
+        <xs:complexType>
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="data">
+            <xs:annotation>
+                <xs:documentation>Generic container for meta-data. TODO: There is no way to signal localised named for keys, do we need this?\</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+                <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="localised-value">
+                    <xs:annotation>
+                    <xs:documentation>Value to use in localised user interfaces.\</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                        <xs:attribute name="lang" type="xs:string" use="required">
+                            <xs:annotation>
+                            <xs:documentation>Language identifier as defined by IETF BCP 47.\</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        </xs:extension>
+                    </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+                </xs:sequence>
+                <xs:attribute name="key" type="xs:string" use="required" />
+                <xs:attribute name="value" type="xs:string" use="optional" />
+            </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    </xs:schema>
