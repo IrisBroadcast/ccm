@@ -41,6 +41,7 @@ namespace CCM.DiscoveryApi.Controllers
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             var buildDate = ApplicationSettings.BuildDate;
             var html = $"<html><body><pre>SR Discovery. Version {version}, build date {buildDate}<pre></body></html>";
+            // TODO: Possible expose doc's for how SR discovery works
             var htmlContent = new StringContent(html);
             htmlContent.Headers.ContentType = new MediaTypeHeaderValue("text/html");
             return new HttpResponseMessage { Content = htmlContent };

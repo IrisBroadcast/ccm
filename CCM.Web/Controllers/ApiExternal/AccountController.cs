@@ -39,7 +39,9 @@ using NLog;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
-
+    /// <summary>
+    /// Creating accounts from external service.
+    /// </summary>
     [CcmUserBasicAuthentication]
     [CcmApiAuthorize(Roles = "Admin,AccountManager")]
     [RoutePrefix("api/account")]

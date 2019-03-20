@@ -52,7 +52,6 @@ namespace CCM.DiscoveryApi.Controllers
             _discoveryService = new DiscoveryHttpService();
         }
 
-
         [Route("~/filters")]
         [HttpPost]
         public async Task<SrDiscovery> Filters()

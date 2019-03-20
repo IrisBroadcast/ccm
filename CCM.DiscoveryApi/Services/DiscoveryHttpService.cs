@@ -39,7 +39,7 @@ using NLog;
 namespace CCM.DiscoveryApi.Services
 {
     // Retreives discovery data via CCM's REST service.
-
+    // TODO: Why is there an internal API request? 
     public class DiscoveryHttpService : ApiController, IDiscoveryHttpService
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -54,7 +54,6 @@ namespace CCM.DiscoveryApi.Services
             var url = GetUrl("filters");
             return await Send<List<FilterDto>>(url, HttpMethod.Get, originalRequest);
         }
-
 
         public async Task<List<ProfileDto>> GetProfilesAsync(HttpRequestMessage originalRequest)
         {

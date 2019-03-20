@@ -37,6 +37,9 @@ using CCM.Core.Interfaces.Managers;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
+    /// <summary>
+    /// Used by Dialers
+    /// </summary>
     public class CodecStatusController : ApiController
     {
         private readonly IRegisteredSipRepository _registeredSipRepository;

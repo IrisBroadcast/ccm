@@ -31,6 +31,9 @@ using CCM.Core.Interfaces.Repositories;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
+    /// <summary>
+    /// In use by CodecControl, for asking about codec information.
+    /// </summary>
     public class CodecInformationController : ApiController
     {
         private readonly IRegisteredSipRepository _registeredSipRepository;

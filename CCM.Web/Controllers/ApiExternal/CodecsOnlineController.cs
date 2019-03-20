@@ -36,6 +36,7 @@ namespace CCM.Web.Controllers.ApiExternal
 {
     /// <summary>
     /// Returnerar lista med alla registrerade kodare och deras sip-address, display name, och boolean som visar om kodaren är i samtal.
+    /// TODO: Roger använde nog alrig denna.. kolla roger
     /// Behov från OB-väskan.
     /// </summary>
     [EnableCors(origins: "*", headers: "*", methods: "*")]

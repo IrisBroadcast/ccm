@@ -31,18 +31,23 @@ using CCM.Core.Interfaces.Repositories;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
+    /// <summary>
+    /// Used by Dialers
+    /// </summary>
     public class OldCallExternalController : ApiController
     {
         private readonly ICallHistoryRepository _callHistoryRepository;
-
+        // TODO: Remove???
         public OldCallExternalController(ICallHistoryRepository callHistoryRepository)
         {
             _callHistoryRepository = callHistoryRepository;
         }
 
         [Route("api/external/oldcall")]
+        [Route("api/oldcall")]
         public IList<OldCall> Get(string region = "", string codecType = "", string sipAddress = "", string search = "", bool onlyPhoneCalls = false, int callCount = 20)
         {
+            // TODO: Remove when world domination is achievied in the NG project
             var oldCalls = _callHistoryRepository.GetOldCallsFiltered(region, codecType, sipAddress, search, false, onlyPhoneCalls, callCount);
             return oldCalls;
         }

@@ -34,6 +34,9 @@ using NLog;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
+    /// <summary>
+    /// TODO: Can we remove me, this is very questionable?
+    /// </summary>
     [CamelCaseControllerConfig]
     [RoutePrefix("api/discovery")]
     public class DiscoveryController : ApiController

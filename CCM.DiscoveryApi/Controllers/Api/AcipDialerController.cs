@@ -47,7 +47,7 @@ namespace CCM.DiscoveryApi.Controllers.Api
         {
             _discoveryService = new DiscoveryHttpService();
         }
-
+        /*
         [HttpGet]
         [Route("filters")]
         public async Task<List<FilterV2>> Filters()
@@ -121,7 +121,7 @@ namespace CCM.DiscoveryApi.Controllers.Api
             var authString = AuthenticationHelper.GetBasicAuthorizationString(ApplicationSettings.DiscoveryUsername,
                 ApplicationSettings.DiscoveryPassword);
             Request.Headers.Add(HttpRequestHeader.Authorization.ToString(), authString);
-        }
+        }*/
 
     }
 }

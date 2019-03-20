@@ -33,6 +33,9 @@ using CCM.Web.Infrastructure;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
+    /// <summary>
+    /// Used by DiscoveryApi requests
+    /// </summary>
     [SipAccountBasicAuthentication]
     [Authorize]
     [CamelCaseControllerConfig]
