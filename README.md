@@ -11,7 +11,6 @@ with a larger community!
 
 Release plan after 1.0
 ======================
-
 This first release is a first, but important, step for us as
 maintainers of this Open Source project. The code is licensed
 using the BSD 3-clause license and we have gone through the process
@@ -40,13 +39,12 @@ Documentation
 =============
 
 ### Requirements
-
+The application might work on anything higher than these versions, but it's not tested yet.
 - Minimum support and tested MySQL 5.7
 - Visual Studio 2017
 - Minimum Microsoft Windows Server 20XX
 
 ### How to get started
-
 (If you want codec control, set up that project separetely.)
 
 1. Open the Visual Studio solution and get the nuget packages required.
@@ -65,7 +63,6 @@ Documentation
 
 License
 =======
-
 IRIS CCM and Discovery Service is (C) Sveriges Radio AB, Stockholm, Sweden 2017
 The code is licensed under the BSD 3-clause license.
 
@@ -77,13 +74,8 @@ for convience. In a future release, these will not be included
 but downloaded by scripts. These libraries have their own
 copyright and licenses.
 
-
-
-
-
 The IRIS CCM - Codec Call Monitor
 =================================
-
 CCM is a platform for administration and management of an ACIP-compliant SIP
 infrastructure for live radio broadcast.
 
@@ -148,7 +140,6 @@ The codec control has become a powerful addition to CCM. Enabling the same user 
 Codec control is written in dotnet core. So this should enable you to run it on a linux platform as well.
 [Github.com/irisbroadcast/CodecControl](https://github.com/IrisBroadcast/CodecControl)
 
-
-
-Feedback, bugs, comments?
+Feedback, bugs, comments
+========================
 * Please open an issue on Github
