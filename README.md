@@ -101,7 +101,7 @@ the web services. Development is done in Microsoft Visual Studio 2017.
 
 For databases, the Entity Framework v6 is used.
 
-The CCM web
+IRIS CCM web - Monitoring & CMS
 -----------
 The web interface provides an overview of available (and registered) devices as well
 as current broadcast sessions. A user can view registration IP addresses, device types
@@ -111,7 +111,7 @@ region, type of device or other criteria may be applied.
 When logging in as an administrator, account management is available - both CCM web log ins
 as well as SIP accounts. 
 
-The IRIS Discovery service
+IRIS Discovery service
 --------------------------
 The IRIS discovery services, also known by the name "Active Phonebook", is used by the
 connected devices to find other available devices to set up a live session. The service
