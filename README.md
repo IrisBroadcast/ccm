@@ -71,8 +71,7 @@ The code is licensed under the BSD 3-clause license.
 
 The license for CCM is in the LICENSE.txt file
 
-3rd party libraries
-===================
+### 3rd party libraries
 The repository contains 3rd party javascript libraries that are included
 for convience. In a future release, these will not be included
 but downloaded by scripts. These libraries have their own
