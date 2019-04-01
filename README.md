@@ -9,8 +9,7 @@ service developed by Sveriges Radio AB in Sweden. This code has
 been in production for many years and we're proud to share it
 with a larger community!
 
-Release plan after 1.0
-======================
+## Release plan after 1.0
 This first release is a first, but important, step for us as
 maintainers of this Open Source project. The code is licensed
 using the BSD 3-clause license and we have gone through the process
@@ -29,8 +28,7 @@ process for our in-house development.
 If you like to contribute documentation, local translations
 or code you are more than welcome with a pull request on github.com.
 
-Release plan after 1.5
-======================
+## Release plan after 1.5
 To get a more flexible solution a few things is on the roadmap
 - A better way to collect the incoming information from Kamailio. Today during deploy or failover data could be lost.
 - Dotnet Core, so the the whole system can be runned on a preferred server Windows, Linux, Mac and so on. 
