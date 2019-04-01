@@ -30,6 +30,12 @@ process for our in-house development.
 If you like to contribute documentation, local translations
 or code you are more than welcome with a pull request on github.com.
 
+Release plan after 1.5
+======================
+To get a more flexible solution a few things is on the roadmap
+- A better way to collect the incoming information from Kamailio. Today during deploy or failover data could be lost.
+- Dotnet Core, so the the whole system can be runned on a preferred server Windows, Linux, Mac and so on. 
+
 Documentation
 =============
 
@@ -86,12 +92,13 @@ Architecture
 ------------
 CCM consists of a web application, a web service and a windows service built
 with Microsoft .NET framework in C# storing data in a MySQL or MariaDB database.
-Authentication for SIP is done using a Radius service. The CCM interacts
-and manages accounts in the Radius service.
+Authentication for SIP is stored in a database. The CCM interacts
+and manages accounts in the database.
 
 In production use, the CCM is by default running on two separate servers in 
 different data centers. Data is replicated using MySQL replication. Kamailio
-updates both CCM servers with current registration states as well as call states.
+updates both CCM servers with current registration and call states. At the
+moment these two columns are not replicated, this should be added.
 
 Load balancing between the two CCM servers can be done with external HTTP load
 balancers, using DNS or virtual IP failover.
