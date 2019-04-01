@@ -127,11 +127,16 @@ The IRIS Discovery service
 The IRIS discovery services, also known by the name "Active Phonebook", is used by the
 connected devices to find other available devices to set up a live session. The service
 has three main functions:
+
 * Profiles:	List available call profiles (Profiles is SDP's)
 * Filters:	List available pre-defined search filters (Based on location filters on IP-ranges)
 * Devices:	List available devices based on applied filters and profiles
 
 All functions require a valid authentication.
+
+The main power is the abstraction layer it provides. Users doesn't need to know what an SDP (Session Description Protocol) is. They don't need to choose what algorithm to use for the call. The system provides what it thinks is the best selection for the current situation/call. Users can filter registered callees, in a similar way as a simplified "GraphQL" type of query. The simplicity of the protocol, xml based with JSON response if so needed. It can be implemented in most devices or in online applications för making calls and simplifying the process for those less technical. 
+
+Combine this Active Phonebook with Codec Control and you can create a unified graphical user interfsce. 
 
 IRIS Connect - Kamailio configuration
 -------------------------------------
@@ -143,27 +148,6 @@ IRIS Codec Control
 The codec control has become a powerful addition to CCM. Enabling the same user interface regardless of what codec the user controls. This was formerly integrated into CCM. But now it's a separate project. It uses CCM for discovery and management of devices. 
 Codec control is written in dotnet core. So this should enable you to run it on a linux platform as well.
 [Github.com/irisbroadcast/CodecControl](https://github.com/IrisBroadcast/CodecControl)
-
-Code modules
-------------
-* CCM.Core:	The core of the IRIS CCM platform. 
-* CCM.Data:	Module for data storage. 
-* CCM.Web: 	The web user interface (ASP.NET MVC 5 project)
-* CCM.DiscoveryApi:	The IRIS discovery service (ASP.NET MVC 5 project)
-* CCM.Tests:	Unit and integration tests
-		Note: The unit tests are in working shape, but the rest of the tests may or
-		may not work at this stage.
-
-Installation of a test platform
-===============================
-
-CCM
----
-1. Create MySQL database
-2. Install windows tools needed
-3. Create default root user
-4. ??
-
 
 
 
