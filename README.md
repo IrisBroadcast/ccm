@@ -101,7 +101,7 @@ the web services. Development is done in Microsoft Visual Studio 2017.
 
 For databases, the Entity Framework v6 is used.
 
-IRIS CCM web - Monitoring & CMS
+IRIS Codec Call Monitor (CCM) web - Monitoring & CMS
 -----------
 The web interface provides an overview of available (and registered) devices as well
 as current broadcast sessions. A user can view registration IP addresses, device types
@@ -123,7 +123,13 @@ has three main functions:
 
 All functions require a valid authentication.
 
-The main power is the abstraction layer it provides. Users doesn't need to know what an SDP (Session Description Protocol) is. They don't need to choose what algorithm to use for the call. The system provides what it thinks is the best selection for the current situation/call. Users can filter registered callees, in a similar way as a simplified "GraphQL" type of query. The simplicity of the protocol, xml based with JSON response if so needed. It can be implemented in most devices or in online applications för making calls and simplifying the process for those less technical. 
+The main power is the abstraction layer it provides. Users doesn't need to know what an SDP 
+(Session Description Protocol) is. They don't need to choose what algorithm to use for the call. 
+The system provides what it thinks is the best selection for the current situation/call. 
+Users can filter registered callees, in a similar way as a simplified "GraphQL" type of query. 
+The simplicity of the protocol, xml based with JSON response if so needed. 
+It can be implemented in most devices or in online applications för making calls and 
+simplifying the process for those less technical. 
 
 Combine this Active Phonebook with Codec Control and you can create a unified graphical user interfsce. 
 
