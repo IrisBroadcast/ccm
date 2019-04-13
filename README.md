@@ -57,7 +57,7 @@ The application might work on anything higher than these versions, but it's not 
 
 4. Set up the database of choice, instructions here [database setup](CCM.Data/README.md)
 4. Run the application
-5. Set up messages from your SIP-registrar (e.g Kamalio) to start recieving data at your enpoint
+5. Set up messages from your SIP-registrar (e.g Kamalio) to start recieving data at your endpoint. Check out IRIS Connect for Kamailio settings. 
 
 License
 =======
@@ -133,9 +133,9 @@ simplifying the process for those less technical.
 
 Combine this Active Phonebook with Codec Control and you can create a unified graphical user interfsce. 
 
-IRIS Connect - Kamailio configuration
+IRIS Connect
 -------------------------------------
-Please see the separate IRIS project for Kamailio
+For IRIS CCM to start recieving information, you need to set up a SIP-Registrar. Today there is a configuration available for Kamailio. Please see the separate IRIS project for Kamailio configuration
 [Github.com/irisbroadcast/Connect](https://github.com/IrisBroadcast/Connect)
 
 IRIS Codec Control
