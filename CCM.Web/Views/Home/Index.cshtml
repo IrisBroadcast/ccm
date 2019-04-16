@@ -4,7 +4,7 @@
 @model CCM.Web.Models.Home.HomeViewModel
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "CCM";
     ViewBag.Angular = true;
     var hasWriteRights = User.Identity.IsAuthenticated && (User.IsInRole(Roles.Admin) || User.IsInRole("Remote"));
 }

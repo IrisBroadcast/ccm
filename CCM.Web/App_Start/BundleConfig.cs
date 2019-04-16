@@ -32,15 +32,17 @@ namespace CCM.Web
     {
         public static void RegisterBundles(BundleCollection bundles)
         {
-            // Inkluderas på adminsidor för Location, Profile & UserAgents. Troligen används bara sortable. Kolla.
+            // Includes on administrative pages like Location, Profile
+            // UserAgents. Sortable is probably the only thing in
+            // use. Check it.
             bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
                 "~/Scripts/jquery-ui-{version}.js"));
 
-            // Inkluderas på statistik-sidan
+            // Included on statistics page
             bundles.Add(new ScriptBundle("~/bundles/statistics").Include(
                 "~/Scripts/src/statistics.js"));
 
-            // Inkluderas i förstasidan
+            // Included on frontpage & SipAccounts
             bundles.Add(new ScriptBundle("~/bundles/home").Include(
                 "~/Scripts/angular.js",
                 "~/Scripts/src/home.js",
@@ -52,7 +54,7 @@ namespace CCM.Web
                 "~/Scripts/signalr.js"
             ));
 
-            // Inkluderas i samtliga sidor
+            // Included on all pages
             bundles.Add(new ScriptBundle("~/bundles/ccm").Include(
                 "~/Scripts/jquery-{version}.js",
                 "~/Scripts/jquery.validate*",
@@ -70,7 +72,6 @@ namespace CCM.Web
                 "~/Content/less/colorpicker.css",
                 "~/Content/bootstrap-datetimepicker-build.css"
             ));
-
         }
     }
 }

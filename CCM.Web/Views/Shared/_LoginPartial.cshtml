@@ -6,7 +6,7 @@
     var name = fullNameClaim != null ? fullNameClaim.Value : identity.Name;
 
     <div class="ccm-top-navbar-account">
-        <div class="ccm-top-navbar-account--information"><span class="ccm-top-navbar-account--explain-text">Inloggad som </span>@name</div>
+        <div class="ccm-top-navbar-account--information"><span class="ccm-top-navbar-account--explain-text">@Resources.Logged_In_As </span>@name</div>
         <div class="ccm-top-navbar-account--logout">@Html.ActionLink(@Resources.Log_Off, "LogOff", "Account", new { }, null)</div>
     </div>
 }

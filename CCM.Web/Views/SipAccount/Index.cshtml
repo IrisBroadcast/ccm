@@ -2,14 +2,21 @@
 @using CCM.Core.Helpers
 @model CCM.Web.Models.SipAccount.SipAccountViewModel
 
+@{
+    ViewBag.Angular = true;
+}
+
 @section scripts
 {
-    <script type="text/javascript">
-        $(document).ready(function () {
+    @Scripts.Render("~/bundles/home")
 
-            $(document).ready(function () {
-                $("#search").focus();
-            });
+    <script>
+        $(document).on('hidden.bs.modal', function (e) {
+            $(e.target).removeData('bs.modal');
+        });
+
+        $(document).ready(function () {
+            $("#searchField").focus();
         });
     </script>
 }
@@ -66,7 +73,7 @@
 
                     lastGuid = account.CodecType.Id;
                 }
-                
+
                 <div class="row panel-body-item user SIP">
                     <div class="col-md-3">@account.UserName <span class="@(account.AccountLocked ? "glyphicon glyphicon-lock" : string.Empty)"></span></div>
                     <div class="col-md-6">@account.Comment</div>

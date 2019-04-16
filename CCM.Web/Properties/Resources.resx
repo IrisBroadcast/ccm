@@ -959,4 +959,7 @@
   <data name="Studio_Url_To_Page_With_Manual" xml:space="preserve">
     <value>Sökväg till 'manual'-sidan</value>
   </data>
+  <data name="Logged_In_As" xml:space="preserve">
+    <value>Inloggad som</value>
+  </data>
 </root>

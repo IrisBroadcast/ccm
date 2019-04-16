@@ -1474,6 +1474,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inloggad som.
+        /// </summary>
+        public static string Logged_In_As {
+            get {
+                return ResourceManager.GetString("Logged_In_As", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Längst.
         /// </summary>
         public static string Longest {

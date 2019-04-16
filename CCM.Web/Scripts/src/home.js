@@ -167,6 +167,8 @@ ccmApp.directive('vuMeter', function () {
 
 var ccmControllers = angular.module('ccmControllers', []);
 
+/* *******************************************************
+ * CCM Frontpage */
 ccmControllers.controller('overviewController', function($scope, $http, $interval, $uibModal, backendHubProxy, $sessionStorage) {
 
     var timerHandle_updateCallDuration;
@@ -315,7 +317,6 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
             }
             return false;
         }
-
         return true;
     };
 
@@ -364,7 +365,6 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
             }
             return false;
         }
-
         return true;
     };
 
@@ -567,3 +567,4 @@ function makeUrlAbsolute(url) {
     }
     return url.match(/^[a-zA-Z]+:\/\//) ? url : 'http://' + url;
 }
+

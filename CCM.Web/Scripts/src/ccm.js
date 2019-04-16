@@ -1,4 +1,7 @@
-﻿$('.dropdown-menu').on('click', function (e) {
+﻿/* *******************************************************
+ * General JS, for all pages */
+
+$('.dropdown-menu').on('click', function (e) {
     if ($(this).hasClass('dropdown-menu-checkboxes')) {
         e.stopPropagation();
     }

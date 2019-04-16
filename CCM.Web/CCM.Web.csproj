@@ -779,6 +779,7 @@
     <Content Include="Views\Debugging\GetSipAccounts.cshtml" />
     <Content Include="Views\Debugging\WhoAmI.cshtml" />
     <Content Include="Views\Debugging\ShowLog.cshtml" />
+    <Content Include="Views\SipAccount\_SipAccountQuickForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\CodecControl\" />
