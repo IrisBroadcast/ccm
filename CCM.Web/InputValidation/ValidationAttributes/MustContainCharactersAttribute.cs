@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,48 +24,40 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using CCM.Core.Entities;
-using CCM.Core.Enums;
+using System.Linq;
 
-namespace CCM.Web.Models.SipAccount
+namespace CCM.Web.InputValidation.ValidationAttributes
 {
-    public class SipAccountFormViewModel
+    public class MustContainCharactersAttribute : ValidationAttribute
     {
-        [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "UserName_Required")]
-        [Display(ResourceType = typeof(Resources), Name = "UserName")]
-        public string UserName { get; set; }
+        private readonly int minimumCount;
+        private readonly string allowedCharacters;
 
-        [Display(ResourceType = typeof(Resources), Name = "DisplayName")]
-        public string DisplayName { get; set; }
+        public MustContainCharactersAttribute(int minimumCount, string allowedCharacters)
+        {
+            this.minimumCount = minimumCount;
+            this.allowedCharacters = allowedCharacters;
+        }
 
-        [Display(ResourceType = typeof(Resources), Name = "Comment")]
-        public string Comment { get; set; }
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            var stringValue = value as string;
+            if (stringValue == null)
+            {
+                return ValidationResult.Success;
+            }
 
-        [Display(ResourceType = typeof(Resources), Name = "Extension_Number")]
-        public string ExtensionNumber { get; set; }
+            var numberOfSpecialCharacters = stringValue.Count(allowedCharacters.Contains);
+            if (numberOfSpecialCharacters < minimumCount)
+            {
+                var charactersString = string.Join(", ", allowedCharacters as IEnumerable<char>);
+                var errorMessage = string.Format(Resources.Password_Must_Contain_At_Least_X_Of_Following_Characters_Y, minimumCount, charactersString);
+                return new ValidationResult(errorMessage);
+            }
 
-        [Display(ResourceType = typeof(Resources), Name = "Account_Locked")]
-        public bool AccountLocked { get; set; }
-
-        [Display(ResourceType = typeof(Resources), Name = "Owner")]
-        public Guid OwnerId { get; set; }
-
-        [Display(ResourceType = typeof(Resources), Name = "Codec_Type")]
-        public Guid CodecTypeId { get; set; }
-
-        [Display(ResourceType = typeof(Resources), Name = "Account_Type")]
-        public SipAccountType AccountType { get; set; }
-      
-
-        public List<Owner> Owners { get; set; }
-
-        public List<CodecType> CodecTypes { get; set; }
-
-        public List<SelectListItem> AccountTypes { get; set; }
-
+            return ValidationResult.Success;
+        }
     }
 }

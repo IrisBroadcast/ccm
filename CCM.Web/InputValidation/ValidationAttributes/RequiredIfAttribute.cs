@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,47 +25,41 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using CCM.Core.Entities;
-using CCM.Core.Enums;
+using System.Linq.Expressions;
 
-namespace CCM.Web.Models.SipAccount
+namespace CCM.Web.InputValidation.ValidationAttributes
 {
-    public class SipAccountFormViewModel
+    public class RequiredIfAttribute : ValidationAttribute
     {
-        [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "UserName_Required")]
-        [Display(ResourceType = typeof(Resources), Name = "UserName")]
-        public string UserName { get; set; }
+        private readonly string condition;
 
-        [Display(ResourceType = typeof(Resources), Name = "DisplayName")]
-        public string DisplayName { get; set; }
+        public RequiredIfAttribute(string condition)
+        {
+            this.condition = condition;
+        }
 
-        [Display(ResourceType = typeof(Resources), Name = "Comment")]
-        public string Comment { get; set; }
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            Delegate conditionFunction = CreateExpression(validationContext.ObjectType, condition);
+            bool conditionMet = (bool)conditionFunction.DynamicInvoke(validationContext.ObjectInstance);
+            if (conditionMet)
+            {
+                if (value == null)
+                {
+                    return new ValidationResult(FormatErrorMessage(null));
+                }
+            }
+            return null;
+        }
 
-        [Display(ResourceType = typeof(Resources), Name = "Extension_Number")]
-        public string ExtensionNumber { get; set; }
-
-        [Display(ResourceType = typeof(Resources), Name = "Account_Locked")]
-        public bool AccountLocked { get; set; }
-
-        [Display(ResourceType = typeof(Resources), Name = "Owner")]
-        public Guid OwnerId { get; set; }
-
-        [Display(ResourceType = typeof(Resources), Name = "Codec_Type")]
-        public Guid CodecTypeId { get; set; }
-
-        [Display(ResourceType = typeof(Resources), Name = "Account_Type")]
-        public SipAccountType AccountType { get; set; }
-      
-
-        public List<Owner> Owners { get; set; }
-
-        public List<CodecType> CodecTypes { get; set; }
-
-        public List<SelectListItem> AccountTypes { get; set; }
-
+        private Delegate CreateExpression(Type objectType, string expression)
+        {
+            LambdaExpression lambdaExpression =
+                     System.Linq.Dynamic.DynamicExpression.ParseLambda(
+                               objectType, typeof(bool), expression);
+            Delegate func = lambdaExpression.Compile();
+            return func;
+        }
     }
 }

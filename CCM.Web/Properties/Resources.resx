@@ -180,9 +180,6 @@
   <data name="Password_Required" xml:space="preserve">
     <value>Du måste ange ett lösenord</value>
   </data>
-  <data name="Password_To_Short" xml:space="preserve">
-    <value>Lösenordet är för kort</value>
-  </data>
   <data name="Registered_Sips" xml:space="preserve">
     <value>Registrerade enheter</value>
   </data>
@@ -961,5 +958,29 @@
   </data>
   <data name="Logged_In_As" xml:space="preserve">
     <value>Inloggad som</value>
+  </data>
+  <data name="Change_Password" xml:space="preserve">
+    <value>Byt lösenord</value>
+  </data>
+  <data name="Password_Can_Not_Be_Longer_Than_X_Characters" xml:space="preserve">
+    <value>Lösenordet kan inte vara längre än {1} tecken</value>
+  </data>
+  <data name="Password_Must_Be_At_Least_X_Characters_Long" xml:space="preserve">
+    <value>Lösenordet måste vara minst {1} tecken långt</value>
+  </data>
+  <data name="Password_Must_Contain_At_Least_X_Of_Following_Characters_Y" xml:space="preserve">
+    <value>Lösenordet måste innehålla minst {0} av följande tecken ({1})</value>
+  </data>
+  <data name="Password_To_Short" xml:space="preserve">
+    <value>Lösenordet är för kort</value>
+  </data>
+  <data name="Password_Must_Contain_Digits_At_Least_X" xml:space="preserve">
+    <value>Lösenordet måste innehålla siffror, minst {0}</value>
+  </data>
+  <data name="Password_Must_Contain_Lower_Case_Characters_At_Least_X" xml:space="preserve">
+    <value>Lösenordet måste innehålla gemener, minst {0}</value>
+  </data>
+  <data name="Password_Must_Contain_Upper_Case_Characters_At_Least_X" xml:space="preserve">
+    <value>Lösenordet måste innehålla versaler, minst {0}</value>
   </data>
 </root>

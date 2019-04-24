@@ -271,9 +271,17 @@
     <Compile Include="Extensions\EnumHelpers.cs" />
     <Compile Include="Hubs\HubBase.cs" />
     <Compile Include="Infrastructure\SipAccountBasicAuthenticationAttribute.cs" />
+    <Compile Include="InputValidation\SipPasswordValidationSettings.cs" />
+    <Compile Include="InputValidation\ValidationAttributes\MustContainUpperCaseLettersAttribute.cs" />
+    <Compile Include="InputValidation\ValidationAttributes\MustContainLowerCaseLettersAttribute.cs" />
+    <Compile Include="InputValidation\ValidationAttributes\MustContainDigitsAttribute.cs" />
+    <Compile Include="InputValidation\ValidationAttributes\MustContainCharactersAttribute.cs" />
+    <Compile Include="InputValidation\ValidationAttributes\RequiredIfAttribute.cs" />
     <Compile Include="Models\Home\RegisteredSipComment.cs" />
     <Compile Include="Models\Log\LevelModel.cs" />
     <Compile Include="Models\Log\CcmApplications.cs" />
+    <Compile Include="Models\SipAccount\SipAccountCreateFormViewModel.cs" />
+    <Compile Include="Models\SipAccount\SipAccountEditFormViewModel.cs" />
     <Compile Include="Models\User\DeleteUserViewModel.cs" />
     <Compile Include="Models\User\UserViewModel.cs" />
     <Compile Include="Models\User\UserFormViewModel.cs" />
@@ -665,6 +673,7 @@
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\ngStorage.js" />
     <Content Include="Scripts\signalr.js" />
+    <Content Include="Scripts\src\passwordgenerator.js" />
     <Content Include="Scripts\src\studiomonitor.js" />
     <Content Include="Scripts\src\codeccontrol.js" />
     <Content Include="Scripts\src\statistics.js" />
@@ -773,12 +782,13 @@
     <Content Include="Views\User\CreateEdit.cshtml" />
     <Content Include="Views\User\Delete.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
-    <Content Include="Views\SipAccount\CreateEdit.cshtml" />
+    <Content Include="Views\SipAccount\Edit.cshtml" />
     <Content Include="Views\SipAccount\Delete.cshtml" />
     <Content Include="Views\SipAccount\Index.cshtml" />
     <Content Include="Views\Debugging\GetSipAccounts.cshtml" />
     <Content Include="Views\Debugging\WhoAmI.cshtml" />
     <Content Include="Views\Debugging\ShowLog.cshtml" />
+    <Content Include="Views\SipAccount\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\CodecControl\" />

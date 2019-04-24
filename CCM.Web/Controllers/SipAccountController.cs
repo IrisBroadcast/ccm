@@ -74,10 +74,9 @@ namespace CCM.Web.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            var model = new SipAccountFormViewModel();
+            var model = new SipAccountCreateFormViewModel();
             SetListData(model);
-            ViewBag.Title = Resources.New_Account;
-            return View("CreateEdit", model);
+            return View("Create", model);
         }
         
         [HttpGet]
@@ -90,7 +89,7 @@ namespace CCM.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            var model = new SipAccountFormViewModel
+            var model = new SipAccountEditFormViewModel
             {
                 Id = user.Id,
                 UserName = user.UserName,
@@ -105,12 +104,55 @@ namespace CCM.Web.Controllers
 
             SetListData(model);
             ViewBag.Title = Resources.Edit_Account;
-            return View("CreateEdit", model);
+            return View("Edit", model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateEdit(SipAccountFormViewModel model)
+        public ActionResult Create(SipAccountCreateFormViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new SipAccount
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = model.UserName.Trim(),
+                    DisplayName = model.DisplayName,
+                    Comment = model.Comment,
+                    ExtensionNumber = model.ExtensionNumber,
+                    AccountType = model.AccountType,
+                    AccountLocked = model.AccountLocked,
+                    Password = model.Password,
+                    Owner = _ownersRepository.GetById(model.OwnerId),
+                    CodecType = _codecTypeRepository.GetById(model.CodecTypeId),
+                };
+                
+                try
+                {
+                    _sipAccountManager.Create(user);
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex, "Could not create SIP account");
+                    if (ex is ApplicationException)
+                    {
+                        ModelState.AddModelError("CreateUser", ex.Message);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("CreateUser", "Användaren kunde inte sparas");
+                    }
+                }
+            }
+
+            SetListData(model);
+            return View("Create", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(SipAccountEditFormViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -127,46 +169,34 @@ namespace CCM.Web.Controllers
                     Owner = _ownersRepository.GetById(model.OwnerId),
                     CodecType = _codecTypeRepository.GetById(model.CodecTypeId),
                 };
-                
+
                 try
                 {
-                    if (user.Id == Guid.Empty)
+                    if (model.ChangePassword)
                     {
-                        // New account
-                        user.Id = Guid.NewGuid();
-                        _sipAccountManager.Create(user);
-                        return RedirectToAction("Index");
+                        _sipAccountManager.UpdatePassword(user.Id, model.Password);
                     }
-                    else
-                    {
-                        // Updated account
-                        if (!string.IsNullOrWhiteSpace(model.Password))
-                        {
-                            _sipAccountManager.UpdatePassword(user.Id, model.Password);
-                        }
 
-                        _sipAccountManager.Update(user);
-                        return RedirectToAction("Index");
-                    }
+                    _sipAccountManager.Update(user);
+                    return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    log.Error(ex, "Could not create or edit sip account");
+                    log.Error(ex, "Could not edit SIP account");
                     if (ex is ApplicationException)
                     {
-                        ModelState.AddModelError("CreateUser", ex.Message);
+                        ModelState.AddModelError("EditUser", ex.Message);
                     }
                     else
                     {
-                        ModelState.AddModelError("CreateUser", "Användaren kunde inte sparas");
+                        ModelState.AddModelError("EditUser", "Användaren kunde inte sparas");
                     }
                 }
             }
 
             SetListData(model);
-            return View("CreateEdit", model);
+            return View("Edit", model);
         }
-
 
         [HttpGet]
         public ActionResult Delete(Guid id)

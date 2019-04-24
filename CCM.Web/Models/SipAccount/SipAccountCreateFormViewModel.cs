@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,41 +24,16 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.ComponentModel.DataAnnotations;
 using CCM.Web.InputValidation;
 using CCM.Web.InputValidation.ValidationAttributes;
-using System.ComponentModel.DataAnnotations;
 
-namespace CCM.Web.Models.ApiExternal
+namespace CCM.Web.Models.SipAccount
 {
-    public class UserModel
+    public class SipAccountCreateFormViewModel : SipAccountFormViewModel
     {
-        [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "UserName_Required")]
-        public string UserName { get; set; }
-
-        [Required(AllowEmptyStrings = true)]
-        public string DisplayName { get; set; }
-
-        [Required(AllowEmptyStrings = true)]
-        public string Comment { get; set; }
-    }
-
-    public class ChangePasswordModel
-    {
-        [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "UserName_Required")]
-        public string UserName { get; set; }
-
-        [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Required))]
-        [MinLength(SipPasswordValidationSettings.MinLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Must_Be_At_Least_X_Characters_Long))]
-        [MaxLength(SipPasswordValidationSettings.MaxLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Can_Not_Be_Longer_Than_X_Characters))]
-        [MustContainCharacters(SipPasswordValidationSettings.MinNumberOfSpecial, SipPasswordValidationSettings.AllowedSpecialCharacters)]
-        [MustContainDigits(SipPasswordValidationSettings.MinNumberOfDigits)]
-        [MustContainLowerCaseLetters(SipPasswordValidationSettings.MinNumberOfLower)]
-        [MustContainUpperCaseLetters(SipPasswordValidationSettings.MinNumberOfUpper)]
-        public string NewPassword { get; set; }
-    }
-
-    public class AddUserModel : UserModel
-    {
+        [DataType(DataType.Password)]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.Password))]
         [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Required))]
         [MinLength(SipPasswordValidationSettings.MinLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Must_Be_At_Least_X_Characters_Long))]
         [MaxLength(SipPasswordValidationSettings.MaxLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Can_Not_Be_Longer_Than_X_Characters))]
@@ -67,6 +42,10 @@ namespace CCM.Web.Models.ApiExternal
         [MustContainLowerCaseLetters(SipPasswordValidationSettings.MinNumberOfLower)]
         [MustContainUpperCaseLetters(SipPasswordValidationSettings.MinNumberOfUpper)]
         public string Password { get; set; }
-    }
 
+        [DataType(DataType.Password)]
+        [Compare(nameof(Password), ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Dont_Match))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.Confirm_Password))]
+        public string PasswordConfirm { get; set; }
+    }
 }

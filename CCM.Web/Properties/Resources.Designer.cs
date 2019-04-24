@@ -19,7 +19,7 @@ namespace CCM.Web {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -246,6 +246,15 @@ namespace CCM.Web {
         public static string Carrier_Connection_Id {
             get {
                 return ResourceManager.GetString("Carrier_Connection_Id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Byt lösenord.
+        /// </summary>
+        public static string Change_Password {
+            get {
+                return ResourceManager.GetString("Change_Password", resourceCulture);
             }
         }
         
@@ -1843,11 +1852,65 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lösenordet kan inte vara längre än {1} tecken.
+        /// </summary>
+        public static string Password_Can_Not_Be_Longer_Than_X_Characters {
+            get {
+                return ResourceManager.GetString("Password_Can_Not_Be_Longer_Than_X_Characters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Lösenorden matchar inte.
         /// </summary>
         public static string Password_Dont_Match {
             get {
                 return ResourceManager.GetString("Password_Dont_Match", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lösenordet måste vara minst {1} tecken långt.
+        /// </summary>
+        public static string Password_Must_Be_At_Least_X_Characters_Long {
+            get {
+                return ResourceManager.GetString("Password_Must_Be_At_Least_X_Characters_Long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lösenordet måste innehålla minst {0} av följande tecken ({1}).
+        /// </summary>
+        public static string Password_Must_Contain_At_Least_X_Of_Following_Characters_Y {
+            get {
+                return ResourceManager.GetString("Password_Must_Contain_At_Least_X_Of_Following_Characters_Y", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lösenordet måste innehålla siffror, minst {0}.
+        /// </summary>
+        public static string Password_Must_Contain_Digits_At_Least_X {
+            get {
+                return ResourceManager.GetString("Password_Must_Contain_Digits_At_Least_X", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lösenordet måste innehålla gemener, minst {0}.
+        /// </summary>
+        public static string Password_Must_Contain_Lower_Case_Characters_At_Least_X {
+            get {
+                return ResourceManager.GetString("Password_Must_Contain_Lower_Case_Characters_At_Least_X", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lösenordet måste innehålla versaler, minst {0}.
+        /// </summary>
+        public static string Password_Must_Contain_Upper_Case_Characters_At_Least_X {
+            get {
+                return ResourceManager.GetString("Password_Must_Contain_Upper_Case_Characters_At_Least_X", resourceCulture);
             }
         }
         
