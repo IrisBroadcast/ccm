@@ -6,13 +6,36 @@
 {
     <script type="text/javascript" src="@Url.Content("~/Scripts/src/passwordgenerator.js")"></script>
     <script type="text/javascript">
-        function generateNewPassword() {
-            let password = generatePassword();
+        $(document).ready(function () {
+            $('#generatePasswordCheckBox').change();
+        });
 
+        $('#generatePasswordCheckBox').change(function () {
+            let checked = $(this).is(':checked');
+            if (checked) {
+                let password = generatePassword();
+                setPasswordFields(password);
+            }
+            else {
+                setPasswordFields(null);
+            }
+
+            setGeneratedPasswordFieldVisibility(checked);
+            setPasswordFieldsVisibility(!checked);
+        });
+
+        function setPasswordFields(password) {
             $('#Password').val(password);
             $('#PasswordConfirm').val(password);
             $('#generatedPassword').val(password);
-            $('#generatedPasswordWrapper').removeClass('hidden');
+        }
+
+        function setGeneratedPasswordFieldVisibility(show) {
+            $('#generatedPasswordWrapper').toggleClass('hidden', !show);
+        }
+
+        function setPasswordFieldsVisibility(show) {
+            $('#passwordFieldsWrapper').toggleClass('hidden', !show);
         }
     </script>
 }
@@ -79,6 +102,17 @@
         </div>
     </div>
 
+    <div class="form-group">
+        <label class="col-md-2 control-label">@Resources.Generate_Password</label>
+        <div class="col-md-10">
+            <div class="ccm-form-group--checkbox">
+                <div class="ccm-form-group-checkbox--btn">
+                    <input id="generatePasswordCheckBox" type="checkbox" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="generatedPasswordWrapper" class="form-group hidden">
         <label class="col-md-2 control-label">@Resources.Generated_Password</label>
         <div class="col-md-10">
@@ -86,18 +120,19 @@
         </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control--horizontal" })
-            <button id="pwGen" type="button" onclick="generateNewPassword()" class="btn btn-info">@Resources.Generate_Password</button>
+    <div id="passwordFieldsWrapper">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.PasswordConfirm, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.PasswordConfirm, new { @class = "form-control" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.PasswordConfirm, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.PasswordConfirm, new { @class = "form-control" })
+            </div>
         </div>
     </div>
 
