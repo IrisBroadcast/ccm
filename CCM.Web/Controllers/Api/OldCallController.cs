@@ -48,6 +48,7 @@ namespace CCM.Web.Controllers.Api
 
         public IList<OldCall> Post()
         {
+            // TODO: Rethink this?
             return _callHistoryRepository.GetOldCalls(_settingsManager.LatestCallCount, true);
         }
     }
