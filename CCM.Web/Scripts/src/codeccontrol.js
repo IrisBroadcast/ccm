@@ -23,6 +23,8 @@
     $scope.audioModeArea = '';
     $scope.signalrConnection = null;
 
+    $scope.audioStatusTimer = null;
+
     $scope.setCodecIsOnline = function (codecIsOnline) {
         // Codec is reachable
         console.info('Codec is online:', codecIsOnline);
@@ -31,6 +33,7 @@
         if (codecIsOnline) {
             $scope.getAvailableGpos();
             $scope.getAudioStatus();
+            $scope.startAudioStatus();
             $scope.startAudioUpdate();
         }
     };
@@ -52,6 +55,23 @@
                 setTimeout($scope.startSignalrConnection, 3000);
                 return console.error(err.toString());
             });
+    };
+
+    $scope.startAudioStatus = function () {
+        if (angular.isDefined($scope.audioStatusTimer)) return;
+
+        $scope.audioStatusTimer = $interval(function () {
+            console.log("Cheack audio status");
+            $scope.lastUpdate = new Date(Date.now() + 10000); // If not changed, next update will be in 10 seconds
+            $scope.getAudioStatus();
+        }, 1000);
+    };
+
+    $scope.stopAudioStatus = function() {
+        if (angular.isDefined($scope.audioStatusTimer)) {
+            $interval.cancel($scope.audioStatusTimer);
+            $scope.audioStatusTimer = undefined;
+        }
     };
 
     $scope.startAudioUpdate = function () {
@@ -226,11 +246,18 @@
     $scope.$on("$destroy", function () {
         console.log("Destroy called.");
 
+        // Stop interval checking Audio status
+        $scope.stopAudioStatus();
+
+        // Stop subscription
         if ($scope.signalrConnection) {
             $scope.signalrConnection.invoke("Unsubscribe", null)
-                .then(function () { console.log("Unsubscribed"); })
-                .catch(function (err) { return console.error(err.toString()); }
-                );
+                .then(function() {
+                    console.log("Unsubscribed");
+                })
+                .catch(function(err) {
+                        return console.error(err.toString());
+                });
         }
     });
 

@@ -99,7 +99,14 @@ namespace CCM.Core.Service
                 var filterSelections = GetFilteringValues(filterParams);
                 sipsOnline = GetFilteredSipsOnline(filterSelections);
 
-                if (sipsOnline == null) { return new UserAgentsResultDto() { Profiles = new List<ProfileDto>(), UserAgents = new List<UserAgentDto>() }; }
+                if (sipsOnline == null) {
+                    log.Debug("Sips online is null");
+                    return new UserAgentsResultDto()
+                    {
+                        Profiles = new List<ProfileDto>(),
+                        UserAgents = new List<UserAgentDto>()
+                    };
+                }
 
                 // Exclude 'yourself'
                 sipsOnline = sipsOnline.Where(sip => sip.Sip != caller).ToList();

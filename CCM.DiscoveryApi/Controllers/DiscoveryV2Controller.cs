@@ -58,6 +58,8 @@ namespace CCM.DiscoveryApi.Controllers
         [Route("~/v2/filters")]
         public async Task<List<FilterV2>> Filters()
         {
+            log.Trace("Discovery V2 API - requesting 'filters'");
+
             List<FilterDto> filterDtos = await _discoveryService.GetFiltersAsync(Request);
 
             var filters = filterDtos.Select(f => new FilterV2
@@ -73,6 +75,8 @@ namespace CCM.DiscoveryApi.Controllers
         [Route("~/v2/profiles")]
         public async Task<List<ProfileDtoV2>> Profiles()
         {
+            log.Trace("Discovery V2 API - requesting 'profiles'");
+
             var profileDtos = await _discoveryService.GetProfilesAsync(Request);
 
             var profiles = profileDtos
@@ -86,8 +90,11 @@ namespace CCM.DiscoveryApi.Controllers
         [Route("~/v2/useragents")]
         public async Task<UserAgentsResultV2> UserAgents(UserAgentSearchParamsV2 searchParams)
         {
+            log.Trace("Discovery V2 API - requesting 'useragents'", searchParams);
+
             if (searchParams == null)
             {
+                log.Debug("Requesting useragents from Discovery, but search params is null");
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
 

@@ -9,6 +9,22 @@
 
 <hr />
 
+
+<div class="row">
+    <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header ccm-sub-navbar--admin--header">
+                <span class="navbar-brand">Clean up log</span>
+            </div>
+            <div class="navbar ccm-sub-navbar--admin--links">
+                <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
+                    <li>@Html.ActionLink("Log", "Index", "Log")</li>
+                    <li>@Html.ActionLink("Change log level", "Level", "Log")</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
 <div>Just nu i loggen</div>
 <br/>
 <table style="width: 400px;">
@@ -33,26 +49,14 @@
 {
     <div class="form-group">
         <div class="col-md-9">
-            Antal rader att radera:
+            Number of rows to delete:
             <input type="text" name="nrOfRowsToDelete" value="@nrOfRowsToDelete">
         </div>
     </div>
     
     <div class="form-group">
         <div class="col-md-9">
-            <button type="submit" class="btn btn-primary">Rensa</button>
+            <button type="submit" class="btn btn-primary">Clear log</button>
         </div>
     </div>
 }
-
-<br/>
-
-<span style="float: left">
-    @Html.ActionLink("Tillbaka", "Index", "Log")
-</span>
-
-
-
-
-
-

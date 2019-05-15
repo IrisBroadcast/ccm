@@ -79,9 +79,9 @@
             <div class="row panel-body-item">
                 <span class="col-md-2">
                     @if (item.ActivityId == Guid.Empty) {
-                        @item.Date.ToString("yyyy-MM-dd HH:mm:ss.ffff") @item.Level @item.Callsite
+                        <span>@item.Date.ToString("yyyy-MM-dd HH:mm:ss.ffff") &nbsp; @item.Level <br/> @item.Callsite</span>
                     } else {
-                        <a href="log?application=@Model.Application&activityId=@item.ActivityId">@item.Date.ToString("yyyy-MM-dd HH:mm:ss.ffff") @item.Level @item.Callsite</a>    
+                        <a href="log?application=@Model.Application&activityId=@item.ActivityId">@item.Date.ToString("yyyy-MM-dd HH:mm:ss.ffff") @item.Level <br /> @item.Callsite</a>    
                     }
                 </span>
                 <span class="col-md-10">
