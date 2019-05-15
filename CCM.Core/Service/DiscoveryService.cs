@@ -186,7 +186,7 @@ namespace CCM.Core.Service
                     // INFO: Intersect, get Profiles in callee that have duplicates in callerProfileNames
                     if (callee.Profiles == null)
                     {
-                        log.Error("Calle Profiles is null", callee);
+                        log.Error("Callee Profiles is null", callee);
                         log.Error("Caller profile names", callerProfileNames);
                     }
 
