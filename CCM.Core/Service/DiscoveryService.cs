@@ -85,6 +85,7 @@ namespace CCM.Core.Service
         {
             if (filterParams == null)
             {
+                log.Debug("Requested filter params is null");
                 filterParams = new List<KeyValuePair<string,string>>();
             }
 
@@ -117,7 +118,6 @@ namespace CCM.Core.Service
 
             var result = ProfilesAndUserAgents(sipsOnline, callerProfiles.Select(p => new ProfileDto() { Name = p.Name, Sdp = p.Sdp }).ToList());
             return result;
-
         }
 
         private IList<ProfileNameAndSdp> GetProfilesForRegisteredSip(string sipId)
@@ -135,6 +135,7 @@ namespace CCM.Core.Service
             var registeredSips = _registeredSipRepository.GetCachedRegisteredSips();
             if (registeredSips == null)
             {
+                log.Debug("Registered sips is null");
                 return new List<RegisteredSipDto>();
             }
 
@@ -183,6 +184,12 @@ namespace CCM.Core.Service
                     // INFO: Viktigt att ordningen på gemensamma profiler baseras på callee's profilordning.
                     // INFO: !Important! The order of common profiles MUST be based on callee's profile order
                     // INFO: Intersect, get Profiles in callee that have duplicates in callerProfileNames
+                    if (callee.Profiles == null)
+                    {
+                        log.Error("Calle Profiles is null", callee);
+                        log.Error("Caller profile names", callerProfileNames);
+                    }
+
                     var matchingProfiles = callee.Profiles.Intersect(callerProfileNames).ToList();
 
                     if (matchingProfiles.Any())
