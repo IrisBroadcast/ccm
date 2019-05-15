@@ -184,11 +184,6 @@ namespace CCM.Core.Service
                     // INFO: Viktigt att ordningen på gemensamma profiler baseras på callee's profilordning.
                     // INFO: !Important! The order of common profiles MUST be based on callee's profile order
                     // INFO: Intersect, get Profiles in callee that have duplicates in callerProfileNames
-                    if (callee.Profiles == null)
-                    {
-                        log.Error("Callee Profiles is null", callee);
-                        log.Error("Caller profile names", callerProfileNames);
-                    }
 
                     var matchingProfiles = callee.Profiles.Intersect(callerProfileNames).ToList();
 

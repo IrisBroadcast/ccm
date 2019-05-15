@@ -57,24 +57,26 @@ namespace CCM.Web.Controllers.ApiExternal
         [HttpGet]
         public IList<CodecStatus> GetAll(bool includeCodecsOffline = false)
         {
-            List<RegisteredSipDto> allRegisteredSips = _registeredSipRepository.GetCachedRegisteredSips();
+            IEnumerable<RegisteredSipDto> allRegisteredSips = _registeredSipRepository.GetCachedRegisteredSips();
 
+            var notRegisteredSips = Enumerable.Empty<RegisteredSipDto>();
             if (includeCodecsOffline)
             {
                 var sipIdsOnline = allRegisteredSips.Select(rs => rs.Sip).ToList();
                 var accounts = _sipAccountRepository.GetAll();
-                var accountsNotOnline = accounts.Where(a => !sipIdsOnline.Contains(a.UserName)).ToList();
+                var accountsNotOnline = accounts.Where(a => !sipIdsOnline.Contains(a.UserName));
                 var sipDomain = _settingsManager.SipDomain;
-                var notRegisteredSips = accountsNotOnline.Select(a => new RegisteredSipDto
+                notRegisteredSips = accountsNotOnline.Select(a => new RegisteredSipDto
                 {
                     Id = Guid.Empty,
                     Sip = a.UserName,
                     DisplayName = DisplayNameHelper.GetDisplayName("", a.DisplayName, string.Empty, "", a.UserName, "", sipDomain),
-                }).ToList();
-                allRegisteredSips.AddRange(notRegisteredSips);
+                });
             }
 
-            return allRegisteredSips.Select(CodecStatusMapper.MapToCodecStatus).ToList();
+            return allRegisteredSips.Concat(notRegisteredSips)
+                                    .Select(CodecStatusMapper.MapToCodecStatus)
+                                    .ToList();
         }
 
         [HttpGet]
