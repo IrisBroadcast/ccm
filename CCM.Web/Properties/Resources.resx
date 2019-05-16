@@ -986,4 +986,52 @@
   <data name="Logs" xml:space="preserve">
     <value>Loggar</value>
   </data>
+  <data name="Logs_Application" xml:space="preserve">
+    <value>Applikation</value>
+  </data>
+  <data name="Logs_Delete_Rows_From_Log" xml:space="preserve">
+    <value>Ta bort rader ur loggen</value>
+  </data>
+  <data name="Logs_Link_Change_Log_Level_For" xml:space="preserve">
+    <value>Ändra logg nivå för</value>
+  </data>
+  <data name="Logs_Log_Levels" xml:space="preserve">
+    <value>Logg nivåer</value>
+  </data>
+  <data name="Logs_Lowest_Log_Level_Filtered" xml:space="preserve">
+    <value>Minsta nivå</value>
+  </data>
+  <data name="Logs_Max_Number_Of_Rows" xml:space="preserve">
+    <value>Max antal rader</value>
+  </data>
+  <data name="Logs_Number_Of_Rows" xml:space="preserve">
+    <value>Antal rader</value>
+  </data>
+  <data name="Logs_Number_Of_Rows_To_Delete" xml:space="preserve">
+    <value>Antal rader att ta bort</value>
+  </data>
+  <data name="Logs_Oldest" xml:space="preserve">
+    <value>Äldst</value>
+  </data>
+  <data name="Logs_Search" xml:space="preserve">
+    <value>Sök</value>
+  </data>
+  <data name="Logs_Search_String" xml:space="preserve">
+    <value>Söktext</value>
+  </data>
+  <data name="Logs_Show_Latest" xml:space="preserve">
+    <value>Visa senaste</value>
+  </data>
+  <data name="Logs_Time_Interval_From" xml:space="preserve">
+    <value>Tidsintervall från</value>
+  </data>
+  <data name="Logs_Time_Interval_To" xml:space="preserve">
+    <value>Tidsintervall till</value>
+  </data>
+  <data name="Logs_Title_Change_Log_Level" xml:space="preserve">
+    <value>Ändra logg nivå</value>
+  </data>
+  <data name="Logs_Title_Clear_Logs" xml:space="preserve">
+    <value>Rensa loggar</value>
+  </data>
 </root>

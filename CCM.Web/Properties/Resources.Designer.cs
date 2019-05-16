@@ -1501,6 +1501,150 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Applikation.
+        /// </summary>
+        public static string Logs_Application {
+            get {
+                return ResourceManager.GetString("Logs_Application", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ta bort rader ur loggen.
+        /// </summary>
+        public static string Logs_Delete_Rows_From_Log {
+            get {
+                return ResourceManager.GetString("Logs_Delete_Rows_From_Log", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ändra logg nivå för.
+        /// </summary>
+        public static string Logs_Link_Change_Log_Level_For {
+            get {
+                return ResourceManager.GetString("Logs_Link_Change_Log_Level_For", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logg nivåer.
+        /// </summary>
+        public static string Logs_Log_Levels {
+            get {
+                return ResourceManager.GetString("Logs_Log_Levels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minsta nivå.
+        /// </summary>
+        public static string Logs_Lowest_Log_Level_Filtered {
+            get {
+                return ResourceManager.GetString("Logs_Lowest_Log_Level_Filtered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max antal rader.
+        /// </summary>
+        public static string Logs_Max_Number_Of_Rows {
+            get {
+                return ResourceManager.GetString("Logs_Max_Number_Of_Rows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Antal rader.
+        /// </summary>
+        public static string Logs_Number_Of_Rows {
+            get {
+                return ResourceManager.GetString("Logs_Number_Of_Rows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Antal rader att ta bort.
+        /// </summary>
+        public static string Logs_Number_Of_Rows_To_Delete {
+            get {
+                return ResourceManager.GetString("Logs_Number_Of_Rows_To_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Äldst.
+        /// </summary>
+        public static string Logs_Oldest {
+            get {
+                return ResourceManager.GetString("Logs_Oldest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sök.
+        /// </summary>
+        public static string Logs_Search {
+            get {
+                return ResourceManager.GetString("Logs_Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Söktext.
+        /// </summary>
+        public static string Logs_Search_String {
+            get {
+                return ResourceManager.GetString("Logs_Search_String", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visa senaste.
+        /// </summary>
+        public static string Logs_Show_Latest {
+            get {
+                return ResourceManager.GetString("Logs_Show_Latest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tidsintervall från.
+        /// </summary>
+        public static string Logs_Time_Interval_From {
+            get {
+                return ResourceManager.GetString("Logs_Time_Interval_From", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tidsintervall till.
+        /// </summary>
+        public static string Logs_Time_Interval_To {
+            get {
+                return ResourceManager.GetString("Logs_Time_Interval_To", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ändra logg nivå.
+        /// </summary>
+        public static string Logs_Title_Change_Log_Level {
+            get {
+                return ResourceManager.GetString("Logs_Title_Change_Log_Level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rensa loggar.
+        /// </summary>
+        public static string Logs_Title_Clear_Logs {
+            get {
+                return ResourceManager.GetString("Logs_Title_Clear_Logs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Längst.
         /// </summary>
         public static string Longest {

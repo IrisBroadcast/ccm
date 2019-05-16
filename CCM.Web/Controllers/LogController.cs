@@ -73,6 +73,12 @@ namespace CCM.Web.Controllers
                 endTime = null;
             }
 
+            string logLevelCcm = LogLevelManager.GetCurrentLevel().Name;
+            string logLevelDiscovery = await GetDiscoveryLogLevelAsync();
+
+            ViewBag.CurrentLevelCCM = logLevelCcm;
+            ViewBag.CurrentLevelDiscovery = logLevelDiscovery;
+
             model.LogRows = await _logRepository.GetLastAsync(model.Rows, model.Application, startTime, endTime, model.SelectedLevel, model.Search, model.ActivityId);
             model.LastOptions = GetLastOptions();
             model.Levels = LogLevel.AllLoggingLevels.ToList().Select(l => new SelectListItem() { Value = l.Ordinal.ToString(), Text = l.Name });

@@ -1,5 +1,6 @@
-﻿@{
-    ViewBag.Title = "Change Log Level";
+﻿@using CCM.Web.Models.Log
+@{
+    ViewBag.Title = Resources.Logs_Title_Change_Log_Level;
     var logLevel = ViewBag.CurrentLevel;
     var application = ViewBag.Application as string ?? "";
 }
@@ -8,54 +9,50 @@
     <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header ccm-sub-navbar--admin--header">
-                <span class="navbar-brand">Change log level (current: @logLevel)</span>
+                <span class="navbar-brand">@Resources.Logs_Title_Change_Log_Level, @application '@logLevel'</span>
             </div>
             <div class="navbar ccm-sub-navbar--admin--links">
                 <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
-                    <li>@Html.ActionLink("Log", "Index", "Log")</li>
-                    <li>@Html.ActionLink("Clear logs", "Delete", "Log")</li>
+                    <li>@Html.ActionLink(CcmApplications.Web + " " + Resources.Logs, "Index", "Log", new { application = CcmApplications.Web }, new { })</li>
+                    <li>@Html.ActionLink(CcmApplications.Discovery + " " + Resources.Logs, "Index", "Log", new { application = CcmApplications.Discovery }, new { })</li>
+                    <li>@Html.ActionLink(Resources.Logs_Title_Clear_Logs, "Delete", "Log", new { application = application }, new { })</li>
+                    <li class="@(application == CcmApplications.Web ? "active" : "")">@Html.ActionLink(Resources.Logs_Link_Change_Log_Level_For + " " + CcmApplications.Web, "Level", "Log", new { application = CcmApplications.Web }, new { })</li>
+                    <li class="@(application == CcmApplications.Discovery ? "active" : "")">@Html.ActionLink(Resources.Logs_Link_Change_Log_Level_For + " " + CcmApplications.Discovery, "Level", "Log", new { application = CcmApplications.Discovery }, new { })</li>
                 </ul>
             </div>
         </div>
     </nav>
 </div>
 
-<div class="row">
-    <div class="col-md-12">
-        Current log level is @logLevel
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        @using (Html.BeginForm("Level", "Log", FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
-        {
-            <div class="col-md-12">
-                @{
-                    foreach (var level in NLog.LogLevel.AllLevels)
-                    {
-                        <div class="ccm-form-group--radio">
-                            <label>
-                                <div class="ccm-form-group-radio--btn">
-                                    <input type="radio" name="loglevel" value="@level.Name" @(logLevel == level.Name ? "checked" : "")>
-                                </div>
-                                <div class="ccm-form-group-radio--text">
-                                    @level.Name.ToUpper()
-                                    @(level.Name == "Info" ? "(Safe for normal operation)" : "")
-                                </div>
-                            </label>
+@using (Html.BeginForm("Level", "Log", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+<div class="form-group">
+    <label class="col-md-2 control-label" for="nrOfRowsToDelete">@Resources.Logs_Log_Levels</label>
+    <div class="col-md-10">
+        @{
+            foreach (var level in NLog.LogLevel.AllLevels)
+            {
+                <div class="ccm-form-group--radio">
+                    <label>
+                        <div class="ccm-form-group-radio--btn">
+                            <input type="radio" name="loglevel" value="@level.Name" @(logLevel == level.Name ? "checked" : "")>
                         </div>
-                    }
-                }
-
-                @Html.Hidden("Application", application)
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary">Spara</button>
+                        <div class="ccm-form-group-radio--text">
+                            @level.Name.ToUpper()
+                            @(level.Name == "Info" ? "(Safe for normal operation)" : "")
+                        </div>
+                    </label>
                 </div>
-            </div>
+            }
         }
+    
+        @Html.Hidden("Application", application)
     </div>
 </div>
+
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <button type="submit" class="btn btn-primary">@Resources.Save</button>
+    </div>
+</div>
+}

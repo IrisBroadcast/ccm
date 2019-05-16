@@ -1,97 +1,135 @@
 ﻿@using CCM.Web.Models.Log
 @model LogViewModel
 @{
-    ViewBag.Title = "Logs";
+    ViewBag.Title = Resources.Logs;
+    var logLevelCcm = ViewBag.CurrentLevelCCM;
+    var logLevelDiscovery = ViewBag.CurrentLevelDiscovery;
 }
 
-<h2>@Model.Application @Resources.Logs</h2>
-<div>
-    @Html.ActionLink("Web log", "Index", "Log", new { application = CcmApplications.Web }, new { }) |
-    @Html.ActionLink("Discovery log", "Index", "Log", new { application = CcmApplications.Discovery }, new { }) |
+@section scripts
+{
+    <script type="text/javascript">
+        $(".ccm-logs-list--row").click(function (event) {
+            $(this).toggleClass('selected');
+        });
+    </script>
+}
 
-    <span style="float: right">
-        @Html.ActionLink("Rensa log", "Delete", "Log", new { application = Model.Application }, new { })
-        &nbsp;|&nbsp;
-        @Html.ActionLink("Ändra lognivå", "Level", "Log", new { application = Model.Application }, new { })
-    </span>
-
+<div class="row">
+    <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header ccm-sub-navbar--admin--header">
+                <span class="navbar-brand">@Model.Application @Resources.Logs</span>
+            </div>
+            <div class="navbar ccm-sub-navbar--admin--links">
+                <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
+                    <li class="@(Model.Application == CcmApplications.Web ? "active" : "")">@Html.ActionLink(CcmApplications.Web + " " + Resources.Logs, "Index", "Log", new { application = CcmApplications.Web }, new { })</li>
+                    <li class="@(Model.Application == CcmApplications.Discovery ? "active" : "")">@Html.ActionLink(CcmApplications.Discovery + " " + Resources.Logs, "Index", "Log", new { application = CcmApplications.Discovery }, new { })</li>
+                    <li>@Html.ActionLink(Resources.Logs_Title_Clear_Logs, "Delete", "Log", new { application = Model.Application }, new { })</li>
+                    <li>@Html.ActionLink( Resources.Logs_Link_Change_Log_Level_For + " " + CcmApplications.Web, "Level", "Log", new { application = CcmApplications.Web }, new { })</li>
+                    <li>@Html.ActionLink(Resources.Logs_Link_Change_Log_Level_For + " " + CcmApplications.Discovery, "Level", "Log", new { application = CcmApplications.Discovery }, new { })</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 </div>
 
-<div style="display: block; overflow: hidden; margin-top: 15px;">
-    <form method="get" action="@Url.Action("Index", "Log")">
-        <div class="row">
-            <div class="col-md-2">
-                <label for="lastTime" class="control-label">Show latest</label>
-                @Html.DropDownListFor(x => x.SelectedLastOption, new SelectList(Model.LastOptions, "Value", "Text"), 
-               new { @class = "form-control", onchange = "OnLastOptionChanged();"
-           })
-            </div>
-            <div class="col-md-2">
-                <label for="StartDateTime" class="control-label">Tidsintervall från:</label>
-                <div class="input-group" id="startTimeText">
-                    <input id="StartDateTime" name="StartDateTime" value="@Model.StartDateTime" class="form-control" />
-                </div>
-            </div>
-            <div class="col-md-2">
-                <label for="EndDateTime" class="control-label">Tidsintervall till:</label>
-                <div class="input-group" id="endTimeText">
-                    <input id="EndDateTime" name="EndDateTime" value="@Model.EndDateTime" class="form-control" />
-                </div>
-            </div>
-            
-            <div class="col-md-2">
-                <label for="rows" class="control-label">Max antal rader:</label>
-                <div class="input-group" id="nrOfRows">
-                    <input id="rows" name="rows" value="@Model.Rows" class="form-control" />
-                </div>
-            </div>
+<form method="get" action="@Url.Action("Index", "Log")">
 
-            <div class="col-md-1">
-                <label for="submit" class="control-label">&nbsp;</label>
-                <button type="submit" id="submit" class="btn btn-primary form-control">Sök</button>
-            </div>
+    <div class="row logs-filters">
 
+        <div class="col-md-3">
+            <label for="lastTime" class="control-label">
+                @Resources.Logs_Show_Latest: 
+                @Html.DropDownListFor(x => x.SelectedLastOption, new SelectList(Model.LastOptions, "Value", "Text"),
+                    new
+                    {
+                        @class = "form-control", onchange = "OnLastOptionChanged();"
+                    })
+            </label>
         </div>
 
-        <div class="row">
-            <div class="col-md-2">
-                <label for="level" class="control-label">Minsta nivå</label>
-                @Html.DropDownListFor(x => x.SelectedLevel, new SelectList(Model.Levels, "Value", "Text"), new { @class = "form-control" })
-            </div>
-            <div class="col-md-4">
-                <label for="search" class="control-label">Söktext:</label>
-                <div class="input-group" id="searchText" style="width: 100%;">
-                    <input id="search" name="search" value="@Model.Search" class="form-control" />
-                </div>
-            </div>
+        <div class="col-md-3">
+            <label for="StartDateTime" class="control-label">
+                @Resources.Logs_Time_Interval_From: 
+                <input id="StartDateTime" name="StartDateTime" value="@Model.StartDateTime" class="form-control" />
+            </label>
+        </div>
 
-            
+        <div class="col-md-3">
+            <label for="EndDateTime" class="control-label">
+                @Resources.Logs_Time_Interval_To:
+                <input id="EndDateTime" name="EndDateTime" value="@Model.EndDateTime" class="form-control" />
+            </label>
+        </div>
+
+        <div class="col-md-3">
+            <label for="rows" class="control-label">
+                @Resources.Logs_Max_Number_Of_Rows:
+                <input id="rows" name="rows" value="@Model.Rows" class="form-control" />
+            </label>
+        </div>
+
+    </div>
+
+    <div class="row logs-filters">
+
+        <div class="col-md-3">
+            <label for="level" class="control-label">
+                @Resources.Logs_Lowest_Log_Level_Filtered:
+                @Html.DropDownListFor(x => x.SelectedLevel, new SelectList(Model.Levels, "Value", "Text"), new { @class = "form-control" })
+            </label>
+        </div>
+
+        <div class="col-md-6">
+            <label for="search" class="control-label">
+                @Resources.Logs_Search_String:
+                <input id="search" name="search" value="@Model.Search" class="form-control" />
+            </label>
+        </div>
+
+        <div class="col-md-3">
+            <label for="submit" class="control-label">
+                &nbsp;
+                <button type="submit" id="submit" class="btn btn-primary">@Resources.Logs_Search</button>
+            </label>
         </div>
 
         <input type="hidden" id="application" name="application" value="@Model.Application" />
-    </form>
-</div>
+
+    </div>
+
+</form>
+
+<hr />
 
 <div class="log-table">
     <div class="panel-body-lp">
         @foreach (var item in Model.LogRows)
-            {
-            <div class="row panel-body-item">
-                <span class="col-md-2">
-                    @if (item.ActivityId == Guid.Empty) {
-                        <span>@item.Date.ToString("yyyy-MM-dd HH:mm:ss.ffff") &nbsp; @item.Level <br/> @item.Callsite</span>
-                    } else {
-                        <a href="log?application=@Model.Application&activityId=@item.ActivityId">@item.Date.ToString("yyyy-MM-dd HH:mm:ss.ffff") @item.Level <br /> @item.Callsite</a>    
+        {
+            <div class="row panel-body-item ccm-logs-list--row no-padding">
+                <span class="col-md-2 no-padding ccm-logs-list--datecol">
+                    @if (item.ActivityId == Guid.Empty)
+                    {
+                    <span class="@(item.Level == "Error" ? "ccm-logs--error" : "")">
+                        @item.Date.ToString("yyyy-MM-dd HH:mm:ss.ffff")<br />@item.Level<br/>@item.Callsite
+                    </span>
+                    }
+                    else
+                    {
+                    <span class="@(item.Level == "Error" ? "ccm-logs--error" : "")">
+                        @item.Date.ToString("yyyy-MM-dd HH:mm:ss.ffff")<br />@item.Level<br /><a href="log?application=@Model.Application&activityId=@item.ActivityId">@item.Callsite</a>
+                    </span>
                     }
                 </span>
-                <span class="col-md-10">
+                <span class="col-md-10 no-padding">
                     @if (string.IsNullOrEmpty(item.Exception))
                     {
                         <pre>@item.Message</pre>
                     }
                     else
                     {
-                        <pre>@item.Message @Environment.NewLine @item.Exception</pre>
+                        <pre class="ccm-log-level-pre--exception">@item.Message @Environment.NewLine @item.Exception</pre>
                     }
                 </span>
             </div>
@@ -112,6 +150,34 @@
         overflow: visible;
         white-space: pre-wrap;
     }
+
+    .ccm-logs-list--row {
+        padding: 4px !important;
+    }
+
+    .ccm-logs-list--row.selected {
+        background: #ffc9c9 !important;
+        border-radius: 4px !important;
+    }
+
+    .ccm-logs-list--row.selected pre {
+        background-color: #ffebeb !important;
+        border-color: #ffbbbb;
+    }
+
+    .ccm-logs-list--datecol {
+        word-break: break-word;
+    }
+
+    .ccm-log-level-pre--exception {
+        background-color: #ff917c !important;
+        border-color: #f8320d;
+    }
+
+    .ccm-logs--error {
+        color: #f8320d;
+    }
+
 </style>
 
 <script>
