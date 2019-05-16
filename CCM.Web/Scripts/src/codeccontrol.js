@@ -1,4 +1,10 @@
-﻿ccmControllers.controller('sipInfoController', function ($scope, $http, $interval, $uibModalInstance, sipid, sipAddress) {
+﻿
+/* *******************************************************
+ * Codec control for front page popup */
+ccmControllers.controller('sipInfoController', function ($scope, $http, $interval, $uibModalInstance, sipid, sipAddress) {
+
+    var audioStatusUpdateInterval = 1000; // Uppdate interval for inputs, GPO:s and VU-meters in ms
+    var audioStatusUpdateHandle;
 
     $scope.codecControlHost = window.codecControlHost;
     $scope.userName = window.codecControlUserName;
@@ -23,7 +29,7 @@
     $scope.audioModeArea = '';
     $scope.signalrConnection = null;
 
-    $scope.audioStatusTimer = null;
+    console.info('Getting codec information for ' + sipAddress);
 
     $scope.setCodecIsOnline = function (codecIsOnline) {
         // Codec is reachable
@@ -34,14 +40,14 @@
             $scope.getAvailableGpos();
             $scope.getAudioStatus();
             $scope.startAudioStatus();
-            $scope.startAudioUpdate();
+            $scope.startAudioUpdateHub();
         }
     };
 
     $scope.startSignalrConnection = function () {
         if (!$scope.signalrConnection) console.error('SignalrConnection must be configured before it can be started.');
 
-        console.log('Starting signalr connection', $scope.signalrConnection);
+        console.log('Initiating Signalr connection', $scope.signalrConnection);
 
         $scope.signalrConnection.start()
             .then(function (result) {
@@ -56,26 +62,24 @@
                 return console.error(err.toString());
             });
     };
+    
+   $scope.startAudioStatus = function () {
+        if (angular.isDefined(audioStatusUpdateHandle)) return;
 
-    $scope.startAudioStatus = function () {
-        if (angular.isDefined($scope.audioStatusTimer)) return;
-
-        $scope.audioStatusTimer = $interval(function () {
-            console.log("Cheack audio status");
-            $scope.lastUpdate = new Date(Date.now() + 10000); // If not changed, next update will be in 10 seconds
+        audioStatusUpdateHandle = $interval(function () {
             $scope.getAudioStatus();
-        }, 1000);
+        },
+        audioStatusUpdateInterval);
     };
 
-    $scope.stopAudioStatus = function() {
-        if (angular.isDefined($scope.audioStatusTimer)) {
-            $interval.cancel($scope.audioStatusTimer);
-            $scope.audioStatusTimer = undefined;
+    $scope.stopAudioStatus = function () {
+        if (angular.isDefined(audioStatusUpdateHandle)) {
+            $interval.cancel(audioStatusUpdateHandle);
+            audioStatusUpdateHandle = undefined;
         }
     };
 
-    $scope.startAudioUpdate = function () {
-
+    $scope.startAudioUpdateHub = function () {
         $scope.signalrConnection = new signalR.HubConnectionBuilder()
             .withUrl($scope.codecControlHost + "/audioStatusHub")
             .configureLogging(signalR.LogLevel.Information)
@@ -94,23 +98,9 @@
         });
 
         $scope.startSignalrConnection();
-    };
+    }
 
-    $scope.setInputValue = function (inputStatus) {
-        var input = $scope.inputs[inputStatus.index];
-
-        if (input) {
-            if (inputStatus.error) {
-                input.error = inputStatus.error;
-                input.disabled = 'disabled';
-            } else {
-                input.value = inputStatus.gainLevel;
-                input.enabled = inputStatus.enabled;
-                input.disabled = '';
-            }
-        }
-    };
-
+    // API
     $scope.getAvailableGpos = function () {
         console.info('Getting GPOs');
         $http.get($scope.codecControlHost + '/api/codeccontrol/getavailablegpos?sipaddress=' + $scope.sipAddress)
@@ -167,8 +157,6 @@
     };
 
     $scope.updateAudioStatus = function (audioStatus) {
-        //console.log("Audio status", audioStatus);
-
         for (var i = 0; i < audioStatus.inputStatus.length; i++) {
             $scope.setInputValue(audioStatus.inputStatus[i]);
         }
@@ -188,6 +176,21 @@
         $scope.rxR = fallback($scope.rxR, convertVuToPercentage(audioStatus.vuValues.rxRight));
     };
 
+    $scope.setInputValue = function (inputStatus) {
+        var input = $scope.inputs[inputStatus.index];
+
+        if (input) {
+            if (inputStatus.error) {
+                input.error = inputStatus.error;
+                input.disabled = 'disabled';
+            } else {
+                input.value = inputStatus.gainLevel;
+                input.enabled = inputStatus.enabled;
+                input.disabled = '';
+            }
+        }
+    };
+
     $scope.toggleInputEnabled = function (input) {
         var enabled = input.enabled ? false : true;
         let data = { sipAddress: $scope.sipAddress, input: input.id, enabled: enabled };
@@ -197,8 +200,7 @@
             input.enabled = isEnabled;
         });
     };
-
-
+    
     $scope.setGainLevel = function (input, value) {
         $scope.httpPost('/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: input.id, level: input.value + value })
             .then(function (data) {
@@ -260,20 +262,7 @@
                 });
         }
     });
-
-    $scope.httpPost = function (apiPath, data) {
-
-        var authorizationBasic = window.btoa($scope.userName + ':' + $scope.password);
-        const headers = { 'Authorization': 'Basic ' + authorizationBasic };
-
-        return $http.post($scope.codecControlHost + apiPath, data, { headers: headers }).then(function (response) {
-            return response.data;
-        });
-
-    };
-
-    console.info('Getting Codec information for ' + sipAddress);
-
+    
     $http.get('/api/registeredsipdetails/GetRegisteredSipInfo?id=' + $scope.sipid).then(function (response) {
         let info = response.data;
         console.info('Codec information', info);
@@ -309,8 +298,20 @@
             console.info('Codec-control is not Authorized');
         }
     },
-        function () { // on error
-            console.info("Codec information is missing");
+    function () {
+        console.info("Codec information is missing");
+    });
+
+    // Utilities
+    $scope.httpPost = function (apiPath, data) {
+
+        var authorizationBasic = window.btoa($scope.userName + ':' + $scope.password);
+        const headers = { 'Authorization': 'Basic ' + authorizationBasic };
+
+        return $http.post($scope.codecControlHost + apiPath, data, { headers: headers }).then(function (response) {
+            return response.data;
         });
+
+    };
 
 });

@@ -5,10 +5,10 @@
 ccmControllers.controller('studioMonitorController',
     function ($scope, $http, $sce, $interval, $timeout, $window, backendHubProxy) {
 
-        var audioStatusUpdateInterval = 500; // Uppdateringsintervall för ingångar, GPO:er och VU-mätare i ms
+        var audioStatusUpdateInterval = 500; // Uppdate interval for inputs, GPO:s and VU-meters in ms
         var audioStatusTimeoutHandle;
 
-        var webCamUpdateInterval = 1000; // Uppdateringsintervall för webbkamera-bild. Används för Internet Explorer
+        var webCamUpdateInterval = 1000; // Uppdate interval for the webcamera still image. Used for Internet Explorer
         var webCamIntervalHandle;
 
         var inactivityTimeoutHandle;
@@ -22,7 +22,7 @@ ccmControllers.controller('studioMonitorController',
         $scope.connectedTo = "";
         $scope.nrOfGpos = 0;
         $scope.nrOfMicrophones = 0;
-        $scope.codecOnline = false; // True om kodaren är kontaktbar
+        $scope.codecOnline = false; // True if codec is reachable
         $scope.gpos = [];
         $scope.inputs = [];
         $scope.cameraUrl = '';
@@ -143,7 +143,7 @@ ccmControllers.controller('studioMonitorController',
         };
 
         $scope.checkCodecIsOnline = function () {
-            console.info('Kontrollerar om kodaren är tillgänglig');
+            console.info('Check if codec is available');
             return $http.get($scope.codecControlHost + '/api/codeccontrol/isavailable?sipaddress=' + $scope.sipAddress)
                 .then(
                     function (response) {
@@ -172,9 +172,10 @@ ccmControllers.controller('studioMonitorController',
                     });
         };
 
+        // Inactivity checker to make sure someone is actual using tha page
         $scope.resetInactivityTimer = function () {
-            $scope.stopInactivityTimer();
             console.log("resetInactivityTimer");
+            $scope.stopInactivityTimer();
             inactivityTimeoutHandle = $timeout(function () {
                 inactivityTimeoutHandle = undefined;
                 $scope.onInactivity();
@@ -230,7 +231,7 @@ ccmControllers.controller('studioMonitorController',
 
         $scope.setGainLevel = function (inputNumber, newValue) {
             $scope.stopUpdateAudioStatus();
-            console.info("* Codec SetGainLevel", inputNumber, newValue);
+            console.info("Codec SetGainLevel", inputNumber, newValue);
             $scope.httpPost('/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: inputNumber, level: newValue })
                 .then(function (data) {
                     var input = $scope.inputs[inputNumber];
@@ -246,7 +247,6 @@ ccmControllers.controller('studioMonitorController',
             return $http.get($scope.codecControlHost + '/api/codeccontrol/getaudiostatus?sipaddress=' + $scope.sipAddress)
                 .then(function (response) {
                     let audioStatus = response.data;
-                    //console.log("* Codec GetAudioStatus: ", audioStatus);
 
                     for (var i = 0; i < audioStatus.inputStatus.length; i++) {
                         var inputData = audioStatus.inputStatus[i];
