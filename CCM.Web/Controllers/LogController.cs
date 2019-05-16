@@ -130,11 +130,11 @@ namespace CCM.Web.Controllers
                 var wasSet = LogLevelManager.SetLogLevel(logLevel);
                 if (wasSet)
                 {
-                    log.Info("Log level changed to {0}", logLevel);
+                    log.Info("Log level changed to '{0}' for CCM Web", logLevel);
                 }
                 else
                 {
-                    log.Info("Log level was NOT changed. ({0})", logLevel);
+                    log.Info("Log level was NOT changed to '{0}' for CCM Web", logLevel);
                 }
             }
             else if (application == CcmApplications.Discovery)
@@ -143,6 +143,7 @@ namespace CCM.Web.Controllers
 
                 if (result != logLevel)
                 {
+                    log.Info("Log level changed to '{0}' for CCM Discovery", logLevel);
                     ViewBag.CurrentLevel = logLevel;
                     ViewBag.Application = application;
                     return View();

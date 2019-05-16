@@ -983,4 +983,7 @@
   <data name="Password_Must_Contain_Upper_Case_Characters_At_Least_X" xml:space="preserve">
     <value>Lösenordet måste innehålla versaler, minst {0}</value>
   </data>
+  <data name="Logs" xml:space="preserve">
+    <value>Loggar</value>
+  </data>
 </root>

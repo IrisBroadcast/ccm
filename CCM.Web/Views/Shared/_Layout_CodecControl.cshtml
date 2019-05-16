@@ -23,7 +23,7 @@
     @Styles.Render("~/Content/css")
     @RenderSection("head", required: false)
 </head>
-<body ng-app="ccm">
+<body ng-app="ccm"><!-- TODO: Hmm, dont think this one is in use -->
     @RenderSection("bodyTop", false)
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -54,7 +54,7 @@
         @RenderBody()
         <hr />
         <footer class="ccm-layout-footer">
-            <p>&copy; 2014 - @DateTime.Now.Year Sveriges Radio. Version <b>@deployVersion</b> i drift sedan <b>@buildDateString</b></p>
+            <p>&copy; 2014 - @DateTime.Now.Year Sveriges Radio. Version <strong>@deployVersion</strong> - <strong>@buildDateString</strong></p>
         </footer>
     </div>
 

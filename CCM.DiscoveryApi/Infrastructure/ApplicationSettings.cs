@@ -31,11 +31,12 @@ namespace CCM.DiscoveryApi.Infrastructure
 {
     public static class ApplicationSettings
     {
-        // URL to CCM Web
+        // URL to CCM Web, so that the internal REST call calls the actual server
         public static Uri CcmHost => new Uri(ConfigurationManager.AppSettings["CCMHost"]);
-        public static string DiscoveryUsername => ConfigurationManager.AppSettings["DiscoveryUsername"];
-        public static string DiscoveryPassword => ConfigurationManager.AppSettings["DiscoveryPassword"];
+        public static string DiscoveryUsername => ConfigurationManager.AppSettings["DiscoveryUsername"]; // TODO: Is this really in use anymore?
+        public static string DiscoveryPassword => ConfigurationManager.AppSettings["DiscoveryPassword"]; // TODO: Is this really in use anymore?
         public static string BuildDate => ConfigurationManager.AppSettings["BuildDate"];
-
+        public static string Server => ConfigurationManager.AppSettings["Server"];
+        public static string LogFolder => ConfigurationManager.AppSettings["LogFolderDiscovery"];
     }
 }

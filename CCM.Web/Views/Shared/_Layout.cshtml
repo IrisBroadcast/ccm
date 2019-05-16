@@ -5,6 +5,7 @@
     string env = @ConfigurationManager.AppSettings["Environment"];
     var logoClass = (env == "Test" ? "logo-test" : (env == "Dev" ? "logo-dev" : "logo"));
     string deployVersion = Assembly.GetAssembly(typeof(CCM.Core.Entities.Call)).GetName().Version.ToString(3);
+    string deployServer = @ConfigurationManager.AppSettings["Server"];
     string buildDateString = @ConfigurationManager.AppSettings["BuildDate"];
     string codecControlHost = @ConfigurationManager.AppSettings["CodecControlHost"];
     string codecControlUserName = @ConfigurationManager.AppSettings["CodecControlUserName"];
@@ -82,6 +83,8 @@
                                 <li>@Html.ActionLink(Resources.MetaTypes, "Index", "Meta")</li>
                                 <li>@Html.ActionLink(Resources.Settings, "Index", "Settings")</li>
                                 <li>@Html.ActionLink(Resources.Users, "Index", "User")</li>
+                                <li class="dropdown-menu--divider"><div> </div></li>
+                                <li>@Html.ActionLink(@Resources.Logs, "Index", "Log")</li>
                             </ul>
                         </li>
                     }
@@ -128,7 +131,7 @@
         @RenderBody()
         <hr />
         <footer class="ccm-layout-footer">
-            <p>&copy; 2014 - @DateTime.Now.Year Sveriges Radio. Version <b>@deployVersion</b> i drift sedan <b>@buildDateString</b></p>
+            <p>&copy; 2014 - @DateTime.Now.Year Sveriges Radio. Version <strong>@deployVersion</strong> - <strong>@buildDateString</strong> <strong>@deployServer</strong></p>
         </footer>
     </div>
 

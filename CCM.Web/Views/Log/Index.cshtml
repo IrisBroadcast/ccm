@@ -4,7 +4,7 @@
     ViewBag.Title = "Logs";
 }
 
-<h2>Logs</h2>
+<h2>@Model.Application @Resources.Logs</h2>
 <div>
     @Html.ActionLink("Web log", "Index", "Log", new { application = CcmApplications.Web }, new { }) |
     @Html.ActionLink("Discovery log", "Index", "Log", new { application = CcmApplications.Discovery }, new { }) |
@@ -21,7 +21,7 @@
     <form method="get" action="@Url.Action("Index", "Log")">
         <div class="row">
             <div class="col-md-2">
-                <label for="lastTime" class="control-label">Visa senaste</label>
+                <label for="lastTime" class="control-label">Show latest</label>
                 @Html.DropDownListFor(x => x.SelectedLastOption, new SelectList(Model.LastOptions, "Value", "Text"), 
                new { @class = "form-control", onchange = "OnLastOptionChanged();"
            })

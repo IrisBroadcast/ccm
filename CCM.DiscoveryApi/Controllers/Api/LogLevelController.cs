@@ -43,7 +43,7 @@ namespace CCM.DiscoveryApi.Controllers.Api
         public LevelModel Get()
         {
             var currentLevel = LogLevelManager.GetCurrentLevel();
-            log.Debug("Current log level is " + currentLevel.Name);
+            log.Info("Log level is '{0}' for CCM Discovery", currentLevel.Name);
             return new LevelModel { LogLevel = currentLevel.Name };
         }
 
@@ -54,11 +54,11 @@ namespace CCM.DiscoveryApi.Controllers.Api
                 var isSet = LogLevelManager.SetLogLevel(levelModel.LogLevel);
                 if (isSet)
                 {
-                    log.Info("Log level changed to {0}", levelModel.LogLevel);
+                    log.Info("Log level changed to '{0}' for CCM Discovery", levelModel.LogLevel);
                 }
                 else
                 {
-                    log.Info("Log level was NOT changed.");
+                    log.Info("Log level was NOT changed to '{0}' for CCM Discovery", levelModel.LogLevel);
                 }
             }
 

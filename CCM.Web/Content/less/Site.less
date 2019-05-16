@@ -20,7 +20,14 @@
 
 @color-link-on-darkbg: #9d9d9d;
 
-@bgcolor-link-admin-idle: #f3f3f3;
+@bgcolor-link-admin-idle: #e4ecff;
+@bordercolor-link-admin-idle: #c8d9ff;
+
+@bgcolor-link-admin-active: #7ba2d6;
+@bordercolor-link-admin-active: #6086e0;
+
+@bgcolor-link-admin-hover: #9bbeeb;
+@bordercolor-link-admin-hover: #6ea5ed;
 
 @border-color-editable: #5ca2de;
 
@@ -812,6 +819,9 @@ input[type="checkbox"].input-validation-error {
     .navbar-right {
         margin-right: 0; 
     }
+    .navbar {
+        border-radius: 0 0 4px 4px;
+    }
 }
 
 @media (max-width: @screen-xs-max) {
@@ -1022,10 +1032,10 @@ input[type="checkbox"].input-validation-error {
 
     li > a {
         padding: 0 6px;
-        /*margin: 2px 0;*/
         line-height: 35px;
         border-radius: 5px;
         background-color: @bgcolor-link-admin-idle;
+        border: 1px solid @bordercolor-link-admin-idle !important;
     }
 
     > li + li {
@@ -1035,7 +1045,14 @@ input[type="checkbox"].input-validation-error {
     > .active > a {
         box-shadow: 1px 1px 11px -5px #353535;
         color: #fff !important;
-        background-color: #7ba2d6 !important;
+        background-color: @bgcolor-link-admin-active !important;
+        border: 1px solid @bordercolor-link-admin-active !important;
+    }
+
+    li > a:hover, li > a:focus {
+        color: #fff !important;
+        background-color: @bgcolor-link-admin-hover !important;
+        border: 1px solid @bordercolor-link-admin-hover !important;
     }
 
     @media (max-width: @screen-xs-max) {
@@ -1044,6 +1061,7 @@ input[type="checkbox"].input-validation-error {
             width: 100%;
             margin: 0 !important;
         }
+
         li > a {
             padding: 0 4px;
             margin: 2px 0;
