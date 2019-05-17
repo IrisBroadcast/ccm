@@ -40,8 +40,48 @@ namespace CCM.DiscoveryApi.Controllers
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             var buildDate = ApplicationSettings.BuildDate;
-            var html = $"<html><body><pre>SR Discovery. Version {version}, build date {buildDate}<pre></body></html>";
-            // TODO: Possible expose doc's for how SR discovery works
+            var deployServer = ApplicationSettings.Server;
+            var html = @"<!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset='UTF-8'>
+                    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
+                    <meta name='description' content=''>
+                    <title>IRIS Discovery</title>
+                    <style type='text/css'>
+                        body, html {
+                            margin: 0;
+                            padding: 0;
+                            height: 100%;
+                            background-color: #2fd7c7 !important;
+                            font-family: Arial, Helvetica, sans-serif !important;
+                            -webkit-font-smoothing: subpixel-antialiased;
+                            -ms-text-size-adjust: 100%;
+                            -webkit-text-size-adjust: 100%;
+                            line-height: 1;
+                            color: #fdf525;
+                        }
+                        .container {
+                            padding: 4vh 1vw 2vh 1vw;
+                            margin: 0 auto;
+                            max-width: 600px;
+                            width: 95vw;
+                        }
+                        h1 {
+                            border-top: 2vh solid #FFEB3B;
+                            padding-top: 7vh;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <h1>IRIS<br/>Discovery</h1>
+                        <h3>Version: " + version + @"<br/>Build date: " + buildDate + @"</h3>
+                    </div>
+                </body>
+                </html>";
+
             var htmlContent = new StringContent(html);
             htmlContent.Headers.ContentType = new MediaTypeHeaderValue("text/html");
             return new HttpResponseMessage { Content = htmlContent };
