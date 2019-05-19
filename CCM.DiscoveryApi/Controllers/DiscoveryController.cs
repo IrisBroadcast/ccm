@@ -128,9 +128,13 @@ namespace CCM.DiscoveryApi.Controllers
                 MetaData = ua.MetaData.Select(m => new UserAgentMetaData() { Key = m.Key, Value = m.Value }).ToList()
             }).ToList() ?? new List<UserAgent>();
 
-            log.Debug("Returning {0} useragents and {1} profiles (V1). useragents:{2} profiles:{3}", uaResult.UserAgents?.Count ?? 0, uaResult.Profiles?.Count ?? 0);
+            log.Debug("Returning {0} useragents and {1} profiles (V1)", uaResult.UserAgents?.Count ?? 0, uaResult.Profiles?.Count ?? 0);
 
-            return new SrDiscovery { UserAgents = userAgents, Profiles = profiles };
+            SrDiscovery result = new SrDiscovery { UserAgents = userAgents, Profiles = profiles };
+
+            log.Debug(result);
+
+            return result;
         }
 
     }
