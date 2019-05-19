@@ -39,7 +39,7 @@ using NLog;
 namespace CCM.DiscoveryApi.Services
 {
     // Retreives discovery data via CCM's REST service.
-    // TODO: Why is there an internal API request? 
+
     public class DiscoveryHttpService : ApiController, IDiscoveryHttpService
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -73,14 +73,13 @@ namespace CCM.DiscoveryApi.Services
             using (var client = new HttpClient())
             {
                 HttpContent content = data != null ? 
-                    new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json") : 
-                    null;
+                    new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json") : null;
 
                 var request = new HttpRequestMessage(method, url) {Content = content};
                 request.Headers.Authorization = originalRequest.Headers.Authorization;
 
                 HttpResponseMessage response = await client.SendAsync(request);
-                
+
                 if (!response.IsSuccessStatusCode)
                 {
                     if (response.StatusCode == HttpStatusCode.Forbidden)

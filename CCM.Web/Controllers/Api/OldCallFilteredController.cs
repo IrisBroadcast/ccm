@@ -32,9 +32,12 @@ using CCM.Core.Interfaces.Repositories;
 
 namespace CCM.Web.Controllers.Api
 {
+    /// <summary>
+    /// TODO: Check the actual use of this, SÄL-dialer? or NG-dialer
+    /// Returns a filtered list of historical calls
+    /// </summary>
     public class OldCallFilteredController : ApiController
     {
-        #region Constructor and members
         private readonly ICallHistoryRepository _callHistoryRepository;
         private readonly ISettingsManager _settingsManager;
 
@@ -43,7 +46,6 @@ namespace CCM.Web.Controllers.Api
             _callHistoryRepository = callHistoryRepository;
             _settingsManager = settingsManager;
         }
-        #endregion
 
         public IList<OldCall> Get(string region = "", string codecType = "", string search = "")
         {

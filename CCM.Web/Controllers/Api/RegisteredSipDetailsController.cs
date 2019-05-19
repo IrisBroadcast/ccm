@@ -38,8 +38,6 @@ namespace CCM.Web.Controllers.Api
 {
     public class RegisteredSipDetailsController : ApiController
     {
-        #region Constructor and members
-
         private readonly ISettingsManager _settingsManager;
         private readonly ICallRepository _callRepository;
         private readonly IRegisteredSipDetailsRepository _registeredSipDetailsRepository;
@@ -50,11 +48,11 @@ namespace CCM.Web.Controllers.Api
             _callRepository = callRepository;
             _registeredSipDetailsRepository = registeredSipRepository;
         }
-        #endregion
 
         public IHttpActionResult GetRegisteredSipInfo(Guid id)
         {
-            // Called when the user clicked on a codec in the GUI to show detailed information, including codec control GUI, for the codec.
+            // Called when the user clicked on a codec in the GUI to show
+            // detailed information, including codec control GUI, for the codec.
 
             RegisteredSipDetails regSipDetails = _registeredSipDetailsRepository.GetRegisteredSipById(id);
             if (regSipDetails == null)
@@ -75,7 +73,7 @@ namespace CCM.Web.Controllers.Api
                 DisplayName = GetDisplayName(regSipDetails),
                 Ip = regSipDetails.Ip,
                 UserAgentHeader = regSipDetails.UserAgentHeader,
-                
+
                 Image = regSipDetails.Image,
                 ActiveX = regSipDetails.ActiveX,
                 Width = regSipDetails.Width,
@@ -97,7 +95,7 @@ namespace CCM.Web.Controllers.Api
                 InCall = call != null,
                 InCallWithName = call != null ? GetInCallWith(regSipDetails, call) : string.Empty
             };
-            
+
             return Ok(model);
         }
 

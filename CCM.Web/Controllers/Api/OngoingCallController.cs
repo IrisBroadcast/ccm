@@ -33,14 +33,12 @@ namespace CCM.Web.Controllers.Api
 {
     public class OngoingCallController : ApiController
     {
-        #region Constructor and members
         private readonly ICallRepository _callRepository;
 
         public OngoingCallController(ICallRepository callRepository)
         {
             _callRepository = callRepository;
         }
-        #endregion
 
         public IList<OnGoingCall> Post()
         {

@@ -94,7 +94,7 @@ namespace CCM.Web.Controllers
             catch (Exception)
             {
                 studios = new List<Studio>();
-            } 
+            }
             return View(studios);
         }
 
@@ -103,6 +103,5 @@ namespace CCM.Web.Controllers
             var model = new HangUpStudioViewModel { StudioId = id };
             return View(model);
         }
-     
     }
 }

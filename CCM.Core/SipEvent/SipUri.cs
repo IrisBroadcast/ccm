@@ -51,7 +51,7 @@ namespace CCM.Core.SipEvent
             try
             {
                 // Handle display name
-                // TODO: How to do this with regex?
+
                 string displayName = "";
                 if (sipAddress.Contains("<"))
                 {

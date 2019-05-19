@@ -224,7 +224,7 @@ namespace CCM.Web.Controllers
 
             if (imageFile != null && imageFile.ContentLength > 0)
             {
-                var imagesFolder = Server.MapPath("~/Images/Agents"); 
+                var imagesFolder = Server.MapPath("~/Images/Agents");
 
                 // Remove old picture if there is one
                 if (!string.IsNullOrWhiteSpace(model.Image))
@@ -243,7 +243,7 @@ namespace CCM.Web.Controllers
                 imageFile.SaveAs(filename);
                 userAgent.Image = newFile;
 
-                // TODO: Replicated image to the other server. 
+                // TODO: Replicated image to the other server.
                 // TODO: Or even better, store at a common file area
             }
             return userAgent;

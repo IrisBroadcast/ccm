@@ -65,7 +65,7 @@ namespace CCM.Web.Controllers
             var defaultCodecType = new CodecType() { Id = Guid.NewGuid(), Name = "Oklassificerade" }; // TODO: Englishfy
             sipAccounts.ForEach(a => { a.CodecType = a.CodecType ?? defaultCodecType; });
 
-            sipAccounts =sipAccounts.OrderBy(a => a.CodecType.Name ?? string.Empty).ThenBy(a => a.UserName ?? string.Empty).ToList();
+            sipAccounts = sipAccounts.OrderBy(a => a.CodecType.Name ?? string.Empty).ThenBy(a => a.UserName ?? string.Empty).ToList();
 
             ViewBag.search = search;
             return View(new SipAccountViewModel { Users = sipAccounts });
@@ -78,7 +78,7 @@ namespace CCM.Web.Controllers
             SetListData(model);
             return View("Create", model);
         }
-        
+
         [HttpGet]
         public ActionResult Edit(Guid id)
         {
@@ -126,7 +126,7 @@ namespace CCM.Web.Controllers
                     Owner = _ownersRepository.GetById(model.OwnerId),
                     CodecType = _codecTypeRepository.GetById(model.CodecTypeId),
                 };
-                
+
                 try
                 {
                     _sipAccountManager.Create(user);
@@ -141,7 +141,7 @@ namespace CCM.Web.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("CreateUser", "Användaren kunde inte sparas");
+                        ModelState.AddModelError("CreateUser", "Användaren kunde inte sparas"); // TODO: Resource, english
                     }
                 }
             }
@@ -189,7 +189,7 @@ namespace CCM.Web.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("EditUser", "Användaren kunde inte sparas");
+                        ModelState.AddModelError("EditUser", "Användaren kunde inte sparas"); // TODO: Resource, english
                     }
                 }
             }
@@ -225,7 +225,7 @@ namespace CCM.Web.Controllers
             _sipAccountManager.Delete(Guid.Parse(model.Id));
             return RedirectToAction("Index");
         }
-        
+
         private void SetListData(SipAccountFormViewModel model)
         {
             model.Owners = _ownersRepository.GetAll();
@@ -236,6 +236,5 @@ namespace CCM.Web.Controllers
 
             model.AccountTypes = EnumHelpers.EnumSelectList<SipAccountType>().OrderBy(e => e.Text).ToList();
         }
-        
     }
 }

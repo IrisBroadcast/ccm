@@ -31,7 +31,6 @@ namespace CCM.Web.Models.Studio
 {
     public class StudioViewModel
     {
-        // TODO: Make English translation
         public Guid Id { get; set; }
 
         [Required]

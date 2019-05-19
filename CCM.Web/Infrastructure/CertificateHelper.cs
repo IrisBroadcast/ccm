@@ -36,8 +36,9 @@ namespace CCM.Web.Infrastructure
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Pga att certifikatet p� discovery-servern inte �verensst�mmer med URL:en g�r vi undantag h�r och sl�pper igenom 
-        /// anrop till discovery trots felaktigt namn.
+        /// Because the certificate on the discovery-server dont correspond with the URL.
+        /// we make an exception here and let the request through to discovery, even
+        /// though the name is wrong
         /// </summary>
         public static bool ServerCertificateValidationCallback(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification,
             System.Security.Cryptography.X509Certificates.X509Chain chain, SslPolicyErrors sslPolicyErrors)

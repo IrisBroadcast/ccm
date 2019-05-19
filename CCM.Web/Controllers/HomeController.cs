@@ -40,8 +40,6 @@ namespace CCM.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        #region Constructor and members
-
         private readonly ICodecTypeRepository _codecTypeRepository;
         private readonly IRegionRepository _regionRepository;
         private readonly IRegisteredSipRepository _registeredSipRepository;
@@ -59,7 +57,6 @@ namespace CCM.Web.Controllers
             _guiHubUpdater = guiHubUpdater;
             _statusHubUpdater = statusHubUpdater;
         }
-        #endregion
 
         public ActionResult Index()
         {

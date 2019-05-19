@@ -45,7 +45,7 @@ namespace CCM.Data
         public CcmDbContext(IAppCache cache)
         {
             _cache = cache;
-            
+
             if(ConfigurationManager.AppSettings["Environment"] == "Initiate")
             {
                 //Database create database with any off these
@@ -96,7 +96,7 @@ namespace CCM.Data
 
         protected string CurrentUserName()
         {
-            return Thread.CurrentPrincipal?.Identity?.Name ?? "okänt"; // TODO: Change to English?
+            return Thread.CurrentPrincipal?.Identity?.Name ?? "unknown";
         }
 
         public override int SaveChanges()

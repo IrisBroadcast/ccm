@@ -32,10 +32,11 @@ using CCM.Core.Interfaces.Repositories;
 
 namespace CCM.Web.Controllers.Api
 {
+    /// <summary>
+    /// Returns a list of historical calls
+    /// </summary>
     public class OldCallController : ApiController
     {
-        #region Constructor and members
-
         private readonly ICallHistoryRepository _callHistoryRepository;
         private readonly ISettingsManager _settingsManager;
 
@@ -44,7 +45,6 @@ namespace CCM.Web.Controllers.Api
             _callHistoryRepository = callHistoryRepository;
             _settingsManager = settingsManager;
         }
-        #endregion
 
         public IList<OldCall> Post()
         {

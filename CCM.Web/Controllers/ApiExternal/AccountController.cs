@@ -139,7 +139,7 @@ namespace CCM.Web.Controllers.ApiExternal
                 return NotFound();
             }
 
-            // Sätt nya värden på uppdateringsbara egenskaper
+            // Set new values on "updatable" properties
             user.DisplayName = model.DisplayName;
             user.Comment = model.Comment;
 

@@ -178,7 +178,6 @@ namespace CCM.Web.Controllers
 
             };
 
-
             if (model.Locations != null)
             {
                 foreach (var locationViewModel in model.Locations)
@@ -196,5 +195,6 @@ namespace CCM.Web.Controllers
 
             return city;
         }
+
     }
 }

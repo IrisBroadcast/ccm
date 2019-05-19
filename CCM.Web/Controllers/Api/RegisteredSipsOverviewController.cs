@@ -36,8 +36,6 @@ namespace CCM.Web.Controllers.Api
 {
     public class RegisteredSipsOverviewController : ApiController
     {
-        #region Constructor and members
-
         private readonly ISettingsManager _settingsManager;
         private readonly IRegisteredSipRepository _registeredSipRepository;
 
@@ -46,7 +44,6 @@ namespace CCM.Web.Controllers.Api
             _registeredSipRepository = registeredSipRepository;
             _settingsManager = settingsManager;
         }
-        #endregion
 
         public IList<RegisteredSipOverviewDto> Post()
         {

@@ -38,9 +38,6 @@ namespace CCM.Web.Controllers.Api
     [StudioMonitorExceptionFilter]
     public class StudioMonitorApiController : ApiController
     {
-        #region Constructor and members
-        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
-
         private readonly IStudioRepository _studioRepository;
         private readonly IRegisteredSipRepository _registeredSipRepository;
 
@@ -49,7 +46,6 @@ namespace CCM.Web.Controllers.Api
             _studioRepository = studioRepository;
             _registeredSipRepository = registeredSipRepository;
         }
-        #endregion 
 
         [HttpGet]
         public CodecStatus GetCodecStatus(Guid studioId)
