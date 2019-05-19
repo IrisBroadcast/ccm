@@ -26,6 +26,7 @@
 
 using System;
 using System.Net;
+using CCM.Core.Helpers;
 using CCM.Web;
 using CCM.Web.Infrastructure;
 using Microsoft.AspNet.Identity;
@@ -33,6 +34,7 @@ using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security.Cookies;
+using NLog;
 using Owin;
 
 [assembly: OwinStartup(typeof(Startup))]
@@ -40,6 +42,8 @@ namespace CCM.Web
 {
     public class Startup
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         public void Configuration(IAppBuilder app)
         {
             app.UseCookieAuthentication(new CookieAuthenticationOptions
@@ -58,6 +62,8 @@ namespace CCM.Web
             GlobalHost.Configuration.KeepAlive = TimeSpan.FromSeconds(5);
 
             ServicePointManager.ServerCertificateValidationCallback = CertificateHelper.ServerCertificateValidationCallback;
+
+            log.Info($"Application starting with version {0}", System.Reflection.Assembly.GetAssembly(typeof(Core.Entities.Call)).GetName().Version.ToString(3));
         }
     }
 }
