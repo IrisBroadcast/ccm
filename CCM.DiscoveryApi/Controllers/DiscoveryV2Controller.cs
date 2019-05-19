@@ -94,7 +94,7 @@ namespace CCM.DiscoveryApi.Controllers
 
             if (searchParams == null)
             {
-                log.Debug("Requesting useragents from Discovery, but search params is null");
+                log.Debug("Requesting useragents from Discovery V2, but search params is null");
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
 
@@ -107,6 +107,8 @@ namespace CCM.DiscoveryApi.Controllers
             };
 
             UserAgentsResultDto uaResult = await _discoveryService.GetUserAgentsAsync(searchParamsDto, Request);
+
+            log.Debug("Returning {0} useragents and {1} profiles (V2).", uaResult.UserAgents?.Count ?? 0, uaResult.Profiles?.Count ?? 0);
 
             var result = new UserAgentsResultV2
             {
