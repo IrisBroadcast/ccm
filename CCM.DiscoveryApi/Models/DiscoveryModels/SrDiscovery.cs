@@ -36,15 +36,15 @@ namespace CCM.DiscoveryApi.Models.DiscoveryModels
     public class SrDiscovery
     {
         [XmlArray("profiles")]
-        [XmlArrayItem("profile", IsNullable = true)]
+        [XmlArrayItem("profile", IsNullable = false)]
         public List<Profile> Profiles { get; set; }
 
         [XmlArray("filters")]
-        [XmlArrayItem("filter", IsNullable = true)]
+        [XmlArrayItem("filter", IsNullable = false)]
         public List<Filter> Filters { get; set; }
 
         [XmlArray("user-agents")]
-        [XmlArrayItem("user-agent", IsNullable = true)]
+        [XmlArrayItem("user-agent")]
         public List<UserAgent> UserAgents { get; set; }
     }
 }
