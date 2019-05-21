@@ -96,6 +96,8 @@ namespace CCM.Core.Service
 
             if (string.IsNullOrWhiteSpace(callee))
             {
+                log.Trace("No callee parameter is received.");
+
                 var filterSelections = GetFilteringValues(filterParams);
                 sipsOnline = GetFilteredSipsOnline(filterSelections);
 
@@ -116,9 +118,14 @@ namespace CCM.Core.Service
             }
             else
             {
+                log.Trace("Callee '{0}' parameter is received.", callee);
+
                 var calleeSip = _registeredSipRepository.GetCachedRegisteredSips().FirstOrDefault(s => s.Sip == callee);
 
-                if (calleeSip == null) { return new UserAgentsResultDto() { Profiles = new List<ProfileDto>(), UserAgents = new List<UserAgentDto>() }; }
+                if (calleeSip == null) {
+                    log.Trace("Registered user-agents is null, returning empty response.");
+                    return new UserAgentsResultDto() { Profiles = new List<ProfileDto>(), UserAgents = new List<UserAgentDto>() };
+                }
 
                 sipsOnline = new List<RegisteredSipDto> { calleeSip };
             }
@@ -127,8 +134,12 @@ namespace CCM.Core.Service
             return result;
         }
 
+        /// <summary>
+        /// Returns a list with profiles for a specified sipId
+        /// </summary>
         private IList<ProfileNameAndSdp> GetProfilesForRegisteredSip(string sipId)
         {
+            log.Debug("Get profiles for registered user-agent '{0}'.", sipId);
             var regSip = _registeredSipRepository.GetCachedRegisteredSips().FirstOrDefault(s => s.Sip == sipId);
             var profileNames = regSip?.Profiles ?? new List<string>();
             return _cache.GetProfiles(_profileRepository.GetAllProfileNamesAndSdp).Where(p => profileNames.Contains(p.Name)).ToList();
@@ -142,7 +153,7 @@ namespace CCM.Core.Service
             var registeredSips = _registeredSipRepository.GetCachedRegisteredSips();
             if (registeredSips == null)
             {
-                log.Debug("Registered sips is null");
+                log.Debug("Registered user-agents is null while getting filtered sips.");
                 return new List<RegisteredSipDto>();
             }
 
@@ -152,7 +163,7 @@ namespace CCM.Core.Service
                 registeredSips = registeredSips.Where(rs => MetadataHelper.GetPropertyValue(rs, filterSelection.Property) == filterSelection.Value).ToList();
             }
 
-            log.Debug("Found {0} registered sips.", registeredSips.Count);
+            log.Debug("Found {0} registered user-agents.", registeredSips.Count);
             return registeredSips;
         }
 
@@ -172,6 +183,10 @@ namespace CCM.Core.Service
             return filterSelections;
         }
 
+        /// <summary>
+        /// Intersects registered callees profiles and callerProfiles to return a list with available
+        /// user agents to call for a certain caller.
+        /// </summary>
         private UserAgentsResultDto ProfilesAndUserAgents(IEnumerable<RegisteredSipDto> callees, IList<ProfileDto> callerProfiles)
         {
             var userAgents = new List<UserAgentDto>();
@@ -181,7 +196,7 @@ namespace CCM.Core.Service
                 // TODO: Test, see if this is why error messages popping up in matching profiles later
                 if(!callerProfiles.Any())
                 {
-                    log.Error("CallerProfiles is null, can not intersect callerProfiles with callees. Expecting error.");
+                    log.Error("CallerProfiles is null, can not intersect callerProfiles with callees. Expecting empty result.");
                 }
 
                 var callerProfileNames = callerProfiles.Select(p => p.Name).ToList();
@@ -212,7 +227,7 @@ namespace CCM.Core.Service
             }
             catch (Exception ex)
             {
-                log.Error(ex, "Error while getting user agents. ");
+                log.Error(ex, "Error while matching registered user agents with caller profiles.");
                 return new UserAgentsResultDto();
             }
 
