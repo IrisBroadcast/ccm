@@ -32,6 +32,9 @@ using NLog;
 
 namespace CCM.Core.SipEvent.Parser
 {
+    /// <summary>
+    /// Parses incoming Sip registrar messages in JSON format
+    /// </summary>
     public class SipEventParser : ISipEventParser
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -58,7 +61,7 @@ namespace CCM.Core.SipEvent.Parser
                 Username = kamailioData.AuthUser, // TODO: Obsolete. To be removed.
                 FromDisplayName = ParseDisplayName(kamailioData.FromDisplayName),
                 ToDisplayName = ParseDisplayName(kamailioData.ToDisplayName),
-                UserAgent = kamailioData.UserAgentHeader,
+                UserAgent = kamailioData.UserAgentHeader + " " + kamailioData.Registrar,
                 //PhysicalCodecUri = new SipUri(kamailioData.PoolUri),
 
                 Ip = kamailioData.Ip.SenderIp,

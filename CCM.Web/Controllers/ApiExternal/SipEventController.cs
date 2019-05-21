@@ -37,10 +37,13 @@ using NLog;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
+    /// <summary>
+    /// Receives Kamailio events formatted in a JSON-format
+    /// JSON format : Kamailio Events
+    /// </summary>
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class SipEventController : ApiController
     {
-        // JSON format : Kamailio Events
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly ISipEventParser _sipEventParser;
@@ -89,7 +92,7 @@ namespace CCM.Web.Controllers.ApiExternal
                     return BadRequest();
                 }
 
-                log.Debug("Incoming SIP message: {0}", sipEvent.ToString());
+                log.Debug("Incoming SIP message: {0}", sipEvent.ToLogString());
 
                 var sipMessage = _sipEventParser.Parse(sipEvent);
 

@@ -90,7 +90,7 @@ namespace CCM.Core.Service
             }
 
             IList<ProfileNameAndSdp> callerProfiles = !string.IsNullOrEmpty(caller) ? GetProfilesForRegisteredSip(caller) : _cache.GetProfiles(_profileRepository.GetAllProfileNamesAndSdp);
-            log.Debug("Found {0} profiles for caller {1}", callerProfiles.Count, caller);
+            log.Debug("Found {0} profiles for caller '{1}'", callerProfiles.Count, caller);
 
             IList<RegisteredSipDto> sipsOnline;
 

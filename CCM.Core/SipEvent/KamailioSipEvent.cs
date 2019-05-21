@@ -34,7 +34,7 @@ namespace CCM.Core.SipEvent
         // Topic: Registration
         [JsonProperty(PropertyName = "event")] public SipEventType Event { get; set; } // "register"
         [JsonProperty(PropertyName = "timestamp")] public long TimeStamp { get; set; }
-        [JsonProperty(PropertyName = "registrar")] public string Registrar { get; set; } // "ulandsort.sr.se"
+        [JsonProperty(PropertyName = "registrar")] public string Registrar { get; set; } // "sipregistrar.sr.se"
         [JsonProperty(PropertyName = "regtype")] public string RegType { get; set; } // "rereg"
         [JsonProperty(PropertyName = "expires")] public int Expires { get; set; }
         [JsonProperty(PropertyName = "method")] public string Method { get; set; } // "REGISTER"
@@ -49,7 +49,7 @@ namespace CCM.Core.SipEvent
         [JsonProperty(PropertyName = "call_id")] public string CallId { get; set; } // "338a@contrib.sr.se"
 
         // Topic: Dialog start
-        [JsonProperty(PropertyName = "sipserver")] public string SipServer { get; set; } // "ulandsort.sr.se"
+        [JsonProperty(PropertyName = "sipserver")] public string SipServer { get; set; } // "sipregistrar.sr.se"
         [JsonProperty(PropertyName = "dialog_state")] public string DialogState { get; set; } // "start"
         [JsonProperty(PropertyName = "dhash_id")] public string DialogHashId { get; set; } // "10300"
         [JsonProperty(PropertyName = "dhash_ent")] public string DialogHashEntry { get; set; } // "2697"
@@ -64,6 +64,12 @@ namespace CCM.Core.SipEvent
         [JsonProperty(PropertyName = "hangup_reason")] public string HangupReason { get; set; } // "NORMAL"
 
         [JsonProperty(PropertyName = "ip")] public IpInfo Ip { get; set; }
+
+        public string ToLogString()
+        {
+            return $"Kamailio Sip Event:{this.Event.ToString()}, Registrar:{this.Registrar.ToString()}, RegType:{this.RegType}, Expires:{this.Expires.ToString()}, Method:{this.Method.ToString()}, FromURI:{this.FromUri.ToString()}, CallId:{this.CallId.ToString()}" +
+            	$", SipServer:{this.SipServer}, DialogState:{this.DialogState}, DialogHashId:{this.DialogHashId}, DialogHashEntry:{this.DialogHashEntry}, HangupReason:{this.HangupReason}";
+        }
     }
 
     public class IpInfo
@@ -72,7 +78,6 @@ namespace CCM.Core.SipEvent
         [JsonProperty(PropertyName = "sender_port")] public int SenderPort { get; set; } // "5080"
         [JsonProperty(PropertyName = "our_ip")] public string OurIp { get; set; } // 192.121.194.200
         [JsonProperty(PropertyName = "our_port")] public int OurPort { get; set; } // "5060"
-
     }
 
 }

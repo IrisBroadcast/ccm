@@ -32,6 +32,9 @@ using NLog;
 
 namespace CCM.Core.SipEvent.Parser
 {
+    /// <summary>
+    /// Parses messages from Kamailio, the old way with strings and values separated by '::'
+    /// </summary>
     public class KamailioMessageParser : IKamailioMessageParser
     {
         private readonly IKamailioDataParser _kamailioDataParser;

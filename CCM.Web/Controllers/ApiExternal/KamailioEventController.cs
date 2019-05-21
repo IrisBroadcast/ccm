@@ -35,11 +35,15 @@ using NLog;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
+    /// <summary>
+    /// Receives Kamailio events formatted in a '::' separated string
+    /// String format : Kamailio Events
+    /// </summary>
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class KamailioEventController : ApiController
     {
-        // String format : Kamailio Events
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         private readonly ISipMessageManager _sipMessageManager;
         private readonly IKamailioMessageParser _kamailioMessageParser;
         private readonly IGuiHubUpdater _guiHubUpdater;
