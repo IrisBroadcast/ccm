@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using CCM.Core.SipEvent.Messages;
 using Newtonsoft.Json;
 
@@ -67,8 +68,16 @@ namespace CCM.Core.SipEvent
 
         public string ToLogString()
         {
-            return $"Kamailio Sip Event:{this.Event.ToString()}, Registrar:{this.Registrar.ToString()}, RegType:{this.RegType}, Expires:{this.Expires.ToString()}, Method:{this.Method.ToString()}, FromURI:{this.FromUri.ToString()}, CallId:{this.CallId.ToString()}" +
+            var timestamp = this.UnixTimeStampToDateTime(this.TimeStamp);
+            return $"Kamailio Sip Event:{this.Event.ToString()}, TimeStamp:{timestamp}, Registrar:{this.Registrar}, RegType:{this.RegType}, Expires:{this.Expires.ToString()}, Method:{this.Method}, FromURI:{this.FromUri}, CallId:{this.CallId.ToString()}" +
             	$", SipServer:{this.SipServer}, DialogState:{this.DialogState}, DialogHashId:{this.DialogHashId}, DialogHashEntry:{this.DialogHashEntry}, HangupReason:{this.HangupReason}";
+        }
+
+        public string UnixTimeStampToDateTime(long unixTimeStamp)
+        {
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime.ToString();
         }
     }
 

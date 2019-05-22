@@ -92,18 +92,18 @@ namespace CCM.Web.Controllers.ApiExternal
                     return BadRequest();
                 }
 
-                log.Debug("Incoming SIP message: {0}", sipEvent.ToLogString());
+                log.Info("Incoming SIP message: {0}", sipEvent.ToLogString());
 
                 var sipMessage = _sipEventParser.Parse(sipEvent);
 
                 if (sipMessage == null)
                 {
-                    log.Warn("Incorrect SIP message format: {0}", sipEvent);
+                    log.Warn("Incorrect SIP message format", sipEvent);
                     return BadRequest();
                 }
 
                 SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-                log.Debug("Handled SIP message with result {0}. {1}", result.ChangeStatus, sipMessage.ToDebugString());
+                log.Info("Handled SIP message with result {0}. {1}", result.ChangeStatus, sipMessage.ToDebugString()); // TODO: XXX Roger ta bort det
 
                 if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
                 {

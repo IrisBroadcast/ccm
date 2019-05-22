@@ -52,6 +52,7 @@ namespace CCM.Core.SipEvent
         {
             if (log.IsInfoEnabled)
             {
+                // TODO: Isn't this one a little bit strange?
                 log.Debug("Parsed Kamailio Message {0}", sipMessage.ToDebugString());
             }
 
@@ -59,6 +60,7 @@ namespace CCM.Core.SipEvent
             {
                 case SipRegistrationMessage regMessage:
                 {
+                    // Handle registration message
                     if (regMessage.Expires == 0)
                     {
                         return UnregisterCodec(new SipRegistrationExpireMessage { SipAddress = regMessage.Sip });
@@ -68,6 +70,7 @@ namespace CCM.Core.SipEvent
                 case SipRegistrationExpireMessage expireMessage:
                     return UnregisterCodec(expireMessage);
                 case SipDialogMessage dialogMessage:
+                    // Handle dialog information
                     return HandleDialog(dialogMessage);
                 default:
                     log.Info("Unhandled Kamailio message: {0}", sipMessage.ToDebugString());
