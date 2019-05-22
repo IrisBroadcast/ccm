@@ -178,7 +178,7 @@ namespace CCM.Data.Repositories
 
                     if (!dbSips.Any())
                     {
-                        log.Debug("User-agent nothing changed, could not delete user-agent that's not registered");
+                        log.Error("User-agent nothing changed, could not delete user-agent that's not registered");
                         return new SipEventHandlerResult
                         {
                             ChangeStatus = SipEventChangeStatus.NothingChanged,
