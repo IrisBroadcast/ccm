@@ -94,6 +94,7 @@ namespace CCM.Data.Repositories
 
             if (registeredSip == null)
             {
+                log.Debug("Update registered user-agent, inputing null");
                 return SipEventHandlerResult.NothingChanged;
             }
 
@@ -107,10 +108,12 @@ namespace CCM.Data.Repositories
                     {
                         if (registeredSip.Expires == 0)
                         {
-                            // Unregistration of not registered codec. Do nothing.
+                            // Unregistration of not registered user-agent. Do nothing.
+                            log.Debug($"User-agent nothing changed, unregistration of not registered user-agent '{registeredSip.SIP}'");
                             return SipEventHandlerResult.NothingChanged;
                         }
 
+                        // New registration of user-agent
                         dbSip = new RegisteredSipEntity {Id = Guid.NewGuid(), Updated = DateTime.UtcNow};
                         db.RegisteredSips.Add(dbSip);
                     }
@@ -123,6 +126,7 @@ namespace CCM.Data.Repositories
                     var userAgentId = GetUserAgentId(db, registeredSip.UserAgentHead);
                     var locationId = LocationManager.GetLocationIdByIp(registeredSip.IP);
 
+                    // User-agent has expired
                     registeredSip.Updated = registeredSip.Expires == 0
                         ? DateTime.UtcNow.AddSeconds(-SettingsManager.MaxRegistrationAge) // Expire immediately
                         : DateTime.UtcNow;
@@ -158,6 +162,7 @@ namespace CCM.Data.Repositories
         {
             if (string.IsNullOrEmpty(sipAddress))
             {
+                log.Debug("User-agent nothing changed, delete registered user-agent is empty");
                 return SipEventHandlerResult.NothingChanged;
             }
 
@@ -173,6 +178,7 @@ namespace CCM.Data.Repositories
 
                     if (!dbSips.Any())
                     {
+                        log.Debug("User-agent nothing changed, could not delete user-agent that's not registered");
                         return new SipEventHandlerResult
                         {
                             ChangeStatus = SipEventChangeStatus.NothingChanged,
@@ -183,6 +189,7 @@ namespace CCM.Data.Repositories
                     var changedObjectId = dbSips.FirstOrDefault()?.Id ?? Guid.Empty;
                     db.RegisteredSips.RemoveRange(dbSips);
                     db.SaveChanges();
+                    log.Debug($"User-agent removed '{sipAddress}'");
                     return new SipEventHandlerResult
                     {
                         ChangeStatus = SipEventChangeStatus.CodecRemoved,
@@ -204,19 +211,23 @@ namespace CCM.Data.Repositories
 
             if (entry.State == EntityState.Added || CodecWasExpired(entry))
             {
+                log.Debug($"User-agent added '{dbSip.SIP}'");
                 return SipEventChangeStatus.CodecAdded;
             }
 
             if (entry.State == EntityState.Modified && dbSip.Expires == 0)
             {
+                log.Debug($"User-agent removed, expired '{dbSip.SIP}'");
                 return SipEventChangeStatus.CodecRemoved;
             }
 
             if (entry.State == EntityState.Modified && HasRelevantChange(entry))
             {
+                log.Debug($"User-agent updated, relevant changes '{dbSip.SIP}'");
                 return SipEventChangeStatus.CodecUpdated;
             }
 
+            log.Debug($"User-agent nothing changed '{dbSip.SIP}'");
             return SipEventChangeStatus.NothingChanged;
         }
 
