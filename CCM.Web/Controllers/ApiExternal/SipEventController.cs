@@ -72,6 +72,10 @@ namespace CCM.Web.Controllers.ApiExternal
         {
             if (!_settingsManager.UseSipEvent)
             {
+                if (log.IsTraceEnabled)
+                {
+                    log.Warn("Receiving event but receiver is not ON for 'UseSipEvent'");
+                }
                 return Ok();
             }
 

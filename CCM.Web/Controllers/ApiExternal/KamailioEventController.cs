@@ -71,10 +71,12 @@ namespace CCM.Web.Controllers.ApiExternal
         {
             if (!_settingsManager.UseOldKamailioEvent)
             {
+                if(log.IsTraceEnabled)
+                {
+                    log.Warn("Receiving event but receiver is not ON for 'UseOldKamailioEvent'");
+                }
                 return Ok();
             }
-
-            log.Debug("Incoming Kamailio message: {0}", message);
 
             using (new TimeMeasurer("Incoming Kamailio event"))
             {
