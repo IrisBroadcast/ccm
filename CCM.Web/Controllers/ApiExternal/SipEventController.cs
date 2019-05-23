@@ -92,7 +92,7 @@ namespace CCM.Web.Controllers.ApiExternal
                     return BadRequest();
                 }
 
-                log.Info("Incoming SIP message: {0}", sipEvent.ToLogString());
+                log.Debug("Incoming SIP message: {0}", sipEvent.ToLogString());
 
                 var sipMessage = _sipEventParser.Parse(sipEvent);
 
@@ -103,7 +103,7 @@ namespace CCM.Web.Controllers.ApiExternal
                 }
 
                 SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-                log.Info("Handled SIP message with result {0}. {1}", result.ChangeStatus, sipMessage.ToDebugString()); // TODO: XXX Roger ta bort det
+                log.Trace("Handled SIP message with result {0}. {1}", result.ChangeStatus, sipMessage.ToDebugString());
 
                 if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
                 {
