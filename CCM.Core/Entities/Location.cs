@@ -36,7 +36,7 @@ namespace CCM.Core.Entities
         public string ShortName { get; set; }
         public string Comment { get; set; }
         
-        public string Net { get; set; } // Första IP-adress för nätet. Beskriver tillsammans med CIDR ett nätspann.
+        public string Net { get; set; } // First IP-address for the network. Together with CIDR it describes a net-span
         public byte? Cidr { get; set; }
 
         public string Net_v6 { get; set; }

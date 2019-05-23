@@ -54,6 +54,7 @@ namespace CCM.Core.Cache
 
         public SipEventHandlerResult UpdateRegisteredSip(RegisteredSip registeredSip)
         {
+            // TODO: XXX Does this look strange. Here we actually look in the database? Not very efficient maybe
             var result = _internalRepository.UpdateRegisteredSip(registeredSip);
 
             // When reregistration of codec already in cache, just update timestamp

@@ -45,6 +45,9 @@ using NLog;
 
 namespace CCM.Data.Repositories
 {
+    /// <summary>
+    /// Handles Registered User-Agents database / cache operations
+    /// </summary>
     public class RegisteredSipRepository : BaseRepository, IRegisteredSipRepository
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();

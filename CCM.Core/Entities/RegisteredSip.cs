@@ -33,7 +33,7 @@ namespace CCM.Core.Entities
     {
         // Properties from codec message
         public string SIP { get; set; }
-        public string UserAgentHead { get; set; } // User agent-sträng kodaren skickar
+        public string UserAgentHead { get; set; } // User-agent string that the codec is reporting
         public string Username { get; set; }
         public string DisplayName { get; set; }
         public string IP { get; set; }

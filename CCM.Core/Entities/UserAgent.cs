@@ -33,6 +33,7 @@ namespace CCM.Core.Entities
 {
     public class UserAgent : CoreEntityWithTimestamps, ISipFilter
     {
+        // TODO: XXX Limit the amount of things returned here. Functions don't really need api information. That's mostly codec control
         public string Name { get; set; }
         public string Identifier { get; set; }
         public MatchType MatchType { get; set; }

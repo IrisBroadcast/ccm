@@ -155,7 +155,6 @@ namespace CCM.Data.Repositories
             }
         }
 
-
         private UserAgent MapToUserAgent(UserAgentEntity dbUserAgent)
         {
             return new UserAgent()
