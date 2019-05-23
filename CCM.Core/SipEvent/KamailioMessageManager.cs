@@ -117,11 +117,11 @@ namespace CCM.Core.SipEvent
                 case DialogStatus.End:
                     // TODO: Check hangup reason. Only close calls where reason = Normal
                     // TODO: Handle timeout message and add warning to call but don't end it
-                    log.Info("Received End command from Kamailio. HangUp reason: {0}", sipDialogMessage.HangupReason);
+                    log.Info("Received End command from Kamailio. HangUp reason: {0}, From: {1}, To: {2}", sipDialogMessage.HangupReason, sipDialogMessage.FromSipUri, sipDialogMessage.ToSipUri);
                     return CloseCall(sipDialogMessage);
                 case DialogStatus.SingleBye:
                     // TODO: Handle single bye message and close call
-                    log.Info("Received SingleBye command from Kamailio. {0}", sipDialogMessage);
+                    log.Info("Received SingleBye command from Kamailio. HangUp reason: {0}, From: {1}, To: {2}", sipDialogMessage.HangupReason, sipDialogMessage.FromSipUri, sipDialogMessage.ToSipUri);
                     return NothingChangedResult;
                 default:
                     return NothingChangedResult;

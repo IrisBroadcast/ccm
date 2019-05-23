@@ -26,6 +26,7 @@
 
 using System.Web.Http;
 using System.Web.Http.Cors;
+using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.SipEvent;
@@ -60,9 +61,9 @@ namespace CCM.Web.Controllers.ApiExternal
             _settingsManager = settingsManager;
         }
 
-        // For test
         public string Get()
         {
+            // For test
             return $"Hello. I'm a Kamailio event receiver. UseKamailioEvent={_settingsManager.UseOldKamailioEvent}";
         }
 
@@ -75,34 +76,41 @@ namespace CCM.Web.Controllers.ApiExternal
 
             log.Debug("Incoming Kamailio message: {0}", message);
 
-            if (string.IsNullOrWhiteSpace(message))
+            using (new TimeMeasurer("Incoming Kamailio event"))
             {
-                log.Warn("Kamailio event controller received empty data");
-                return BadRequest();
+                if (string.IsNullOrWhiteSpace(message))
+                {
+                    log.Warn("Kamailio event controller received empty data");
+                    return BadRequest();
+                }
+
+                SipMessageBase sipMessage = _kamailioMessageParser.Parse(message);
+
+                if (sipMessage == null)
+                {
+                    log.Warn("Incorrect Kamailio message format: {0}", message);
+                    return BadRequest();
+                }
+
+                SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
+
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug("SIP message, Incoming: {0}, Parsed: {1}, Result: {2}", message, sipMessage.ToDebugString(), result?.ChangeStatus);
+                }
+
+                if (result == null)
+                {
+                    log.Warn("Kamailio message was handled but result was null");
+                }
+                else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
+                {
+                    _guiHubUpdater.Update(result); // First web gui
+                    _statusHubUpdater.Update(result); // Then codec status to external clients
+                }
+
+                return Ok();
             }
-
-            SipMessageBase sipMessage = _kamailioMessageParser.Parse(message);
-
-            if (sipMessage == null)
-            {
-                log.Warn("Incorrect Kamailio message format: {0}", message);
-                return BadRequest();
-            }
-
-            SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-            log.Debug("Handled Kamailio message with result {0}. {1}", result?.ChangeStatus, sipMessage.ToDebugString());
-
-            if (result == null)
-            {
-                log.Warn("Kamailio message was handled but result was null");
-            }
-            else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
-            {
-                _guiHubUpdater.Update(result); // First web gui
-                _statusHubUpdater.Update(result); // Then codec status to external clients
-            }
-
-            return Ok();
         }
 
     }

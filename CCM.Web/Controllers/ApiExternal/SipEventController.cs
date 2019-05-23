@@ -62,9 +62,9 @@ namespace CCM.Web.Controllers.ApiExternal
             _settingsManager = settingsManager;
         }
 
-        // For test
         public string Get()
         {
+            // For test
             return $"Hello. I'm a SIP event receiver. UseSipEvent={_settingsManager.UseSipEvent}";
         }
 
@@ -75,7 +75,6 @@ namespace CCM.Web.Controllers.ApiExternal
                 return Ok();
             }
 
-            // Trace logging
             if (log.IsTraceEnabled)
             {
                 Stream stream = await Request.Content.ReadAsStreamAsync();
@@ -92,20 +91,26 @@ namespace CCM.Web.Controllers.ApiExternal
                     return BadRequest();
                 }
 
-                log.Debug("Incoming SIP message: {0}", sipEvent.ToLogString());
-
                 var sipMessage = _sipEventParser.Parse(sipEvent);
 
                 if (sipMessage == null)
                 {
-                    log.Warn("Incorrect SIP message format", sipEvent);
+                    log.Warn("Incorrect SIP message format: ", sipEvent);
                     return BadRequest();
                 }
 
                 SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-                log.Trace("Handled SIP message with result {0}. {1}", result.ChangeStatus, sipMessage.ToDebugString());
 
-                if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
+                if (log.IsDebugEnabled)
+                {
+                    log.Debug("SIP message, Incoming: {0}, Parsed: {1}, Result: {2}", sipEvent.ToLogString(), sipMessage.ToDebugString(), result?.ChangeStatus);
+                }
+
+                if (result == null)
+                {
+                    log.Warn("Kamailio message was handled but result was null");
+                }
+                else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
                 {
                     _guiHubUpdater.Update(result); // First web gui
                     _statusHubUpdater.Update(result); // Then codec status to external clients

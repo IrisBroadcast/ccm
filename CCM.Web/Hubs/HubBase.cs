@@ -38,9 +38,10 @@ namespace CCM.Web.Hubs
 
         public override Task OnConnected()
         {
-            if (log.IsInfoEnabled)
+            if (log.IsDebugEnabled)
             {
-                log.Info("SignalR client on {0} connected to {1}. Id={2} ({3})", RemoteIp, GetType().Name, Context.ConnectionId, Referer);
+                log.Debug("SignalR client on {0} connected to {1}, connection id={2}, referer={3}",
+                    RemoteIp, GetType().Name, Context.ConnectionId, Referer);
             }
             return base.OnConnected();
         }
@@ -49,25 +50,25 @@ namespace CCM.Web.Hubs
         {
             if (stopCalled)
             {
-                if (log.IsInfoEnabled)
+                if (log.IsDebugEnabled)
                 {
-                    log.Info("SignalR client on {0} disconnected gracefully from {1}. Connection id={2} ({3})",
+                    log.Debug("SignalR client on {0} disconnected gracefully from {1}, connection id={2}, referer={3}",
                     RemoteIp, GetType().Name, Context.ConnectionId, Referer);
                 }
             }
             else
             {
-                log.Warn("SignalR client disconnected ungracefully from {0}. Connection id={1}  ({2})",
-                    GetType().Name, Context.ConnectionId, Referer);
+                log.Warn("SignalR client on {0} disconnected ungracefully from {1}, connection id={2}, referer={3}",
+                    RemoteIp, GetType().Name, Context.ConnectionId, Referer);
             }
             return base.OnDisconnected(stopCalled);
         }
 
         public override Task OnReconnected()
         {
-            if (log.IsInfoEnabled)
+            if (log.IsDebugEnabled)
             {
-                log.Info("SignalR client on {0} reconnected to {1}. Connection id={2} ({3})", 
+                log.Debug("SignalR client on {0} reconnected to {1}, connection id={2}, referer={3}", 
                     RemoteIp, GetType().Name, Context.ConnectionId, Referer);
             }
             return base.OnReconnected();
