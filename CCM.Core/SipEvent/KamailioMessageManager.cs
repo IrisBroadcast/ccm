@@ -50,7 +50,7 @@ namespace CCM.Core.SipEvent
         
         public SipEventHandlerResult HandleSipMessage(SipMessageBase sipMessage)
         {
-            if (log.IsInfoEnabled)
+            if (log.IsDebugEnabled)
             {
                 // TODO: Isn't this one a little bit strange?
                 log.Debug("Parsed Kamailio Message {0}", sipMessage.ToDebugString());
@@ -59,26 +59,34 @@ namespace CCM.Core.SipEvent
             switch (sipMessage)
             {
                 case SipRegistrationMessage regMessage:
-                {
-                    // Handle registration message
-                    if (regMessage.Expires == 0)
                     {
-                        return UnregisterCodec(new SipRegistrationExpireMessage { SipAddress = regMessage.Sip });
+                        // Handle registration message
+                        // TODO: XXX is this done on each registration and rereg?
+                        if (regMessage.Expires == 0)
+                        {
+                            return UnregisterCodec(new SipRegistrationExpireMessage { SipAddress = regMessage.Sip });
+                        }
+                        return RegisterCodec(regMessage);
                     }
-                    return RegisterSip(regMessage);
-                }
                 case SipRegistrationExpireMessage expireMessage:
-                    return UnregisterCodec(expireMessage);
+                    {
+
+                        return UnregisterCodec(expireMessage);
+                    }
                 case SipDialogMessage dialogMessage:
-                    // Handle dialog information
-                    return HandleDialog(dialogMessage);
+                    {
+                        // Handle dialog information
+                        return HandleDialog(dialogMessage);
+                    }
                 default:
-                    log.Info("Unhandled Kamailio message: {0}", sipMessage.ToDebugString());
-                    return NothingChangedResult;
+                    {
+                        log.Info("Unhandled Kamailio message: {0}", sipMessage.ToDebugString());
+                        return NothingChangedResult;
+                    }
             }
         }
 
-        public SipEventHandlerResult RegisterSip(SipRegistrationMessage sipMessage)
+        public SipEventHandlerResult RegisterCodec(SipRegistrationMessage sipMessage)
         {
             var sip = new RegisteredSip
             {
