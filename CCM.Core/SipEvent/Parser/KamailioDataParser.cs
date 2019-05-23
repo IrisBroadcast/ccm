@@ -36,6 +36,9 @@ namespace CCM.Core.SipEvent.Parser
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// Parses Kamailio data with a '::'-separated string
+        /// </summary>
         public KamailioData ParseToKamailioData(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
