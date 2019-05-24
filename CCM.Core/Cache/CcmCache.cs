@@ -36,6 +36,7 @@ namespace CCM.Core.Cache
 {
     public class CcmCache : ICcmCache
     {
+        // TODO: Is this one in use at all?
         private readonly IAppCache _cache;
 
         private const string CachedRegisteredSipsKey = "CachedRegisteredSip_List";
