@@ -48,6 +48,9 @@ namespace CCM.Web.Controllers.ApiExternal
             return _registeredSipRepository.GetCodecInformationList();
         }
 
+        /// <summary>
+        /// Get codec information connected to a specific SIP-address.
+        /// </summary>
         public CodecInformation Get(string sipAddress)
         {
             return _registeredSipRepository.GetCodecInformation(sipAddress);

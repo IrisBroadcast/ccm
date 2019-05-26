@@ -43,6 +43,7 @@ namespace CCM.Data.Entities
         public MatchType MatchType { get; set; }
         public string Image { get; set; }
         public string UserInterfaceLink { get; set; }
+        // TODO: Redo this whole object. It's way to big and seems strange that it's needed.
 
         /// <summary>
         /// True if this UserAgent uses ActiveX for web interface.
@@ -59,10 +60,11 @@ namespace CCM.Data.Entities
         public string Comment { get; set; }
         public int InputGainStep { get; set; }
         public string GpoNames { get; set; }
-        public bool UserInterfaceIsOpen { get; set; }
+        public bool UserInterfaceIsOpen { get; set; } // TODO: What is this used for?
         public bool UseScrollbars { get; set; }
+
         public virtual ICollection<UserAgentProfileOrderEntity> OrderedProfiles { get; set; }
-        public virtual ICollection<RegisteredSipEntity> RegisteredSips { get; set; }
+        public virtual ICollection<RegisteredSipEntity> RegisteredSips { get; set; } // TODO: Looped reference?
         public virtual ICollection<CodecPresetEntity> CodecPresets { get; set; }
     }
 }
