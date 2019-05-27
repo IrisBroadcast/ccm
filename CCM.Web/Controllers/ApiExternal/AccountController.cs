@@ -64,6 +64,8 @@ namespace CCM.Web.Controllers.ApiExternal
         [Route("get")]
         public IHttpActionResult Get(string username)
         {
+            log.Debug("Call to ExternalAccountController.Get");
+
             SipAccount user = _sipAccountManager.GetByUserName(username);
 
             if (user == null)
@@ -192,15 +194,18 @@ namespace CCM.Web.Controllers.ApiExternal
         [Route("delete")]
         public IHttpActionResult Delete(string userName)
         {
+            log.Debug("Call to ExternalAccountController.Delete");
+
             if (string.IsNullOrWhiteSpace(userName))
             {
-                return BadRequest("User name missing");
+                return BadRequest("Can not delete user, username missing");
             }
 
             SipAccount user = _sipAccountManager.GetByUserName(userName);
 
             if (user == null)
             {
+                log.Error("Could not delete user because it's missing");
                 return NotFound();
             }
 

@@ -302,7 +302,7 @@ namespace CCM.Data.Repositories
                     //{
                     //    db.Database.Log = s => { log.Trace("EF Log GetCachedRegisteredSips: {0}", s); };
                     //}
-
+                    // TODO: Check this query, doesn't seem to scale, too many updated by.. and updated in the queries
                     IQueryable<RegisteredSipEntity> query = db.RegisteredSips
                         .Include(rs => rs.Location)
                         .Include(rs => rs.Location.Region)
@@ -502,7 +502,7 @@ namespace CCM.Data.Repositories
                 var groupBy = rsList.GroupBy(rs => rs.SIP).ToList();
                 List<RegisteredSipEntity> groupedList = groupBy.Select(g => g.First())
                     .OrderBy(rs => rs.SIP)
-                    .ToList();
+                    .ToList(); // TODO: Could this be done in a more efficient LINQ?
 
                 var list = groupedList.Select(rs => new CodecInformation()
                 {
