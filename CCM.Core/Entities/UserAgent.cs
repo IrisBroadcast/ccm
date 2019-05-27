@@ -56,7 +56,6 @@ namespace CCM.Core.Entities
         public bool UserInterfaceIsOpen { get; set; }
         public bool UseScrollbars { get; set; }
 
-
         public UserAgent()
         {
             Profiles = new List<Profile>();

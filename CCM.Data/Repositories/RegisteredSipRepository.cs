@@ -76,7 +76,7 @@ namespace CCM.Data.Repositories
                     {
                         db.RegisteredSips.Remove(regSip);
                     }
-
+                    // TODO: XXX Should this be done if it can't be found?
                     db.SaveChanges();
                     return true;
                 }
@@ -106,7 +106,7 @@ namespace CCM.Data.Repositories
                 using (var db = GetDbContext())
                 {
                     var dbSip = db.RegisteredSips.SingleOrDefault(rs => rs.SIP == registeredSip.SIP);
-
+                    // TODO: XXX Alexander, how big caould this query become?
                     if (dbSip == null)
                     {
                         if (registeredSip.Expires == 0)

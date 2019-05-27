@@ -115,7 +115,7 @@ namespace CCM.Web.Infrastructure.SignalR
 
             if (rs != null)
             {
-                var codecStatus = CodecStatusMapper.MapToCodecStatus(rs);
+                var codecStatus = CodecStatusMapper.MapToCodecStatus(rs); // TODO: XXX Alexander, skrivs cachen om här?
                 CodecStatusHub.UpdateCodecStatus(codecStatus);
             }
             else
