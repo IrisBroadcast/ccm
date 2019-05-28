@@ -19,6 +19,11 @@ ccmControllers.controller('studioMonitorController',
         $scope.studioId = null;
         $scope.sipid = null;
         $scope.isInCall = false;
+        $scope.hangUpDialog = {
+            visible: false,
+            iHaveBooked: false,
+            iHaveChecked: false
+        };
         $scope.connectedTo = "";
         $scope.nrOfGpos = 0;
         $scope.nrOfMicrophones = 0;
@@ -137,6 +142,11 @@ ccmControllers.controller('studioMonitorController',
 
             if (isInCall) {
                 $scope.stopInactivityTimer();
+                $scope.hangUpDialog = {
+                    visible: false,
+                    iHaveBooked: false,
+                    iHaveChecked: false
+                };
             } else {
                 $scope.resetInactivityTimer();
             }
@@ -148,7 +158,7 @@ ccmControllers.controller('studioMonitorController',
                 .then(
                     function (response) {
                         let data = response.data;
-                        console.debug('Codec available: ', data);
+                        console.debug('Codec available:', data);
                         let isAvailable = data.isAvailable;
                         return isAvailable;
                     },
@@ -164,7 +174,7 @@ ccmControllers.controller('studioMonitorController',
                 .then(
                     function (response) {
                         var codecStatus = response.data;
-                        console.info('Kodarstatus:', codecStatus);
+                        console.info('CodecStatus:', codecStatus);
                         $scope.onCodecStatusUpdate(codecStatus);
                     },
                     function (response) {
@@ -172,7 +182,7 @@ ccmControllers.controller('studioMonitorController',
                     });
         };
 
-        // Inactivity checker to make sure someone is actual using tha page
+        // Inactivity checker to make sure someone is actual using the page
         $scope.resetInactivityTimer = function () {
             console.log("resetInactivityTimer");
             $scope.stopInactivityTimer();
@@ -189,7 +199,8 @@ ccmControllers.controller('studioMonitorController',
             }
         };
 
-        $scope.onInactivity = function () { // When inactivity is detected
+        $scope.onInactivity = function () {
+            // When inactivity is detected
             console.log("onInactivity");
             $scope.stopCheckInputValues();
             $scope.stopCheckVuValues();
@@ -200,11 +211,27 @@ ccmControllers.controller('studioMonitorController',
             $scope.stopWebCam();
         };
 
+        // Hangs up a call
+        $scope.doHangUp = function() {
+
+            $scope.httpPost('/api/codeccontrol/hangup', { sipaddress: $scope.sipAddress })
+                .then(function(data) {
+                    console.log('Hangup success:', data);
+                });
+
+            $scope.hangUpDialog = {
+                visible: false,
+                iHaveBooked: false,
+                iHaveChecked: false
+            };
+        };
+
+        // Sets the GPO if possible
         $scope.setGpo = function (gpo) {
             var active = gpo.active ? false : true;
             $scope.httpPost('/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: active })
                 .then(function (data) {
-                    console.log("Codec GPO data: ", data);
+                    console.log('Codec GPO data:', data);
                     gpo.active = data.active;
                 });
         };
@@ -219,16 +246,19 @@ ccmControllers.controller('studioMonitorController',
             }
         };
 
+        // Input increase gain
         $scope.increaseGainLevel = function(input) {
             var newValue = input.value + 1;
             $scope.setGainLevel(input.id, newValue);
         };
 
+        // Input decrease gain
         $scope.decreaseGainLevel = function(input) {
             var newValue = input.value - 1;
             $scope.setGainLevel(input.id, newValue);
         };
 
+        // Set specific gain value
         $scope.setGainLevel = function (inputNumber, newValue) {
             $scope.stopUpdateAudioStatus();
             console.info("Codec SetGainLevel", inputNumber, newValue);
@@ -243,6 +273,25 @@ ccmControllers.controller('studioMonitorController',
                 });
         };
 
+        // Toggle inputs
+        $scope.toggleInput = function (input) {
+            var enabled = !input.enabled;
+            $scope.setInputEnabled(input.id, enabled);
+        };
+
+        // Set input enable
+        $scope.setInputEnabled = function (inputNumber, enabled) {
+            $scope.httpPost('/api/codeccontrol/setinputenabled', { sipAddress: $scope.sipAddress, input: inputNumber, enabled: enabled })
+                .then(function (data) {
+                    //console.log("SetInputEnabled", data);
+                    $scope.inputs[inputNumber].enabled = data.enabled;
+                },
+                function (response) {
+                    console.error('Codec SetInputEnabled failed');
+                });
+        };
+
+        // Get audio input status values
         $scope.getAudioStatus = function () {
             return $http.get($scope.codecControlHost + '/api/codeccontrol/getaudiostatus?sipaddress=' + $scope.sipAddress)
                 .then(function (response) {
@@ -281,22 +330,6 @@ ccmControllers.controller('studioMonitorController',
                 });
         };
 
-        $scope.toggleInput = function (input) {
-            var enabled = !input.enabled;
-            $scope.setInputEnabled(input.id, enabled);
-        };
-
-        $scope.setInputEnabled = function (inputNumber, enabled) {
-            $scope.httpPost('/api/codeccontrol/setinputenabled', { sipAddress: $scope.sipAddress, input: inputNumber, enabled: enabled })
-                .then(function (data) {
-                    //console.log("SetInputEnabled", data);
-                    $scope.inputs[inputNumber].enabled = data.enabled;
-                },
-                function (response) {
-                    console.error('Codec SetInputEnabled failed');
-                });
-        };
-
         $scope.updateAudioStatus = function () {
             $scope.getAudioStatus().then(function () {
                 if (!angular.isDefined(audioStatusTimeoutHandle)) {
@@ -323,7 +356,7 @@ ccmControllers.controller('studioMonitorController',
 
             webCamIntervalHandle = $interval(function () {
                 var newUrl = $scope.cameraStillImageUrl + "&timestamp=" + new Date().valueOf();
-                console.log("Uppdaterar bild-url", newUrl);
+                console.log("Updates picture URL", newUrl);
                 $scope.cameraUrl = newUrl;
             }, webCamUpdateInterval);
         };

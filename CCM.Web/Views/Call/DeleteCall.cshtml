@@ -6,6 +6,8 @@
 }
 
 <h2>@Resources.Delete_Call</h2>
+<hr />
+
 <div class="row">
     <p class="col-md-7">@Html.Raw(warningText)</p>
 </div>
@@ -16,17 +18,23 @@
     @Html.AntiForgeryToken()
     
     <div class="form-group">
-        @Html.CheckBoxFor(m => m.ImSure)
-        @Html.LabelFor(m => m.ImSure)
+        @Html.LabelFor(m => m.ImSure, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.ImSure, new { @class = "form-control" })
+        </div>
     </div>
+
     <div class="form-group">
-        @Html.CheckBoxFor(m => m.IHaveChecked)
-        @Html.LabelFor(m => m.IHaveChecked)
+        @Html.LabelFor(m => m.IHaveChecked, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.IHaveChecked, new { @class = "form-control" })
+        </div>
     </div>
+
     @Html.HiddenFor(m => m.CallId)
 
     <div class="form-group">
-        <div class="">
+        <div class="col-md-offset-2 col-md-10">
             @Html.ActionLink(Resources.Cancel, "Index", "Home", null, new { @class = "btn btn-default" })
             <button type="submit" class="btn btn-primary">@Resources.Delete</button>
         </div>

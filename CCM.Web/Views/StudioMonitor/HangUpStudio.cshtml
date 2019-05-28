@@ -1,9 +1,11 @@
-﻿@model CCM.Web.Models.StudioMonitor.HangUpStudioViewModel
+﻿@using CCM.Web.Extensions;
+@model CCM.Web.Models.StudioMonitor.HangUpStudioViewModel
 @{
     ViewBag.Title = Resources.Hang_Up_Studio;
 }
 
 <h2>@Resources.Hang_Up_Studio</h2>
+<hr />
 
 @using (Html.BeginForm("DoHangUp", "StudioMonitor", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
@@ -11,18 +13,24 @@
     @Html.AntiForgeryToken()
 
     <div class="form-group">
-        @Html.CheckBoxFor(m => m.IHaveBooked)
-        @Html.LabelFor(m => m.IHaveBooked)
+        @Html.LabelFor(m => m.IHaveBooked, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.IHaveBooked, new { @class = "form-control" })
+        </div>
     </div>
+
     <div class="form-group">
-        @Html.CheckBoxFor(m => m.IHaveChecked)
-        @Html.LabelFor(m => m.IHaveChecked)
+        @Html.LabelFor(m => m.IHaveChecked, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.IHaveChecked, new { @class = "form-control" })
+        </div>
     </div>
+
     @Html.HiddenFor(m => m.StudioId)
 
     <div class="form-group">
-        <div class="">
-             @Html.ActionLink(Resources.Cancel, "Index", "StudioMonitor",  new { id = Model.StudioId}, new { @class = "btn btn-default" })
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink(Resources.Cancel, "Index", "StudioMonitor", new { id = Model.StudioId }, new { @class = "btn btn-default" })
             <button type="submit" class="btn btn-primary">@Resources.Hang_Up_Studio</button>
         </div>
     </div>

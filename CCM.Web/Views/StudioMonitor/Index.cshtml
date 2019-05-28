@@ -14,8 +14,33 @@
     <div class="row ccm-ui-studio-header-row">
         <div class="col-md-12">
             <h3>@Model.Name <span class="ccm-ui-studio-codec-statusinfo" ng-class="isInCall ? 'ccm-ui-studio-codec-incall' : ''">{{ codecOnline ? (isInCall ? "är upptagen i samtal med " + connectedTo : "är ledig") : "kan inte nås" }}</span></h3>
-            <a ng-show="isInCall" class="btn btn-default" href="@Url.Action("HangUpStudio", new { Id = Model.StudioId })">@Resources.Hang_Up_Studio</a>
+            <!--<a ng-show="isInCall" class="btn btn-default" href="@Url.Action("HangUpStudio", new { Id = Model.StudioId })">@Resources.Hang_Up_Studio</a>-->
+            <button ng-show="isInCall" class="btn btn-default" ng-click="hangUpDialog.visible = !hangUpDialog.visible">@Resources.Hang_Up_Studio</button>
             <hr />
+        </div>
+    </div>
+
+    <div class="row ccm-ui-studio-dialog-row" ng-show="hangUpDialog.visible">
+        <div class="col-md-12">
+            <h4>@Resources.Hang_Up_Studio</h4>
+            <br />
+            <div class="form-group">
+                <label for="hangUpIHaveBooked" class="control-label">
+                    <input type="checkbox" name="hangUpIHaveBooked" id="hangUpIHaveBooked" ng-model="hangUpDialog.iHaveBooked" />
+                    @Resources.Hang_Up_I_Have_Booked
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label for="hangUpIHaveChecked" class="control-label">
+                    <input type="checkbox" name="hangUpIHaveChecked" id="hangUpIHaveChecked" ng-disabled="!hangUpDialog.iHaveBooked" ng-model="hangUpDialog.iHaveChecked" />
+                    @Resources.Hang_Up_I_Have_Checked
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <button ng-disabled="!hangUpDialog.iHaveChecked" class="btn btn-default" ng-click="doHangUp()">@Resources.Hang_Up_Studio</button>
+            </div>
         </div>
     </div>
 
