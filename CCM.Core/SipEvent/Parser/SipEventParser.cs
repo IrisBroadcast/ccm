@@ -61,7 +61,7 @@ namespace CCM.Core.SipEvent.Parser
                 Username = kamailioData.AuthUser, // TODO: Obsolete. To be removed.
                 FromDisplayName = ParseDisplayName(kamailioData.FromDisplayName),
                 ToDisplayName = ParseDisplayName(kamailioData.ToDisplayName),
-                UserAgent = kamailioData.UserAgentHeader + " " + kamailioData.Registrar,
+                UserAgent = kamailioData.UserAgentHeader,
                 //PhysicalCodecUri = new SipUri(kamailioData.PoolUri),
 
                 Ip = kamailioData.Ip.SenderIp,
