@@ -1034,4 +1034,7 @@
   <data name="Logs_Title_Clear_Logs" xml:space="preserve">
     <value>Rensa loggar</value>
   </data>
+  <data name="Sip_Registrar_Server" xml:space="preserve">
+    <value>Registrar</value>
+  </data>
 </root>

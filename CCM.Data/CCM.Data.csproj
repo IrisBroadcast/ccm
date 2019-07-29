@@ -150,6 +150,7 @@
     <Compile Include="Repositories\SipAccountRepository.cs" />
     <Compile Include="Repositories\CcmUserRepository.cs" />
     <Compile Include="Repositories\RegisteredSipRepository.cs" />
+    <Content Include="ChangeScripts\2019-07-29\adding_registrar.sql" />
     <Content Include="ExampleData\Dump20190417.sql" />
   </ItemGroup>
   <ItemGroup>

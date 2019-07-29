@@ -71,6 +71,7 @@ namespace CCM.Data.Repositories.Specialized
                 DisplayName = rs.DisplayName,
                 Ip = rs.IP,
                 UserAgentHeader = rs.UserAgentHead,
+                Registrar = rs.Registrar != null ? rs.Registrar : string.Empty,
 
                 Comment = rs.User != null ? rs.User.Comment : string.Empty,
                 UserDisplayName = rs.User != null ? rs.User.DisplayName : string.Empty,

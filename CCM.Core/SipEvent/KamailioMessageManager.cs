@@ -95,6 +95,7 @@ namespace CCM.Core.SipEvent
                 ServerTimeStamp = sipMessage.UnixTimeStamp,
                 SIP = sipMessage.Sip.UserAtHost,
                 UserAgentHead = sipMessage.UserAgent,
+                Registrar = sipMessage.Registrar,
                 Username = sipMessage.Sip.UserAtHost,
                 DisplayName = string.IsNullOrEmpty(sipMessage.ToDisplayName) ? sipMessage.FromDisplayName : sipMessage.ToDisplayName,
                 Expires = sipMessage.Expires

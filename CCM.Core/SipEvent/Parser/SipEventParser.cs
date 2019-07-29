@@ -62,6 +62,7 @@ namespace CCM.Core.SipEvent.Parser
                 FromDisplayName = ParseDisplayName(kamailioData.FromDisplayName),
                 ToDisplayName = ParseDisplayName(kamailioData.ToDisplayName),
                 UserAgent = kamailioData.UserAgentHeader,
+                Registrar = kamailioData.Registrar,
                 //PhysicalCodecUri = new SipUri(kamailioData.PoolUri),
 
                 Ip = kamailioData.Ip.SenderIp,

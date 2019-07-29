@@ -51,6 +51,10 @@ namespace CCM.Data.Entities
         public string DisplayName { get; set; }
 
         [MetaProperty]
+        [Column("Registrar")]
+        public string Registrar { get; set; }
+
+        [MetaProperty]
         [Column("IP")]
         public string IP { get; set; }
 

@@ -102,7 +102,6 @@ namespace CCM.Core.SipEvent.Parser
 
         private SipRegistrationMessage ParseRegistration(KamailioData kamailioData)
         {
-            
             var registration = new SipRegistrationMessage()
             {
                 Ip = kamailioData.GetField("si"),

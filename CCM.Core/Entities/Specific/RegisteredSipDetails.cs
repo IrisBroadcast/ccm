@@ -47,6 +47,7 @@ namespace CCM.Core.Entities.Specific
         public string Api { get; set; }
         public string UserAgentHeader { get; set; }
         public string Sip { get; set; }
+        public string Registrar { get; set; }
         public string UserDisplayName { get; set; }
         public string UserInterfaceLink { get; set; }
         public bool UserInterfaceIsOpen { get; set; }

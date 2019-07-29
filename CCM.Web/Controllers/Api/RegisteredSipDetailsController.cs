@@ -73,6 +73,7 @@ namespace CCM.Web.Controllers.Api
                 DisplayName = GetDisplayName(regSipDetails),
                 Ip = regSipDetails.Ip,
                 UserAgentHeader = regSipDetails.UserAgentHeader,
+                Registrar = regSipDetails.Registrar,
 
                 Image = regSipDetails.Image,
                 ActiveX = regSipDetails.ActiveX,

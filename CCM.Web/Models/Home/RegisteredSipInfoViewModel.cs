@@ -68,6 +68,9 @@ namespace CCM.Web.Models.Home
         [Display(ResourceType = typeof(Resources), Name = "UserAgent")]
         public string UserAgentHeader { get; set; }
 
+        [Display(ResourceType = typeof(Resources), Name = "Sip_Registrar_Server")]
+        public string Registrar { get; set; }
+
         [Display(ResourceType = typeof(Resources), Name = "SIP")]
         public string Sip { get; set; }
 

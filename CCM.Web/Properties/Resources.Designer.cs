@@ -2284,6 +2284,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Registrar.
+        /// </summary>
+        public static string Sip_Registrar_Server {
+            get {
+                return ResourceManager.GetString("Sip_Registrar_Server", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Anslutningen till CCM är bruten.
         /// </summary>
         public static string Socket_Connection_Is_Lost_With_Server {

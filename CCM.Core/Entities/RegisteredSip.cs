@@ -36,6 +36,7 @@ namespace CCM.Core.Entities
         public string UserAgentHead { get; set; } // User-agent string that the codec is reporting
         public string Username { get; set; }
         public string DisplayName { get; set; }
+        public string Registrar { get; set; }
         public string IP { get; set; }
         public int Port { get; set; }
         public int Expires { get; set; }
