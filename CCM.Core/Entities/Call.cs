@@ -32,7 +32,7 @@ namespace CCM.Core.Entities
 {
     public class Call : CoreEntityBase
     {
-        public string CallId { get; set; } // Id från Kamailio
+        public string CallId { get; set; } // Id from Kamailio
         public string DlgHashId { get; set; }
         public string DlgHashEnt { get; set; }
         
@@ -49,11 +49,11 @@ namespace CCM.Core.Entities
         public DateTime Started { get; set; }
         public DateTime Updated { get; set; }
         
-        public SipCallState State { get; set; } // Verkar inte användas. Utred och ta bort.
+        public SipCallState State { get; set; } // TODO: Doesn't seem to be in use, investigate and remove.
         public bool Closed { get; set; }
-        public bool IsPhoneCall { get; set; } // True om det är ett telefonsamtal
+        public bool IsPhoneCall { get; set; } // True if it's a phone call
 
-        public string ToTag { get; set; } // Används inte
-        public string FromTag { get; set; } // Används inte
+        public string ToTag { get; set; } // TODO: Doesn't seem to be in use
+        public string FromTag { get; set; } // TODO: Doesn't seem to be in use
     }
 }

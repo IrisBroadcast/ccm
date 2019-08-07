@@ -186,7 +186,7 @@ namespace CCM.Data.Repositories
 
                     var success = db.SaveChanges() > 0;
 
-                    if (success & call.Closed) // TODO: Check & or && usage
+                    if (success && call.Closed)
                     {
                         // Call ended. Save call history and delete call from db
                         var callHistory = MapToCallHistory(dbCall, _settingsManager.SipDomain);

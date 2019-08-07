@@ -39,12 +39,9 @@ namespace CCM.Web.Mappers
                 InCall = regSip.InCall,
                 Sip = regSip.Sip,
                 Id = regSip.Id,
-                //DisplayName = regSip.DisplayName,
-
 
                 DisplayName = DisplayNameHelper.GetDisplayName(regSip.DisplayName, regSip.UserDisplayName, 
                 string.Empty, regSip.UserName, regSip.Sip, "", sipDomain),
-
 
                 Location = regSip.LocationName,
                 LocationShortName = regSip.LocationShortName,

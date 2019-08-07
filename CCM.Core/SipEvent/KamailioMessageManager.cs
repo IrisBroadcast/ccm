@@ -52,7 +52,6 @@ namespace CCM.Core.SipEvent
         {
             if (log.IsDebugEnabled)
             {
-                // TODO: Isn't this one a little bit strange?
                 log.Debug("Parsed Kamailio Message {0}", sipMessage.ToDebugString());
             }
 
@@ -70,7 +69,7 @@ namespace CCM.Core.SipEvent
                     }
                 case SipRegistrationExpireMessage expireMessage:
                     {
-
+                        // Handle unregistered expire message
                         return UnregisterCodec(expireMessage);
                     }
                 case SipDialogMessage dialogMessage:
@@ -88,6 +87,7 @@ namespace CCM.Core.SipEvent
 
         public SipEventHandlerResult RegisterCodec(SipRegistrationMessage sipMessage)
         {
+            // TODO: is this step necessary?
             var sip = new RegisteredSip
             {
                 IP = sipMessage.Ip,
@@ -165,7 +165,8 @@ namespace CCM.Core.SipEvent
             call.Updated = DateTime.UtcNow;
             call.ToTag = sipMessage.ToTag;
             call.FromTag = sipMessage.FromTag;
-            call.IsPhoneCall = sipMessage.FromSipUri.User.IsNumeric() || sipMessage.ToSipUri.User.IsNumeric(); // Sätts till true om någon parts adress är numeriskt. 
+            call.IsPhoneCall = sipMessage.FromSipUri.User.IsNumeric() || sipMessage.ToSipUri.User.IsNumeric();
+
             _callRepository.UpdateCall(call);
             return SipMessageResult(SipEventChangeStatus.CallStarted, call.Id);
         }

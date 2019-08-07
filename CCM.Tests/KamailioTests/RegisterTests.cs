@@ -43,29 +43,12 @@ namespace CCM.Tests.KamailioTests
             _sipMessageManager = kernel.Get<KamailioMessageManager>();
             _sipRep = kernel.Get<RegisteredSipRepository>();
         }
-
-        [Test]
-        public void should_register_växjö_10()
-        {
-            var sipEvent = CreateSipRegisterEvent("192.0.2.82", "ProntoNet LC v6.8.1", "vaxjo-10@acip.example.com", "Växjö 10");
-            var sipMessage = new SipEventParser().Parse(sipEvent);
-
-            _sipMessageManager.HandleSipMessage(sipMessage);
-            var sipRep = kernel.Get<RegisteredSipRepository>();
-            var sip = sipRep.Single(rs => rs.SIP == "vaxjo-10@acip.example.com");
-
-            Assert.IsNotNull(sip);
-            Assert.AreEqual("192.0.2.82", sip.IP);
-            Assert.AreEqual("RH Växjö", sip.Location.Name);
-            Assert.AreEqual("ProntoNet", sip.UserAgent.Name);
-            Assert.AreEqual("vaxjo-10@acip.example.com", sip.User.UserName);
-        }
      
         [Test]
         public void should_register_new_codec()
         {
             // ASSIGN
-            var userName = "patpet2@acip.example.com";
+            var userName = "patpet3@acip.example.com";
 
             // Delete any already registered codec
             DeleteRegisteredSip(userName);
@@ -84,7 +67,6 @@ namespace CCM.Tests.KamailioTests
 
             var sip = _sipRep.Single(rs => rs.SIP == userName);
             Assert.AreEqual(ipAddress, sip.IP);
-            Assert.AreEqual(userName, sip.User.UserName);
 
             // Clean up
             DeleteRegisteredSip(sip.Id);

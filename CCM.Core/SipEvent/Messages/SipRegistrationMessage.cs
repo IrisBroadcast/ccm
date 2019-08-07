@@ -34,7 +34,7 @@ namespace CCM.Core.SipEvent.Messages
         public int Port { get; set; }
         public string UserAgent { get; set; }
         public string Registrar { get; set; } // TODO: Add Registrar server to Sip Message Base
-        public string Username { get; set; } // Obsolete. To be removed. Sip used both as sip address and user name
+        public string Username { get; set; } // TODO: Obsolete. To be removed. Sip used both as sip address and user name (Anders)
         public string ToDisplayName { get; set; }
         public long UnixTimeStamp { get; set; }
         public int Expires { get; set; }
