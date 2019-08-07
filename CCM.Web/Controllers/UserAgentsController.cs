@@ -187,8 +187,8 @@ namespace CCM.Web.Controllers
             model.LinesInList = 10;
             model.InputsInList = 10;
             model.GposInList = 6;
-            model.InputDbInListMin = -100;
-            model.InputDbInListMax = 100;
+            model.InputDbInListMin = -200;
+            model.InputDbInListMax = 250;
         }
 
         private UserAgent GetUserAgentFromViewModel(UserAgentViewModel model)

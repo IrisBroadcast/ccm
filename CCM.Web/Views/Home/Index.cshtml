@@ -415,15 +415,24 @@
                                                 <progress class="progress" max="{{ info.InputMaxDb - info.InputMinDb }}" min="0" value="{{ input.value - info.InputMinDb }}"></progress>
                                             </div>
                                             <div class="db-range-control">
-                                                <input type="range" name="range" ng-model="input.value" ng-min="info.InputMinDb" ng-max="info.InputMaxDb">
+                                                <input type="range" name="range" class="ccm-ui-mixer--slider" ng-model="input.value" ng-min="info.InputMinDb" ng-max="info.InputMaxDb">
                                             </div>
                                             <div class="row db-control">
                                                 <button class="btn btn-default" ng-click="setGainLevel(input, -1)">
-                                                    <span class="value">-</span>
+                                                    <!--<span class="value">-</span>-->
+                                                    <svg version="1.1" id="Minus" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                                         width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+                                                        <path id="Line_Minus_1" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M5,24h38" />
+                                                    </svg>
                                                 </button>
 
                                                 <button class="btn btn-default" ng-click="setGainLevel(input, 1)">
-                                                    <span class="value">+</span>
+                                                    <!--<span class="value">+</span>-->
+                                                    <svg version="1.1" id="Plus" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                                         width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+                                                        <path id="Line_Plus_1" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M24,5l0,38" />
+                                                        <path id="Line_Plus_2" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M5,24h38" />
+                                                    </svg>
                                                 </button>
                                             </div>
                                         </div>
