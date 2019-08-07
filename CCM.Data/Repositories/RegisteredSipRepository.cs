@@ -222,8 +222,8 @@ namespace CCM.Data.Repositories
 
             if (entry.State == EntityState.Deleted || CodecWasExpired(entry))
             {
-                log.Debug($"Hmm, {CodecWasExpired(entry)}, {entry.State.ToString()}, {dbSip.Expires}, {dbSip.Updated}, {dbSip.SIP}");
-                log.Debug($"User-agent expired or deleted '{dbSip.SIP}', this should maybe not happen");
+                // There is a problem here, CodecWasExpired just tells us that it was expired when a new registration is sent. Since this is not checked anywhere else
+                log.Debug($"User-agent expired or deleted '{dbSip.SIP}', CodecWasExpired={CodecWasExpired(entry)}, Entry.State={entry.State.ToString()}, Expires={dbSip.Expires}");
                 return SipEventChangeStatus.CodecRemoved;
             }
 
