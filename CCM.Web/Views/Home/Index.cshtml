@@ -405,34 +405,35 @@
                 <div class="tab-content">
 
                     <div class="tab-pane active" id="inputtab">
-
                         <div class="col-md-12">
                             <div class="row">
                                 <div class="ccm-ui-popmixer--unit" ng-repeat="input in inputs track by input.id">
-                                    <button class="btn"
+                                    <div class="widgets">
+                                        <div class="level-gain">
+                                            <div class="db-value">
+                                                {{input.value}}
+                                                <progress class="progress" max="{{ info.InputMaxDb - info.InputMinDb }}" min="0" value="{{ input.value - info.InputMinDb }}"></progress>
+                                            </div>
+                                            <div class="db-range-control">
+                                                <input type="range" name="range" ng-model="input.value" ng-min="info.InputMinDb" ng-max="info.InputMaxDb">
+                                            </div>
+                                            <div class="row db-control">
+                                                <button class="btn btn-default" ng-click="setGainLevel(input, -1)">
+                                                    <span class="value">-</span>
+                                                </button>
+
+                                                <button class="btn btn-default" ng-click="setGainLevel(input, 1)">
+                                                    <span class="value">+</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn mixer-input-toggle"
                                             ng-class="{'btn-primary': input.enabled == true && !input.disabled, 'btn-default': input.enabled == false && !input.disabled }"
                                             ng-disabled="input.disabled"
                                             ng-click="toggleInputEnabled(input)">
                                         ON {{input.number}}
                                     </button>
-                                    <div class="widgets">
-                                        <div class="level-gain">
-                                            <div class="db-value">
-                                                {{input.value}}
-                                                <progress class="progress" style="width:80%" max="{{ info.InputMaxDb - info.InputMinDb }}" min="0" value="{{ input.value - info.InputMinDb }}"></progress>
-                                            </div>
-                                            <div class="row">
-                                                <button class="btn btn-default" ng-click="setGainLevel(input, 1)">
-                                                    <span class="value">+</span>
-                                                </button>
-                                            </div>
-                                            <div class="row">
-                                                <button class="btn btn-default" ng-click="setGainLevel(input, -1)">
-                                                    <span class="value">-</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -442,44 +443,46 @@
                         </div>
 
                         <div class="row">
-                            <div class="ccm-ui-popmixer--unit-gpo col-md-6">
+                            <div class="ccm-ui-popmixer--unit-vu col-md-12">
+                                <div class="vu-group vu-group--left">
+                                    <vu-meter level="rxL"></vu-meter>
+                                    <vu-meter level="rxR"></vu-meter>
+                                </div>
+                                <div class="vu-group vu-group--right">
+                                    <vu-meter level="txL"></vu-meter>
+                                    <vu-meter level="txR"></vu-meter>
+                                </div>
+                            </div>
+
+                            <div class="ccm-ui-popmixer--unit-gpo col-md-12">
                                 <button ng-repeat="gpo in gpos" class="btn gpo"
                                         ng-class="{'btn-success': gpo.active == true, 'btn-default': gpo.active == false }"
                                         ng-click="setGpo(gpo)">
                                     {{gpo.name}}
                                 </button>
                             </div>
-
-                            <div class="ccm-ui-popmixer--unit-vu col-md-6">
-                                <div class="vu-group vu-group--left">
-                                    <vu-meter level="txL"></vu-meter>
-                                    <vu-meter level="txR"></vu-meter>
-                                </div>
-                                <div class="vu-group vu-group--right">
-                                    <vu-meter level="rxL"></vu-meter>
-                                    <vu-meter level="rxR"></vu-meter>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
 
                     <div class="tab-pane" id="rebootTab">
-                        <div class="row" style="min-height: 110px;">
+                        <div class="row">
                             <div class="col-md-12">
-                                <div>
+                                <h5>@Resources.Reboot</h5>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
                                     <label>
                                         <input type="checkbox" ng-model="rebootconfirm1" />
                                         @Resources.Codec_Reboot_First_Confirm
                                     </label>
                                 </div>
-                                <div>
+                                <div class="form-group">
                                     <label>
                                         <input type="checkbox" ng-model="rebootconfirm2" />
                                         @Resources.Codec_Reboot_Second_Confirm
                                     </label>
                                 </div>
-                                <div>
+                                <div class="form-group">
                                     <button ng-disabled="!rebootconfirm1 || !rebootconfirm2" class="btn btn-danger" ng-click="reboot(info)">@Resources.Reboot</button>
                                 </div>
                             </div>
@@ -492,7 +495,7 @@
                                 <h5>@Resources.Line_Status</h5>
                             </div>
                             <div class="col-md-9">
-                                <select id="line" ng-model="selectedLine" ng-options="line.number for line in lines track by line.id"></select>
+                                <select id="line" ng-model="selectedLine" ng-hide="lines == 0" ng-options="line.number for line in lines track by line.id" class="form-control--horizontal"></select>
                                 <button class="btn btn-default" ng-click="getLineStatus(selectedLine)">@Resources.Get</button>
                             </div>
                         </div>

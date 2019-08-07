@@ -561,10 +561,31 @@ var fallback = function(lastValue, newValue) {
     return newValue >= lastValue ? newValue : Math.max(newValue, lastValue - maxDecay);
 };
 
-function makeUrlAbsolute(url) {
+var makeUrlAbsolute = function(url) {
     if (typeof url == 'undefined' || url === null) {
         return "";
     }
     return url.match(/^[a-zA-Z]+:\/\//) ? url : 'http://' + url;
 }
 
+var convertRange = function(value, returnPercent, limitMin, limitMax)
+{
+    if (value === null && value === undefined) {
+        return 0;
+    }
+    var yMin = limitMin || -128, // -128 actual limit
+        yMax = limitMax || 0;
+
+    if (value <= yMin) {
+        value = yMin;
+    }
+
+    var percent = (value - yMin) / (yMax - yMin);
+
+    if (returnPercent === undefined || returnPercent) {
+        return percent * 100;//((xMax - xMin) + xMin); var xMax = 100; var xMin = 1;
+    }
+    else {
+        return percent.toFixed(2);
+    }
+}

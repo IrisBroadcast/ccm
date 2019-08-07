@@ -1,4 +1,7 @@
-﻿function locationSearch() {
+﻿/* *******************************************************
+ * CCM Statistics */
+function locationSearch()
+{
     $('#locationSearchBtn').prop('disabled', true);
 
     var queryParams = {
@@ -8,6 +11,7 @@
         ownerId: $('#Owners').val(),
         codecTypeId: $('#CodecTypes').val()
     };
+
     var sim24HourParams = {
         startDate: $('#startDate').val(),
         endDate: $('#endDate').val(),
@@ -48,7 +52,8 @@
     });
 }
 
-function sim24HourSearch() {
+function sim24HourSearch()
+{
     $('#locationSim24HourSelect').prop('disabled', true);
 
     var sim24HourParams = {
@@ -66,7 +71,8 @@ function sim24HourSearch() {
     });
 }
 
-function regionSearch() {
+function regionSearch()
+{
     $('#regionSearchBtn').prop('disabled', true);
 
     var queryParamsCalls = {
@@ -101,7 +107,8 @@ function regionSearch() {
     });
 }
 
-function sipAccountsSearch() {
+function sipAccountsSearch()
+{
     $('#sipAccountsSearchBtn').prop('disabled', true);
 
     var queryParamsCalls = {
@@ -136,7 +143,8 @@ function sipAccountsSearch() {
     });
 }
 
-function codecTypesSearch() {
+function codecTypesSearch()
+{
     $('#codecTypesSearchBtn').prop('disabled', true);
 
     var queryParamsCalls = {
@@ -171,6 +179,8 @@ function codecTypesSearch() {
     });
 }
 
+/* *******************************************************
+ * Initiate statistics */
 $(function () {
     var endDate = new Date();
     endDate.setHours(0);
@@ -195,6 +205,4 @@ $(function () {
     $('#regionSearchBtn').on("click", regionSearch);
     $('#sipAccountsSearchBtn').on('click', sipAccountsSearch);
     $('#codecTypesSearchBtn').on('click', codecTypesSearch);
-
 });
-

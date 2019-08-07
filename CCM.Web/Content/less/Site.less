@@ -54,7 +54,7 @@
 
 @color-background-settingspane: #e7e7e7;
 
-@progress-bar-low: #1db954;
+@progress-bar-low: #33b766;
 @progress-bar-mid: #ffd941;
 @progress-bar-top: #f23530;
 
@@ -259,6 +259,7 @@ footer p {
 .form-control--horizontal {
     .form-control;
     display: inline;
+    vertical-align: middle;
 }
 
 /* *******************************************************
@@ -1111,6 +1112,10 @@ list-ccm-inlineicon */
         height: unset;
         line-height: unset;
     }
+
+    .list-ccm-inlineicon {
+        min-width: 30px !important;
+    }
 }
 
 a.list-ccm-inlineicon.glyphicon.glyphicon-pencil {
@@ -1177,7 +1182,12 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 }
 
 .list-ccm--codectype-color {
-    display: inline-block;
+    display: block;
+    background: #ffbc00;
+    border-radius: 40px;
+    text-indent: -99999px;
+    overflow: hidden;
+    width: 40px;
 }
 
 /* *******************************************************
@@ -1579,6 +1589,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 
     .mixer-input-toggle {
         width: 100%;
+        min-height: 8vh;
     }
 
     .no-codec {
@@ -1611,6 +1622,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
                 font-size: 30px;
                 font-weight: 800;
                 width: 60px;
+                width: 40%;
                 padding: 0;
 
                 .value {
@@ -1623,9 +1635,12 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
                 font-size: 2.5em;
             }
 
+            .db-control {
+            }
+
             .progress {
                 margin-bottom: 0;
-                width: 60%;
+                width: 100%;
             }
         }
     }
@@ -1755,7 +1770,18 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
     float: left;
     padding: 2px;
     text-align: center;
-    width: 130px;
+
+    @media (max-width: 500px) {
+        width: 50%;
+    }
+
+    @media (max-width: 600px) and (min-width: 500px) {
+        width: 25%;
+    }
+
+    @media (min-width: 600px) {
+        width: 20%;
+    }
 
     .btn {
         width: 100%;
@@ -1764,6 +1790,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 
     .mixer-input-toggle {
         width: 100%;
+        min-height: 8vh;
     }
 
     .no-codec {
@@ -1810,12 +1837,11 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 
             .progress {
                 margin-bottom: 0;
-                width: 60%;
+                width: 100%;
             }
         }
     }
-
-    .vu-group {
+    /*.vu-group {
         margin-right: 0;
         overflow: hidden;
         width: 50%;
@@ -1877,10 +1903,11 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
                 }
             }
         }
-    }
+    }*/
 }
 
 .ccm-ui-popmixer--unit-vu {
+    overflow: hidden;
 
     .vu-group {
         margin-right: 0;
@@ -1908,12 +1935,14 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         }
 
         .progress {
-            width: 40%;
-            margin-left: 8%;
-            height: 110px;
+            width: 30%;
+            margin: 0 10%;
+            height: 100px;
             position: relative;
             overflow: hidden;
             float: left;
+            background: #eeeeee;
+            border: 2px solid #ececec;
 
             .progress-marker-target-0 {
                 background: rgba(39, 83, 121, 0.65);
@@ -1927,20 +1956,20 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
             }
 
             .progress-bar {
-                width: 40px;
+                width: 100%;
                 position: absolute;
                 bottom: 0;
 
                 &.green {
-                    background-color: @progress-bar-low; 
+                    background-color: @progress-bar-low;
                 }
 
                 &.yellow {
-                    background-color: @progress-bar-mid; 
+                    background-color: @progress-bar-mid;
                 }
 
                 &.red {
-                    background-color: @progress-bar-top; 
+                    background-color: @progress-bar-top;
                 }
             }
         }
@@ -2009,9 +2038,6 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 
 .statistic-filters, .logs-filters {
     margin-bottom: 15px;
-
-    .form-control {
-    }
 
     label {
         display: block;

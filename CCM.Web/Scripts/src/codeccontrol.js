@@ -268,9 +268,10 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
         console.info('Codec information', info);
         $scope.info = info;
 
-        if (info.IsAuthenticated && info.CodecControl) {
-
-            if (info.Inputs) {
+        if (info.IsAuthenticated && info.CodecControl)
+        {
+            if (info.Inputs)
+            {
                 var inputs = [];
                 for (var i = 0; i < info.Inputs; i++) {
                     var input = { id: i, number: i + 1, value: 0, enabled: false, disabled: 'disabled' };
@@ -279,7 +280,8 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
                 $scope.inputs = inputs;
             }
 
-            if (info.Lines) {
+            if (info.Lines)
+            {
                 var lines = [];
                 for (var j = 0; j < info.Lines; j++) {
                     var line = { id: j, number: j + 1 };
@@ -293,9 +295,10 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             }
 
             $scope.checkCodecAvailable();
-
-        } else {
-            console.info('Codec-control is not Authorized');
+        }
+        else
+        {
+            console.warn('Codec-control is not Authorized');
         }
     },
     function () {
@@ -304,14 +307,12 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
 
     // Utilities
     $scope.httpPost = function (apiPath, data) {
-
         var authorizationBasic = window.btoa($scope.userName + ':' + $scope.password);
         const headers = { 'Authorization': 'Basic ' + authorizationBasic };
 
         return $http.post($scope.codecControlHost + apiPath, data, { headers: headers }).then(function (response) {
             return response.data;
         });
-
     };
 
 });

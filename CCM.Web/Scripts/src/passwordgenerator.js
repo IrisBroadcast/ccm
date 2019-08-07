@@ -1,6 +1,9 @@
-﻿function generatePassword() {
-
-    function shuffleString(inputString) {
+﻿/* *******************************************************
+ * CCM Account password generator */
+function generatePassword()
+{
+    function shuffleString(inputString)
+    {
         let a = inputString.split(""), n = a.length;
         for (var i = n - 1; i > 0; i--) {
             var j = Math.floor(Math.random() * (i + 1));
@@ -9,24 +12,26 @@
             a[j] = tmp;
         }
         return a.join("");
-
     }
 
-    function getRandomString(characterSet, numberOfCharacters) {
+    function getRandomString(characterSet, numberOfCharacters)
+    {
         let result = '';
-        for (let i = 0; i < numberOfCharacters; i++) {
+        for (let i = 0; i < numberOfCharacters; i++)
+        {
             result += getRandomCharacterFromString(characterSet);
         }
-
         return result;
     }
 
-    function getRandomCharacterFromString(inputString) {
-        let randomCharacterIndex = getRandomIntInclusive(0, inputString.length - 1)
+    function getRandomCharacterFromString(inputString)
+    {
+        let randomCharacterIndex = getRandomIntInclusive(0, inputString.length - 1);
         return inputString.charAt(randomCharacterIndex);
     }
 
-    function getRandomIntInclusive(min, max) {
+    function getRandomIntInclusive(min, max)
+    {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
@@ -52,4 +57,3 @@
     password += getRandomString(all, numberOfMixedCharacters);
     return shuffleString(password);
 }
-

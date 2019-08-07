@@ -146,8 +146,10 @@
 </div>
 
 <div class="form-group">
-    <a data-toggle="collapse" data-parent="#accordion" href="#codecconf" class="col-md-2 control-label">@Resources.Codec_Control_Settings</a>
+    <div class="col-md-2"></div>
+    <a data-toggle="collapse" data-parent="#accordion" href="#codecconf" class="col-md-10 control-label">@Resources.Codec_Control_Settings</a>
 </div>
+
 <div class="form-group">
     <div class="panel-collapse collapse" id="codecconf">
 
@@ -155,7 +157,6 @@
             @Html.LabelFor(m => m.Api, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 @Html.DropDownListFor(m => m.Api, new SelectList(Model.CodecApis, "Value", "Key"), new { @class = "form-control" })
-
             </div>
         </div>
 
