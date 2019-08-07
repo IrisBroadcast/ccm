@@ -148,6 +148,7 @@ namespace CCM.Data.Repositories
                     dbSip.ServerTimeStamp = registeredSip.ServerTimeStamp;
                     dbSip.Updated = DateTime.UtcNow; //registeredSip.Updated;
                     dbSip.Expires = registeredSip.Expires;
+                    dbSip.Registrar = registeredSip.Registrar;
 
                     var changeStatus = GetChangeStatus(db, dbSip);
                     db.SaveChanges();
@@ -221,6 +222,7 @@ namespace CCM.Data.Repositories
 
             if (entry.State == EntityState.Deleted || CodecWasExpired(entry))
             {
+                log.Debug($"Hmm, {CodecWasExpired(entry)}, {entry.State.ToString()}, {dbSip.Expires}, {dbSip.Updated}, {dbSip.SIP}");
                 log.Debug($"User-agent expired or deleted '{dbSip.SIP}', this should maybe not happen");
                 return SipEventChangeStatus.CodecRemoved;
             }
