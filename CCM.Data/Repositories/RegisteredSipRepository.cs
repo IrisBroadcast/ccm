@@ -94,19 +94,19 @@ namespace CCM.Data.Repositories
             // 1. Codec been added
             // 2. Codec existed but registration has relevant changes
             // 3. Codec existed and registration is identical = NothingChanged
-
-            if (registeredSip == null)
-            {
-                log.Debug("Update registered user-agent, inputing null");
-                return SipEventHandlerResult.NothingChanged;
-            }
+            // TODO: XXX This could not be null..
+            //if (registeredSip == null)
+            //{
+            //    log.Debug("Update registered user-agent, inputing null");
+            //    return SipEventHandlerResult.NothingChanged;
+            //}
 
             try
             {
                 using (var db = GetDbContext())
                 {
                     var dbSip = db.RegisteredSips.SingleOrDefault(rs => rs.SIP == registeredSip.SIP);
-                    // TODO: XXX Alexander, how big caould this query become?
+                    // Is it a new registration?
                     if (dbSip == null)
                     {
                         if (registeredSip.Expires == 0)
@@ -117,26 +117,27 @@ namespace CCM.Data.Repositories
                         }
 
                         // New registration of user-agent
-                        dbSip = new RegisteredSipEntity {Id = Guid.NewGuid(), Updated = DateTime.UtcNow};
+                        dbSip = new RegisteredSipEntity { Id = Guid.NewGuid() };
                         db.RegisteredSips.Add(dbSip);
                     }
 
                     // Match and map
                     var registeredSipUsername = (registeredSip.Username ?? string.Empty).ToLower().Trim();
                     var sipAccount = db.SipAccounts.FirstOrDefault(u => u.UserName.ToLower() == registeredSipUsername);
-                    var accountId = sipAccount?.Id;
-
                     var userAgentId = GetUserAgentId(db, registeredSip.UserAgentHead);
                     var locationId = LocationManager.GetLocationIdByIp(registeredSip.IP);
 
                     // User-agent has expired
+                    /*
+                    TODO: XXX This could never happen, Expires = 0, is checked before and unregistration is performed then. 
                     registeredSip.Updated = registeredSip.Expires == 0
                         ? DateTime.UtcNow.AddSeconds(-SettingsManager.MaxRegistrationAge) // Expire immediately
                         : DateTime.UtcNow;
+                        */
 
                     dbSip.UserAgentId = userAgentId;
                     dbSip.Location_LocationId = locationId != Guid.Empty ? locationId : (Guid?) null;
-                    dbSip.User_UserId = accountId;
+                    dbSip.User_UserId = sipAccount?.Id;
 
                     dbSip.SIP = registeredSip.SIP;
                     dbSip.UserAgentHead = registeredSip.UserAgentHead;
@@ -145,7 +146,7 @@ namespace CCM.Data.Repositories
                     dbSip.IP = registeredSip.IP;
                     dbSip.Port = registeredSip.Port;
                     dbSip.ServerTimeStamp = registeredSip.ServerTimeStamp;
-                    dbSip.Updated = registeredSip.Updated;
+                    dbSip.Updated = DateTime.UtcNow; //registeredSip.Updated;
                     dbSip.Expires = registeredSip.Expires;
 
                     var changeStatus = GetChangeStatus(db, dbSip);
@@ -212,15 +213,21 @@ namespace CCM.Data.Repositories
         {
             var entry = cxt.Entry(dbSip);
 
-            if (entry.State == EntityState.Added || CodecWasExpired(entry))
+            if (entry.State == EntityState.Added)
             {
                 log.Debug($"User-agent added '{dbSip.SIP}'");
                 return SipEventChangeStatus.CodecAdded;
             }
 
+            if (entry.State == EntityState.Deleted || CodecWasExpired(entry))
+            {
+                log.Debug($"User-agent expired or deleted '{dbSip.SIP}', this should maybe not happen");
+                return SipEventChangeStatus.CodecRemoved;
+            }
+
             if (entry.State == EntityState.Modified && dbSip.Expires == 0)
             {
-                log.Debug($"User-agent removed, expired '{dbSip.SIP}'");
+                log.Error($"User-agent removed, expired '{dbSip.SIP}', this should not happen");
                 return SipEventChangeStatus.CodecRemoved;
             }
 
@@ -316,8 +323,7 @@ namespace CCM.Data.Repositories
                         .Include(rs => rs.UserAgent.OrderedProfiles)
                         .Where(r => r.Updated >= maxAge);
 
-                    var dbResult = query.ToList();
-                    var list = dbResult.Select(sip => MapToRegisteredSipDto(sip, metaList)).ToList();
+                    var list = query.ToList().Select(sip => MapToRegisteredSipDto(sip, metaList)).ToList();
                     AddCallInfoToCachedRegisteredSip(db, list);
 
                     return list;

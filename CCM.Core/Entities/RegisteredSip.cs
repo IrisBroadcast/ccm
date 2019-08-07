@@ -45,7 +45,7 @@ namespace CCM.Core.Entities
         // Properties set on server
         public DateTime Updated { get; set; }
         public Location Location { get; set; }
-        public UserAgent UserAgent { get; set; } // TODO: Should this really be a part of the RegisteredSip, is it useful here? just a large object
+        //public UserAgent UserAgent { get; set; } // TODO: Should this really be a part of the RegisteredSip, is it useful here? just a large object
         public SipAccount User { get; set; }
     }
 
