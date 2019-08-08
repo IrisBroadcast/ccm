@@ -28,10 +28,11 @@ using CCM.Core.SipEvent;
 using CCM.Web.Hubs;
 using NLog;
 
+
 namespace CCM.Web.Infrastructure.SignalR
 {
     /// <summary>
-    /// Uppdaterar klienter via SignalR
+    /// Updates clients through SignalR, CCM frontpage
     /// </summary>
     public class WebGuiHubUpdater : IGuiHubUpdater
     {
@@ -54,7 +55,7 @@ namespace CCM.Web.Infrastructure.SignalR
                 WebGuiHub.ThrottlingUpdateCodecsOnline();
             }
 
-            if (updateResult.ChangeStatus == SipEventChangeStatus.CodecAdded || 
+            if (updateResult.ChangeStatus == SipEventChangeStatus.CodecAdded ||
                 updateResult.ChangeStatus == SipEventChangeStatus.CodecUpdated ||
                 updateResult.ChangeStatus == SipEventChangeStatus.CodecRemoved)
             {

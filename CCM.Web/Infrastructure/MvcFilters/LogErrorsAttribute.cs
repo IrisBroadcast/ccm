@@ -29,7 +29,7 @@ using NLog;
 
 namespace CCM.Web.Infrastructure.MvcFilters
 {
-    public class LogErrorsAttribute : HandleErrorAttribute 
+    public class LogErrorsAttribute : HandleErrorAttribute
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
@@ -46,6 +46,5 @@ namespace CCM.Web.Infrastructure.MvcFilters
 
             base.OnException(filterContext);
         }
-
     }
 }

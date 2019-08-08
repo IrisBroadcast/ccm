@@ -44,7 +44,6 @@ namespace CCM.Web.Infrastructure
             };
 
             controllerSettings.Formatters.Add(formatter);
-
         }
     }
 }

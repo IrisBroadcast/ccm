@@ -96,9 +96,8 @@ namespace CCM.Web.Controllers
                 ChangedObjectId = model.SipAccountId
             };
 
-            _guiHubUpdater.Update(updateResult);
-            _statusHubUpdater.Update(updateResult);
-
+            _guiHubUpdater.Update(updateResult); // First web gui
+            _statusHubUpdater.Update(updateResult); // Then codec status to external clients
             return null;
         }
 

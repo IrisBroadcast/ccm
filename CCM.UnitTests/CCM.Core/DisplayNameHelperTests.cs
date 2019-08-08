@@ -34,7 +34,7 @@ namespace CCM.UnitTests.CCM.Core
     {
         [Test]
         public void should_hide_external_numbers()
-        { 
+        {
             var s = "0090510@acip.example.com";
             var result = DisplayNameHelper.AnonymizePhonenumber(s);
             Assert.AreEqual("Externt nummer", result);

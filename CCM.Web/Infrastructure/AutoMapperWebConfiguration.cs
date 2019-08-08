@@ -33,7 +33,6 @@ using CCM.Web.Models.UserAgents;
 using System.Linq;
 using CCM.Web.Models.StudioMonitor;
 
-
 namespace CCM.Web.Infrastructure
 {
     public static class AutoMapperWebConfiguration
@@ -136,7 +135,6 @@ namespace CCM.Web.Infrastructure
 
             Mapper.Configuration.CompileMappings();
             Mapper.AssertConfigurationIsValid();
-
         }
     }
 }

@@ -34,8 +34,12 @@ using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
 using NLog;
 
+
 namespace CCM.Web.Infrastructure.SignalR
 {
+    /// <summary>
+    /// Updates clients through SignalR, Different clients
+    /// </summary>
     public class CodecStatusHubUpdater : IStatusHubUpdater
     {
         private readonly IRegisteredSipRepository _registeredSipRepository;
@@ -115,7 +119,7 @@ namespace CCM.Web.Infrastructure.SignalR
 
             if (rs != null)
             {
-                var codecStatus = CodecStatusMapper.MapToCodecStatus(rs); // TODO: XXX Alexander, skrivs cachen om här?
+                var codecStatus = CodecStatusMapper.MapToCodecStatus(rs); // TODO: XXX Alexander, skrivs cachen om hï¿½r?
                 CodecStatusHub.UpdateCodecStatus(codecStatus);
             }
             else

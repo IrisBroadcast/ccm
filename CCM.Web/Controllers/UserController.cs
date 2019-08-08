@@ -38,7 +38,6 @@ using CCM.Web.Models.User;
 
 namespace CCM.Web.Controllers
 {
-
     [CcmAuthorize(Roles = Roles.Admin)]
     public class UserController : BaseController
     {

@@ -159,7 +159,7 @@
       <Name>CCM.WebCommon</Name>
     </ProjectReference>
     <ProjectReference Include="..\CCM.Web\CCM.Web.csproj">
-      <Project>{ef965580-a68e-404e-bc76-da6d5350f92d}</Project>
+      <Project>{EF965580-A68E-404E-BC76-DA6D5350F92D}</Project>
       <Name>CCM.Web</Name>
     </ProjectReference>
   </ItemGroup>

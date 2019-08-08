@@ -37,6 +37,5 @@ namespace CCM.Web.Hubs
             var hubContext = GlobalHost.ConnectionManager.GetHubContext<CodecStatusHub>();
             hubContext.Clients.All.codecStatus(codecStatus);
         }
-        
     }
 }

@@ -74,8 +74,5 @@ namespace CCM.Web.Authentication
 
             return true;
         }
-
-        
-     
     }
 }

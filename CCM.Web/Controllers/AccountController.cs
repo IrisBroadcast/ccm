@@ -46,7 +46,7 @@ namespace CCM.Web.Controllers
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly ICcmUserRepository _userRepository;
-        
+
         public AccountController(ICcmUserRepository userRepository)
         {
             _userRepository = userRepository;
@@ -116,6 +116,5 @@ namespace CCM.Web.Controllers
         {
             return Url.IsLocalUrl(returnUrl) ? (ActionResult) Redirect(returnUrl) : RedirectToAction("Index", "Home");
         }
-        
     }
 }

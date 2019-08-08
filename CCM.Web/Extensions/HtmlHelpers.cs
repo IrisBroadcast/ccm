@@ -32,15 +32,15 @@ namespace CCM.Web.Extensions
 {
     public static class HtmlHelpers
     {
-        /// Code started from SO: 
+        /// Code started from SO:
         /// http://stackoverflow.com/questions/6578495/how-do-i-display-the-displayattribute-description-attribute-value
         /// <summary>
         /// Usage:
         /// @Html.DisplayFor(m => m.PropertyName)
-        /// 
+        ///
         /// supply cssclass name, and override span with div tag
         /// @Html.DisplayFor(m => m.PropertyName, "desc", "div")
-        /// 
+        ///
         /// using the named param
         /// @Html.DisplayFor(m => m.PropertyName, tagName: "div")
         /// </summary>

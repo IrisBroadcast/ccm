@@ -97,6 +97,5 @@ namespace CCM.Web.Hubs
             var webGuiHubContext = GlobalHost.ConnectionManager.GetHubContext<WebGuiHub>();
             webGuiHubContext.Clients.All.ongoingCalls(onGoingCalls);
         }
-
     }
 }

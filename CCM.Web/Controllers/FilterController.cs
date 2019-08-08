@@ -148,7 +148,7 @@ namespace CCM.Web.Controllers
             }
 
             ModelState.AddModelError("NameMustBeUnique", "Filtret kunde inte sparas. Möjligen används filter-namnet redan.");
-            
+
             model.Filters = availableFilters;
             return View(model);
         }

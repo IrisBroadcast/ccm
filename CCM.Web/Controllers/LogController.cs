@@ -55,7 +55,7 @@ namespace CCM.Web.Controllers
             model.Application = !string.IsNullOrEmpty(model.Application) ? model.Application : CcmApplications.Web;
             model.SelectedLastOption = !string.IsNullOrEmpty(model.SelectedLastOption) ? model.SelectedLastOption : GetLastOptions().First().Value;
             model.StartDateTime = model.StartDateTime > DateTime.MinValue ? model.StartDateTime : DateTime.Now.AddHours(-6);
-            model.EndDateTime = model.EndDateTime > DateTime.MinValue ? model.EndDateTime : DateTime.Now; 
+            model.EndDateTime = model.EndDateTime > DateTime.MinValue ? model.EndDateTime : DateTime.Now;
             model.Rows = model.Rows > 0 ? model.Rows : 25;
 
             DateTime? startTime;
@@ -164,7 +164,6 @@ namespace CCM.Web.Controllers
         {
             ViewBag.nrOfRowsToDelete = nrOfRowsToDelete;
             ViewBag.LogCount = await _logRepository.GetLogInfoAsync();
-            
             return View();
         }
 

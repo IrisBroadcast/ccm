@@ -95,7 +95,6 @@ namespace CCM.UnitTests.CCM.Data.AutoMapperTests
             Assert.IsNull(studio);
         }
 
-
         [Test]
         public void should_map_groupentity_to_group()
         {
@@ -132,8 +131,6 @@ namespace CCM.UnitTests.CCM.Data.AutoMapperTests
 
             //var mappedCollectionEntity = mappedEntity.Profiles.First();
             //Assert.AreEqual(guid2, mappedCollectionEntity.Id);
-
-
         }
     }
 }

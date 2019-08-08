@@ -183,7 +183,6 @@ namespace CCM.Web.Controllers
             {
                 model.CodecApis.Add(availableApi.DisplayName, availableApi.Name);
             }
-            
             model.LinesInList = 10;
             model.InputsInList = 10;
             model.GposInList = 6;

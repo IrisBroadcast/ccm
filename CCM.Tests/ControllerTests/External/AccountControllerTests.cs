@@ -110,6 +110,5 @@ namespace CCM.Tests.ControllerTests.External
             var deleteResult = _sut.Delete(model.UserName) as OkNegotiatedContentResult<string>;
             Assert.AreEqual("User deleted", deleteResult?.Content);
         }
-        
     }
 }

@@ -41,7 +41,7 @@ namespace CCM.Web.Controllers
         {
             _codecPresetRepository = codecPresetRepository;
         }
-        
+
         public ActionResult Index(string search = "")
         {
             var codecPresets = string.IsNullOrWhiteSpace(search) ? _codecPresetRepository.GetAll() : _codecPresetRepository.Find(search);

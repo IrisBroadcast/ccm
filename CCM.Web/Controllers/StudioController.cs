@@ -41,7 +41,6 @@ namespace CCM.Web.Controllers
     [CcmAuthorize(Roles = "Admin, Remote")]
     public class StudioController : Controller
     {
-
         private readonly IStudioRepository _studioRepository;
 
         public StudioController(IStudioRepository studioRepository)
@@ -56,7 +55,7 @@ namespace CCM.Web.Controllers
             ViewBag.SearchString = search;
             return View(model);
         }
-        
+
         [HttpGet]
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Create()

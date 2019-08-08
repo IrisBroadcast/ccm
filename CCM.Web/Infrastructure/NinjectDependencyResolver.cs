@@ -114,8 +114,6 @@ namespace CCM.Web.Infrastructure
             _kernel.Bind<ISettingsRepository>().To<SettingsRepository>().WhenInjectedInto<CachedSettingsRepository>();
             _kernel.Bind<ILocationRepository>().To<CachedLocationRepository>();
             _kernel.Bind<ILocationRepository>().To<LocationRepository>().WhenInjectedInto<CachedLocationRepository>();
-
         }
-        
     }
 }

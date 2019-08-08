@@ -142,6 +142,5 @@ namespace CCM.Tests.KamailioTests
             var locationAddress = locations[randomIndex];
             return locationAddress;
         }
-
     }
 }

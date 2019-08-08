@@ -169,14 +169,14 @@ namespace CCM.Web.Controllers.ApiExternal
             {
                 return BadRequest("Parameters missing.");
             }
-            
+
             var user = _sipAccountManager.GetByUserName(model.UserName);
 
             if (user == null)
             {
                 return NotFound();
             }
-            
+
             try
             {
                 _sipAccountManager.UpdatePassword(user.Id, model.NewPassword);

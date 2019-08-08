@@ -44,10 +44,10 @@ namespace CCM.DiscoveryApi.Authentication
 {
     /// <summary>
     /// Performs preauthentication of a SR Discovery request
-    /// 
-    /// Checks that the request contains SR Discovery authentication parameters 
+    ///
+    /// Checks that the request contains SR Discovery authentication parameters
     /// and converts then to basic authentication HTTP header
-    /// 
+    ///
     /// Based on code / example from
     /// http://www.asp.net/web-api/overview/security/authentication-filters
     /// </summary>
@@ -77,7 +77,7 @@ namespace CCM.DiscoveryApi.Authentication
                 stream.Seek(0, SeekOrigin.Begin);
 
                 NameValueCollection formData = await request.Content.ReadAsFormDataAsync(cancellationToken);
-                
+
                 var userName = formData["username"];
                 var pwdhash = formData["pwdhash"];
 
@@ -109,7 +109,7 @@ namespace CCM.DiscoveryApi.Authentication
                 context.ErrorResult = new InternalServerErrorResult(request);
             }
         }
-        
+
         public virtual Task ChallengeAsync(HttpAuthenticationChallengeContext context, CancellationToken cancellationToken)
         {
             return Task.FromResult(0);

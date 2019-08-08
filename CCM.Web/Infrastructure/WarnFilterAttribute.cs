@@ -1,4 +1,3 @@
-#region Copyright
 /*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
@@ -24,7 +23,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- #endregion
 
 using System.Web.Http.Controllers;
 using NLog;
@@ -40,6 +38,5 @@ namespace CCM.Web.Controllers.Api
             var request = actionContext.Request;
             log.Warn($"Request to deprecated CodecControl. {request}");
         }
-
     }
 }

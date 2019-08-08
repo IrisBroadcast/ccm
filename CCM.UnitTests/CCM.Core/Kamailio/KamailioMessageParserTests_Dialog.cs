@@ -33,7 +33,6 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
     [TestFixture]
     public class KamailioMessageParserTests_Dialog
     {
-      
         [Test]
         public void should_parse_correct_dialog_start()
         {
@@ -77,6 +76,6 @@ namespace CCM.UnitTests.CCM.Core.Kamailio
         {
             return new KamailioMessageParser(new KamailioDataParser());
         }
- 
+
     }
 }

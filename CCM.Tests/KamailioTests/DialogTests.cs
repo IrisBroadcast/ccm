@@ -53,6 +53,5 @@ namespace CCM.Tests.KamailioTests
                 FromTag = "FromTagTest"
             };
         }
-
     }
 }

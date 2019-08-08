@@ -143,7 +143,7 @@ namespace CCM.Web.Controllers
                     ModelState.AddModelError("NameMustBeUnique", "Gruppen kunde inte sparas. Namnet används redan.");
                     return View("CreateEdit", model);
                 }
-                
+
                 return RedirectToAction("Index");
             }
 
