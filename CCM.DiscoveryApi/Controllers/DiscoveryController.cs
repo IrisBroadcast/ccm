@@ -58,16 +58,18 @@ namespace CCM.DiscoveryApi.Controllers
         public async Task<SrDiscovery> Filters()
         {
             log.Trace("Discovery API - requesting 'filters'");
-
-            var filterDtos = await _discoveryService.GetFiltersAsync(Request);
-
-            var filters = filterDtos.Select(f => new Filter
+            //using (new TimeMeasurer("Discovery Get filters"))
             {
-                Name = f.Name,
-                FilterOptions = f.Options.Select(o => new FilterOption { Name = o }).ToList()
-            }).ToList();
+                var filterDtos = await _discoveryService.GetFiltersAsync(Request);
 
-            return new SrDiscovery { Filters = filters };
+                var filters = filterDtos.Select(f => new Filter
+                {
+                    Name = f.Name,
+                    FilterOptions = f.Options.Select(o => new FilterOption { Name = o }).ToList()
+                }).ToList();
+
+                return new SrDiscovery { Filters = filters };
+            }
         }
 
         [Route("~/profiles")]
@@ -75,13 +77,15 @@ namespace CCM.DiscoveryApi.Controllers
         public async Task<SrDiscovery> Profiles()
         {
             log.Trace("Discovery API - requesting 'profiles'");
+            //using (new TimeMeasurer("Discovery Get profiles"))
+            {
+                var profileDtos = await _discoveryService.GetProfilesAsync(Request);
 
-            var profileDtos = await _discoveryService.GetProfilesAsync(Request);
-
-            var profiles = profileDtos
-                .Select(p => new Profile { Name = p.Name, Sdp = p.Sdp })
-                .ToList();
-            return new SrDiscovery { Profiles = profiles };
+                var profiles = profileDtos
+                    .Select(p => new Profile { Name = p.Name, Sdp = p.Sdp })
+                    .ToList();
+                return new SrDiscovery { Profiles = profiles };
+            }
         }
 
         [Route("~/useragents")]
@@ -103,7 +107,10 @@ namespace CCM.DiscoveryApi.Controllers
 
             UserAgentsResultDto uaResult;
 
-            uaResult = await _discoveryService.GetUserAgentsAsync(searchParams, Request);
+            //using (new TimeMeasurer("Discovery Get user agents"))
+            {
+                uaResult = await _discoveryService.GetUserAgentsAsync(searchParams, Request);
+            }
 
             if (uaResult == null)
             {

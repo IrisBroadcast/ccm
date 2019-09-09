@@ -115,6 +115,7 @@
     <Compile Include="Models\DiscoveryV2Models\UserAgents\UserAgentsResultV2.cs" />
     <Compile Include="Authentication\DiscoveryAuthenticationAttribute.cs" />
     <Compile Include="Authentication\BasicPreAuthenticationAttribute.cs" />
+    <Compile Include="Controllers\Api\AcipDialerController.cs" />
     <Compile Include="Controllers\Api\LogLevelController.cs" />
     <Compile Include="Infrastructure\ApplicationSettings.cs" />
     <Compile Include="Infrastructure\DiscoveryControllerConfigAttribute.cs" />
