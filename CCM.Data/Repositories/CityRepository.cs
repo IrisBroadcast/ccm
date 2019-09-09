@@ -59,7 +59,6 @@ namespace CCM.Data.Repositories
                     }
 
                     dbCity.Locations.Clear();
-
                 }
                 else
                 {
@@ -112,8 +111,8 @@ namespace CCM.Data.Repositories
             search = (search ?? string.Empty).ToLower();
 
             return GetList(
-                c => c.Name.ToLower().Contains(search), 
-                c => c.Locations, 
+                c => c.Name.ToLower().Contains(search),
+                c => c.Locations,
                 c => c.Name);
         }
 
@@ -141,6 +140,5 @@ namespace CCM.Data.Repositories
                 UpdatedOn = dbLocation.UpdatedOn,
             };
         }
-
     }
 }

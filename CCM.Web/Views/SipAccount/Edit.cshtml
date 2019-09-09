@@ -4,7 +4,7 @@
 
 @section scripts
 {
-    <script type="text/javascript" src="@Url.Content("~/Scripts/src/passwordgenerator.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/src/passwordGeneratorApi.js")"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#changePasswordCheckBox').change();
@@ -16,23 +16,28 @@
             toggleChangePasswordFieldsVisibility(checked);
             if (!checked) {
                 setPasswordFields(null);
-                $('#generatePasswordCheckBox').prop('checked', false).change();
             }
+
+            $('#generatePasswordCheckBox').prop('checked', checked).change();
         });
 
         $('#generatePasswordCheckBox').change(function () {
             let checked = $(this).is(':checked');
+            showGeneratedPassword(checked);
             if (checked) {
-                let password = generatePassword();
-                setPasswordFields(password);
+                generatePassword(function (password) {
+                    setPasswordFields(password);
+                });
             }
             else {
                 setPasswordFields(null);
             }
-
-            setGeneratedPasswordFieldVisibility(checked);
-            setPasswordFieldsVisibility(!checked);
         });
+
+        function showGeneratedPassword(show) {
+            setGeneratedPasswordFieldVisibility(show);
+            setPasswordFieldsVisibility(!show);
+        }
 
         function setPasswordFields(password) {
             $('#Password').val(password);
@@ -99,6 +104,13 @@
                     @Html.CheckBoxFor(m => m.AccountLocked)
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="form-group" id="accountTypeGroup">
+        @Html.LabelFor(m => m.AccountType, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.AccountType, Model.AccountTypes, new { @class = "form-control" })
         </div>
     </div>
 

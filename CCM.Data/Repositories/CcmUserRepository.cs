@@ -38,7 +38,6 @@ using NLog;
 
 namespace CCM.Data.Repositories
 {
-
     public class CcmUserRepository : BaseRepository, ICcmUserRepository
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -150,7 +149,7 @@ namespace CCM.Data.Repositories
                 return MapToCcmUser(user);
             }
         }
-       
+
         public async Task<bool> AuthenticateAsync(string username, string password)
         {
             using (var db = GetDbContext())
@@ -219,8 +218,6 @@ namespace CCM.Data.Repositories
                 dbUser.PasswordHash = CryptoHelper.Md5HashSaltedPassword(ccmUser.Password, saltBytes);
                 dbUser.Salt = Convert.ToBase64String(saltBytes);
             }
-
         }
-
     }
 }

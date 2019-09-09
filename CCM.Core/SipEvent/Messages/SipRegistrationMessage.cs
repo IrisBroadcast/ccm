@@ -33,7 +33,8 @@ namespace CCM.Core.SipEvent.Messages
         public string Ip { get; set; }
         public int Port { get; set; }
         public string UserAgent { get; set; }
-        public string Registrar { get; set; } // TODO: Add Registrar server to Sip Message Base
+        public string Registrar { get; set; }
+        public string RegType { get; set; }
         public string Username { get; set; } // TODO: Obsolete. To be removed. Sip used both as sip address and user name (Anders)
         public string ToDisplayName { get; set; }
         public long UnixTimeStamp { get; set; }
@@ -41,7 +42,7 @@ namespace CCM.Core.SipEvent.Messages
 
         public override string ToDebugString()
         {
-            return $"SIP:{Sip}, IP:{Ip}, Port:{Port}, UserAgent:{UserAgent}, Username:{Username}, ToDisplayName:{ToDisplayName}, UnixTimeStamp:{UnixTimeStamp}, Expires:{Expires}";
+            return $"SIP:{Sip}, IP:{Ip}, Port:{Port}, UserAgent:{UserAgent}, Username:{Username}, Registrar:{Registrar}, RegType:{RegType}, ToDisplayName:{ToDisplayName}, UnixTimeStamp:{UnixTimeStamp}, Expires:{Expires}";
         }
     }
 }

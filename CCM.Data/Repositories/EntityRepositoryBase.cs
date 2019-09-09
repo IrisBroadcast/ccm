@@ -24,20 +24,20 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Linq.Expressions;
-using CCM.Core.Entities;
-using CCM.Core.Interfaces;
-using CCM.Core.Interfaces.Repositories;
-using CCM.Data.Entities;
-using CCM.Data.Entities.Base;
+//using System;
+//using System.Collections.Generic;
+//using System.Data.Entity;
+//using System.Linq;
+//using System.Linq.Expressions;
+//using CCM.Core.Entities;
+//using CCM.Core.Interfaces;
+//using CCM.Core.Interfaces.Repositories;
+//using CCM.Data.Entities;
+//using CCM.Data.Entities.Base;
 
 namespace CCM.Data.Repositories
 {
-    //public abstract class EntityRepositoryBase<T,TU> : BaseRepository, IRepository<T> 
+    //public abstract class EntityRepositoryBase<T,TU> : BaseRepository, IRepository<T>
     //    where T : CoreEntityBaseWithId
     //    where TU : EntityBase
     //{
@@ -71,7 +71,6 @@ namespace CCM.Data.Repositories
     //    }
 
     //    protected abstract T MapToCoreObject(EntityBase dbObject);
-       
 
     //    public void Save(T item)
     //    {

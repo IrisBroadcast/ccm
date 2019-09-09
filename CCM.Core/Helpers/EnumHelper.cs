@@ -26,18 +26,34 @@
 
 using System;
 using System.ComponentModel;
+using System.Resources;
+using CCM.Core.Properties;
 
 namespace CCM.Core.Helpers
 {
     public static class EnumHelper
     {
+        private static ResourceManager coreResourceManager = new ResourceManager(typeof(Resources));
+
+        public static string DescriptionAsResource(this Enum enumValue)
+        {
+            var enumType = enumValue.GetType();
+            var field = enumType.GetField(enumValue.ToString());
+            var attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            if (attributes.Length == 0)
+            {
+                return string.Format($"Update your enum with Description field '{field}'.");
+            }
+
+            return coreResourceManager.GetString(((DescriptionAttribute)attributes[0]).Description) ?? string.Format($"Update your resource file with resource key in '{enumType.ToString()}'.");
+        }
+
         public static string Description(this Enum enumValue)
         {
             var enumType = enumValue.GetType();
             var field = enumType.GetField(enumValue.ToString());
             var attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
             return attributes.Length == 0 ? enumValue.ToString() : ((DescriptionAttribute)attributes[0]).Description;
-        } 
-
+        }
     }
 }

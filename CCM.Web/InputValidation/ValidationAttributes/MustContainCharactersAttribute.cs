@@ -32,13 +32,13 @@ namespace CCM.Web.InputValidation.ValidationAttributes
 {
     public class MustContainCharactersAttribute : ValidationAttribute
     {
-        private readonly int minimumCount;
-        private readonly string allowedCharacters;
+        private readonly int _minimumCount;
+        private readonly string _allowedCharacters;
 
         public MustContainCharactersAttribute(int minimumCount, string allowedCharacters)
         {
-            this.minimumCount = minimumCount;
-            this.allowedCharacters = allowedCharacters;
+            _minimumCount = minimumCount;
+            _allowedCharacters = allowedCharacters;
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -49,11 +49,11 @@ namespace CCM.Web.InputValidation.ValidationAttributes
                 return ValidationResult.Success;
             }
 
-            var numberOfSpecialCharacters = stringValue.Count(allowedCharacters.Contains);
-            if (numberOfSpecialCharacters < minimumCount)
+            var numberOfSpecialCharacters = stringValue.Count(_allowedCharacters.Contains);
+            if (numberOfSpecialCharacters < _minimumCount)
             {
-                var charactersString = string.Join(", ", allowedCharacters as IEnumerable<char>);
-                var errorMessage = string.Format(Resources.Password_Must_Contain_At_Least_X_Of_Following_Characters_Y, minimumCount, charactersString);
+                var charactersString = string.Join(" ", _allowedCharacters as IEnumerable<char>);
+                var errorMessage = string.Format(Resources.Password_Must_Contain_At_Least_X_Of_Following_Characters_Y, _minimumCount, charactersString);
                 return new ValidationResult(errorMessage);
             }
 

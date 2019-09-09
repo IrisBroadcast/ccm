@@ -114,34 +114,42 @@
     <Compile Include="Attributes\FilterPropertyAttribute.cs" />
     <Compile Include="Attributes\MetaPropertyAttribute.cs" />
     <Compile Include="Attributes\MetaTypeAttribute.cs" />
+    <Compile Include="Cache\CachedCallHistoryRepository.cs" />
+    <Compile Include="Cache\CachedProfileRepository.cs" />
+    <Compile Include="Cache\CachedProfileGroupRepository.cs" />
+    <Compile Include="Cache\CachedSipAccountRepository.cs" />
+    <Compile Include="Cache\CachedUserAgentRepository.cs" />
     <Compile Include="Cache\CachedCallRepository.cs" />
     <Compile Include="Cache\CachedLocationRepository.cs" />
     <Compile Include="Cache\CachedRegisteredSipRepository.cs" />
     <Compile Include="Cache\CachedSettingsRepository.cs" />
-    <Compile Include="Cache\CcmCache.cs" />
-    <Compile Include="Cache\ICcmCache.cs" />
     <Compile Include="Cache\LazyCacheExtensions.cs" />
-    <Compile Include="Codec\CodecInformation.cs" />
+    <Compile Include="Entities\DocumentDb\DocumentDbObjectBase.cs" />
+    <Compile Include="Entities\RegisteredUserAgentCodecInformation.cs" />
     <Compile Include="Entities\Base\CoreEntityWithTimestamps.cs" />
     <Compile Include="Entities\CallInfo.cs" />
+    <Compile Include="Entities\DocumentDb\CodecControlApi.cs" />
     <Compile Include="Entities\LogInfo.cs" />
     <Compile Include="Entities\ProfileGroup.cs" />
     <Compile Include="Entities\ProfileGroupInfo.cs" />
+    <Compile Include="Entities\RegisteredUserAgent.cs" />
+    <Compile Include="Entities\RegisteredUserAgentDiscovery.cs" />
+    <Compile Include="Entities\RegisteredUserAgentAndProfilesDiscovery.cs" />
+    <Compile Include="Entities\Registration\UserAgentInfo.cs" />
+    <Compile Include="Entities\UserAgentRegistration.cs" />
     <Compile Include="Entities\Specific\LocationInfo.cs" />
     <Compile Include="Entities\Specific\LocationNetwork.cs" />
     <Compile Include="Entities\Specific\ProfileInfo.cs" />
-    <Compile Include="Discovery\FilterDto.cs" />
-    <Compile Include="Discovery\FilterSelection.cs" />
-    <Compile Include="Discovery\ProfileDto.cs" />
-    <Compile Include="Discovery\UserAgentDto.cs" />
-    <Compile Include="Discovery\UserAgentSearchParamsDto.cs" />
-    <Compile Include="Discovery\UserAgentsResultDto.cs" />
+    <Compile Include="Entities\Discovery\FilterDto.cs" />
+    <Compile Include="Entities\Discovery\FilterSelectionDto.cs" />
+    <Compile Include="Entities\Discovery\ProfileDto.cs" />
+    <Compile Include="Entities\Discovery\UserAgentDto.cs" />
+    <Compile Include="Entities\Discovery\UserAgentSearchParamsDto.cs" />
+    <Compile Include="Entities\Discovery\UserAgentsResultDto.cs" />
     <Compile Include="Entities\Specific\RegisteredSipDetails.cs" />
-    <Compile Include="Entities\Specific\RegisteredSipInfo.cs" />
     <Compile Include="Entities\Statistics\HourBasedStatistics.cs" />
     <Compile Include="Entities\Studio.cs" />
     <Compile Include="Enums\SipAccountType.cs" />
-    <Compile Include="Extensions\ByteArrayExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\ApplicationConstants.cs" />
     <Compile Include="Helpers\ApplicationSettings.cs" />
@@ -149,16 +157,24 @@
     <Compile Include="Helpers\GuidHelper.cs" />
     <Compile Include="Helpers\HttpService.cs" />
     <Compile Include="Helpers\IpAddressComparer.cs" />
+    <Compile Include="Helpers\PasswordGeneration\IPasswordGenerator.cs" />
+    <Compile Include="Helpers\PasswordGeneration\IPasswordGeneratorConfigurationProvider.cs" />
+    <Compile Include="Helpers\PasswordGeneration\PasswordGenerator.cs" />
+    <Compile Include="Helpers\PasswordGeneration\PasswordGeneratorConfiguration.cs" />
+    <Compile Include="Interfaces\Repositories\DocumentDb\ICodecControlApiRepository.cs" />
+    <Compile Include="Interfaces\Repositories\DocumentDb\IDocumentDbTable.cs" />
     <Compile Include="Interfaces\IDiscoveryService.cs" />
     <Compile Include="Interfaces\Kamailio\ISipEventParser.cs" />
     <Compile Include="Interfaces\Kamailio\IKamailioMessageParser.cs" />
+    <Compile Include="Interfaces\Managers\IRegisteredSipsManager.cs" />
     <Compile Include="Interfaces\Managers\ISipAccountManager.cs" />
     <Compile Include="Interfaces\Repositories\ISipAccountRepository.cs" />
     <Compile Include="Interfaces\Repositories\IProfileGroupRepository.cs" />
     <Compile Include="Interfaces\Repositories\Base\IRepository.cs" />
     <Compile Include="Interfaces\Repositories\IStudioRepository.cs" />
-    <Compile Include="Interfaces\Repositories\Specialized\ILocationInfoRepository.cs" />
-    <Compile Include="Interfaces\Repositories\Specialized\IRegisteredSipDetailsRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ILocationInfoRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IRegisteredSipDetailsRepository.cs" />
+    <Compile Include="Managers\RegisteredSipsManager.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -184,27 +200,20 @@
     <Compile Include="Entities\Region.cs" />
     <Compile Include="Entities\Location.cs" />
     <Compile Include="Entities\Owner.cs" />
-    <Compile Include="Entities\RadiusUser.cs" />
     <Compile Include="Entities\Setting.cs" />
     <Compile Include="Entities\Profile.cs" />
-    <Compile Include="Entities\Specific\RegisteredSipDto.cs" />
     <Compile Include="Entities\Specific\OldCall.cs" />
     <Compile Include="Entities\Specific\OnGoingCall.cs" />
-    <Compile Include="Entities\Statistics\LocationStatistics.cs" />
+    <Compile Include="Entities\Statistics\LocationBasedStatistics.cs" />
     <Compile Include="Entities\Statistics\DateBasedStatistics.cs" />
     <Compile Include="Entities\UserAgent.cs" />
     <Compile Include="Enums\MatchType.cs" />
     <Compile Include="Enums\Settings.cs" />
-    <Compile Include="Exceptions\CodecApiNotFoundException.cs" />
-    <Compile Include="Exceptions\UnableToConnectException.cs" />
-    <Compile Include="Exceptions\UnableToResolveAddressException.cs" />
-    <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Helpers\CryptoHelper.cs" />
     <Compile Include="Helpers\DisplayNameHelper.cs" />
     <Compile Include="Helpers\MetadataHelper.cs" />
     <Compile Include="Helpers\TimeMeasurer.cs" />
     <Compile Include="Interfaces\Repositories\ILogRepository.cs" />
-    <Compile Include="Interfaces\Repositories\ISimpleRegisteredSipRepository.cs" />
     <Compile Include="SipEvent\Messages\SipDialogMessage.cs" />
     <Compile Include="SipEvent\Messages\SipMessageBase.cs" />
     <Compile Include="SipEvent\Parser\KamailioDataParser.cs" />
@@ -255,9 +264,12 @@
     </Compile>
     <Compile Include="SipEvent\KamailioMessageManager.cs" />
     <Compile Include="Service\DiscoveryService.cs" />
+    <Compile Include="Entities\UserAgentAndProfiles.cs" />
+    <Compile Include="Entities\LocationAndProfiles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Managers\README.md" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -266,6 +278,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -42,20 +42,21 @@ namespace CCM.Core.Managers
         private readonly ILocationRepository _locationRepository;
         private readonly IOwnersRepository _ownersRepository;
         private readonly IRegionRepository _regionRepository;
-        private readonly ISimpleRegisteredSipRepository _registeredSipRepository;
         private readonly ISipAccountRepository _sipAccountRepository;
 
         public StatisticsManager(
-            ICallHistoryRepository callHistoryRepository, ICodecTypeRepository codecTypeRepository, 
-            IOwnersRepository ownersRepository, IRegionRepository regionRepository, 
-            ILocationRepository locationRepository, ISimpleRegisteredSipRepository registeredSipRepository, ISipAccountRepository sipAccountRepository)
+            ICallHistoryRepository callHistoryRepository,
+            ICodecTypeRepository codecTypeRepository,
+            IOwnersRepository ownersRepository,
+            IRegionRepository regionRepository,
+            ILocationRepository locationRepository,
+            ISipAccountRepository sipAccountRepository)
         {
             _callHistoryRepository = callHistoryRepository;
             _codecTypeRepository = codecTypeRepository;
             _ownersRepository = ownersRepository;
             _regionRepository = regionRepository;
             _locationRepository = locationRepository;
-            _registeredSipRepository = registeredSipRepository;
             _sipAccountRepository = sipAccountRepository;
         }
 
@@ -64,21 +65,21 @@ namespace CCM.Core.Managers
             return _codecTypeRepository.GetAll(false);
         }
 
-        public List<LocationStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId)
+        public List<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId)
         {
-            var callHistories = _callHistoryRepository.GetCallHistories(startTime, endTime);
+            var callHistories = _callHistoryRepository.GetCallHistoriesByDate(startTime, endTime);
 
             if (callHistories == null)
             {
-                return new List<LocationStatistics>();
+                return new List<LocationBasedStatistics>();
             }
 
-            var locations = new Dictionary<Guid, LocationStatistics>();
+            var locations = new Dictionary<Guid, LocationBasedStatistics>();
             var filter = new CallHistoryFilter(regionId, ownerId, codecTypeId);
             foreach (var callEvent in LocationCallEvent.GetOrderedEvents(callHistories, filter))
             {
                 if (!locations.ContainsKey(callEvent.LocationId))
-                    locations.Add(callEvent.LocationId, new LocationStatistics { LocationId = callEvent.LocationId, LocationName = callEvent.LocationName});
+                    locations.Add(callEvent.LocationId, new LocationBasedStatistics { LocationId = callEvent.LocationId, LocationName = callEvent.LocationName});
                 locations[callEvent.LocationId].AddEvent(callEvent, startTime, endTime);
             }
 
@@ -120,7 +121,7 @@ namespace CCM.Core.Managers
         {
             var user = _sipAccountRepository.GetById(userId);
             var callHistories = user != null ? _callHistoryRepository.GetCallHistoriesForRegisteredSip(startDate, endDate, user.UserName) : new List<CallHistory>();
-            
+
             var sipStatistics = GenerateDateBasedStatisticses(callHistories, startDate, endDate)
                 .OrderBy(s => s.Date)
                 .ToList();
@@ -173,13 +174,13 @@ namespace CCM.Core.Managers
 
             return new HourBasedStatisticsForLocation
             {
-                LocationId = locationId, 
-                LocationName = location.Name, 
+                LocationId = locationId,
+                LocationName = location.Name,
                 Statistics = noAggregation ? allStats : HourBasedStatistics.Aggregate(allStats)
             };
         }
 
-        private void AddMissingLocations(IList<LocationStatistics> locationStatisticses, Guid regionId)
+        private void AddMissingLocations(IList<LocationBasedStatistics> locationStatisticses, Guid regionId)
         {
             var locations = _locationRepository.GetAll();
 
@@ -189,7 +190,7 @@ namespace CCM.Core.Managers
                 {
                     if (regionId == Guid.Empty || (location.Region != null && location.Region.Id == regionId))
                     {
-                        locationStatisticses.Add(new LocationStatistics() { LocationName = location.Name, LocationId = location.Id });
+                        locationStatisticses.Add(new LocationBasedStatistics() { LocationName = location.Name, LocationId = location.Id });
                     }
                 }
             }

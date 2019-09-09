@@ -68,24 +68,6 @@ namespace CCM.Web.Controllers
             return View(model);
         }
 
-        public ActionResult Index2()
-        {
-            var model = new StatisticsFilterModel();
-
-            model.CodecTypes = _statisticsManager.GetCodecTypes();
-            model.CodecTypes.Insert(0, new CodecType() { Name = Resources.All, Id = Guid.Empty });
-
-            model.Owners = _statisticsManager.GetOwners();
-            model.Owners.Insert(0, new Owner() { Name = Resources.All, Id = Guid.Empty });
-
-            model.Regions = _statisticsManager.GetRegions();
-            model.Regions.Insert(0, new Region() { Name = Resources.All, Id = Guid.Empty });
-
-            model.Users = _statisticsManager.GetSipUsers();
-
-            return View(model);
-        }
-
         public JsonResult GetLocationStatistics(DateTime startDate, DateTime endDate, Guid regionId, Guid ownerId, Guid codecTypeId)
         {
             var statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), regionId, ownerId, codecTypeId);

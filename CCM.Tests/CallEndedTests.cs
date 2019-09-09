@@ -43,16 +43,23 @@ namespace CCM.Tests
     {
         private readonly KamailioMessageManager _kamailioMessageManager;
         private readonly IRegisteredSipRepository _registeredSipRepository;
+        private readonly RegisteredSipsManager _registeredSipsManager;
         private readonly ICallRepository _callRepository;
+        private readonly IProfileGroupRepository _profileGroupRepository;
 
         public CallEndedTests()
         {
             var settingsManager = new SettingsManager(new SettingsRepository(new CachingService()));
             var locationManager = new LocationManager(new LocationRepository(new CachingService()));
+            var sipAccountManager = new SipAccountManager(new SipAccountRepository(new CachingService()));
             var metaRepository = new MetaRepository(new CachingService());
-            var registeredSipRepository = new RegisteredSipRepository(settingsManager, locationManager, metaRepository, new CachingService());
+            var locationRepository = new LocationRepository(new CachingService());
+            var userAgentRepository = new UserAgentRepository(new CachingService());
+            var registeredSipRepository = new RegisteredSipRepository(settingsManager, locationManager, metaRepository, userAgentRepository, sipAccountManager, new CachingService());
             _registeredSipRepository = new CachedRegisteredSipRepository(new CachingService(), registeredSipRepository);
 
+            var profileGroupRepository = new ProfileGroupRepository(new CachingService());
+            _profileGroupRepository = new CachedProfileGroupRepository(new CachingService(), profileGroupRepository);
             _kamailioMessageManager = new KamailioMessageManager(
                 _registeredSipRepository,
                 new CachedCallRepository(
@@ -71,6 +78,8 @@ namespace CCM.Tests
                     new CachingService()
                     )
             );
+
+            _registeredSipsManager = new RegisteredSipsManager(registeredSipRepository, _callRepository, userAgentRepository, locationRepository, profileGroupRepository, settingsManager);
         }
 
         [Test, Explicit]
@@ -126,30 +135,30 @@ namespace CCM.Tests
 
         private void PrintCodecStatus(string from, string to)
         {
-            var sipRespository = _registeredSipRepository;
-            var allRegisteredSipsOnline = sipRespository.GetCachedRegisteredSips();
-            var fromCodec = allRegisteredSipsOnline.SingleOrDefault(r => r.Sip == from);
-            Console.WriteLine("Codec {0} is in call with {1}", fromCodec.Sip, fromCodec.InCallWithSip);
-            var toCodec = allRegisteredSipsOnline.SingleOrDefault(r => r.Sip == to);
-            Console.WriteLine("Codec {0} is in call with {1}", toCodec.Sip, toCodec.InCallWithSip);
+            var sipManager = _registeredSipsManager;
+            var allRegisteredSipsOnline = sipManager.GetRegisteredUserAgentsAndProfiles();
+            var fromCodec = allRegisteredSipsOnline.SingleOrDefault(r => r.SipUri == from);
+            Console.WriteLine("Codec {0} is in call with {1}", fromCodec.SipUri, fromCodec.InCallWithSip);
+            var toCodec = allRegisteredSipsOnline.SingleOrDefault(r => r.SipUri == to);
+            Console.WriteLine("Codec {0} is in call with {1}", toCodec.SipUri, toCodec.InCallWithSip);
         }
 
         public void RegisterSip(string sipAddress, string ip, string displayName, string userAgent)
         {
-            var sip = new RegisteredSip
-            {
-                IP = ip,
-                Port = 5060,
-                ServerTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                SIP = sipAddress,
-                UserAgentHead = userAgent,
-                Username = sipAddress,
-                DisplayName = displayName,
-                Expires = 60
-            };
+            var userAgentRegistration = new UserAgentRegistration(
+                sipUri: sipAddress,
+                userAgentHeader: userAgent,
+                username: sipAddress,
+                displayName: displayName,
+                registrar: string.Empty,
+                ipAddress: ip,
+                port: 5060,
+                expirationTimeSeconds: 60,
+                serverTimeStamp: 0
+            );
 
-            var changeStatus = _registeredSipRepository.UpdateRegisteredSip(sip);
-            Console.WriteLine("Registered {0} with result: {1}", sip.SIP, changeStatus);
+            var changeStatus = _registeredSipRepository.UpdateRegisteredSip(userAgentRegistration);
+            Console.WriteLine("Registered {0} with result: {1}", sipAddress, changeStatus);
         }
 
         public void TearDown()

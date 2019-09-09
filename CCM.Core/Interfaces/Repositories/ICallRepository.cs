@@ -33,7 +33,7 @@ namespace CCM.Core.Interfaces.Repositories
 {
     public interface ICallRepository
     {
-        IList<OnGoingCall> GetOngoingCalls(bool anonomize);
+        IReadOnlyCollection<OnGoingCall> GetOngoingCalls(bool anonymize);
         bool CallExists(string callId, string hashId, string hashEnt);
         void UpdateCall(Call call);
         void CloseCall(Guid callId);

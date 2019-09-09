@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using CCM.Core.Discovery;
+using CCM.Core.Entities.Discovery;
 using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;

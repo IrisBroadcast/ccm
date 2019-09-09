@@ -26,6 +26,12 @@
 
 namespace CCM.Core.Interfaces
 {
+    /// <summary>
+    /// Used for collecting "[MetaProperty]" filtering keys for discovery services.
+    /// All classes implementing ISipFilter may contain properties, attributed as [MetaProperty].
+    /// For including properties in Discovery services.
+    /// TODO: Rename this please...
+    /// </summary>
     public interface ISipFilter
     {
     }

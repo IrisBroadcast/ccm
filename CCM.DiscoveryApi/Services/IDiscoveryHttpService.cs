@@ -27,7 +27,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using CCM.Core.Discovery;
+using CCM.Core.Entities.Discovery;
 
 namespace CCM.DiscoveryApi.Services
 {

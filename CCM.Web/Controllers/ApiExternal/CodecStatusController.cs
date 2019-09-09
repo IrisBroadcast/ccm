@@ -24,78 +24,52 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using CCM.Core.Entities.Specific;
-using CCM.Core.Interfaces.Repositories;
 using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
-using CCM.Core.Helpers;
-using CCM.Core.Interfaces.Managers;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
     /// <summary>
-    /// Used by Dialers
+    /// Used by Dialers, EmBER+ Providers and external services
     /// </summary>
     public class CodecStatusController : ApiController
     {
-        private readonly IRegisteredSipRepository _registeredSipRepository;
-        private readonly ISipAccountRepository _sipAccountRepository;
-        private readonly ISettingsManager _settingsManager;
-
-        public CodecStatusController(IRegisteredSipRepository registeredSipRepository, ISipAccountRepository sipAccountRepository,
-            ISettingsManager settingsManager)
-        {
-            _registeredSipRepository = registeredSipRepository;
-            _sipAccountRepository = sipAccountRepository;
-            _settingsManager = settingsManager;
-        }
-
         [HttpGet]
-        public IList<CodecStatus> GetAll(bool includeCodecsOffline = false)
+        public IEnumerable<CodecStatusViewModel> GetAll(bool includeCodecsOffline = false)
         {
-            IEnumerable<RegisteredSipDto> allRegisteredSips = _registeredSipRepository.GetCachedRegisteredSips();
+            // TODO: Alexander, Är detta sätt det bästa? Många ToList();
+            var codecStatusViewModelsProvider = (CodecStatusViewModelsProvider)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(CodecStatusViewModelsProvider));
 
-            var notRegisteredSips = Enumerable.Empty<RegisteredSipDto>();
             if (includeCodecsOffline)
             {
-                var sipIdsOnline = allRegisteredSips.Select(rs => rs.Sip).ToList();
-                var accounts = _sipAccountRepository.GetAll();
-                var accountsNotOnline = accounts.Where(a => !sipIdsOnline.Contains(a.UserName));
-                var sipDomain = _settingsManager.SipDomain;
-                notRegisteredSips = accountsNotOnline.Select(a => new RegisteredSipDto
-                {
-                    Id = Guid.Empty,
-                    Sip = a.UserName,
-                    DisplayName = DisplayNameHelper.GetDisplayName("", a.DisplayName, string.Empty, "", a.UserName, "", sipDomain),
-                });
+                return codecStatusViewModelsProvider.GetAllCodecsIncludeOffline();
             }
 
-            return allRegisteredSips.Concat(notRegisteredSips)
-                                    .Select(CodecStatusMapper.MapToCodecStatus)
-                                    .ToList();
+            return codecStatusViewModelsProvider.GetAll();
         }
 
         [HttpGet]
-        public CodecStatus Get(string sipId)
+        public CodecStatusViewModel Get(string sipId)
         {
-            RegisteredSipDto regSip = null;
+            // TODO: Alexander, Är detta sätt det bästa?
+            var codecStatusViewModelsProvider = (CodecStatusViewModelsProvider)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(CodecStatusViewModelsProvider));
+            var userAgentsOnline = codecStatusViewModelsProvider.GetAll();
 
-            if (!string.IsNullOrEmpty(sipId))
+            var codecStatus = userAgentsOnline.FirstOrDefault(x => x.SipAddress == sipId);
+
+            if (codecStatus == null)
             {
-                var allRegisteredSips = _registeredSipRepository.GetCachedRegisteredSips();
-                regSip = allRegisteredSips.FirstOrDefault(s => s.Sip == sipId);
+                return new CodecStatusViewModel
+                {
+                    SipAddress = sipId,
+                    State = CodecState.NotRegistered
+                };
             }
 
-            if (regSip == null)
-            {
-                return new CodecStatus { SipAddress = sipId, State = CodecState.NotRegistered, HasGpo = false };
-            }
-
-            return CodecStatusMapper.MapToCodecStatus(regSip);
+            return codecStatus;
         }
 
     }

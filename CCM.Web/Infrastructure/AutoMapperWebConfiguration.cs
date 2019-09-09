@@ -50,9 +50,13 @@ namespace CCM.Web.Infrastructure
                     .ForMember(x => x.UpdatedBy, opt => opt.Ignore());
 
                 cfg.CreateMap<Studio, StudioMonitorViewModel>()
-                .ForMember(x => x.StudioId, opt => opt.MapFrom(studio => studio.Id));
+                    .ForMember(x => x.StudioId, opt => opt.MapFrom(studio => studio.Id));
 
+                // TODO: Is this where the actual sorting is done, when Map is used? why is this in the web project and not in core?
                 cfg.CreateMap<ProfileGroupEntity, ProfileGroup>()
+                    .ForMember(dest => dest.Name, opt => opt.MapFrom(scr => scr.Name))
+                    .ForMember(dest => dest.Description, opt => opt.MapFrom(scr => scr.Description))
+                    .ForMember(dest => dest.GroupSortWeight, opt => opt.MapFrom(scr => scr.GroupSortWeight))
                     .ForMember(dest => dest.Profiles, opt => opt.MapFrom(scr => scr.OrderedProfiles.OrderBy(c => c.SortIndex).Select(c => c.Profile)));
 
                 cfg.CreateMap<ProfileEntity, Core.Entities.Profile>()
@@ -61,8 +65,9 @@ namespace CCM.Web.Infrastructure
                     .ForMember(dest => dest.UserAgents, opt => opt.Ignore()); //fixa om den ska användas någon annanstans än vid profilegroup
 
                 cfg.CreateMap<ProfileGroupProfileOrdersEntity, ProfileGroupInfo>()
-                .ForMember(dest => dest.Name, opt => opt.Ignore())
-                .ForMember(dest => dest.Description, opt => opt.Ignore());
+                    .ForMember(dest => dest.Name, opt => opt.Ignore())
+                    .ForMember(dest => dest.Description, opt => opt.Ignore())
+                    .ForMember(dest => dest.GroupSortWeight, opt => opt.Ignore());
 
                 cfg.CreateMap<ProfileGroupInfo, ProfileGroupProfileOrdersEntity>()
                     .ForMember(x => x.ProfileGroupId, opt => opt.Ignore())
@@ -90,6 +95,8 @@ namespace CCM.Web.Infrastructure
                 cfg.CreateMap<ProfileGroupEntity, ProfileGroupInfo>();
                 cfg.CreateMap<ProfileGroupInfo, ProfileGroupEntity>()
                     .ForMember(dest => dest.Id, opt => opt.Ignore())
+                    //.ForMember(dest => dest.Name, opt => opt.Ignore())
+                    //.ForMember(dest => dest.GroupSortWeight, opt => opt.Ignore())
                     .ForMember(dest => dest.OrderedProfiles, opt => opt.Ignore())
                     .ForMember(x => x.CreatedOn, opt => opt.Ignore())
                     .ForMember(x => x.CreatedBy, opt => opt.Ignore())

@@ -1,8 +1,8 @@
 ﻿
 /* *******************************************************
  * Codec control for front page popup */
-ccmControllers.controller('sipInfoController', function ($scope, $http, $interval, $uibModalInstance, sipid, sipAddress) {
-
+ccmControllers.controller('sipInfoController', function ($scope, $http, $interval, $uibModalInstance, sipid, sipAddress)
+{
     var audioStatusUpdateInterval = 1000; // Uppdate interval for inputs, GPO:s and VU-meters in ms
     var audioStatusUpdateHandle;
 
@@ -13,6 +13,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
     $scope.sipid = sipid;
     $scope.sipAddress = sipAddress;
     $scope.info = {};
+    $scope.codecMeteringAvailable = false;
     $scope.txL = -96;
     $scope.txR = -96;
     $scope.rxL = -96;
@@ -39,7 +40,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
         if (codecIsOnline) {
             $scope.getAvailableGpos();
             $scope.getAudioStatus();
-            $scope.startAudioStatus();
+            //$scope.startAudioStatus();
             $scope.startAudioUpdateHub();
         }
     };
@@ -62,8 +63,8 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
                 return console.error(err.toString());
             });
     };
-    
-   $scope.startAudioStatus = function () {
+
+    /*$scope.startAudioStatus = function () {
         if (angular.isDefined(audioStatusUpdateHandle)) return;
 
         audioStatusUpdateHandle = $interval(function () {
@@ -77,7 +78,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             $interval.cancel(audioStatusUpdateHandle);
             audioStatusUpdateHandle = undefined;
         }
-    };
+    };*/
 
     $scope.startAudioUpdateHub = function () {
         $scope.signalrConnection = new signalR.HubConnectionBuilder()
@@ -94,6 +95,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
 
         $scope.signalrConnection.onclose(function (e) {
             console.log('Signalr connection closed.');
+            $scope.codecMeteringAvailable = false;
             setTimeout($scope.startSignalrConnection, 3000);
         });
 
@@ -110,6 +112,15 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             },
             function () { // on error
                 $scope.gpos = [];
+            });
+    };
+
+    $scope.setGpo = function (gpo) {
+        var newState = gpo.active ? false : true;
+        $scope.httpPost('/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: newState })
+            .then(function (data) {
+                console.log("Codec GPO data: ", data);
+                gpo.active = data.active;
             });
     };
 
@@ -137,58 +148,62 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
         });
     };
 
-    $scope.setGpo = function (gpo) {
-        var newState = gpo.active ? false : true;
-        $scope.httpPost('/api/codeccontrol/setgpo', { sipaddress: $scope.sipAddress, number: gpo.number, active: newState })
-            .then(function (data) {
-                console.log("Codec GPO data: ", data);
-                gpo.active = data.active;
-            });
-    };
-
     $scope.getAudioStatus = function () {
         console.info('Getting codec audio status');
 
         $http.get($scope.codecControlHost + '/api/codeccontrol/getaudiostatus?sipaddress=' + $scope.sipAddress).then(function (response) {
             var audioStatus = response.data;
             $scope.updateAudioStatus(audioStatus);
+        }, function (response) {
+            // Stop interval checking Audio status
+            console.warn(response);
+            $scope.codecMeteringAvailable = false;
+            //$scope.stopAudioStatus();
         });
-
     };
 
     $scope.updateAudioStatus = function (audioStatus) {
+        $scope.codecMeteringAvailable = true;
+
         for (var i = 0; i < audioStatus.inputStatus.length; i++) {
             $scope.setInputValue(audioStatus.inputStatus[i]);
         }
 
-        for (var j = 0; j < audioStatus.gpos.length; j++) {
-            var gpoData = audioStatus.gpos[j];
-            var gpo = $scope.gpos[gpoData.index];
-            if (gpo) {
-                gpo.active = gpoData.active;
+        $scope.$apply(function() {
+            for (var j = 0; j < audioStatus.gpos.length; j++) {
+                var gpoData = audioStatus.gpos[j];
+                var gpo = $scope.gpos[gpoData.index];
+                if (gpo) {
+                    gpo.active = gpoData.active;
+                }
             }
-        }
 
-        // Values is presented in dB where 0 = Fullscale +18db, -18 = Test 0dB, -96 = min-level
-        $scope.txL = fallback($scope.txL, convertVuToPercentage(audioStatus.vuValues.txLeft));
-        $scope.txR = fallback($scope.txR, convertVuToPercentage(audioStatus.vuValues.txRight));
-        $scope.rxL = fallback($scope.rxL, convertVuToPercentage(audioStatus.vuValues.rxLeft));
-        $scope.rxR = fallback($scope.rxR, convertVuToPercentage(audioStatus.vuValues.rxRight));
+            // Values is presented in dB where 0 = Fullscale +18db, -18 = Test 0dB, -96 = min-level
+            $scope.txL = fallback($scope.txL, convertVuToPercentage(audioStatus.vuValues.txLeft));
+            $scope.txR = fallback($scope.txR, convertVuToPercentage(audioStatus.vuValues.txRight));
+            $scope.rxL = fallback($scope.rxL, convertVuToPercentage(audioStatus.vuValues.rxLeft));
+            $scope.rxR = fallback($scope.rxR, convertVuToPercentage(audioStatus.vuValues.rxRight));
+        });
     };
 
     $scope.setInputValue = function (inputStatus) {
         var input = $scope.inputs[inputStatus.index];
 
-        if (input) {
-            if (inputStatus.error) {
-                input.error = inputStatus.error;
-                input.disabled = 'disabled';
-            } else {
-                input.value = inputStatus.gainLevel;
-                input.enabled = inputStatus.enabled;
-                input.disabled = '';
+        $scope.$apply(function () {
+            if (input) {
+                if (inputStatus.error) {
+                    input.error = inputStatus.error;
+                    input.disabled = 'disabled';
+                } else {
+                    input.value = inputStatus.gainLevel;
+                    input.enabled = inputStatus.enabled;
+                    input.disabled = '';
+                    if (input.interactingValue) {
+                        input.changeValue = inputStatus.gainLevel;
+                    }
+                }
             }
-        }
+        });
     };
 
     $scope.toggleInputEnabled = function (input) {
@@ -200,12 +215,30 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             input.enabled = isEnabled;
         });
     };
-    
+
     $scope.setGainLevel = function (input, value) {
         $scope.httpPost('/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: input.id, level: input.value + value })
             .then(function (data) {
                 input.value = data.gainLevel;
+                input.changeValue = data.gainLevel;
             });
+    };
+
+    $scope.rangeSetInputTo = function (input, value) {
+        console.log("Range input set to: " + value + ", for input: " + input.id);
+        
+        $scope.httpPost('/api/codeccontrol/setinputgain', { sipAddress: $scope.sipAddress, input: input.id, level: value })
+            .then(function (data) {
+                input.value = data.gainLevel;
+                input.changeValue = data.gainLevel;
+            }, function(error) {
+                console.error("Could not set input gain", error);
+            });
+
+        setTimeout(function () {
+            input.interactingValue = false;
+        },
+        1000);
     };
 
     $scope.reboot = function () {
@@ -228,6 +261,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             });
     };
 
+    // Modal codec information
     $scope.openAdmin = function (link, width, height, scrollbars) {
         if (width <= 0) {
             width = 1000;
@@ -249,7 +283,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
         console.log("Destroy called.");
 
         // Stop interval checking Audio status
-        $scope.stopAudioStatus();
+        //$scope.stopAudioStatus();
 
         // Stop subscription
         if ($scope.signalrConnection) {
@@ -262,10 +296,11 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
                 });
         }
     });
-    
+
     $http.get('/api/registeredsipdetails/GetRegisteredSipInfo?id=' + $scope.sipid).then(function (response) {
+        console.info('Codec information, Get registered User Agent Data', response.data);
+
         let info = response.data;
-        console.info('Codec information', info);
         $scope.info = info;
 
         if (info.IsAuthenticated && info.CodecControl)
@@ -274,7 +309,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             {
                 var inputs = [];
                 for (var i = 0; i < info.Inputs; i++) {
-                    var input = { id: i, number: i + 1, value: 0, enabled: false, disabled: 'disabled' };
+                    var input = { id: i, number: i + 1, value: 0, changeValue: 0, enabled: false, disabled: 'disabled' };
                     inputs.push(input);
                 }
                 $scope.inputs = inputs;

@@ -88,7 +88,7 @@ namespace CCM.Web.Models.Studio
 
         [Required]
         [Range(0, 60)]
-        [Display(ResourceType = typeof(Resources), Name = "Studio_Number_Of_Miutes_Before_Page_Gets_Inactive")]
+        [Display(ResourceType = typeof(Resources), Name = "Studio_Number_Of_Minutes_Before_Page_Gets_Inactive")]
         public int InactivityTimeout { get; set; }
     }
 }

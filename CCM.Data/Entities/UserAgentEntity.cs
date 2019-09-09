@@ -33,6 +33,7 @@ using CCM.Data.Entities.Base;
 
 namespace CCM.Data.Entities
 {
+    // TODO: Redo this whole object. It's way to big and seems strange that it's needed.
     // Codec Model
     [Table("UserAgents")]
     public class UserAgentEntity : EntityBase, ISipFilter
@@ -42,15 +43,17 @@ namespace CCM.Data.Entities
         public string Identifier { get; set; }
         public MatchType MatchType { get; set; }
         public string Image { get; set; }
-        public string UserInterfaceLink { get; set; }
-        // TODO: Redo this whole object. It's way to big and seems strange that it's needed.
 
-        /// <summary>
-        /// True if this UserAgent uses ActiveX for web interface.
-        /// </summary>
+        // Connected to codec control
+        public string UserInterfaceLink { get; set; }
+        // True if this UserAgent uses ActiveX for web interface.
+        // TODO: Rename this to something else
         public bool Ax { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        // Shows link to codec user interface
+        public bool UserInterfaceIsOpen { get; set; }
+        public bool UseScrollbars { get; set; }
         public string Api { get; set; }
         public int Lines { get; set; }
         public int Inputs { get; set; }
@@ -60,11 +63,9 @@ namespace CCM.Data.Entities
         public string Comment { get; set; }
         public int InputGainStep { get; set; }
         public string GpoNames { get; set; }
-        public bool UserInterfaceIsOpen { get; set; } // TODO: What is this used for?
-        public bool UseScrollbars { get; set; }
 
         public virtual ICollection<UserAgentProfileOrderEntity> OrderedProfiles { get; set; }
-        public virtual ICollection<RegisteredSipEntity> RegisteredSips { get; set; } // TODO: Looped reference?
+        //public virtual ICollection<RegisteredSipEntity> RegisteredSips { get; set; } // TODO: ZZZ Registered sips should maybe not anymore be here??
         public virtual ICollection<CodecPresetEntity> CodecPresets { get; set; }
     }
 }

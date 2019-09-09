@@ -39,6 +39,5 @@ namespace CCM.Data.Entities
         public string PasswordHash { get; set; }
         public string Salt { get; set; }
         public virtual RoleEntity Role { get; set; }
-        
     }
 }

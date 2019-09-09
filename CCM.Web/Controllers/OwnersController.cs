@@ -38,16 +38,16 @@ namespace CCM.Web.Controllers
     [CcmAuthorize(Roles = "Admin, Remote")]
     public class OwnersController : BaseController
     {
-        private readonly IOwnersRepository ownersRepository;
+        private readonly IOwnersRepository _ownersRepository;
 
         public OwnersController(IOwnersRepository ownersRepository)
         {
-            this.ownersRepository = ownersRepository;
+            _ownersRepository = ownersRepository;
         }
 
         public ActionResult Index(string search = "")
         {
-            List<Owner> owners = string.IsNullOrWhiteSpace(search) ? ownersRepository.GetAll() : ownersRepository.FindOwners(search);
+            List<Owner> owners = string.IsNullOrWhiteSpace(search) ? _ownersRepository.GetAll() : _ownersRepository.FindOwners(search);
 
             ViewBag.SearchString = search;
             return View(owners);
@@ -70,7 +70,7 @@ namespace CCM.Web.Controllers
                 model.CreatedBy = User.Identity.Name;
                 model.UpdatedBy = User.Identity.Name;
 
-                ownersRepository.Save(model);
+                _ownersRepository.Save(model);
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("Name", Resources.Name_Required);
@@ -82,7 +82,7 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Edit(Guid id)
         {
-            Owner owner = ownersRepository.GetById(id);
+            Owner owner = _ownersRepository.GetById(id);
 
             return View(owner);
         }
@@ -96,7 +96,7 @@ namespace CCM.Web.Controllers
             {
                 model.UpdatedBy = User.Identity.Name;
 
-                ownersRepository.Save(model);
+                _ownersRepository.Save(model);
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError("Name", Resources.Name_Required);
@@ -108,7 +108,7 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Delete(Guid id)
         {
-            Owner owner = ownersRepository.GetById(id);
+            Owner owner = _ownersRepository.GetById(id);
             return View(owner);
         }
 
@@ -117,7 +117,7 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Delete(Owner model)
         {
-            ownersRepository.Delete(model.Id);
+            _ownersRepository.Delete(model.Id);
             return RedirectToAction("Index");
         }
     }

@@ -28,8 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CCM.Core.Cache;
-using CCM.Core.Discovery;
 using CCM.Core.Entities;
+using CCM.Core.Entities.Discovery;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces;
@@ -40,6 +40,10 @@ using NLog;
 
 namespace CCM.Core.Service
 {
+    /// <summary>
+    /// The core service of CCM, Discovery Service / Active Phonebook
+    /// Profiles (SDPs), Filters and User Agents
+    /// </summary>
     public class DiscoveryService : IDiscoveryService
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -47,27 +51,43 @@ namespace CCM.Core.Service
         private readonly IFilterManager _filterManager;
         private readonly IProfileRepository _profileRepository;
         private readonly IRegisteredSipRepository _registeredSipRepository;
+        private readonly IRegisteredSipsManager _registeredSipsManager;
         private readonly IAppCache _cache;
 
-        public DiscoveryService(ISettingsManager settingsManager, IFilterManager filterManager, IProfileRepository profileRepository,
-            IRegisteredSipRepository registeredSipRepository, IAppCache cache)
+        public DiscoveryService(
+            ISettingsManager settingsManager,
+            IFilterManager filterManager,
+            IProfileRepository profileRepository,
+            IRegisteredSipRepository registeredSipRepository,
+            IRegisteredSipsManager registeredSipsManager,
+            IAppCache cache)
         {
             _settingsManager = settingsManager;
             _filterManager = filterManager;
             _profileRepository = profileRepository;
             _registeredSipRepository = registeredSipRepository;
+            _registeredSipsManager = registeredSipsManager;
             _cache = cache;
         }
 
+        /// <summary>
+        /// Gets the profiles with an easy display name and SDP
+        /// </summary>
+        /// <returns>The profiles</returns>
         public List<ProfileDto> GetProfiles()
         {
-            var profiles = _cache.GetProfiles(_profileRepository.GetAllProfileNamesAndSdp);
+            IList<ProfileNameAndSdp> profiles = _profileRepository.GetAllProfileNamesAndSdp();
             var result = profiles.Select(p => new ProfileDto { Name = p.Name, Sdp = p.Sdp }).ToList();
             return result;
         }
 
+        /// <summary>
+        /// Gets the filters to select the user agents
+        /// </summary>
+        /// <returns>The filters name and sub options</returns>
         public List<FilterDto> GetFilters()
         {
+            // TODO: Add "All" filtering with A-G G-Z possibilities
             IList<AvailableFilter> filters = _cache.GetAvailableFilters(_filterManager.GetAvailableFiltersIncludingOptions);
 
             var result = filters.Select(filter => new FilterDto
@@ -81,28 +101,47 @@ namespace CCM.Core.Service
             return result;
         }
 
+        /// <summary>
+        /// Returns a list with available user agents based on filter parameters
+        /// </summary>
+        /// <param name="caller">Codec initiating the request for user agents</param>
+        /// <param name="callee">Used for querying on a preselected destination</param>
+        /// <param name="filterParams">Filter parameters</param>
+        /// <param name="includeCodecsInCall">Include registered user agents that's in a call</param>
+        /// <returns>List of user agents</returns>
         public UserAgentsResultDto GetUserAgents(string caller, string callee, IList<KeyValuePair<string, string>> filterParams, bool includeCodecsInCall = false)
         {
             if (filterParams == null)
             {
                 log.Debug("Requested filter params is null");
-                filterParams = new List<KeyValuePair<string,string>>();
+                filterParams = new List<KeyValuePair<string, string>>();
             }
 
-            IList<ProfileNameAndSdp> callerProfiles = !string.IsNullOrEmpty(caller) ? GetProfilesForRegisteredSip(caller) : _cache.GetProfiles(_profileRepository.GetAllProfileNamesAndSdp);
-            log.Debug("Found {0} profiles for caller '{1}'", callerProfiles.Count, caller);
+            // Get all registered user agents and profiles
+            IList<RegisteredUserAgentAndProfilesDiscovery> registeredUserAgents = _registeredSipsManager.GetRegisteredUserAgentsAndProfiles().ToList();
 
-            IList<RegisteredSipDto> sipsOnline;
+            // Get profiles for caller or if no caller is present return all available profiles
+            IList<ProfileNameAndSdp> callerProfiles;
+            if (!string.IsNullOrEmpty(caller))
+            {
+                callerProfiles = GetProfilesForRegisteredSip(caller, registeredUserAgents);
+                log.Debug($"Found {callerProfiles.Count} profiles for caller '{caller}'");
+            }
+            else
+            {
+                callerProfiles = _profileRepository.GetAllProfileNamesAndSdp();
+                log.Debug($"Found {callerProfiles.Count} profiles, no caller specified");
+            }
 
+            // Filter out user agents
             if (string.IsNullOrWhiteSpace(callee))
             {
-                log.Trace("No callee parameter is received.");
-
                 var filterSelections = GetFilteringValues(filterParams);
-                sipsOnline = GetFilteredSipsOnline(filterSelections);
+                registeredUserAgents = GetFilteredRegisteredUserAgents(filterSelections, registeredUserAgents);
 
-                if (sipsOnline == null) {
-                    log.Debug("Sips online is null");
+                if (registeredUserAgents == null)
+                {
+                    log.Debug("Registered user agents is null, return empty result. No callee parameter is received.");
                     return new UserAgentsResultDto()
                     {
                         Profiles = new List<ProfileDto>(),
@@ -111,73 +150,51 @@ namespace CCM.Core.Service
                 }
 
                 // Exclude 'yourself'
-                sipsOnline = sipsOnline.Where(sip => sip.Sip != caller).ToList();
+                registeredUserAgents = registeredUserAgents.Where(sip => sip.SipUri != caller).ToList();
 
-                // Exclude user-agents in call
-                sipsOnline = includeCodecsInCall ? sipsOnline : sipsOnline.Where(sip => !sip.InCall).ToList();
+                // Exclude user agents in call
+                registeredUserAgents = includeCodecsInCall ? registeredUserAgents : registeredUserAgents.Where(sip => !sip.InCall).ToList();
             }
             else
             {
-                log.Trace("Callee '{0}' parameter is received.", callee);
+                // Lookup a special user agent
+                var calleeSip = registeredUserAgents.FirstOrDefault(s => s.SipUri == callee); // TODO: Does this needs to be ToList to not be modified?
 
-                var calleeSip = _registeredSipRepository.GetCachedRegisteredSips().FirstOrDefault(s => s.Sip == callee);
-
-                if (calleeSip == null) {
-                    log.Trace("Registered user-agents is null, returning empty response.");
-                    return new UserAgentsResultDto() { Profiles = new List<ProfileDto>(), UserAgents = new List<UserAgentDto>() };
+                if (calleeSip == null)
+                {
+                    log.Trace($"Registered user agent is null, returning empty result. Callee '{callee}' parameter is received.");
+                    return new UserAgentsResultDto()
+                    {
+                        Profiles = new List<ProfileDto>(),
+                        UserAgents = new List<UserAgentDto>()
+                    };
                 }
 
-                sipsOnline = new List<RegisteredSipDto> { calleeSip };
+                registeredUserAgents = new List<RegisteredUserAgentAndProfilesDiscovery> { calleeSip };
             }
 
-            var result = ProfilesAndUserAgents(sipsOnline, callerProfiles.Select(p => new ProfileDto() { Name = p.Name, Sdp = p.Sdp }).ToList());
+            var result = MatchProfilesAndUserAgents(registeredUserAgents, callerProfiles.Select(p => new ProfileDto() { Name = p.Name, Sdp = p.Sdp }).ToList());
             return result;
         }
 
-        /// <summary>
-        /// Returns a list with profiles for a specified sipId
-        /// </summary>
-        private IList<ProfileNameAndSdp> GetProfilesForRegisteredSip(string sipId)
+        private IList<ProfileNameAndSdp> GetProfilesForRegisteredSip(string sipId, IList<RegisteredUserAgentAndProfilesDiscovery> registeredUserAgents)
         {
-            log.Debug("Get profiles for registered user-agent '{0}'.", sipId);
-            var regSip = _registeredSipRepository.GetCachedRegisteredSips().FirstOrDefault(s => s.Sip == sipId);
-            var profileNames = regSip?.Profiles ?? new List<string>();
-            return _cache.GetProfiles(_profileRepository.GetAllProfileNamesAndSdp).Where(p => profileNames.Contains(p.Name)).ToList();
-        }
-
-        /// <summary>
-        /// Returns a list with online codecs / user-agents based on filter parameters
-        /// </summary>
-        private IList<RegisteredSipDto> GetFilteredSipsOnline(IList<FilterSelection> filterSelections)
-        {
-            var registeredSips = _registeredSipRepository.GetCachedRegisteredSips();
-            if (registeredSips == null)
-            {
-                log.Debug("Registered user-agents is null while getting filtered sips.");
-                return new List<RegisteredSipDto>();
-            }
-
-            registeredSips = registeredSips.ToList(); // To be sure we don't mess with original list
-            foreach (var filterSelection in filterSelections)
-            {
-                registeredSips = registeredSips.Where(rs => MetadataHelper.GetPropertyValue(rs, filterSelection.Property) == filterSelection.Value).ToList();
-            }
-
-            log.Debug("Found {0} registered user-agents.", registeredSips.Count);
-            return registeredSips;
+            var regSip = registeredUserAgents.FirstOrDefault(s => s.SipUri == sipId);
+            var profileNames = regSip?.OrderedProfiles ?? new List<string>();
+            return _profileRepository.GetAllProfileNamesAndSdp().Where(p => profileNames.Contains(p.Name)).ToList();
         }
 
         /// <summary>
         /// Returns a list with the filter properties and their filter value thats been selected
         /// </summary>
-        private List<FilterSelection> GetFilteringValues(IList<KeyValuePair<string, string>> selectedFilters)
+        private List<FilterSelectionDto> GetFilteringValues(IList<KeyValuePair<string, string>> selectedFilters)
         {
             var availableFilters = _cache.GetAvailableFilters(_filterManager.GetAvailableFiltersIncludingOptions);
 
             var filterSelections = (from selectedFilter in selectedFilters.Where(f => !string.IsNullOrEmpty(f.Value))
                                     let matchingFilter = availableFilters.FirstOrDefault(f => f.Name == selectedFilter.Key)
                                     where matchingFilter != null
-                                    select new FilterSelection() { Property = matchingFilter.FilteringName, Value = selectedFilter.Value })
+                                    select new FilterSelectionDto() { Property = matchingFilter.FilteringName, Value = selectedFilter.Value })
                                     .ToList();
 
             return filterSelections;
@@ -187,38 +204,38 @@ namespace CCM.Core.Service
         /// Intersects registered callees profiles and callerProfiles to return a list with available
         /// user agents to call for a certain caller.
         /// </summary>
-        private UserAgentsResultDto ProfilesAndUserAgents(IEnumerable<RegisteredSipDto> callees, IList<ProfileDto> callerProfiles)
+        private UserAgentsResultDto MatchProfilesAndUserAgents(IEnumerable<RegisteredUserAgentAndProfilesDiscovery> registeredUserAgents, IList<ProfileDto> callerProfiles)
         {
+            //TODO: Verify speed
             var userAgents = new List<UserAgentDto>();
 
             try
             {
-                // TODO: Test, see if this is why error messages popping up in matching profiles later
-                if(!callerProfiles.Any())
+                if (!callerProfiles.Any())
                 {
                     log.Error("CallerProfiles is null, can not intersect callerProfiles with callees. Expecting empty result.");
                 }
 
                 var callerProfileNames = callerProfiles.Select(p => p.Name).ToList();
 
-                foreach (var callee in callees)
+                // INFO: The order of common profiles is be based on callee's (destinations) profile order
+                // INFO: The profiles has been sorted by first User-Agent Profiles Order -> Location Profile Group Order -> Callee Profiles Order
+                foreach (var callee in registeredUserAgents)
                 {
-                    // INFO: Viktigt att ordningen på gemensamma profiler baseras på callee's profilordning.
-                    // INFO: !Important! The order of common profiles MUST be based on callee's profile order
-                    // INFO: Intersect, get Profiles in callee that have duplicates in callerProfileNames
-
-                    var matchingProfiles = callee.Profiles.Intersect(callerProfileNames).ToList();
+                    // Match profiles from callee with the callers
+                    var matchingProfiles = callee.OrderedProfiles.Intersect(callerProfileNames).ToList();
 
                     if (matchingProfiles.Any())
                     {
-                        var displayName = DisplayNameHelper.GetDisplayName(callee, _settingsManager.SipDomain);
+                        var displayName = DisplayNameHelper.GetDisplayName(callee.DisplayName, callee.UserDisplayName, "", callee.SipUri, "", "", _settingsManager.SipDomain);
+                        // TODO: WARNING!! Why is this DisplayNameHelper here.. just get something from the class ...
                         var userAgent = new UserAgentDto
                         {
-                            SipId = string.Format("{0} <{1}>", displayName, callee.Sip),
+                            SipId = string.Format("{0} <{1}>", displayName, callee.SipUri),
                             PresentationName = displayName,
                             ConnectedTo = callee.InCallWithName ?? string.Empty,
                             InCall = callee.InCall,
-                            MetaData = callee.MetaData.Select(meta => new KeyValuePair<string,string>(meta.Key, meta.Value)).ToList(),
+                            MetaData = callee.MetaData?.Select(meta => new KeyValuePair<string, string>(meta.Key, meta.Value)).ToList(), // TODO: needs to be in a new list again?
                             Profiles = matchingProfiles,
                         };
                         userAgents.Add(userAgent);
@@ -240,6 +257,26 @@ namespace CCM.Core.Service
             };
 
             return result;
+        }
+
+        /// <summary>
+        /// Returns a list with online codecs / user-agents based on user filter parameters.
+        /// </summary>
+        private IList<RegisteredUserAgentAndProfilesDiscovery> GetFilteredRegisteredUserAgents(IList<FilterSelectionDto> filterSelections, IList<RegisteredUserAgentAndProfilesDiscovery> registeredUserAgents)
+        {
+            if (registeredUserAgents.Count == 0)
+            {
+                return new List<RegisteredUserAgentAndProfilesDiscovery>();
+            }
+
+            foreach (var filterSelection in filterSelections)
+            {
+                // TODO: This is the place where we might map up a new object for temporary use with the MetaData tag on it??
+                registeredUserAgents = registeredUserAgents.Where(rs => MetadataHelper.GetPropertyValue(rs, filterSelection.Property) == filterSelection.Value).ToList();
+            }
+
+            log.Debug($"Found {registeredUserAgents.Count} registered user-agents.");
+            return registeredUserAgents;
         }
     }
 }

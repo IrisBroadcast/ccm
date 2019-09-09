@@ -25,10 +25,7 @@
  */
 
 using System;
-using System.Linq;
-using System.Resources;
 using CCM.Core.Entities;
-using CCM.Core.Entities.Specific;
 using CCM.Core.Extensions;
 using CCM.Core.Properties;
 
@@ -41,10 +38,10 @@ namespace CCM.Core.Helpers
             return GetDisplayName(registeredSip.DisplayName, registeredSip.User != null ? registeredSip.User.DisplayName : string.Empty, string.Empty, registeredSip.Username, registeredSip.SIP, "", sipDomain);
         }
 
-        public static string GetDisplayName(RegisteredSipDto registeredSip, string sipDomain)
-        {
-            return GetDisplayName(registeredSip.DisplayName, registeredSip.UserDisplayName, string.Empty, registeredSip.UserName, registeredSip.Sip, "", sipDomain);
-        }
+        //public static string GetDisplayName(RegisteredSipDto registeredSip, string sipDomain)
+        //{
+        //    return GetDisplayName(registeredSip.DisplayName, registeredSip.UserDisplayName, string.Empty, registeredSip.UserName, registeredSip.Sip, "", sipDomain);
+        //}
 
         public static string GetDisplayName(string primaryDisplayName, string secondaryDisplayName, string tertiaryDisplayName, string primaryUserName, string secondaryUserName, string tertiaryUserName,
             string homeDomain, string defaultDisplayName = "")
@@ -92,7 +89,6 @@ namespace CCM.Core.Helpers
 
                 return Resources.External_Phone_Number;
             }
-            
             return s;
         }
 
@@ -114,11 +110,11 @@ namespace CCM.Core.Helpers
                 {
                     // Internal short phone number
                     return string.Format("Ank {0}", username);
+                    // TODO: Resourcify so that it becomes international
                 }
 
                 return Resources.External_Phone_Number;
             }
-
             return s;
         }
     }

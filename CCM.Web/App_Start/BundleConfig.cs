@@ -28,6 +28,9 @@ using System.Web.Optimization;
 
 namespace CCM.Web
 {
+    /// <summary>
+    /// Script and style bundles for all views
+    /// </summary>
     public class BundleConfig
     {
         public static void RegisterBundles(BundleCollection bundles)

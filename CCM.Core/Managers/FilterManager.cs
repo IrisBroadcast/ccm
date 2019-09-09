@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CCM.Core.Attributes;
 using CCM.Core.Entities;
-using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 
@@ -48,13 +47,12 @@ namespace CCM.Core.Managers
         }
 
         /// <summary>
-        /// Hämtar lista med egenskaper hos CachedRegisteredSip-objektet som är möjliga att filtrera på.
-        /// Get's a list with properties in the CachedRegisteredSip-object, that's possible to base filter on
+        /// Get's a list with properties in the RegisteredSip-object, that's possible to base filter on
         /// </summary>
         /// <returns></returns>
         public List<AvailableFilter> GetFilterProperties()
         {
-            var filterProperties = (typeof(RegisteredSipDto)).GetProperties().Where(p => p.GetCustomAttributes(false).Any(a => a is FilterPropertyAttribute));
+            var filterProperties = (typeof(RegisteredUserAgentAndProfilesDiscovery)).GetProperties().Where(p => p.GetCustomAttributes(false).Any(a => a is FilterPropertyAttribute));
 
             List<AvailableFilter> availableFilters = new List<AvailableFilter>();
 
@@ -72,7 +70,6 @@ namespace CCM.Core.Managers
                     };
                     availableFilters.Add(filter);
                 }
-                
             }
 
             return availableFilters;

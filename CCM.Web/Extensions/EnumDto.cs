@@ -41,7 +41,7 @@ namespace CCM.Web.Extensions
             {
                 Value = Convert.ToInt32(e),
                 Name = e.ToString(),
-                Description = e.Description()
+                Description = e.DescriptionAsResource()
             };
         }
 

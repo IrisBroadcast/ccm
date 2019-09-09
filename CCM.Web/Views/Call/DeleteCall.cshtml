@@ -9,7 +9,7 @@
 <hr />
 
 <div class="row">
-    <p class="col-md-7">@Html.Raw(warningText)</p>
+    <p class="col-md-10">@Html.Raw(warningText)</p>
 </div>
 
 @using (Html.BeginForm("DeleteCall", "Call", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -20,14 +20,22 @@
     <div class="form-group">
         @Html.LabelFor(m => m.ImSure, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.ImSure, new { @class = "form-control" })
+            <div class="ccm-form-group--checkbox">
+                <div class="ccm-form-group-checkbox--btn">
+                    @Html.CheckBoxFor(m => m.ImSure)
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="form-group">
         @Html.LabelFor(m => m.IHaveChecked, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.IHaveChecked, new { @class = "form-control" })
+            <div class="ccm-form-group--checkbox">
+                <div class="ccm-form-group-checkbox--btn">
+                    @Html.CheckBoxFor(m => m.IHaveChecked)
+                </div>
+            </div>
         </div>
     </div>
 

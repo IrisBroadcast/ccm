@@ -61,7 +61,7 @@ namespace CCM.Core.Helpers
         /// <summary>
         /// Include ONLY cultures you are implementing
         /// </summary>
-        private static readonly List<string> Cultures = new List<string> 
+        private static readonly List<string> Cultures = new List<string>
         {
             "sv-SE",    // Swedish (Default)
             "en"        // English
@@ -91,8 +91,8 @@ namespace CCM.Core.Helpers
                 return name;
             }
 
-            // Find a close match. For example, if you have "en-US" defined and the user requests "en-GB", 
-            // the function will return closes match that is "en-US" because at least the language is the same (ie English)  
+            // Find a close match. For example, if you have "en-US" defined and the user requests "en-GB",
+            // the function will return closes match that is "en-US" because at least the language is the same (ie English)
             var n = GetNeutralCulture(name);
             foreach (var c in Cultures)
             {

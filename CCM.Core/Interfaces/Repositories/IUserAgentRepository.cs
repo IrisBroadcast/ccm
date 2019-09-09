@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories.Base;
@@ -32,6 +33,11 @@ namespace CCM.Core.Interfaces.Repositories
 {
     public interface IUserAgentRepository : IRepository<UserAgent>
     {
+        //void Save(UserAgent userAgent);
+        //void Delete(Guid id);
+        //UserAgent GetById(Guid id);
+        //List<UserAgent> GetAll();
+        Dictionary<Guid, UserAgentAndProfiles> GetUserAgentsTypesAndProfiles();
         List<UserAgent> Find(string search);
     }
 }

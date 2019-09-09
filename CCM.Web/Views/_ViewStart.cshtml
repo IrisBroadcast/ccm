@@ -1,6 +1,4 @@
 ﻿@using System.Configuration
 @{
-    string env = @ConfigurationManager.AppSettings["Environment"];
-    // TODO: WHY WHY WHY Is this still here???
-    Layout = env == "Stage" ? "~/Views/Shared/_Layout_CodecControl.cshtml" : "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }

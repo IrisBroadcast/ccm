@@ -32,6 +32,7 @@ using System.Threading;
 using CCM.Core.Cache;
 using CCM.Data.Entities;
 using CCM.Data.Entities.Base;
+using CCM.Data.Entities.DocumentDb;
 using LazyCache;
 using NLog;
 
@@ -83,6 +84,8 @@ namespace CCM.Data
         public DbSet<LogEntity> Logs { get; set; }
         public DbSet<StudioEntity> Studios { get; set; }
 
+        // Document Db Entities
+        public DbSet<CodecControlApiEntity> ApiDefinition { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -129,7 +132,8 @@ namespace CCM.Data
 
             if (shouldInvalidateCache)
             {
-                log.Debug("Changes in configuration-data saved to database. Trigger full cache update.");
+                log.Debug("Changes in data saved to database. Trigger full cache update.");
+                // TODO: ZZZ This is too wide. Since it is affecting both saving of data and changing registered sips and everything else
                 _cache.FullReload();
             }
 

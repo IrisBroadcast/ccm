@@ -42,7 +42,15 @@ namespace CCM.Core.SipEvent
         public string Host { get; set; }
         public string Port { get; set; }
         public string Parameters { get; set; }
-        public string UserAtHost { get { return string.IsNullOrEmpty(User) || string.IsNullOrEmpty(Host) ? string.Empty : string.Format("{0}@{1}", User, Host); } }
+        public string UserAtHost
+        {
+            get
+            {
+                return string.IsNullOrEmpty(User) || string.IsNullOrEmpty(Host)
+                    ? string.Empty
+                    : string.Format("{0}@{1}", User, Host);
+            }
+        }
 
         private readonly string _sipString; // Original String
 

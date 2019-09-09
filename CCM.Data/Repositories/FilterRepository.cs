@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CCM.Core.Entities;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
@@ -45,6 +44,7 @@ namespace CCM.Data.Repositories
         {
             using (var db = GetDbContext())
             {
+                // TODO: Redo this one, so it supports later Entity framework queries. And for .NET core
                 var sql = string.Format("SELECT {0} FROM {1}", columnName, tableName);
                 var filterValues = db.Database.SqlQuery<string>(sql).Where(s => s != null).ToList();
                 return filterValues;
@@ -127,7 +127,6 @@ namespace CCM.Data.Repositories
             }
         }
 
-        
         public void Delete(Guid id)
         {
             using (var db = GetDbContext())
@@ -143,7 +142,6 @@ namespace CCM.Data.Repositories
                 db.SaveChanges();
             }
         }
-
 
         /// <summary>
         /// Finds the filters.
@@ -163,7 +161,6 @@ namespace CCM.Data.Repositories
             }
         }
 
-      
         private Filter MapToFilter(FilterEntity dbFilter)
         {
             return new Filter
@@ -179,6 +176,5 @@ namespace CCM.Data.Repositories
                 UpdatedOn = dbFilter.UpdatedOn
             };
         }
-
     }
 }

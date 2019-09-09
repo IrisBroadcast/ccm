@@ -89,8 +89,7 @@ namespace CCM.Data.Repositories
                 location.UpdatedOn = dbLocation.UpdatedOn;
 
                 // IP V4
-                IPNetwork ipv4Network;
-                if (IPNetwork.TryParse(location.Net, location.Cidr ?? 0, out ipv4Network))
+                if (IPNetwork.TryParse(location.Net, location.Cidr ?? 0, out IPNetwork ipv4Network))
                 {
                     dbLocation.Net_Address_v4 = ipv4Network.Network.ToString();
                     dbLocation.Cidr = ipv4Network.Cidr;
@@ -102,8 +101,7 @@ namespace CCM.Data.Repositories
                 }
 
                 // IP v6
-                IPNetwork ipv6Network;
-                if (IPNetwork.TryParse(location.Net_v6, location.Cidr_v6 ?? 0, out ipv6Network))
+                if (IPNetwork.TryParse(location.Net_v6, location.Cidr_v6 ?? 0, out IPNetwork ipv6Network))
                 {
                     dbLocation.Net_Address_v6 = ipv6Network.Network.ToString();
                     dbLocation.Cidr_v6 = ipv6Network.Cidr;
@@ -114,7 +112,7 @@ namespace CCM.Data.Repositories
                     dbLocation.Cidr_v6 = location.Cidr_v6;
                 }
 
-                //Profile Group
+                // Profile Group
                 dbLocation.ProfileGroup = db.ProfileGroups.SingleOrDefault(r => r.Id == location.ProfileGroup.Id);
 
                 // Region
@@ -184,11 +182,10 @@ namespace CCM.Data.Repositories
             {
                 IQueryable<LocationEntity> dbLocationsQuery;
 
-                // Sök på ip-adress om söksträngen kan tolkas som sådan
-                IPAddress searchIpAddress;
-                if (IPAddress.TryParse(searchString, out searchIpAddress) && !searchString.IsNumeric()
-                ) // Sökning på bara siffror försöker vi inte tolka som IP-adress.
+                // Search on IP-Address if the search string can be interpreted as such
+                if (IPAddress.TryParse(searchString, out IPAddress searchIpAddress) && !searchString.IsNumeric())
                 {
+                    // Search on only numbers, to not be interpreted as IP-Address
                     if (searchIpAddress.AddressFamily == AddressFamily.InterNetwork) // V4
                     {
                         var locationEntities = db.Locations.Where(l => !string.IsNullOrEmpty(l.Net_Address_v4))
@@ -228,13 +225,13 @@ namespace CCM.Data.Repositories
                     }
                     else
                     {
-                        // Okänd addresstyp
+                        // Unknown address type
                         dbLocationsQuery = Enumerable.Empty<LocationEntity>().AsQueryable();
                     }
                 }
                 else
-                    // Annars, sök på namn
                 {
+                    // Search by name
                     dbLocationsQuery = db.Locations
                         .Where(l =>
                             l.CarrierConnectionId.ToLower().Contains(searchString.ToLower()) ||
@@ -267,6 +264,33 @@ namespace CCM.Data.Repositories
                     .ToList();
 
                 return networksV4.Concat(networksV6).ToList();
+            }
+        }
+
+        public Dictionary<Guid,LocationAndProfiles> GetLocationsAndProfiles()
+        {
+            using (var db = GetDbContext())
+            {
+                var result = db.Locations
+                    .OrderBy(y => y.Name)
+                    .Select(x =>
+                        new
+                        {
+                            LocationId = x.Id,
+                            LocationName = x.Name,
+                            ProfileGroupId = x.ProfileGroup.Id,
+                            ProfileGroupName = x.ProfileGroup.Name
+                        })
+                    .ToList();
+
+                return result.ToDictionary(u => u.LocationId, x =>
+                {
+                    return new LocationAndProfiles(
+                        locationId: x.LocationId,
+                        locationName: x.LocationName,
+                        profileGroupId: x.ProfileGroupId,
+                        profileGroupName: x.ProfileGroupName);
+                });
             }
         }
 
@@ -311,6 +335,5 @@ namespace CCM.Data.Repositories
         {
             return Mapper.Map<ProfileGroup>(dbProfileGroup);
         }
-
     }
 }

@@ -935,7 +935,7 @@
   <data name="Studio_Number_Of_Inputs" xml:space="preserve">
     <value>Antal ingångar</value>
   </data>
-  <data name="Studio_Number_Of_Miutes_Before_Page_Gets_Inactive" xml:space="preserve">
+  <data name="Studio_Number_Of_Minutes_Before_Page_Gets_Inactive" xml:space="preserve">
     <value>Antal minuter innan monitorsidan blir inaktiv</value>
   </data>
   <data name="Studio_Preselected_Input_Level" xml:space="preserve">
@@ -1036,5 +1036,110 @@
   </data>
   <data name="Sip_Registrar_Server" xml:space="preserve">
     <value>Registrar</value>
+  </data>
+  <data name="Codec_Error_No_Audio_Metering_Status_Available" xml:space="preserve">
+    <value>Ingen ljudmätare tillgänlig</value>
+  </data>
+  <data name="Debug_Title" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="Logs_Link_Debugging" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="Cache_Info_Title" xml:space="preserve">
+    <value>Cache Info</value>
+  </data>
+  <data name="Sip_Account_Could_Not_Be_Saved" xml:space="preserve">
+    <value>Användaren kunde inte sparas</value>
+  </data>
+  <data name="Studio_Comma_Separated_List_With_Gpo_Names" xml:space="preserve">
+    <value>Kommaseparerad lista med namn på GPO:er</value>
+  </data>
+  <data name="Studio_Comma_Separated_List_With_Input_Names" xml:space="preserve">
+    <value>Kommaseparerad lista med mikrofonernas namn</value>
+  </data>
+  <data name="Location_Error_Message_Cidr_For_Ipv4_Is_Missing" xml:space="preserve">
+    <value>CIDR för IPv4 saknas</value>
+  </data>
+  <data name="Location_Error_Message_Cidr_For_Ipv6_Is_Missing" xml:space="preserve">
+    <value>CIDR för IPv6 saknas</value>
+  </data>
+  <data name="Location_Error_Message_Invalid_Ipv4_Address" xml:space="preserve">
+    <value>Ogiltig IPv4-adress</value>
+  </data>
+  <data name="Location_Error_Message_Invalid_Ipv6_Address" xml:space="preserve">
+    <value>Ogiltig IPv6-adress</value>
+  </data>
+  <data name="Location_Error_Message_Only_Ipv4_Address_Is_Valid" xml:space="preserve">
+    <value>Endast IP v4-adresser kan anges</value>
+  </data>
+  <data name="Location_Error_Message_Only_Ipv6_Address_Is_Valid" xml:space="preserve">
+    <value>Endast IPv6-adresser kan anges</value>
+  </data>
+  <data name="Profile_Group_Description" xml:space="preserve">
+    <value>Beskrivning</value>
+  </data>
+  <data name="Profile_Group_Error_Message_Name_Is_Too_Long" xml:space="preserve">
+    <value>Namnet är för långt</value>
+  </data>
+  <data name="Profile_Group_Group_Name" xml:space="preserve">
+    <value>Gruppnamn</value>
+  </data>
+  <data name="Profile_Group_Profiles" xml:space="preserve">
+    <value>Profiler</value>
+  </data>
+  <data name="Date_Time_Name_Day_And_Night" xml:space="preserve">
+    <value>Dygnet</value>
+  </data>
+  <data name="Date_Time_Name_Minute" xml:space="preserve">
+    <value>Minuten</value>
+  </data>
+  <data name="Date_Time_Name_One_Hour" xml:space="preserve">
+    <value>1 timme</value>
+  </data>
+  <data name="Date_Time_Name_Six_Hours" xml:space="preserve">
+    <value>6 timmar</value>
+  </data>
+  <data name="Date_Time_Name_Ten_Minutes" xml:space="preserve">
+    <value>10 minuter</value>
+  </data>
+  <data name="Date_Time_Name_Thirty_Minutes" xml:space="preserve">
+    <value>30 minuter</value>
+  </data>
+  <data name="Date_Time_Name_Three_Days_And_Night" xml:space="preserve">
+    <value>3 dygnen</value>
+  </data>
+  <data name="Date_Time_Name_Three_Hours" xml:space="preserve">
+    <value>3 timmar</value>
+  </data>
+  <data name="Date_Time_Name_Time_Interval" xml:space="preserve">
+    <value>Tidsintervall</value>
+  </data>
+  <data name="Date_Time_Name_Twelve_Hours" xml:space="preserve">
+    <value>12 timmar</value>
+  </data>
+  <data name="Date_Time_Name_Week" xml:space="preserve">
+    <value>Veckan</value>
+  </data>
+  <data name="Sip_Account_Undefined_Codec_Types_Category_Name" xml:space="preserve">
+    <value>Oklassificerade</value>
+  </data>
+  <data name="Profile_Group_Group_Sort_Weight" xml:space="preserve">
+    <value>Profilgruppens sorteringsvikt</value>
+  </data>
+  <data name="Profile_Group_Page_Description" xml:space="preserve">
+    <value>Profilgrupper används för platser. Sorteringen i listan innebär att profilgrupperna som ligger längst ner kommer i första hand användas för sortering. Om ett samtal läggs mellan två platser där en profilgrupp är högre sorterad och en annan lägre sorterad.</value>
+  </data>
+  <data name="Profile_Group_Sort_Weight" xml:space="preserve">
+    <value>Sorteringsvikt</value>
+  </data>
+  <data name="Filter_Error_Filter_Could_Not_Be_Saved_The_Name_Is_Already_In_Use" xml:space="preserve">
+    <value>Filtret kunde inte sparas. Möjligen används filter-namnet redan.</value>
+  </data>
+  <data name="Profile_Error_Profile_Could_Not_Be_Saved_The_Name_Is_Already_In_Use" xml:space="preserve">
+    <value>Profilen kunde inte sparas. Namnet används redan.</value>
+  </data>
+  <data name="Profile_Group_Error_Profile_Group_Could_Not_Be_Saved_The_Name_Is_Already_In_Use" xml:space="preserve">
+    <value>Gruppen kunde inte sparas. Namnet används redan.</value>
   </data>
 </root>

@@ -59,7 +59,6 @@ namespace CCM.Web.Models.SipAccount
 
         [Display(ResourceType = typeof(Resources), Name = "Account_Type")]
         public SipAccountType AccountType { get; set; }
-      
 
         public List<Owner> Owners { get; set; }
 

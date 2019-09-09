@@ -48,6 +48,5 @@ namespace CCM.Core.Entities
         public int NrOfGpos { get; set; }
         public string GpoNames { get; set; }
         public int InactivityTimeout { get; set; }
-        
     }
 }

@@ -37,7 +37,7 @@ namespace CCM.Tests.KamailioTests
         [Test]
         public void StartCall()
         {
-            var sipMessageManager = kernel.Get<KamailioMessageManager>();
+            var sipMessageManager = Kernel.Get<KamailioMessageManager>();
             var sipMessage = CreateCallStartMessage("ob142254@acip.example.com", "sto-04@acip.example.com");
             sipMessageManager.RegisterCall(sipMessage);
         }

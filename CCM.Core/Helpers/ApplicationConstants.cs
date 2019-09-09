@@ -35,11 +35,11 @@ namespace CCM.Core.Helpers
 
     public static class Owners
     {
-        public const string SrOwnerName = "SR";
+        public const string SrOwnerName = "SR"; // TODO: This is way to hardcoded Owners.SrOwnerName
     }
 
     public static class CodecTypes
     {
-        public const string Personliga = "Personliga";
+        public const string Personliga = "Personliga"; // TODO: This is way to hardcoded CodecTypes.Personliga
     }
 }

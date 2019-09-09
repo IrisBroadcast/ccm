@@ -26,7 +26,7 @@
                     <li class="@(Model.Application == CcmApplications.Web ? "active" : "")">@Html.ActionLink(CcmApplications.Web + " " + Resources.Logs, "Index", "Log", new { application = CcmApplications.Web }, new { })</li>
                     <li class="@(Model.Application == CcmApplications.Discovery ? "active" : "")">@Html.ActionLink(CcmApplications.Discovery + " " + Resources.Logs, "Index", "Log", new { application = CcmApplications.Discovery }, new { })</li>
                     <li>@Html.ActionLink(Resources.Logs_Title_Clear_Logs, "Delete", "Log", new { application = Model.Application }, new { })</li>
-                    <li>@Html.ActionLink( Resources.Logs_Link_Change_Log_Level_For + " " + CcmApplications.Web, "Level", "Log", new { application = CcmApplications.Web }, new { })</li>
+                    <li>@Html.ActionLink(Resources.Logs_Link_Change_Log_Level_For + " " + CcmApplications.Web, "Level", "Log", new { application = CcmApplications.Web }, new { })</li>
                     <li>@Html.ActionLink(Resources.Logs_Link_Change_Log_Level_For + " " + CcmApplications.Discovery, "Level", "Log", new { application = CcmApplications.Discovery }, new { })</li>
                 </ul>
             </div>
@@ -135,7 +135,6 @@
             </div>
         }
     </div>
-
 </div>
 
 <style>

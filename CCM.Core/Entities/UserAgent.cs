@@ -34,6 +34,13 @@ namespace CCM.Core.Entities
     public class UserAgent : CoreEntityWithTimestamps, ISipFilter
     {
         // TODO: XXX Limit the amount of things returned here. Functions don't really need api information. That's mostly codec control
+
+        public UserAgent()
+        {
+            Profiles = new List<Profile>();
+            CodecPresets = new List<CodecPreset>();
+        }
+
         public string Name { get; set; }
         public string Identifier { get; set; }
         public MatchType MatchType { get; set; }
@@ -42,7 +49,6 @@ namespace CCM.Core.Entities
         public bool Ax { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-        public List<Profile> Profiles { get; set; }
         public string Comment { get; set; }
         public string Api { get; set; }
         public int Lines { get; set; }
@@ -51,15 +57,11 @@ namespace CCM.Core.Entities
         public int InputMinDb { get; set; }
         public int InputMaxDb { get; set; }
         public int InputGainStep { get; set; }
-        public List<CodecPreset> CodecPresets { get; set; }
         public string GpoNames { get; set; }
         public bool UserInterfaceIsOpen { get; set; }
         public bool UseScrollbars { get; set; }
 
-        public UserAgent()
-        {
-            Profiles = new List<Profile>();
-            CodecPresets = new List<CodecPreset>();
-        }
+        public List<Profile> Profiles { get; set; }
+        public List<CodecPreset> CodecPresets { get; set; }
     }
 }

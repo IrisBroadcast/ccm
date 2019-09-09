@@ -78,7 +78,7 @@ namespace CCM.Data.Repositories
         }
 
         protected List<T> GetList(
-            Expression<Func<TU, bool>> whereExpression, 
+            Expression<Func<TU, bool>> whereExpression,
             Expression<Func<TU, object>> includeExpression,
             Func<T, object> orderbyFunction)
         {
@@ -126,7 +126,7 @@ namespace CCM.Data.Repositories
         {
             return Thread.CurrentPrincipal.IsInRole(Roles.Admin);
         }
-        
+
         protected string CurrentUserName()
         {
             return Thread.CurrentPrincipal.Identity.Name;

@@ -28,8 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using CCM.Core.Discovery;
-using CCM.Core.Helpers;
+using CCM.Core.Entities.Discovery;
 using CCM.DiscoveryApi.Authentication;
 using CCM.DiscoveryApi.Infrastructure;
 using CCM.DiscoveryApi.Models;
@@ -58,18 +57,16 @@ namespace CCM.DiscoveryApi.Controllers
         public async Task<SrDiscovery> Filters()
         {
             log.Trace("Discovery API - requesting 'filters'");
-            //using (new TimeMeasurer("Discovery Get filters"))
+
+            var filterDtos = await _discoveryService.GetFiltersAsync(Request);
+
+            var filters = filterDtos.Select(f => new Filter
             {
-                var filterDtos = await _discoveryService.GetFiltersAsync(Request);
+                Name = f.Name,
+                FilterOptions = f.Options.Select(o => new FilterOption { Name = o }).ToList()
+            }).ToList();
 
-                var filters = filterDtos.Select(f => new Filter
-                {
-                    Name = f.Name,
-                    FilterOptions = f.Options.Select(o => new FilterOption { Name = o }).ToList()
-                }).ToList();
-
-                return new SrDiscovery { Filters = filters };
-            }
+            return new SrDiscovery { Filters = filters };
         }
 
         [Route("~/profiles")]
@@ -77,15 +74,13 @@ namespace CCM.DiscoveryApi.Controllers
         public async Task<SrDiscovery> Profiles()
         {
             log.Trace("Discovery API - requesting 'profiles'");
-            //using (new TimeMeasurer("Discovery Get profiles"))
-            {
-                var profileDtos = await _discoveryService.GetProfilesAsync(Request);
 
-                var profiles = profileDtos
-                    .Select(p => new Profile { Name = p.Name, Sdp = p.Sdp })
-                    .ToList();
-                return new SrDiscovery { Profiles = profiles };
-            }
+            var profileDtos = await _discoveryService.GetProfilesAsync(Request);
+
+            var profiles = profileDtos
+                .Select(p => new Profile { Name = p.Name, Sdp = p.Sdp })
+                .ToList();
+            return new SrDiscovery { Profiles = profiles };
         }
 
         [Route("~/useragents")]
@@ -105,12 +100,7 @@ namespace CCM.DiscoveryApi.Controllers
 
             log.Trace("Discovery API - requesting 'useragents'", searchParams);
 
-            UserAgentsResultDto uaResult;
-
-            //using (new TimeMeasurer("Discovery Get user agents"))
-            {
-                uaResult = await _discoveryService.GetUserAgentsAsync(searchParams, Request);
-            }
+            UserAgentsResultDto uaResult = await _discoveryService.GetUserAgentsAsync(searchParams, Request);
 
             if (uaResult == null)
             {

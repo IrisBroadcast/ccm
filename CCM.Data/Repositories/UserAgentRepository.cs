@@ -140,6 +140,80 @@ namespace CCM.Data.Repositories
             }
         }
 
+        public Dictionary<Guid, UserAgentAndProfiles> GetUserAgentsTypesAndProfiles()
+        {
+            using (var db = GetDbContext())
+            {
+                var result = db.UserAgents
+                    .OrderBy(y => y.Name)
+                    .Select(x =>
+                        new
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Identifier = x.Identifier,
+                            MatchType = x.MatchType,
+                            Image = x.Image,
+                            UserInterfaceLink = x.UserInterfaceLink,
+                            Ax = x.Ax,
+                            Width = x.Width,
+                            Height = x.Height,
+                            Comment = x.Comment,
+                            Api = x.Api,
+                            Lines = x.Lines,
+                            Inputs = x.Inputs,
+                            NrOfGpos = x.NrOfGpos,
+                            InputMinDb = x.MinInputDb,
+                            InputMaxDb = x.MaxInputDb,
+                            InputGainStep = x.InputGainStep,
+                            GpoNames = x.GpoNames,
+                            UserInterfaceIsOpen = x.UserInterfaceIsOpen,
+                            UseScrollbars = x.UseScrollbars,
+                            OrderedProfiles = x.OrderedProfiles
+                        })
+                    .ToList();
+
+                return result.ToDictionary(u => u.Id, x =>
+                {
+                    return new UserAgentAndProfiles(
+                        id: x.Id,
+                        name: x.Name,
+                        identifier: x.Identifier,
+                        matchType: x.MatchType,
+                        imagePath: x.Image,
+                        userInterfaceLink: x.UserInterfaceLink,
+                        activeX: x.Ax,
+                        width: x.Width,
+                        height: x.Height,
+                        comment: x.Comment,
+                        apiType: x.Api,
+                        connectionLines: x.Lines,
+                        inputs: x.Inputs,
+                        outputs: 0,
+                        nrOfGpos: x.NrOfGpos,
+                        inputMinDb: x.InputMinDb,
+                        inputMaxDb: x.InputMinDb,
+                        inputGainStep: x.InputGainStep,
+                        gpoNames: x.GpoNames,
+                        userInterfaceIsOpen: x.UserInterfaceIsOpen,
+                        useScrollbars: x.UseScrollbars,
+                        profiles: x.OrderedProfiles
+                            .OrderBy(y => y.SortIndex)
+                            .Select(z =>
+                            {
+                                return new Profile
+                                {
+                                    Id = z.Profile.Id,
+                                    Name = z.Profile.Name,
+                                    Description = z.Profile.Description,
+                                    Sdp = z.Profile.Sdp
+                                };
+                            }).ToList()
+                    );
+                });
+            }
+        }
+
         public List<UserAgent> Find(string search)
         {
             using (var db = GetDbContext())

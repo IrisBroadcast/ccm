@@ -34,7 +34,7 @@ namespace CCM.Core.Helpers
 {
     public class TimeMeasurer : IDisposable
     {
-        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger LogSystem = LogManager.GetCurrentClassLogger();
         private readonly LogLevel _level;
         private readonly Stopwatch _stopwatch;
         private readonly string _message;
@@ -64,7 +64,7 @@ namespace CCM.Core.Helpers
 
         private void Log(string s)
         {
-            log.Log(_level, s);
+            LogSystem.Log(_level, s);
 
             if (_level <= LogLevel.Debug)
             {
@@ -72,9 +72,25 @@ namespace CCM.Core.Helpers
             }
         }
 
-        public TimeSpan ElapsedTime { get { return _isEnabled ? _stopwatch.Elapsed : TimeSpan.Zero; } }
+        public TimeSpan ElapsedTime
+        {
+            get
+            {
+                return _isEnabled ? _stopwatch.Elapsed : TimeSpan.Zero;
+            }
+        }
 
         public void Dispose()
+        {
+
+            Dispose(true);
+            // Use SupressFinalize in case a subclass 
+            // of this type implements a finalizer.
+            GC.SuppressFinalize(this);
+        }
+
+        // The bulk of the clean-up code is implemented in Dispose(bool)
+        protected virtual void Dispose(bool disposing)
         {
             if (_isEnabled)
             {
@@ -88,6 +104,7 @@ namespace CCM.Core.Helpers
                 var formattedString = string.Format("END:{0} [{1}]", _message, runTimeString);
                 Log(formattedString);
             }
+
         }
     }
 }

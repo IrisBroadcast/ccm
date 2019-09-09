@@ -37,22 +37,22 @@ using Ninject.Web.Common;
 
 namespace CCM.Web
 {
-    public static class NinjectWebCommon 
+    public static class NinjectWebCommon
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
 
-        public static void Start() 
+        public static void Start()
         {
             DynamicModuleUtility.RegisterModule(typeof(OnePerRequestHttpModule));
             DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
             bootstrapper.Initialize(CreateKernel);
         }
-      
+
         public static void Stop()
         {
             bootstrapper.ShutDown();
         }
-      
+
         private static IKernel CreateKernel()
         {
             var kernel = new StandardKernel();
@@ -70,10 +70,10 @@ namespace CCM.Web
                 throw;
             }
         }
-       
+
         private static void RegisterServices(IKernel kernel)
         {
             DependencyResolver.SetResolver(new Infrastructure.NinjectDependencyResolver(kernel));
-        }        
+        }
     }
 }

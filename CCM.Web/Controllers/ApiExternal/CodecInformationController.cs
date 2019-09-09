@@ -25,9 +25,11 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
-using CCM.Core.Codec;
 using CCM.Core.Interfaces.Repositories;
+using CCM.Web.Mappers;
+using CCM.Web.Models.ApiExternal;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
@@ -36,24 +38,42 @@ namespace CCM.Web.Controllers.ApiExternal
     /// </summary>
     public class CodecInformationController : ApiController
     {
-        private readonly IRegisteredSipRepository _registeredSipRepository;
-
-        public CodecInformationController(IRegisteredSipRepository registeredSipRepository)
+        public CodecInformationController()
         {
-            _registeredSipRepository = registeredSipRepository;
         }
 
-        public IList<CodecInformation> Get()
+        [HttpGet]
+        public IEnumerable<CodecInformationViewModel> Get()
         {
-            return _registeredSipRepository.GetCodecInformationList();
+            var codecInformationViewModelsProvider = (CodecInformationViewModelsProvider)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(CodecInformationViewModelsProvider));
+            return codecInformationViewModelsProvider.GetAll();
         }
 
         /// <summary>
-        /// Get codec information connected to a specific SIP-address.
+        /// Get codec information related to a specific SIP-address.
         /// </summary>
-        public CodecInformation Get(string sipAddress)
+        [HttpGet]
+        public CodecInformationViewModel Get(string sipAddress)
         {
-            return _registeredSipRepository.GetCodecInformation(sipAddress);
+            sipAddress = (sipAddress ?? string.Empty).ToLower().Trim();
+
+            var codecInformationViewModelsProvider = (CodecInformationViewModelsProvider)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(CodecInformationViewModelsProvider));
+            var userAgentsOnline = codecInformationViewModelsProvider.GetAll();
+
+            var codecInformation = userAgentsOnline.FirstOrDefault(x => x.SipAddress.ToLower() == sipAddress);
+
+            if (codecInformation == null)
+            {
+                return new CodecInformationViewModel(
+                    sipAddress: sipAddress,
+                    ip: null,
+                    api: null,
+                    gpoNames: null,
+                    nrOfInputs: 0,
+                    nrOfGpos: 0);
+            }
+
+            return codecInformation;
         }
     }
 }

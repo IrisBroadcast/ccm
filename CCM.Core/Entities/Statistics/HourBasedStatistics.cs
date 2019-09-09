@@ -34,18 +34,24 @@ namespace CCM.Core.Entities.Statistics
     {
         public DateTime Date { get; private set; }
         public int Hour { get; private set; }
-        public int MaxSimultaneousCalls { get { return _maxSimultaneousCallsPerDay == null ? 0 :  _maxSimultaneousCallsPerDay.Max(); } }
+        public int MaxSimultaneousCalls
+        {
+            get { return _maxSimultaneousCallsPerDay == null ? 0 : _maxSimultaneousCallsPerDay.Max(); }
+        }
         public int OngoingCalls { get; set; }
-        public int DayCount { get { return _maxSimultaneousCallsPerDay == null ? 1 : _maxSimultaneousCallsPerDay.Count; } }
+        public int DayCount
+        {
+            get { return _maxSimultaneousCallsPerDay == null ? 1 : _maxSimultaneousCallsPerDay.Count; }
+        }
 
-        private List<int> _maxSimultaneousCallsPerDay; 
+        private List<int> _maxSimultaneousCallsPerDay;
 
-        public double AverageNumberOfSimultaneousCalls 
+        public double AverageNumberOfSimultaneousCalls
         {
             get { return _maxSimultaneousCallsPerDay == null || _maxSimultaneousCallsPerDay.Count == 0 ? 0.0 : _maxSimultaneousCallsPerDay.Sum() / (double)_maxSimultaneousCallsPerDay.Count; }
         }
 
-        public int MedianNumberOfSimultaneousCalls 
+        public int MedianNumberOfSimultaneousCalls
         {
             get
             {
@@ -59,7 +65,7 @@ namespace CCM.Core.Entities.Statistics
             }
         }
 
-        public string Label 
+        public string Label
         {
             get { return string.Format("{0:00}", Hour); }
         }

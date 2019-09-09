@@ -33,7 +33,7 @@ namespace CCM.Core.Entities
     {
         // Properties from codec message
         public string SIP { get; set; }
-        public string UserAgentHead { get; set; } // User-agent string that the codec is reporting
+        public string UserAgentHead { get; set; } // User-agent string that the codec is reporting. TODO: Try to rename this?
         public string Username { get; set; }
         public string DisplayName { get; set; }
         public string Registrar { get; set; }
@@ -45,8 +45,6 @@ namespace CCM.Core.Entities
         // Properties set on server
         public DateTime Updated { get; set; }
         public Location Location { get; set; }
-        //public UserAgent UserAgent { get; set; } // TODO: Should this really be a part of the RegisteredSip, is it useful here? just a large object
         public SipAccount User { get; set; }
     }
-
 }

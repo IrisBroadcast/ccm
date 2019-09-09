@@ -25,12 +25,10 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
-using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Repositories;
 using LazyCache;

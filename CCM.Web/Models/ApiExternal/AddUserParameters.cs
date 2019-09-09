@@ -24,8 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Web.InputValidation;
 using CCM.Web.InputValidation.ValidationAttributes;
+using CCM.Web.Infrastructure.PasswordGeneration;
 using System.ComponentModel.DataAnnotations;
 
 namespace CCM.Web.Models.ApiExternal
@@ -48,24 +48,24 @@ namespace CCM.Web.Models.ApiExternal
         public string UserName { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Required))]
-        [MinLength(SipPasswordValidationSettings.MinLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Must_Be_At_Least_X_Characters_Long))]
-        [MaxLength(SipPasswordValidationSettings.MaxLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Can_Not_Be_Longer_Than_X_Characters))]
-        [MustContainCharacters(SipPasswordValidationSettings.MinNumberOfSpecial, SipPasswordValidationSettings.AllowedSpecialCharacters)]
-        [MustContainDigits(SipPasswordValidationSettings.MinNumberOfDigits)]
-        [MustContainLowerCaseLetters(SipPasswordValidationSettings.MinNumberOfLower)]
-        [MustContainUpperCaseLetters(SipPasswordValidationSettings.MinNumberOfUpper)]
+        [MinLength(PasswordComplexityConfiguration.MinLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Must_Be_At_Least_X_Characters_Long))]
+        [MaxLength(PasswordComplexityConfiguration.MaxLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Can_Not_Be_Longer_Than_X_Characters))]
+        [MustContainCharacters(PasswordComplexityConfiguration.MinNumberOfSpecial, PasswordComplexityConfiguration.AllowedSpecialCharacters)]
+        [MustContainDigits(PasswordComplexityConfiguration.MinNumberOfDigits)]
+        [MustContainLowerCaseLetters(PasswordComplexityConfiguration.MinNumberOfLower)]
+        [MustContainUpperCaseLetters(PasswordComplexityConfiguration.MinNumberOfUpper)]
         public string NewPassword { get; set; }
     }
 
     public class AddUserModel : UserModel
     {
         [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Required))]
-        [MinLength(SipPasswordValidationSettings.MinLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Must_Be_At_Least_X_Characters_Long))]
-        [MaxLength(SipPasswordValidationSettings.MaxLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Can_Not_Be_Longer_Than_X_Characters))]
-        [MustContainCharacters(SipPasswordValidationSettings.MinNumberOfSpecial, SipPasswordValidationSettings.AllowedSpecialCharacters)]
-        [MustContainDigits(SipPasswordValidationSettings.MinNumberOfDigits)]
-        [MustContainLowerCaseLetters(SipPasswordValidationSettings.MinNumberOfLower)]
-        [MustContainUpperCaseLetters(SipPasswordValidationSettings.MinNumberOfUpper)]
+        [MinLength(PasswordComplexityConfiguration.MinLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Must_Be_At_Least_X_Characters_Long))]
+        [MaxLength(PasswordComplexityConfiguration.MaxLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Can_Not_Be_Longer_Than_X_Characters))]
+        [MustContainCharacters(PasswordComplexityConfiguration.MinNumberOfSpecial, PasswordComplexityConfiguration.AllowedSpecialCharacters)]
+        [MustContainDigits(PasswordComplexityConfiguration.MinNumberOfDigits)]
+        [MustContainLowerCaseLetters(PasswordComplexityConfiguration.MinNumberOfLower)]
+        [MustContainUpperCaseLetters(PasswordComplexityConfiguration.MinNumberOfUpper)]
         public string Password { get; set; }
     }
 

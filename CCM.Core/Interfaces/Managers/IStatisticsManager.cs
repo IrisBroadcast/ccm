@@ -34,7 +34,7 @@ namespace CCM.Core.Interfaces.Managers
     public interface IStatisticsManager
     {
         List<CodecType> GetCodecTypes();
-        List<LocationStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId);
+        List<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId);
         List<Owner> GetOwners();
         List<Region> GetRegions();
         List<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId);

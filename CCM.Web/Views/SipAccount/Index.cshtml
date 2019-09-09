@@ -78,7 +78,7 @@
                     <div class="col-md-3">@account.UserName <span class="@(account.AccountLocked ? "glyphicon glyphicon-lock" : string.Empty)"></span></div>
                     <div class="col-md-6">@account.Comment</div>
                     @{
-                        <div class="col-md-2">@account.AccountType.Description()</div>
+                        <div class="col-md-2">@account.AccountType.DescriptionAsResource()</div>
                     }
                     <div class="col-md-1 text-right list-ccm-icongroup">
                         @Html.ActionLink(" ", "Edit", "SipAccount", new { @id = account.Id }, new { @class = "glyphicon glyphicon-pencil list-ccm-inlineicon" })

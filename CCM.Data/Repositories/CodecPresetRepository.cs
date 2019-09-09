@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CCM.Core.Entities;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
@@ -55,7 +54,7 @@ namespace CCM.Data.Repositories
             using (var db = GetDbContext())
             {
                 CodecPresetEntity dbCodecPreset = null;
-                
+
                 if (codecPreset.Id != Guid.Empty)
                 {
                     dbCodecPreset = db.CodecPresets.SingleOrDefault(c => c.Id == codecPreset.Id);

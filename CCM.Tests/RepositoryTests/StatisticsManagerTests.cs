@@ -26,7 +26,6 @@
 
 using System;
 using System.Linq;
-using CCM.Core.Cache;
 using CCM.Core.Managers;
 using CCM.Data.Repositories;
 using LazyCache;
@@ -45,7 +44,6 @@ namespace CCM.Tests.RepositoryTests
                 new OwnersRepository(new CachingService()), 
                 new RegionRepository(new CachingService()), 
                 new LocationRepository(new CachingService()), 
-                new SimpleRegisteredSipRepository(new SettingsManager(new SettingsRepository(new CachingService())), new CachingService()), 
                 new SipAccountRepository(new CachingService()));
 
             var result = manager.GetLocationStatistics(DateTime.Parse("2016-06-10 00:00:00"),

@@ -26,26 +26,24 @@
 
 using System;
 using System.Collections.Generic;
-using CCM.Core.Cache;
+using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
-using LazyCache;
 using NLog;
 
 namespace CCM.Core.Managers
 {
     public class SipAccountManager : ISipAccountManager
     {
+        //TODO: This one is jsut a bit strange why it's needed. not really performing anything mind blowing that could not just be in the repository
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly ISipAccountRepository _sipAccountRepository;
-        private readonly IAppCache _cache;
 
-        public SipAccountManager(ISipAccountRepository ccmUserRepository, IAppCache cache)
+        public SipAccountManager(ISipAccountRepository sipAccountRepository)
         {
-            _sipAccountRepository = ccmUserRepository;
-            _cache = cache;
+            _sipAccountRepository = sipAccountRepository;
         }
 
         public void Create(SipAccount account)
@@ -82,7 +80,14 @@ namespace CCM.Core.Managers
 
         public SipAccount GetByUserName(string userName)
         {
+            // TODO: Move this one to be using the GetSipAccountByUserName
             return _sipAccountRepository.GetByUserName(userName);
+        }
+
+        public SipAccount GetSipAccountByUserName(string username)
+        {
+            // TODO: Keep this one. But maybe if nothing can be found, trigger cache reload of sipAccounts and search again.
+            return _sipAccountRepository.GetAll().ToList().FirstOrDefault(u => u.UserName.ToLower() == username);
         }
 
         public void Update(SipAccount account)
@@ -98,15 +103,11 @@ namespace CCM.Core.Managers
         public void UpdateComment(Guid id, string comment)
         {
             _sipAccountRepository.UpdateComment(id, comment);
-
-            // Invalidate registered sip in cache
-            _cache.ClearRegisteredSips();
         }
-        
+
         public void UpdatePassword(Guid id, string password)
         {
             _sipAccountRepository.UpdatePassword(id, password);
         }
-        
     }
 }

@@ -31,7 +31,6 @@ using System.Web.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Interfaces.Repositories.Specialized;
 using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models.Regions;

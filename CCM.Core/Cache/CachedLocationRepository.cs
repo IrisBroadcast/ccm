@@ -44,24 +44,41 @@ namespace CCM.Core.Cache
             _internalRepository = internalRepository;
         }
 
-        public Location GetById(Guid id) { return _internalRepository.GetById(id); }
-        public List<Location> GetAll() { return _internalRepository.GetAll(); }
-        public List<Location> FindLocations(string searchString) { return _internalRepository.FindLocations(searchString); }
+        public Location GetById(Guid id)
+        {
+            return _internalRepository.GetById(id);
+        }
+
+        public List<Location> GetAll()
+        {
+            return _internalRepository.GetAll();
+        }
+
+        public List<Location> FindLocations(string searchString)
+        {
+            return _internalRepository.FindLocations(searchString);
+        }
 
         public void Save(Location location)
         {
             _internalRepository.Save(location);
-            _lazyCache.ResetLocationNetworks();
+            _lazyCache.ClearLocationNetworks(); //TODO: Isnt location already cleared on save? ?
         }
 
         public void Delete(Guid id)
         {
             _internalRepository.Delete(id);
-            _lazyCache.ResetLocationNetworks();
+            _lazyCache.ClearLocationNetworks(); //TODO: Isnt location already cleared on save? ?
         }
 
-        public List<LocationNetwork> GetAllLocationNetworks() { 
-            return _lazyCache.GetOrAddLocationNetworks( () => _internalRepository.GetAllLocationNetworks() );
+        public List<LocationNetwork> GetAllLocationNetworks()
+        {
+            return _lazyCache.GetOrAddLocationNetworks(() => _internalRepository.GetAllLocationNetworks());
+        }
+
+        public Dictionary<Guid, LocationAndProfiles> GetLocationsAndProfiles()
+        {
+            return _lazyCache.GetOrAddLocationsAndProfiles(() => _internalRepository.GetLocationsAndProfiles());
         }
     }
 }

@@ -47,10 +47,10 @@ namespace CCM.Tests.KamailioTests
     public class SipMessageHandlerTestsBase
     {
         #region Plumbing
-        protected StandardKernel kernel;
-        protected DiscoveryService discoveryService;
-        protected KamailioMessageManager _sipMessageManager;
-        protected RegisteredSipRepository _sipRep;
+        protected StandardKernel Kernel;
+        protected DiscoveryService DiscoveryService;
+        protected KamailioMessageManager SipMessageManager;
+        protected RegisteredSipRepository SipRep;
 
         protected static StandardKernel GetKernel()
         {
@@ -75,8 +75,7 @@ namespace CCM.Tests.KamailioTests
         [OneTimeSetUp]
         public void SetupFixture()
         {
-            kernel = GetKernel();
-
+            Kernel = GetKernel();
         }
         #endregion
 

@@ -34,7 +34,7 @@ namespace CCM.Core.Entities.Specific
         public Guid Id { get; set; }
         public string DisplayName { get; set; }
         public string Comment { get; set; }
-        public bool InCall { get; set; } // Is In Call
+        public bool InCall { get; set; }
         public string CallWithName { get; set; }
         
         public string LocationName { get; set; }

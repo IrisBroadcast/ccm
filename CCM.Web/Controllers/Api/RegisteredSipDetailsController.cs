@@ -32,10 +32,12 @@ using CCM.Web.Models.Home;
 using System.Web.Http;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Interfaces.Repositories.Specialized;
 
 namespace CCM.Web.Controllers.Api
 {
+    /// <summary>
+    /// Retrieve detailed information of User Agents
+    /// </summary>
     public class RegisteredSipDetailsController : ApiController
     {
         private readonly ISettingsManager _settingsManager;
@@ -111,8 +113,8 @@ namespace CCM.Web.Controllers.Api
 
         private bool ShouldShowCodecControlView(RegisteredSipDetails registeredSip)
         {
-            return (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Remote)) 
-                && !string.IsNullOrWhiteSpace(registeredSip.Api) 
+            return (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Remote))
+                && !string.IsNullOrWhiteSpace(registeredSip.Api)
                 && _settingsManager.CodecControlActive;
         }
 

@@ -34,16 +34,19 @@ namespace CCM.Web.Models.Profile
     public class ProfileGroupViewModel
     {
         public Guid Id { get; set; }
-        // TODO: English.
+
         [Required]
-        [MaxLength(40, ErrorMessage = "Namnet är för långt")]
-        [Display(Name = "Gruppnamn")]
+        [MaxLength(40, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "Profile_Group_Error_Message_Name_Is_Too_Long")]
+        [Display(ResourceType = typeof(Resources), Name = "Profile_Group_Group_Name")]
         public string Name { get; set; }
 
-        [Display(ResourceType = typeof(Resources), Name = "Description")]
+        [Display(ResourceType = typeof(Resources), Name = "Profile_Group_Description")]
         public string Description { get; set; }
 
-        [Display(ResourceType = typeof(Resources), Name = "Profiles")]
+        [Display(ResourceType = typeof(Resources), Name = "Profile_Group_Group_Sort_Weight")]
+        public int GroupSortWeight { get; set; }
+
+        [Display(ResourceType = typeof(Resources), Name = "Profile_Group_Profiles")]
         public List<ProfileListItemViewModel> Profiles { get; set; }
 
         public ProfileGroupViewModel()

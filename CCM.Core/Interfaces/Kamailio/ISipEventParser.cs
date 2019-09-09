@@ -33,5 +33,4 @@ namespace CCM.Core.Interfaces.Kamailio
     {
         SipMessageBase Parse(KamailioSipEvent sipEvent);
     }
-
 }

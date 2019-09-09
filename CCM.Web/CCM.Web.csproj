@@ -261,25 +261,32 @@
     <Compile Include="Authentication\ApiAuthorizeAttribute.cs" />
     <Compile Include="Authentication\CcmApiAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ApiExternal\CodecInformationController.cs" />
+    <Compile Include="Controllers\ApiExternal\PasswordGeneratorController.cs" />
     <Compile Include="Infrastructure\WarnFilterAttribute.cs" />
     <Compile Include="Infrastructure\CertificateHelper.cs" />
-    <Compile Include="Controllers\ApiExternal\AuthenticatedDiscoveryController.cs" />
     <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Controllers\ApiExternal\SipEventController.cs" />
     <Compile Include="Controllers\Api\StudioMonitorApiController.cs" />
     <Compile Include="Infrastructure\WebApiFilters\StudioMonitorExceptionFilterAttribute.cs" />
     <Compile Include="Extensions\EnumHelpers.cs" />
     <Compile Include="Hubs\HubBase.cs" />
     <Compile Include="Infrastructure\SipAccountBasicAuthenticationAttribute.cs" />
-    <Compile Include="InputValidation\SipPasswordValidationSettings.cs" />
+    <Compile Include="Infrastructure\PasswordGeneration\PasswordComplexityConfiguration.cs" />
+    <Compile Include="Infrastructure\PasswordGeneration\PasswordGeneratorConfigurationProvider.cs" />
     <Compile Include="InputValidation\ValidationAttributes\MustContainUpperCaseLettersAttribute.cs" />
     <Compile Include="InputValidation\ValidationAttributes\MustContainLowerCaseLettersAttribute.cs" />
     <Compile Include="InputValidation\ValidationAttributes\MustContainDigitsAttribute.cs" />
     <Compile Include="InputValidation\ValidationAttributes\MustContainCharactersAttribute.cs" />
     <Compile Include="InputValidation\ValidationAttributes\RequiredIfAttribute.cs" />
+    <Compile Include="Mappers\CodecInformationViewModelsProvider.cs" />
+    <Compile Include="Models\ApiExternal\CodecInformationViewModel.cs" />
+    <Compile Include="Models\ApiExternal\GeneratedPasswordModel.cs" />
+    <Compile Include="Mappers\CodecStatusViewModelsProvider.cs" />
+    <Compile Include="Mappers\RegisteredUserAgentViewModelsProvider.cs" />
     <Compile Include="Models\Home\RegisteredSipComment.cs" />
+    <Compile Include="Models\ApiExternal\CodecStatusViewModel.cs" />
     <Compile Include="Models\Log\LevelModel.cs" />
     <Compile Include="Models\Log\CcmApplications.cs" />
+    <Compile Include="Models\Profile\GuidSortWeightTuple.cs" />
     <Compile Include="Models\SipAccount\SipAccountCreateFormViewModel.cs" />
     <Compile Include="Models\SipAccount\SipAccountEditFormViewModel.cs" />
     <Compile Include="Models\User\DeleteUserViewModel.cs" />
@@ -289,17 +296,14 @@
     <Compile Include="Models\StudioMonitor\StudioMonitorViewModel.cs" />
     <Compile Include="Controllers\ProfileGroupController.cs" />
     <Compile Include="Infrastructure\AutoMapperWebConfiguration.cs" />
-    <Compile Include="Controllers\ApiExternal\DiscoveryController.cs" />
     <Compile Include="Controllers\ApiExternal\OldCallExternalController.cs" />
     <Compile Include="Controllers\Api\OldCallFilteredController.cs" />
     <Compile Include="Controllers\StudioController.cs" />
     <Compile Include="Controllers\StudioMonitorController.cs" />
     <Compile Include="Hubs\Throttler.cs" />
     <Compile Include="Infrastructure\MvcFilters\ElapsedTimeFilter.cs" />
-    <Compile Include="Mappers\RegisteredSipOverviewDtoMapper.cs" />
     <Compile Include="Infrastructure\CamelCaseControllerConfigAttribute.cs" />
     <Compile Include="Models\Log\LogViewModel.cs" />
-    <Compile Include="Mappers\CodecStatusMapper.cs" />
     <Compile Include="Extensions\HtmlExtenstions.cs" />
     <Compile Include="Authentication\CcmAuthorizeAttribute.cs" />
     <Compile Include="Hubs\CodecStatusHub.cs" />
@@ -312,10 +316,7 @@
     <Compile Include="Hubs\WebGuiHub.cs" />
     <Compile Include="Models\ApiExternal\CallParameters.cs" />
     <Compile Include="Models\ApiExternal\CodecInfo.cs" />
-    <Compile Include="Controllers\ApiExternal\CodecsOnlineController.cs" />
-    <Compile Include="Models\ApiExternal\CodecStatus.cs" />
     <Compile Include="Controllers\ApiExternal\CodecStatusController.cs" />
-    <Compile Include="Controllers\ApiExternal\KamailioEventController.cs" />
     <Compile Include="Controllers\Api\OldCallController.cs" />
     <Compile Include="Controllers\Api\OngoingCallController.cs" />
     <Compile Include="Controllers\Api\RegisteredSipsOverviewController.cs" />
@@ -325,7 +326,7 @@
     <Compile Include="Models\ApiExternal\CodecState.cs" />
     <Compile Include="Models\ApiExternal\HangupParameters.cs" />
     <Compile Include="Extensions\EnumDto.cs" />
-    <Compile Include="Models\Home\RegisteredSipOverviewDto.cs" />
+    <Compile Include="Models\Home\RegisteredUserAgentViewModel.cs" />
     <Compile Include="Models\Profile\GuidSortIndexTuple.cs" />
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Infrastructure\MvcFilters\LogErrorsAttribute.cs" />
@@ -401,6 +402,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="Controllers\ApiDiscovery\AuthenticatedDiscoveryController.cs" />
+    <Compile Include="Controllers\ApiRegistrar\SipEventController.cs" />
+    <Compile Include="Controllers\ApiRegistrar\KamailioEventController.cs" />
+    <Compile Include="Controllers\ApiDiscovery\DiscoveryController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-datetimepicker-build.css">
@@ -673,7 +678,7 @@
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\ngStorage.js" />
     <Content Include="Scripts\signalr.js" />
-    <Content Include="Scripts\src\passwordgenerator.js" />
+    <Content Include="Scripts\src\passwordGeneratorApi.js" />
     <Content Include="Scripts\src\studiomonitor.js" />
     <Content Include="Scripts\src\codeccontrol.js" />
     <Content Include="Scripts\src\statistics.js" />
@@ -778,7 +783,6 @@
     <Content Include="Views\ProfileGroup\Delete.cshtml" />
     <Content Include="Views\ProfileGroup\Index.cshtml" />
     <Content Include="Views\StudioMonitor\HangUpStudio.cshtml" />
-    <Content Include="Views\Shared\_Layout_CodecControl.cshtml" />
     <Content Include="Views\User\CreateEdit.cshtml" />
     <Content Include="Views\User\Delete.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
@@ -817,6 +821,7 @@
       <CustomToolNamespace>CCM.Web</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -839,6 +844,11 @@
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
+    <MonoDevelop>
+      <Properties>
+        <XspParameters Port="8080" Address="127.0.0.1" SslMode="None" SslProtocol="Default" KeyType="None" CertFile="" KeyFile="" PasswordOptions="None" Password="" Verbose="True" />
+      </Properties>
+    </MonoDevelop>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Import Project="..\packages\OctoPack.3.6.3\build\OctoPack.targets" Condition="Exists('..\packages\OctoPack.3.6.3\build\OctoPack.targets')" />

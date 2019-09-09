@@ -46,7 +46,7 @@ namespace CCM.Web.Models.Home
         public string Comment { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "Status")]
-        public bool InCall { get; set; } // Is In Call
+        public bool InCall { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "In_Call_With")]
         public string InCallWithName { get; set; }

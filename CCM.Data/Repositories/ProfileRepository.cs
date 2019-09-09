@@ -81,7 +81,6 @@ namespace CCM.Data.Repositories
                     profile.SortIndex = dbProfile.SortIndex;
                 }
 
-
                 dbProfile.Description = profile.Description;
                 dbProfile.Name = profile.Name;
                 dbProfile.Sdp = profile.Sdp;

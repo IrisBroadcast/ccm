@@ -64,7 +64,7 @@ namespace CCM.Data.Repositories
                     try
                     {
                         var prop = item.GetType().GetProperty(metaType.PropertyName);
-                        var objectValue = prop.GetValue(item);
+                        var objectValue = prop?.GetValue(item) ?? String.Empty;
                         values.Add(objectValue.ToString());
                     }
                     catch (Exception ex)
@@ -154,6 +154,10 @@ namespace CCM.Data.Repositories
             }
         }
 
+        /// <summary>
+        /// Collects the available meta properties (attributes) [MetaProperty].
+        /// It gets the attributes from the RegisteredSipEntity
+        /// </summary>
         public List<AvailableMetaType> GetMetaTypeProperties()
         {
             if (availableMetaTypes != null && availableMetaTypes.Count > 0)
@@ -172,7 +176,8 @@ namespace CCM.Data.Repositories
                 }
                 else if (property.GetCustomAttributes(false).Any(a => a is MetaPropertyAttribute))
                 {
-                    availableMetaTypes.Add(new AvailableMetaType() { FullPropertyName = property.Name, PropertyName = property.Name, Type = property.DeclaringType.ToString() });
+                    string type = property.DeclaringType != null ? property.DeclaringType.ToString() : string.Empty;
+                    availableMetaTypes.Add(new AvailableMetaType() { FullPropertyName = property.Name, PropertyName = property.Name, Type = type });
                 }
             }
 
@@ -202,13 +207,14 @@ namespace CCM.Data.Repositories
                 }
                 else if (prop.GetCustomAttributes(false).Any(a => a is MetaPropertyAttribute))
                 {
+                    string type = prop.DeclaringType != null ? prop.DeclaringType.ToString() : string.Empty;
                     if (string.IsNullOrWhiteSpace(parent))
                     {
-                        propertyList.Add(new AvailableMetaType() { FullPropertyName = prop.Name, PropertyName = prop.Name, Type = prop.DeclaringType.ToString() });
+                        propertyList.Add(new AvailableMetaType() { FullPropertyName = prop.Name, PropertyName = prop.Name, Type = type });
                     }
                     else
                     {
-                        propertyList.Add(new AvailableMetaType() { FullPropertyName = string.Format("{0}.{1}", parent, prop.Name), PropertyName = prop.Name, Type = prop.DeclaringType.ToString() });
+                        propertyList.Add(new AvailableMetaType() { FullPropertyName = string.Format("{0}.{1}", parent, prop.Name), PropertyName = prop.Name, Type = type });
                     }
                 }
             }

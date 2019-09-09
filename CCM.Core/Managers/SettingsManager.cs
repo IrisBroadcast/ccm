@@ -81,6 +81,5 @@ namespace CCM.Core.Managers
                 return default(T);
             }
         }
-       
     }
 }

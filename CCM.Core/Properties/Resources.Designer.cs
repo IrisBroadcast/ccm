@@ -61,6 +61,33 @@ namespace CCM.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pool-kodare.
+        /// </summary>
+        internal static string Description_PoolCodec {
+            get {
+                return ResourceManager.GetString("Description_PoolCodec", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vanligt SIP-konto.
+        /// </summary>
+        internal static string Description_SipAccount {
+            get {
+                return ResourceManager.GetString("Description_SipAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SIP-alias.
+        /// </summary>
+        internal static string Description_SipAlias {
+            get {
+                return ResourceManager.GetString("Description_SipAlias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Externt nummer.
         /// </summary>
         internal static string External_Phone_Number {

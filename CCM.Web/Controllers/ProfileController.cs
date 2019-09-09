@@ -116,7 +116,7 @@ namespace CCM.Web.Controllers
                 }
                 catch (DuplicateNameException)
                 {
-                    ModelState.AddModelError("NameMustBeUnique", "Profilen kunde inte sparas. Namnet används redan.");
+                    ModelState.AddModelError("NameMustBeUnique", Resources.Profile_Error_Profile_Could_Not_Be_Saved_The_Name_Is_Already_In_Use);
                     return View("CreateEdit", model);
                 }
                 return RedirectToAction("Index");

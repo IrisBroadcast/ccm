@@ -154,6 +154,5 @@ namespace CCM.Data.Repositories
                 Comment = dbUser.Comment
             };
         }
-
     }
 }

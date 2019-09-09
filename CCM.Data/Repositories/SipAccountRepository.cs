@@ -30,8 +30,6 @@ using System.Linq;
 using System.Data.Entity;
 using System.Threading.Tasks;
 using CCM.Core.Entities;
-using CCM.Core.Enums;
-using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
@@ -39,7 +37,6 @@ using NLog;
 
 namespace CCM.Data.Repositories
 {
-
     public class SipAccountRepository : BaseRepository, ISipAccountRepository
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -120,6 +117,7 @@ namespace CCM.Data.Repositories
                 return users.Select(MapToSipAccount).OrderBy(u => u.UserName).ToList();
             }
         }
+
         public List<SipAccount> GetAll()
         {
             using (var db = GetDbContext())
@@ -127,6 +125,7 @@ namespace CCM.Data.Repositories
                 return db.SipAccounts.ToList().Select(MapToSipAccount).OrderBy(u => u.UserName).ToList();
             }
         }
+
         public List<SipAccount> Find(string startsWith)
         {
             using (var db = GetDbContext())
@@ -196,7 +195,7 @@ namespace CCM.Data.Repositories
                 return user != null;
             }
         }
-        
+
         private SipAccount MapToSipAccount(SipAccountEntity dbAccount)
         {
             return dbAccount == null ? null : new SipAccount
@@ -242,6 +241,6 @@ namespace CCM.Data.Repositories
                 dbAccount.Password = account.Password;
             }
         }
-        
+
     }
 }

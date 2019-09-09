@@ -6,39 +6,53 @@
     Layout = null;
 }
 
-<div>
-    <div>
-        <p>Cachename: @Model.Name</p>
-        <p>Hash code: @Model.HashCode</p>
-        <p>Antal cachade object: @Model.Count</p>
-    </div>
+<div class="row">
+    <div class="col-md-3">Cache name:</div>
+    <div class="col-md-7">@Model.Name</div>
+</div>
 
-    <table>
+<div class="row">
+    <div class="col-md-3">Hash code:</div>
+    <div class="col-md-7">@Model.HashCode</div>
+</div>
 
-        <thead>
-            <tr>
-                <td>Cachenyckel</td>
-                <td>Cachad typ</td>
-                <td>Antal objekt</td>
-            </tr>
-        </thead>
+<div class="row">
+    <div class="col-md-3">Cashed objects:</div>
+    <div class="col-md-7">@Model.Count</div>
+</div>
 
-        <tbody>
+<hr />
+
+<div class="row">
+    <div class="panel panel-default list-ccm">
+        <div class="panel-heading list-ccm-heading">
+            <div class="row">
+                <div class="col-md-5">Cache key</div>
+                <div class="col-md-5">Cached type</div>
+                <div class="col-md-2">List count</div>
+            </div>
+        </div>
+        <div class="panel-body-lp">
             @foreach (var cachedItem in Model.CachedItems)
             {
-                <tr>
-                    <td>@cachedItem.CacheKey</td>
-                    <td>@cachedItem.CachedType</td>
-                    <td>@cachedItem.ListCount</td>
-                </tr>
+                <div class="panel-body-item row">
+                    <div class="col-md-5">@cachedItem.CacheKey</div>
+                    <div class="col-md-5">@cachedItem.CachedType</div>
+                    <div class="col-md-1">@cachedItem.ListCount</div>
+                </div>
             }
-        </tbody>
-    </table>
+        </div>
+    </div>
+</div>
 
+<div class="row">
+    
+    @if (Model.CachedItems != null)
+    {
+        <h4>Cached objects</h4>
+    }
     @foreach (var cachedItem in Model.CachedItems)
     {
-        <hr />
-
         var cachedList = cachedItem.CachedObject as IList;
         if (cachedList != null)
         {
@@ -63,10 +77,10 @@
                             <td>@call.ToDisplayName (@call.ToSip)</td>
                             <td>@call.Started.ToString("yyyy-MM-dd HH:mm:ss")</td>
                         }
-                        else if (row is RegisteredSipDto)
+                        else if (row is RegisteredUserAgentDiscovery)
                         {
-                            var regsip = row as RegisteredSipDto;
-                            <td>@regsip.DisplayName (@regsip.Sip)</td>
+                            var regsip = row as RegisteredUserAgentDiscovery;
+                            <td>@regsip.DisplayName (@regsip.SipUri)</td>
                             <td>@regsip.Updated.ToString("yyyy-MM-dd HH:mm:ss.fff")</td>
                         }
                         else if (row is Setting)

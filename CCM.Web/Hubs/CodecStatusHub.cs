@@ -24,16 +24,45 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Linq;
+using System.Web.Mvc;
+using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
+using CCM.Web.Models.Home;
 using Microsoft.AspNet.SignalR;
 
 namespace CCM.Web.Hubs
 {
     public class CodecStatusHub : HubBase
     {
-        public static void UpdateCodecStatus(CodecStatus codecStatus)
+        public static void UpdateCodecStatus(Guid id)
         {
-            log.Debug("SignalR is sending codec status to clients: {0}", codecStatus);
+            if (id == Guid.Empty)
+            {
+                return;
+            }
+            
+            var codecStatusViewModelsProvider = (CodecStatusViewModelsProvider)DependencyResolver.Current.GetService(typeof(CodecStatusViewModelsProvider));
+            var userAgentsOnline = codecStatusViewModelsProvider.GetAll();
+
+            var updatedCodecStatus = userAgentsOnline.FirstOrDefault(x => x.Id == id);
+
+            if (updatedCodecStatus != null)
+            {
+                log.Debug($"SignalR is sending codec status to clients. SipAddress: {updatedCodecStatus.SipAddress}, State: {updatedCodecStatus.State}");
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<CodecStatusHub>();
+                hubContext.Clients.All.codecStatus(updatedCodecStatus);
+            }
+            else
+            {
+                log.Error($"Can't update Codec status hub. No codec online with id: {id}");
+            }
+        }
+
+        public static void UpdateCodecStatusRemoved(CodecStatusViewModel codecStatus)
+        {
+            log.Debug($"SignalR is sending codec status to clients. SipAddress: {codecStatus.SipAddress}, State: {codecStatus.State}");
             var hubContext = GlobalHost.ConnectionManager.GetHubContext<CodecStatusHub>();
             hubContext.Clients.All.codecStatus(codecStatus);
         }

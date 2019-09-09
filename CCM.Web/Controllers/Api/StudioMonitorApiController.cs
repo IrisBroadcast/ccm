@@ -31,6 +31,7 @@ using CCM.Core.Interfaces.Repositories;
 using CCM.Web.Infrastructure.WebApiFilters;
 using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
+using CCM.Web.Models.Home;
 using NLog;
 
 namespace CCM.Web.Controllers.Api
@@ -39,16 +40,14 @@ namespace CCM.Web.Controllers.Api
     public class StudioMonitorApiController : ApiController
     {
         private readonly IStudioRepository _studioRepository;
-        private readonly IRegisteredSipRepository _registeredSipRepository;
 
-        public StudioMonitorApiController(IStudioRepository studioRepository, IRegisteredSipRepository registeredSipRepository)
+        public StudioMonitorApiController(IStudioRepository studioRepository)
         {
             _studioRepository = studioRepository;
-            _registeredSipRepository = registeredSipRepository;
         }
 
         [HttpGet]
-        public CodecStatus GetCodecStatus(Guid studioId)
+        public CodecStatusViewModel GetCodecStatus(Guid studioId)
         {
             var studio = _studioRepository.GetById(studioId);
 
@@ -56,16 +55,22 @@ namespace CCM.Web.Controllers.Api
             {
                 return null;
             }
+            // TODO: Alexander, Är detta sätt det bästa?
+            var codecStatusViewModelsProvider = (CodecStatusViewModelsProvider)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(CodecStatusViewModelsProvider));
+            var userAgentsOnline = codecStatusViewModelsProvider.GetAll();
 
-            var allRegisteredSips = _registeredSipRepository.GetCachedRegisteredSips();
-            var regSip = allRegisteredSips.FirstOrDefault(s => s.Sip == studio.CodecSipAddress);
+            var codecStatus = userAgentsOnline.FirstOrDefault(x => x.SipAddress == studio.CodecSipAddress);
 
-            if (regSip == null)
+            if (codecStatus == null)
             {
-                return new CodecStatus { SipAddress = studio.CodecSipAddress, State = CodecState.NotRegistered };
+                return new CodecStatusViewModel
+                {
+                    SipAddress = studio.CodecSipAddress,
+                    State = CodecState.NotRegistered
+                };
             }
 
-            return CodecStatusMapper.MapToCodecStatus(regSip);
+            return codecStatus;
         }
 
     }

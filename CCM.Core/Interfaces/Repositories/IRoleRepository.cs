@@ -32,6 +32,5 @@ namespace CCM.Core.Interfaces.Repositories
     public interface IRoleRepository
     {
         List<CcmRole> GetRoles();
-
     }
 }

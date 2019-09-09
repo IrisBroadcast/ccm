@@ -80,12 +80,11 @@ namespace CCM.Web.Models.Location
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            // TODO: Englishfy
             if (!string.IsNullOrWhiteSpace(Net))
             {
                 if (Cidr == null)
                 {
-                    yield return new ValidationResult("CIDR för IPv4 saknas", new[] { "Cidr" });
+                    yield return new ValidationResult(Resources.Location_Error_Message_Cidr_For_Ipv4_Is_Missing, new[] { "Cidr" });
                 }
                 else
                 {
@@ -94,12 +93,12 @@ namespace CCM.Web.Models.Location
                     {
                         if (ipAddress.AddressFamily != AddressFamily.InterNetwork)
                         {
-                            yield return new ValidationResult("Endast IP v4-adresser kan anges", new[] { "Net" });
+                            yield return new ValidationResult(Resources.Location_Error_Message_Only_Ipv4_Address_Is_Valid, new[] { "Net" });
                         }
                     }
                     else
                     {
-                        yield return new ValidationResult("Ogiltig IPv4-adress", new[] { "Net" });
+                        yield return new ValidationResult(Resources.Location_Error_Message_Invalid_Ipv4_Address, new[] { "Net" });
                     }
                 }
             }
@@ -108,7 +107,7 @@ namespace CCM.Web.Models.Location
             {
                 if (CidrV6 == null)
                 {
-                    yield return new ValidationResult("CIDR för IPv6 saknas", new[] { "CidrV6" });
+                    yield return new ValidationResult(Resources.Location_Error_Message_Cidr_For_Ipv6_Is_Missing, new[] { "CidrV6" });
                 }
                 else
                 {
@@ -117,12 +116,12 @@ namespace CCM.Web.Models.Location
                     {
                         if (ipAddress.AddressFamily != AddressFamily.InterNetworkV6)
                         {
-                            yield return new ValidationResult("Endast IPv6-adresser kan anges", new[] { "NetV6" });
+                            yield return new ValidationResult(Resources.Location_Error_Message_Only_Ipv6_Address_Is_Valid, new[] { "NetV6" });
                         }
                     }
                     else
                     {
-                        yield return new ValidationResult("Ogiltig IPv6-adress", new[] { "NetV6" });
+                        yield return new ValidationResult(Resources.Location_Error_Message_Invalid_Ipv6_Address, new[] { "NetV6" });
                     }
                 }
             }

@@ -28,11 +28,11 @@ using CCM.Core.SipEvent;
 using CCM.Web.Hubs;
 using NLog;
 
-
 namespace CCM.Web.Infrastructure.SignalR
 {
     /// <summary>
-    /// Updates clients through SignalR, CCM frontpage
+    /// The codec status hub sends out codec/user-agent changes to CCM frontpage.
+    /// Updates clients through SignalR.
     /// </summary>
     public class WebGuiHubUpdater : IGuiHubUpdater
     {
@@ -40,7 +40,7 @@ namespace CCM.Web.Infrastructure.SignalR
 
         public void Update(SipEventHandlerResult updateResult)
         {
-            log.Debug("WebGuiHubUpdater is updating. status={0}, id={1}", updateResult.ChangeStatus, updateResult.ChangedObjectId);
+            log.Debug($"WebGuiHubUpdater. Status: {updateResult.ChangeStatus}, Id: {updateResult.ChangedObjectId}, SipAddress: {updateResult.SipAddress}");
 
             if (updateResult.ChangeStatus == SipEventChangeStatus.CallStarted)
             {

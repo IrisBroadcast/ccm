@@ -25,12 +25,9 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Web.Mvc;
 using CCM.Core.Entities;
-using CCM.Core.Entities.Specific;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Web.Authentication;

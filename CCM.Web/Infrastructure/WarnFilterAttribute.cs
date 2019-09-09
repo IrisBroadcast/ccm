@@ -27,16 +27,17 @@
 using System.Web.Http.Controllers;
 using NLog;
 
-namespace CCM.Web.Controllers.Api
+namespace CCM.Web.Infrastructure
 {
-    public class WarnFilterAttribute : System.Web.Http.Filters.ActionFilterAttribute
-    {
-        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+    // TODO: Not in use anymore?
+    //public class WarnFilterAttribute : System.Web.Http.Filters.ActionFilterAttribute
+    //{
+    //    protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public override void OnActionExecuting(HttpActionContext actionContext)
-        {
-            var request = actionContext.Request;
-            log.Warn($"Request to deprecated CodecControl. {request}");
-        }
-    }
+    //    public override void OnActionExecuting(HttpActionContext actionContext)
+    //    {
+    //        var request = actionContext.Request;
+    //        log.Warn($"Request to deprecated CodecControl. {request}");
+    //    }
+    //}
 }

@@ -31,7 +31,6 @@ using System.Linq.Expressions;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Helpers;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
@@ -40,8 +39,6 @@ namespace CCM.Data.Repositories
 {
     public class CallHistoryRepository : BaseRepository, ICallHistoryRepository
     {
-        #region CallHistory
-
         public CallHistoryRepository(IAppCache cache) : base(cache)
         {
         }
@@ -122,6 +119,10 @@ namespace CCM.Data.Repositories
             }
         }
 
+        /// <summary>
+        /// Used by CodecStatusHub
+        /// </summary>
+        /// <param name="callId"></param>
         public CallHistory GetCallHistoryByCallId(Guid callId)
         {
             using (var db = GetDbContext())
@@ -131,15 +132,109 @@ namespace CCM.Data.Repositories
             }
         }
 
-        public IList<CallHistory> GetCallHistories(DateTime startTime, DateTime endTime)
+        /// <summary>
+        /// Used by WebGuiHub
+        /// </summary>
+        /// <param name="callCount"></param>
+        /// <param name="anonymize"></param>
+        public IList<OldCall> GetOldCalls(int callCount, bool anonymize)
+        {
+            using (var db = GetDbContext())
+            {
+                var dbCalls = db.CallHistories.OrderByDescending(callHistory => callHistory.Ended).Take(callCount).ToList();
+                return dbCalls.Select(dbCall => MapToOldCall(dbCall, anonymize)).ToList();
+            }
+        }
+
+        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = db.CallHistories.AsQueryable();
+
+                if (!string.IsNullOrEmpty(region))
+                {
+                    query = query.Where(ch => ch.FromRegionName == region || ch.ToRegionName == region);
+                }
+
+                if (!string.IsNullOrEmpty(codecType))
+                {
+                    query = query.Where(ch => ch.FromCodecTypeName == codecType || ch.ToCodecTypeName == codecType);
+                }
+
+                if (!string.IsNullOrEmpty(sipAddress))
+                {
+                    query = query.Where(ch => ch.FromSip.Contains(sipAddress) || ch.ToSip.Contains(sipAddress));
+                }
+
+                if (onlyPhoneCalls)
+                {
+                    query = query.Where(ch => ch.IsPhoneCall);
+                }
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    query = query.Where(ch =>
+                        ch.FromDisplayName.Contains(searchString) ||
+                        ch.ToDisplayName.Contains(searchString) ||
+                        ch.FromSip.Contains(searchString) ||
+                        ch.ToSip.Contains(searchString) ||
+                        ch.FromLocationName.Contains(searchString) ||
+                        ch.ToLocationName.Contains(searchString) ||
+                        ch.FromLocationShortName.Contains(searchString) ||
+                        ch.ToLocationShortName.Contains(searchString) ||
+                        ch.FromUsername.Contains(searchString) ||
+                        ch.ToUsername.Contains(searchString)
+                    );
+                }
+
+                var dbCalls = query.OrderByDescending(callHistory => callHistory.Ended).Take(callCount).ToList();
+                return dbCalls.Select(dbCall => MapToOldCall(dbCall, anonymize)).ToList();
+            }
+        }
+
+        private OldCall MapToOldCall(CallHistoryEntity dbCall, bool anonymize)
+        {
+            return new OldCall
+            {
+                CallId = GuidString(dbCall.CallId),
+                Started = dbCall.Started.ToLocalTime(),
+                Ended = dbCall.Ended.ToLocalTime(),
+                Duration = dbCall.Ended.Subtract(dbCall.Started).ToString(@"dd\d\ hh\:mm\:ss"),
+                IsPhoneCall = dbCall.IsPhoneCall,
+                FromId = GuidString(dbCall.FromId),
+                FromSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.FromUsername) : dbCall.FromUsername,
+                FromCodecTypeColor = dbCall.FromCodecTypeColor,
+                FromCodecTypeName = dbCall.FromCodecTypeName,
+                FromComment = dbCall.FromComment,
+                FromDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(dbCall.FromDisplayName) : dbCall.FromDisplayName,
+                FromLocationName = dbCall.FromLocationName,
+                FromLocationShortName = dbCall.FromLocationShortName,
+                FromRegionName = dbCall.FromRegionName,
+                ToId = GuidString(dbCall.ToId),
+                ToSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.ToUsername) : dbCall.ToUsername,
+                ToCodecTypeColor = dbCall.ToCodecTypeColor,
+                ToCodecTypeName = dbCall.ToCodecTypeName,
+                ToComment = dbCall.ToComment,
+                ToDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(dbCall.ToDisplayName) : dbCall.ToDisplayName,
+                ToLocationName = dbCall.ToLocationName,
+                ToLocationShortName = dbCall.ToLocationShortName,
+                ToRegionName = dbCall.ToRegionName
+            };
+        }
+
+        private string GuidString(Guid guid) { return guid == Guid.Empty ? string.Empty : guid.ToString(); }
+
+        #region Statistics
+        public IList<CallHistory> GetCallHistoriesByDate(DateTime startTime, DateTime endTime)
         {
             return GetFiltered(c => c.Started < endTime && c.Ended >= startTime);
         }
 
         public IList<CallHistory> GetCallHistoriesForRegion(DateTime startDate, DateTime endDate, Guid regionId)
         {
-            return regionId == Guid.Empty ? 
-                GetFiltered(c => c.Started < endDate && c.Ended >= startDate) : 
+            return regionId == Guid.Empty ?
+                GetFiltered(c => c.Started < endDate && c.Ended >= startDate) :
                 GetFiltered(c => c.Started < endDate && c.Ended >= startDate && (c.FromRegionId == regionId || c.ToRegionId == regionId));
         }
 
@@ -224,101 +319,7 @@ namespace CCM.Data.Repositories
                 ToUsername = dbCallHistory.ToUsername
             };
         }
-
         #endregion
-
-        #region OldCall
-        public IList<OldCall> GetOldCalls(int callCount, bool anonymize)
-        {
-            using (var db = GetDbContext())
-            {
-                var dbCalls = db.CallHistories.OrderByDescending(callHistory => callHistory.Ended).Take(callCount)
-                    .ToList();
-                return dbCalls.Select(dbCall => MapToOldCall(dbCall, anonymize)).ToList();
-            }
-        }
-
-        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount)
-        {
-            using (var db = GetDbContext())
-            {
-                var query = db.CallHistories.AsQueryable();
-
-                if (!string.IsNullOrEmpty(region))
-                {
-                    query = query.Where(ch => ch.FromRegionName == region || ch.ToRegionName == region);
-                }
-
-                if (!string.IsNullOrEmpty(codecType))
-                {
-                    query = query.Where(ch => ch.FromCodecTypeName == codecType || ch.ToCodecTypeName == codecType);
-                }
-
-                if (!string.IsNullOrEmpty(sipAddress))
-                {
-                    query = query.Where(ch => ch.FromSip.Contains(sipAddress) || ch.ToSip.Contains(sipAddress));
-                }
-
-                if (onlyPhoneCalls)
-                {
-                    query = query.Where(ch => ch.IsPhoneCall);
-                }
-
-                if (!string.IsNullOrEmpty(searchString))
-                {
-                    query = query.Where(ch =>
-                        ch.FromDisplayName.Contains(searchString) ||
-                        ch.ToDisplayName.Contains(searchString) ||
-                        ch.FromSip.Contains(searchString) ||
-                        ch.ToSip.Contains(searchString) ||
-                        ch.FromLocationName.Contains(searchString) ||
-                        ch.ToLocationName.Contains(searchString) ||
-                        ch.FromLocationShortName.Contains(searchString) ||
-                        ch.ToLocationShortName.Contains(searchString) ||
-                        ch.FromUsername.Contains(searchString) ||
-                        ch.ToUsername.Contains(searchString)
-                    );
-                }
-
-                var dbCalls = query.OrderByDescending(callHistory => callHistory.Ended).Take(callCount).ToList();
-                return dbCalls.Select(dbCall => MapToOldCall(dbCall, anonymize)).ToList();
-            }
-        }
-
-        private OldCall MapToOldCall(CallHistoryEntity dbCall, bool anonymize)
-        {
-            return new OldCall
-            {
-                CallId = GuidString(dbCall.CallId),
-                Started = dbCall.Started.ToLocalTime(),
-                Ended = dbCall.Ended.ToLocalTime(),
-                Duration = dbCall.Ended.Subtract(dbCall.Started).ToString(@"dd\d\ hh\:mm\:ss"),
-                IsPhoneCall = dbCall.IsPhoneCall,
-                FromId = GuidString(dbCall.FromId),
-                FromSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.FromUsername) : dbCall.FromUsername,
-                FromCodecTypeColor = dbCall.FromCodecTypeColor,
-                FromCodecTypeName = dbCall.FromCodecTypeName,
-                FromComment = dbCall.FromComment,
-                FromDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(dbCall.FromDisplayName) : dbCall.FromDisplayName,
-                FromLocationName = dbCall.FromLocationName,
-                FromLocationShortName = dbCall.FromLocationShortName,
-                FromRegionName = dbCall.FromRegionName,
-                ToId = GuidString(dbCall.ToId),
-                ToSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.ToUsername) : dbCall.ToUsername,
-                ToCodecTypeColor = dbCall.ToCodecTypeColor,
-                ToCodecTypeName = dbCall.ToCodecTypeName,
-                ToComment = dbCall.ToComment,
-                ToDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(dbCall.ToDisplayName) : dbCall.ToDisplayName,
-                ToLocationName = dbCall.ToLocationName,
-                ToLocationShortName = dbCall.ToLocationShortName,
-                ToRegionName = dbCall.ToRegionName
-            };
-        }
-
-        private string GuidString(Guid guid) { return guid == Guid.Empty ? string.Empty : guid.ToString(); }
-
-        #endregion
-
 
     }
 }

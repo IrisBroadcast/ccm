@@ -31,11 +31,11 @@ namespace CCM.Web.InputValidation.ValidationAttributes
 {
     public class MustContainDigitsAttribute : ValidationAttribute
     {
-        private readonly int minimumCount;
+        private readonly int _minimumCount;
 
         public MustContainDigitsAttribute(int minimumCount)
         {
-            this.minimumCount = minimumCount;
+            _minimumCount = minimumCount;
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -47,9 +47,9 @@ namespace CCM.Web.InputValidation.ValidationAttributes
             }
 
             var numberOfDigits = stringValue.Count(char.IsDigit);
-            if (numberOfDigits < minimumCount)
+            if (numberOfDigits < _minimumCount)
             {
-                var errorMessage = string.Format(Resources.Password_Must_Contain_Digits_At_Least_X, minimumCount);
+                var errorMessage = string.Format(Resources.Password_Must_Contain_Digits_At_Least_X, _minimumCount);
                 return new ValidationResult(errorMessage);
             }
 

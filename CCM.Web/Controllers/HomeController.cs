@@ -42,17 +42,19 @@ namespace CCM.Web.Controllers
     {
         private readonly ICodecTypeRepository _codecTypeRepository;
         private readonly IRegionRepository _regionRepository;
-        private readonly IRegisteredSipRepository _registeredSipRepository;
         private readonly ISipAccountManager _sipAccountManager;
         private readonly IGuiHubUpdater _guiHubUpdater;
         private readonly IStatusHubUpdater _statusHubUpdater;
 
-        public HomeController(IRegionRepository regionRepository, ICodecTypeRepository codecTypeRepository, IRegisteredSipRepository registeredSipRepository,
-            ISipAccountManager sipAccountManager, IGuiHubUpdater guiHubUpdater, IStatusHubUpdater statusHubUpdater)
+        public HomeController(
+            IRegionRepository regionRepository,
+            ICodecTypeRepository codecTypeRepository,
+            ISipAccountManager sipAccountManager,
+            IGuiHubUpdater guiHubUpdater,
+            IStatusHubUpdater statusHubUpdater)
         {
             _regionRepository = regionRepository;
             _codecTypeRepository = codecTypeRepository;
-            _registeredSipRepository = registeredSipRepository;
             _sipAccountManager = sipAccountManager;
             _guiHubUpdater = guiHubUpdater;
             _statusHubUpdater = statusHubUpdater;

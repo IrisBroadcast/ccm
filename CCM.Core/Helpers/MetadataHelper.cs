@@ -29,11 +29,11 @@ namespace CCM.Core.Helpers
     public class MetadataHelper
     {
         /// <summary>
-        /// Returnerar v�rdet p� str�ngen som pekas ut av propertyPath p� objektet obj
+        /// Return the value on the string, that is being targeted by propertyPath on the object "obj"
         /// </summary>
         public static string GetPropertyValue(object obj, string propertyPath)
         {
-            // TODO: Reflection. Kolla prestanda p� denna
+            // TODO: Reflection. Kolla prestanda på denna
             if (obj == null) { return string.Empty; }
             propertyPath = propertyPath ?? string.Empty;
 

@@ -36,21 +36,17 @@ namespace CCM.Web.Controllers.Api
 {
     public class RegisteredSipsOverviewController : ApiController
     {
-        private readonly ISettingsManager _settingsManager;
-        private readonly IRegisteredSipRepository _registeredSipRepository;
+        private readonly RegisteredUserAgentViewModelsProvider _registeredUserAgentViewModelsProvider;
 
-        public RegisteredSipsOverviewController(IRegisteredSipRepository registeredSipRepository, ISettingsManager settingsManager)
+        public RegisteredSipsOverviewController(
+            RegisteredUserAgentViewModelsProvider registeredUserAgentViewModelsProvider)
         {
-            _registeredSipRepository = registeredSipRepository;
-            _settingsManager = settingsManager;
+            _registeredUserAgentViewModelsProvider = registeredUserAgentViewModelsProvider;
         }
 
-        public IList<RegisteredSipOverviewDto> Post()
+        public IEnumerable<RegisteredUserAgentViewModel> Post()
         {
-            var sipDomain = _settingsManager.SipDomain;
-            var registeredSips = _registeredSipRepository.GetCachedRegisteredSips();
-            var dtos = registeredSips.Select(sip => RegisteredSipOverviewDtoMapper.MapToDto(sip, sipDomain)).ToList();
-            return dtos;
+            return _registeredUserAgentViewModelsProvider.GetAll();
         }
 
     }

@@ -1,13 +1,26 @@
-﻿
-@{
-    ViewBag.Title = "Debug";
+﻿@{
+    ViewBag.Title = Resources.Debug_Title;
 }
-<h2>Test</h2>
-@Html.ActionLink("Get CCM Users", "GetCCMUsers")
-<br />
-@Html.ActionLink("Get SIP Accounts", "GetSipAccounts")
-<br />
-@Html.ActionLink("Who Am I", "WhoAmI")
-<br />
-@Html.ActionLink("Cache info", "CacheInfo")
-<br />
+
+<div class="row">
+    <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header ccm-sub-navbar--admin--header">
+                <span class="navbar-brand">@Resources.Debug_Title</span>
+            </div>
+            <div class="navbar ccm-sub-navbar--admin--links">
+                <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
+                    <li class="active">@Html.ActionLink(Resources.Logs_Link_Debugging, "Index", "Debugging", new { }, new { })</li>
+                    <li>@Html.ActionLink("Get CCM Users", "GetCCMUsers", "Debugging", new { }, new { })</li>
+                    <li>@Html.ActionLink("Get SIP Accounts", "GetSipAccounts", "Debugging", new { }, new { })</li>
+                    <li>@Html.ActionLink("Who Am I", "WhoAmI", "Debugging", new { }, new { })</li>
+                    <li>@Html.ActionLink("Cache info", "CacheInfo", "Debugging", new { }, new { })</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="row">
+    
+</div>

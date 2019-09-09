@@ -33,7 +33,14 @@ using NLog;
 namespace CCM.Core.SipEvent.Parser
 {
     /// <summary>
-    /// Parses messages from Kamailio, the old way with strings and values separated by '::'
+    /// Parses incoming SIP registrar messages in string format.
+    /// Separated with '::', this is the first and oldest format.
+    /// We are now trying to move to JSON.
+    /// The format on the incoming messages is custom made
+    /// and the details can be found in the 'connect' project
+    /// on Github. Be sure to check that you are using the right
+    /// version of 'connect' that formats the messages with string
+    /// separation. Or try to see if you can implement the JSON version.
     /// </summary>
     public class KamailioMessageParser : IKamailioMessageParser
     {
@@ -114,7 +121,7 @@ namespace CCM.Core.SipEvent.Parser
                 ToDisplayName = ParseDisplayName(kamailioData.GetField("tn")),
                 Expires = ParseInt(kamailioData.GetField("Expires"), DefaultExpireValue),
 
-                // Används inte
+                // Not in use
                 //ToUsername = kamailioData.GetField("rU"),
                 //RequestedSip = new SipUri(kamailioData.GetField("ru")),
                 //ReceivedIp = kamailioData.GetField("Ri"),
@@ -127,6 +134,7 @@ namespace CCM.Core.SipEvent.Parser
 
         private SipRegistrationExpireMessage ParseRegExpire(KamailioData kamailioData)
         {
+            // TODO: Is this one ever called?
             var expire = new SipRegistrationExpireMessage()
             {
                 SipAddress = new SipUri(kamailioData.GetField("aor")),

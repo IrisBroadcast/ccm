@@ -40,8 +40,8 @@ namespace CCM.Tests.KamailioTests
         [SetUp]
         public void Setup()
         {
-            _sipMessageManager = kernel.Get<KamailioMessageManager>();
-            _sipRep = kernel.Get<RegisteredSipRepository>();
+            SipMessageManager = Kernel.Get<KamailioMessageManager>();
+            SipRep = Kernel.Get<RegisteredSipRepository>();
         }
      
         [Test]
@@ -60,12 +60,12 @@ namespace CCM.Tests.KamailioTests
             var sipMessage = new SipEventParser().Parse(sipEvent);
 
             // ACT
-            SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
+            SipEventHandlerResult result = SipMessageManager.HandleSipMessage(sipMessage);
 
             // ASSERT
             Assert.AreEqual(SipEventChangeStatus.CodecAdded, result.ChangeStatus);
 
-            var sip = _sipRep.Single(rs => rs.SIP == userName);
+            var sip = SipRep.Single(rs => rs.SIP == userName);
             Assert.AreEqual(ipAddress, sip.IP);
 
             // Clean up
@@ -93,43 +93,43 @@ namespace CCM.Tests.KamailioTests
             };
 
             // Assert
-            var result = _sipMessageManager.RegisterCodec(sipMessage);
+            var result = SipMessageManager.RegisterCodec(sipMessage);
             Assert.AreEqual(SipEventChangeStatus.CodecAdded, result.ChangeStatus);
 
             // Update only timestamp. Should return nothing changed.
             // Act
             sipMessage.UnixTimeStamp = GetUnixTimeStamp(DateTime.Now.AddSeconds(1));
             // Assert
-            result = _sipMessageManager.RegisterCodec(sipMessage);
+            result = SipMessageManager.RegisterCodec(sipMessage);
             Assert.AreEqual(SipEventChangeStatus.NothingChanged, result.ChangeStatus);
 
             // Update location. Should return status updated.
             // Act
             sipMessage.Ip = GetRandomLocationIpAddress();
             // Assert
-            result = _sipMessageManager.RegisterCodec(sipMessage);
+            result = SipMessageManager.RegisterCodec(sipMessage);
             Assert.AreEqual(SipEventChangeStatus.CodecUpdated, result.ChangeStatus);
 
             // Only timestamp
             sipMessage.UnixTimeStamp = GetUnixTimeStamp(DateTime.Now.AddSeconds(2));
-            result = _sipMessageManager.RegisterCodec(sipMessage);
+            result = SipMessageManager.RegisterCodec(sipMessage);
             Assert.AreEqual(SipEventChangeStatus.NothingChanged, result.ChangeStatus);
 
             // Update display name. Should return status updated.
             // Act
             sipMessage.ToDisplayName = "New display name";
             // Assert
-            result = _sipMessageManager.RegisterCodec(sipMessage);
+            result = SipMessageManager.RegisterCodec(sipMessage);
             Assert.AreEqual(SipEventChangeStatus.CodecUpdated, result.ChangeStatus);
 
             // Update user agent
             sipMessage.UserAgent = "Quantum/3.4.3";
-            result = _sipMessageManager.RegisterCodec(sipMessage);
+            result = SipMessageManager.RegisterCodec(sipMessage);
             Assert.AreEqual(SipEventChangeStatus.CodecUpdated, result.ChangeStatus);
 
             // Only timestamp
             sipMessage.UnixTimeStamp = GetUnixTimeStamp(DateTime.Now.AddSeconds(3));
-            result = _sipMessageManager.RegisterCodec(sipMessage);
+            result = SipMessageManager.RegisterCodec(sipMessage);
             Assert.AreEqual(SipEventChangeStatus.NothingChanged, result.ChangeStatus);
 
         }

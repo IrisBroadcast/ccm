@@ -52,7 +52,7 @@ namespace CCM.Tests
         [Test]
         public void should_handle_properties_with_null_value_in_object_hierarcy()
         {
-            var obj = new RegisteredSip() {Location = null };
+            var obj = new RegisteredSip() { Location = null };
             var s = MetadataHelper.GetPropertyValue(obj, "Location.ShortName");
             Assert.AreEqual(string.Empty, s);
         }

@@ -25,8 +25,8 @@
  */
 
 using System.ComponentModel.DataAnnotations;
-using CCM.Web.InputValidation;
 using CCM.Web.InputValidation.ValidationAttributes;
+using CCM.Web.Infrastructure.PasswordGeneration;
 
 namespace CCM.Web.Models.SipAccount
 {
@@ -35,12 +35,12 @@ namespace CCM.Web.Models.SipAccount
         [DataType(DataType.Password)]
         [Display(ResourceType = typeof(Resources), Name = nameof(Resources.Password))]
         [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Required))]
-        [MinLength(SipPasswordValidationSettings.MinLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Must_Be_At_Least_X_Characters_Long))]
-        [MaxLength(SipPasswordValidationSettings.MaxLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Can_Not_Be_Longer_Than_X_Characters))]
-        [MustContainCharacters(SipPasswordValidationSettings.MinNumberOfSpecial, SipPasswordValidationSettings.AllowedSpecialCharacters)]
-        [MustContainDigits(SipPasswordValidationSettings.MinNumberOfDigits)]
-        [MustContainLowerCaseLetters(SipPasswordValidationSettings.MinNumberOfLower)]
-        [MustContainUpperCaseLetters(SipPasswordValidationSettings.MinNumberOfUpper)]
+        [MinLength(PasswordComplexityConfiguration.MinLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Must_Be_At_Least_X_Characters_Long))]
+        [MaxLength(PasswordComplexityConfiguration.MaxLength, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Can_Not_Be_Longer_Than_X_Characters))]
+        [MustContainCharacters(PasswordComplexityConfiguration.MinNumberOfSpecial, PasswordComplexityConfiguration.AllowedSpecialCharacters)]
+        [MustContainDigits(PasswordComplexityConfiguration.MinNumberOfDigits)]
+        [MustContainLowerCaseLetters(PasswordComplexityConfiguration.MinNumberOfLower)]
+        [MustContainUpperCaseLetters(PasswordComplexityConfiguration.MinNumberOfUpper)]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]

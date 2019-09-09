@@ -31,15 +31,16 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using CCM.Core.Discovery;
+using CCM.Core.Entities.Discovery;
 using CCM.DiscoveryApi.Infrastructure;
 using Newtonsoft.Json;
 using NLog;
 
 namespace CCM.DiscoveryApi.Services
 {
-    // Retreives discovery data via CCM's REST service.
-
+    /// <summary>
+    /// Retreives discovery data via CCM's REST service
+    /// </summary>
     public class DiscoveryHttpService : ApiController, IDiscoveryHttpService
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();

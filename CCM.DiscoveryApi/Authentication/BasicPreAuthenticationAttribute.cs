@@ -38,7 +38,7 @@ namespace CCM.DiscoveryApi.Authentication
         // Used by Discovery v2
         // Performs preauthentication by checking that request contains basic authentication credentials.
         // Actual user authentication is deferred to CCM web api.
-        
+
         protected override async Task<IPrincipal> AuthenticateAsync(string userName, string password, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();

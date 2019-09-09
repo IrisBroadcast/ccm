@@ -36,7 +36,9 @@ namespace CCM.Data.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public string Sdp { get; set; }
-        public int SortIndex { get; set; }
+
+        [Column("SortIndex")]
+        public int SortIndex { get; set; } // TODO: is this one actually in use?
         public virtual ICollection<ProfileGroupProfileOrdersEntity> ProfileGroups { get; set; }
         public virtual ICollection<UserAgentProfileOrderEntity> UserAgents { get; set; }
     }

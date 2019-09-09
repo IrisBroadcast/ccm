@@ -49,7 +49,7 @@ namespace CCM.Core.Entities
         public DateTime Started { get; set; }
         public DateTime Updated { get; set; }
         
-        public SipCallState State { get; set; } // TODO: Doesn't seem to be in use, investigate and remove.
+        public SipCallState State { get; set; }
         public bool Closed { get; set; }
         public bool IsPhoneCall { get; set; } // True if it's a phone call
 

@@ -42,7 +42,7 @@ using NLog;
 namespace CCM.DiscoveryApi.Authentication
 {
     /// <summary>
-    /// Checks that the request contains valid SR Discovery parameters 
+    /// Checks that the request contains valid SR Discovery parameters
     /// </summary>
     public class DiscoveryParameterParserAttribute : Attribute, IAuthenticationFilter
     {
@@ -52,7 +52,6 @@ namespace CCM.DiscoveryApi.Authentication
         private readonly IEnumerable<string> _nonFilterKeys = new List<string> {"username", "pwdhash", "caller", "callee", "includeCodecsInCall"}.Select(i => i.ToLower());
 
         public bool AllowMultiple => false;
-
 
         public async Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
         {
@@ -71,7 +70,7 @@ namespace CCM.DiscoveryApi.Authentication
                 stream.Seek(0, SeekOrigin.Begin);
 
                 NameValueCollection formData = await request.Content.ReadAsFormDataAsync(cancellationToken);
-                
+
                 // Get SR Discovery parameters
                 var parameters = GetSrDiscoveryParameters(formData);
                 request.Properties.Add("SRDiscoveryParameters", parameters);
@@ -85,8 +84,6 @@ namespace CCM.DiscoveryApi.Authentication
                         string.IsNullOrEmpty(parameters.Callee) ? "<missing>" : parameters.Callee,
                         string.Join(", ", parameters.Filters.Select(f => $"{f.Key}={f.Value}")) );
                 }
-                
-
             }
             catch (Exception)
             {
@@ -111,7 +108,7 @@ namespace CCM.DiscoveryApi.Authentication
                 Filters = filters
             };
         }
-        
+
         public virtual Task ChallengeAsync(HttpAuthenticationChallengeContext context, CancellationToken cancellationToken)
         {
             return Task.FromResult(0);

@@ -42,7 +42,7 @@ namespace CCM.Data.Entities
 
         [MetaProperty]
         [Column("UserAgentHead")]
-        public string UserAgentHead { get; set; }
+        public string UserAgentHeader { get; set; }
 
         [MetaProperty]
         public string Username { get; set; }

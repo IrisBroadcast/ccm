@@ -24,7 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace CCM.Web.Controllers
+namespace CCM.Web.Models.Log
 {
     public class LevelModel
     {

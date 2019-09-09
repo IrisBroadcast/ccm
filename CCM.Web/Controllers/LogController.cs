@@ -90,18 +90,17 @@ namespace CCM.Web.Controllers
         {
             return new List<SelectListItem>()
             {
-                // TODO: Replace with english
-                new SelectListItem() {Value = "00:01:00", Text = @"minuten"},
-                new SelectListItem() {Value = "00:10:00", Text = @"10 minuter"},
-                new SelectListItem() {Value = "00:30:00", Text = @"30 minuter"},
-                new SelectListItem() {Value = "01:00:00", Text = @"1 timme"},
-                new SelectListItem() {Value = "03:00:00", Text = @"3 timmar"},
-                new SelectListItem() {Value = "06:00:00", Text = @"6 timmar"},
-                new SelectListItem() {Value = "12:00:00", Text = @"12 timmar"},
-                new SelectListItem() {Value = "1.00:00:00", Text = @"dygnet"},
-                new SelectListItem() {Value = "3.00:00:00", Text = @"3 dygnen"},
-                new SelectListItem() {Value = "7.00:00:00", Text = @"veckan"},
-                new SelectListItem() {Value = "interval", Text = @"Tidsintervall"},
+                new SelectListItem() { Value = "00:01:00", Text = @Resources.Date_Time_Name_Minute },
+                new SelectListItem() { Value = "00:10:00", Text = @Resources.Date_Time_Name_Ten_Minutes },
+                new SelectListItem() { Value = "00:30:00", Text = @Resources.Date_Time_Name_Thirty_Minutes },
+                new SelectListItem() { Value = "01:00:00", Text = @Resources.Date_Time_Name_One_Hour },
+                new SelectListItem() { Value = "03:00:00", Text = @Resources.Date_Time_Name_Three_Hours },
+                new SelectListItem() { Value = "06:00:00", Text = @Resources.Date_Time_Name_Six_Hours },
+                new SelectListItem() { Value = "12:00:00", Text = @Resources.Date_Time_Name_Twelve_Hours },
+                new SelectListItem() { Value = "1.00:00:00", Text = @Resources.Date_Time_Name_Day_And_Night },
+                new SelectListItem() { Value = "3.00:00:00", Text = @Resources.Date_Time_Name_Three_Days_And_Night },
+                new SelectListItem() { Value = "7.00:00:00", Text = @Resources.Date_Time_Name_Week },
+                new SelectListItem() { Value = "interval", Text = @Resources.Date_Time_Name_Time_Interval },
             };
         }
 

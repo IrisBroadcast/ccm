@@ -40,10 +40,8 @@ namespace CCM.Data.Entities
         public string DisplayName { get; set; }
         public string Comment { get; set; }
         public string ExtensionNumber { get; set; }
-
         public SipAccountType AccountType { get; set; }
         public bool AccountLocked { get; set; }
-
         public string Password { get; set; }
 
         [MetaType]

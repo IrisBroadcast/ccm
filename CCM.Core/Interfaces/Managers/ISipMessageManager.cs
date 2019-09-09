@@ -33,5 +33,4 @@ namespace CCM.Core.Interfaces.Managers
     {
         SipEventHandlerResult HandleSipMessage(SipMessageBase sipMessage);
     }
-
 }

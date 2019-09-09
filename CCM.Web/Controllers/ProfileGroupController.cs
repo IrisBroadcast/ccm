@@ -57,11 +57,11 @@ namespace CCM.Web.Controllers
         {
             ViewBag.SearchString = search;
 
+            // TODO: Enable search? think it is, but this is not working then i guess
             //var profiles = string.IsNullOrWhiteSpace(search) ?
             //    _profileRepository.GetAllProfilesIncludingRelations() :
             //    _profileRepository.FindProfiles(search);
             var profileGroups = _profileGroupRepository.GetAll();
-
             return View(profileGroups);
         }
 
@@ -82,7 +82,6 @@ namespace CCM.Web.Controllers
             var notSelectedViewModels = profiles.Where(p => !model.Profiles.Select(pr => pr.Id).Contains(p.Id)).OrderBy(p => p.Name).Select(p => new ProfileListItemViewModel() { Id = p.Id, Name = p.Name, Selected = false });
             model.Profiles.AddRange(notSelectedViewModels);
         }
-
 
         [HttpGet]
         [CcmAuthorize(Roles = Roles.Admin)]
@@ -140,7 +139,7 @@ namespace CCM.Web.Controllers
                 }
                 catch (DuplicateNameException)
                 {
-                    ModelState.AddModelError("NameMustBeUnique", "Gruppen kunde inte sparas. Namnet används redan.");
+                    ModelState.AddModelError("NameMustBeUnique", Resources.Profile_Group_Error_Profile_Group_Could_Not_Be_Saved_The_Name_Is_Already_In_Use);
                     return View("CreateEdit", model);
                 }
 
@@ -172,6 +171,24 @@ namespace CCM.Web.Controllers
         {
             _profileGroupRepository.Delete(profile.Id);
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [CcmAuthorize(Roles = Roles.Admin)]
+        public JsonResult SetProfileGroupSortWeight(List<GuidSortWeightTuple> profileGroupSortWeight)
+        {
+            var model = new SetSortIndexResultViewModel();
+
+            if (profileGroupSortWeight == null || profileGroupSortWeight.Any(d => d.Id == Guid.Empty))
+            {
+                model.IndexSet = false;
+            }
+            else
+            {
+                var paramdata = profileGroupSortWeight.Select(i => new Tuple<Guid, int>(i.Id, i.SortWeight)).ToList();
+                _profileGroupRepository.SetProfileGroupSortWeight(paramdata);
+            }
+            return Json(model);
         }
 
     }

@@ -31,14 +31,16 @@ namespace CCM.Core.Entities
 {
     public class ProfileGroup: CoreEntityWithTimestamps
     {
+        public ProfileGroup()
+        {
+            Profiles = new List<Profile>(); // TODO: This whole class needs some work.. Why this?
+        }
+
         public string Name { get; set; }
         public string Description { get; set; }
 
+        // Decides how valuable this group is compared to other groups
+        public int? GroupSortWeight { get; set; }
         public List<Profile> Profiles { get; set; }
-
-        public ProfileGroup()
-        {
-            Profiles = new List<Profile>();
-        }
     }
 }

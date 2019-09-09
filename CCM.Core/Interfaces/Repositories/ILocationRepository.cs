@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
@@ -35,5 +36,6 @@ namespace CCM.Core.Interfaces.Repositories
     {
         List<Location> FindLocations(string searchString);
         List<LocationNetwork> GetAllLocationNetworks();
+        Dictionary<Guid, LocationAndProfiles> GetLocationsAndProfiles();
     }
 }

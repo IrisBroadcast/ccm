@@ -36,9 +36,9 @@ namespace CCM.Core.Interfaces.Repositories
         bool Save(CallHistory callHistory);
         CallHistory GetById(Guid id);
         CallHistory GetCallHistoryByCallId(Guid callId);
-        IList<CallHistory> GetCallHistories(DateTime startTime, DateTime endTime);
         IList<OldCall> GetOldCalls(int callCount, bool anonymize);
         IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount);
+        IList<CallHistory> GetCallHistoriesByDate(DateTime startTime, DateTime endTime);
         IList<CallHistory> GetCallHistoriesForRegion(DateTime startDate, DateTime endDate, Guid regionId);
         IList<CallHistory> GetCallHistoriesForRegisteredSip(DateTime startDate, DateTime endDate, string sipId);
         IList<CallHistory> GetCallHistoriesForCodecType(DateTime startDate, DateTime endDate, Guid codecTypeId);

@@ -45,7 +45,7 @@ namespace CCM.Web.Models.Statistics
         public Guid RegionId { get; set; }
         public Guid OwnerId { get; set; } 
         public Guid CodecTypeId { get; set; }
-        public List<LocationStatistics> Statistics { get; set; }
+        public List<LocationBasedStatistics> Statistics { get; set; }
 
         public string ColumnLabel 
         {
@@ -85,25 +85,25 @@ namespace CCM.Web.Models.Statistics
             return Statistics.Max(s => s.NumberOfCalls);
         }
 
-        private static string GetWidth(LocationStatisticsMode mode, LocationStatistics stats, double multiplier)
+        private static string GetWidth(LocationStatisticsMode mode, LocationBasedStatistics stats, double multiplier)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0:0.#}",
                 Math.Max(0.1, GetRawValue(mode, stats)*multiplier*50));
         }
 
-        private static string GetValue(LocationStatisticsMode mode, LocationStatistics stats)
+        private static string GetValue(LocationStatisticsMode mode, LocationBasedStatistics stats)
         {
             return string.Format(SvCulture, "{0}", Math.Round(GetRawValue(mode, stats), MidpointRounding.ToEven));
         }
 
-        private static double GetRawValue(LocationStatisticsMode mode, LocationStatistics stats)
+        private static double GetRawValue(LocationStatisticsMode mode, LocationBasedStatistics stats)
         {
             if (mode == LocationStatisticsMode.MaxSimultaneousCalls) return stats.MaxSimultaneousCalls;
             if (mode == LocationStatisticsMode.TotaltTimeForCalls) return stats.TotaltTimeForCalls;
             return stats.NumberOfCalls;
         }
 
-        private static string GetToolTip(LocationStatisticsMode mode, LocationStatistics stats)
+        private static string GetToolTip(LocationStatisticsMode mode, LocationBasedStatistics stats)
         {
             if (mode != LocationStatisticsMode.MaxSimultaneousCalls) return string.Empty;
             if (stats.MaxSimultaneousCalls <= 1) return string.Empty;

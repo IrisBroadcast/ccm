@@ -24,21 +24,18 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
-using CCM.Core.Codec;
 using CCM.Core.Entities;
-using CCM.Core.Entities.Specific;
 using CCM.Core.SipEvent;
 
 namespace CCM.Core.Interfaces.Repositories
 {
     public interface IRegisteredSipRepository
     {
-        SipEventHandlerResult UpdateRegisteredSip(RegisteredSip registeredSip);
-        List<RegisteredSipDto> GetCachedRegisteredSips();
+        SipEventHandlerResult UpdateRegisteredSip(UserAgentRegistration registration);
+        IEnumerable<RegisteredUserAgentDiscovery> GetRegisteredUserAgentsDiscovery();
+        IEnumerable<RegisteredUserAgent> GetRegisteredUserAgents();
         SipEventHandlerResult DeleteRegisteredSip(string sipAddress);
-        List<CodecInformation> GetCodecInformationList();
-        CodecInformation GetCodecInformation(string sipAddress);
+        IEnumerable<RegisteredUserAgentCodecInformation> GetRegisteredUserAgentsCodecInformation();
     }
 }

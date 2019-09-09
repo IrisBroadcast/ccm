@@ -59,7 +59,6 @@ namespace CCM.DiscoveryApi.Authentication
 
         public bool AllowMultiple => false;
 
-
         public async Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
         {
             HttpRequestMessage request = context.Request;

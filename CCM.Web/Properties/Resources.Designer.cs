@@ -160,6 +160,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cache Info.
+        /// </summary>
+        public static string Cache_Info_Title {
+            get {
+                return ResourceManager.GetString("Cache_Info_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Samtal.
         /// </summary>
         public static string Call {
@@ -322,6 +331,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ingen ljudmätare tillgänlig.
+        /// </summary>
+        public static string Codec_Error_No_Audio_Metering_Status_Available {
+            get {
+                return ResourceManager.GetString("Codec_Error_No_Audio_Metering_Status_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to GPO.
         /// </summary>
         public static string Codec_GPO {
@@ -457,6 +475,105 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dygnet.
+        /// </summary>
+        public static string Date_Time_Name_Day_And_Night {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_Day_And_Night", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minuten.
+        /// </summary>
+        public static string Date_Time_Name_Minute {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_Minute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 timme.
+        /// </summary>
+        public static string Date_Time_Name_One_Hour {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_One_Hour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 6 timmar.
+        /// </summary>
+        public static string Date_Time_Name_Six_Hours {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_Six_Hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10 minuter.
+        /// </summary>
+        public static string Date_Time_Name_Ten_Minutes {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_Ten_Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 30 minuter.
+        /// </summary>
+        public static string Date_Time_Name_Thirty_Minutes {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_Thirty_Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3 dygnen.
+        /// </summary>
+        public static string Date_Time_Name_Three_Days_And_Night {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_Three_Days_And_Night", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3 timmar.
+        /// </summary>
+        public static string Date_Time_Name_Three_Hours {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_Three_Hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tidsintervall.
+        /// </summary>
+        public static string Date_Time_Name_Time_Interval {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_Time_Interval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 12 timmar.
+        /// </summary>
+        public static string Date_Time_Name_Twelve_Hours {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_Twelve_Hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Veckan.
+        /// </summary>
+        public static string Date_Time_Name_Week {
+            get {
+                return ResourceManager.GetString("Date_Time_Name_Week", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to dB nivå.
         /// </summary>
         public static string Db_Level {
@@ -471,6 +588,15 @@ namespace CCM.Web {
         public static string Db_Level_Values {
             get {
                 return ResourceManager.GetString("Db_Level_Values", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debug.
+        /// </summary>
+        public static string Debug_Title {
+            get {
+                return ResourceManager.GetString("Debug_Title", resourceCulture);
             }
         }
         
@@ -961,6 +1087,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filtret kunde inte sparas. Möjligen används filter-namnet redan..
+        /// </summary>
+        public static string Filter_Error_Filter_Could_Not_Be_Saved_The_Name_Is_Already_In_Use {
+            get {
+                return ResourceManager.GetString("Filter_Error_Filter_Could_Not_Be_Saved_The_Name_Is_Already_In_Use", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filternamn.
         /// </summary>
         public static string Filter_Name {
@@ -1420,6 +1555,60 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CIDR för IPv4 saknas.
+        /// </summary>
+        public static string Location_Error_Message_Cidr_For_Ipv4_Is_Missing {
+            get {
+                return ResourceManager.GetString("Location_Error_Message_Cidr_For_Ipv4_Is_Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CIDR för IPv6 saknas.
+        /// </summary>
+        public static string Location_Error_Message_Cidr_For_Ipv6_Is_Missing {
+            get {
+                return ResourceManager.GetString("Location_Error_Message_Cidr_For_Ipv6_Is_Missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ogiltig IPv4-adress.
+        /// </summary>
+        public static string Location_Error_Message_Invalid_Ipv4_Address {
+            get {
+                return ResourceManager.GetString("Location_Error_Message_Invalid_Ipv4_Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ogiltig IPv6-adress.
+        /// </summary>
+        public static string Location_Error_Message_Invalid_Ipv6_Address {
+            get {
+                return ResourceManager.GetString("Location_Error_Message_Invalid_Ipv6_Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Endast IP v4-adresser kan anges.
+        /// </summary>
+        public static string Location_Error_Message_Only_Ipv4_Address_Is_Valid {
+            get {
+                return ResourceManager.GetString("Location_Error_Message_Only_Ipv4_Address_Is_Valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Endast IPv6-adresser kan anges.
+        /// </summary>
+        public static string Location_Error_Message_Only_Ipv6_Address_Is_Valid {
+            get {
+                return ResourceManager.GetString("Location_Error_Message_Only_Ipv6_Address_Is_Valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Platsgrupper.
         /// </summary>
         public static string Location_Groups {
@@ -1524,6 +1713,15 @@ namespace CCM.Web {
         public static string Logs_Link_Change_Log_Level_For {
             get {
                 return ResourceManager.GetString("Logs_Link_Change_Log_Level_For", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debug.
+        /// </summary>
+        public static string Logs_Link_Debugging {
+            get {
+                return ResourceManager.GetString("Logs_Link_Debugging", resourceCulture);
             }
         }
         
@@ -2086,6 +2284,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Profilen kunde inte sparas. Namnet används redan..
+        /// </summary>
+        public static string Profile_Error_Profile_Could_Not_Be_Saved_The_Name_Is_Already_In_Use {
+            get {
+                return ResourceManager.GetString("Profile_Error_Profile_Could_Not_Be_Saved_The_Name_Is_Already_In_Use", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Profilgrupp.
         /// </summary>
         public static string Profile_Group {
@@ -2095,11 +2302,83 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Beskrivning.
+        /// </summary>
+        public static string Profile_Group_Description {
+            get {
+                return ResourceManager.GetString("Profile_Group_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Namnet är för långt.
+        /// </summary>
+        public static string Profile_Group_Error_Message_Name_Is_Too_Long {
+            get {
+                return ResourceManager.GetString("Profile_Group_Error_Message_Name_Is_Too_Long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gruppen kunde inte sparas. Namnet används redan..
+        /// </summary>
+        public static string Profile_Group_Error_Profile_Group_Could_Not_Be_Saved_The_Name_Is_Already_In_Use {
+            get {
+                return ResourceManager.GetString("Profile_Group_Error_Profile_Group_Could_Not_Be_Saved_The_Name_Is_Already_In_Use", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gruppnamn.
+        /// </summary>
+        public static string Profile_Group_Group_Name {
+            get {
+                return ResourceManager.GetString("Profile_Group_Group_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profilgruppens sorteringsvikt.
+        /// </summary>
+        public static string Profile_Group_Group_Sort_Weight {
+            get {
+                return ResourceManager.GetString("Profile_Group_Group_Sort_Weight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profilgrupper används för platser. Sorteringen i listan innebär att profilgrupperna som ligger längst ner kommer i första hand användas för sortering. Om ett samtal läggs mellan två platser där en profilgrupp är högre sorterad och en annan lägre sorterad..
+        /// </summary>
+        public static string Profile_Group_Page_Description {
+            get {
+                return ResourceManager.GetString("Profile_Group_Page_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profiler.
+        /// </summary>
+        public static string Profile_Group_Profiles {
+            get {
+                return ResourceManager.GetString("Profile_Group_Profiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Du måste ange en profilgrupp.
         /// </summary>
         public static string Profile_Group_Required {
             get {
                 return ResourceManager.GetString("Profile_Group_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorteringsvikt.
+        /// </summary>
+        public static string Profile_Group_Sort_Weight {
+            get {
+                return ResourceManager.GetString("Profile_Group_Sort_Weight", resourceCulture);
             }
         }
         
@@ -2271,6 +2550,24 @@ namespace CCM.Web {
         public static string SIP {
             get {
                 return ResourceManager.GetString("SIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Användaren kunde inte sparas.
+        /// </summary>
+        public static string Sip_Account_Could_Not_Be_Saved {
+            get {
+                return ResourceManager.GetString("Sip_Account_Could_Not_Be_Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oklassificerade.
+        /// </summary>
+        public static string Sip_Account_Undefined_Codec_Types_Category_Name {
+            get {
+                return ResourceManager.GetString("Sip_Account_Undefined_Codec_Types_Category_Name", resourceCulture);
             }
         }
         
@@ -2473,6 +2770,24 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kommaseparerad lista med namn på GPO:er.
+        /// </summary>
+        public static string Studio_Comma_Separated_List_With_Gpo_Names {
+            get {
+                return ResourceManager.GetString("Studio_Comma_Separated_List_With_Gpo_Names", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kommaseparerad lista med mikrofonernas namn.
+        /// </summary>
+        public static string Studio_Comma_Separated_List_With_Input_Names {
+            get {
+                return ResourceManager.GetString("Studio_Comma_Separated_List_With_Input_Names", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Namnet är för långt.
         /// </summary>
         public static string Studio_Error_Message_Name_Too_Long {
@@ -2520,9 +2835,9 @@ namespace CCM.Web {
         /// <summary>
         ///   Looks up a localized string similar to Antal minuter innan monitorsidan blir inaktiv.
         /// </summary>
-        public static string Studio_Number_Of_Miutes_Before_Page_Gets_Inactive {
+        public static string Studio_Number_Of_Minutes_Before_Page_Gets_Inactive {
             get {
-                return ResourceManager.GetString("Studio_Number_Of_Miutes_Before_Page_Gets_Inactive", resourceCulture);
+                return ResourceManager.GetString("Studio_Number_Of_Minutes_Before_Page_Gets_Inactive", resourceCulture);
             }
         }
         

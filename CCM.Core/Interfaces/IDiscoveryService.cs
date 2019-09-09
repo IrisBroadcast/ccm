@@ -25,7 +25,7 @@
  */
 
 using System.Collections.Generic;
-using CCM.Core.Discovery;
+using CCM.Core.Entities.Discovery;
 
 namespace CCM.Core.Interfaces
 {

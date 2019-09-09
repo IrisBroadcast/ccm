@@ -31,7 +31,6 @@ using System.Web.Mvc;
 using AutoMapper;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Interfaces.Repositories.Specialized;
 using CCM.Web.Models.StudioMonitor;
 
 namespace CCM.Web.Controllers
@@ -77,8 +76,7 @@ namespace CCM.Web.Controllers
                 vm.CameraVideoUrl = vm.CameraImageUrl = string.Empty;
             }
 
-            // TODO: Lägg till egenskaper från studions kodare + ev kodarstatus
-            // TODO: T.ex. kan max antal ljudingångar och GPO:er kollas här.
+            // TODO: Lägg till egenskaper från studions kodare + ev kodarstatus. T.ex. kan max antal ljudingångar och GPO:er kollas här.
 
             return vm;
         }

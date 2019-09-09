@@ -38,6 +38,7 @@ namespace CCM.Core.SipEvent.Parser
 
         /// <summary>
         /// Parses Kamailio data with a '::'-separated string
+        /// KamailioDataParser uses this one.
         /// </summary>
         public KamailioData ParseToKamailioData(string message)
         {

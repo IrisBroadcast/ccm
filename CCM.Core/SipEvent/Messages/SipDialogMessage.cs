@@ -46,10 +46,10 @@ namespace CCM.Core.SipEvent.Messages
             if (Status == DialogStatus.SingleBye)
             {
                 return string.Format("CallId:{0}, FromSip:{1}, ToSip:{2}, FromTag:{3}, ToTag:{4}",
-                    CallId, 
+                    CallId,
                     FromSipUri != null ? FromSipUri.UserAtHost : string.Empty,
                     ToSipUri != null ? ToSipUri.UserAtHost : string.Empty,
-                    FromTag, 
+                    FromTag,
                     ToTag);
             }
 
@@ -62,10 +62,10 @@ namespace CCM.Core.SipEvent.Messages
                     FromTag, ToTag);
             }
 
-            return string.Format("CallId:{0}, HashId:{1}, HashEntry:{2}, FromDisplayName:{3} FromSip:{4}, ToDisplayName:{5} ToSip:{6}, FromTag:{7}, ToTag:{8}", 
+            return string.Format("CallId:{0}, HashId:{1}, HashEntry:{2}, FromDisplayName:{3} FromSip:{4}, ToDisplayName:{5} ToSip:{6}, FromTag:{7}, ToTag:{8}",
                 CallId, HashId, HashEntry,
-                FromDisplayName, FromSipUri != null ? FromSipUri.UserAtHost : string.Empty, 
-                ToDisplayName, ToSipUri != null ? ToSipUri.UserAtHost : string.Empty, 
+                FromDisplayName, FromSipUri != null ? FromSipUri.UserAtHost : string.Empty,
+                ToDisplayName, ToSipUri != null ? ToSipUri.UserAtHost : string.Empty,
                 FromTag, ToTag);
         }
     }

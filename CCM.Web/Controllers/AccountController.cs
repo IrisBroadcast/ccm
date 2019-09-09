@@ -30,11 +30,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using CCM.Core.Entities;
-using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Web.Authentication;
 using CCM.Web.Models.Account;
-using NLog;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
@@ -43,8 +41,6 @@ namespace CCM.Web.Controllers
     [CcmAuthorize]
     public class AccountController : Controller
     {
-        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
-
         private readonly ICcmUserRepository _userRepository;
 
         public AccountController(ICcmUserRepository userRepository)

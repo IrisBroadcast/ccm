@@ -123,6 +123,8 @@
     <Compile Include="CacheTests\ProfileCacheTests.cs" />
     <Compile Include="CallEndedTests.cs" />
     <Compile Include="ControllerTests\External\AccountControllerTests.cs" />
+    <Compile Include="Helpers\RegisteredSipInfo.cs" />
+    <Compile Include="Helpers\SimpleRegisteredSipRepository.cs" />
     <Compile Include="KamailioTests\DialogTests.cs" />
     <Compile Include="KamailioTests\RegisterTests.cs" />
     <Compile Include="KamailioTests\SipMessageHandlerTestsBase.cs" />

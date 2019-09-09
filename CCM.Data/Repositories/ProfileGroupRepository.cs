@@ -31,10 +31,10 @@ using System.Linq;
 using System.Data.Entity;
 using AutoMapper;
 using CCM.Core.Entities;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
+using Profile = AutoMapper.Profile;
 
 namespace CCM.Data.Repositories
 {
@@ -48,10 +48,12 @@ namespace CCM.Data.Repositories
         {
             using (var db = GetDbContext())
             {
-                return db.ProfileGroups
+                var profileGroups = db.ProfileGroups
                     .Include(g => g.OrderedProfiles.Select(op => op.Profile))
-                    .ToList()
-                    .Select(g => Mapper.Map<ProfileGroup>(g)).ToList();
+                    .ToList();
+                var pg = profileGroups.OrderBy(p => p.GroupSortWeight).Select(gp => Mapper.Map<ProfileGroup>(gp)).ToList();
+                return pg;
+                // TODO: This needs to keep it's order in some way, for the profiles.. just make sure.
             }
         }
 
@@ -99,8 +101,6 @@ namespace CCM.Data.Repositories
                             }
                         );
 
-                    var newProfiles = new List<ProfileGroupProfileOrdersEntity>();
-
                     profileGroup.Profiles.Where(sp => !dbProfileGroup.OrderedProfiles.Any(op => op.ProfileId == sp.Id))
                         .ToList()
                         .ForEach(sp =>
@@ -110,15 +110,13 @@ namespace CCM.Data.Repositories
                                 ProfileGroupId = dbProfileGroup.Id,
                                 ProfileId = sp.Id,
                             };
-                            newProfiles.Add(pgpo);
                             dbProfileGroup.OrderedProfiles.Add(pgpo);
                         });
 
                     int i = 0;
                     foreach (var p in profileGroup.Profiles.OrderBy(sp => sp.SortIndex))
                     {
-                        dbProfileGroup.OrderedProfiles.Where(op => p.Id == op.ProfileId).SingleOrDefault().SortIndex =
-                            i++;
+                        dbProfileGroup.OrderedProfiles.Where(op => p.Id == op.ProfileId).SingleOrDefault().SortIndex = i++;
                     }
                 }
                 else
@@ -139,8 +137,7 @@ namespace CCM.Data.Repositories
                     int i = 0;
                     foreach (var p in profileGroup.Profiles.OrderBy(sp => sp.SortIndex))
                     {
-                        dbProfileGroup.OrderedProfiles.Where(op => p.Id == op.ProfileId).SingleOrDefault().SortIndex =
-                            i++;
+                        dbProfileGroup.OrderedProfiles.Where(op => p.Id == op.ProfileId).SingleOrDefault().SortIndex = i++;
                     }
 
                     dbProfileGroup.CreatedBy = profileGroup.CreatedBy;
@@ -152,7 +149,6 @@ namespace CCM.Data.Repositories
                 db.SaveChanges();
             }
         }
-
 
         public void Delete(Guid id)
         {
@@ -167,5 +163,26 @@ namespace CCM.Data.Repositories
             }
         }
 
+        public void SetProfileGroupSortWeight(IList<Tuple<Guid, int>> profileTuples)
+        {
+            using (var db = GetDbContext())
+            {
+                foreach (var tuple in profileTuples)
+                {
+                    var id = tuple.Item1;
+                    var sortWeightIndex = tuple.Item2;
+
+                    var profile = db.ProfileGroups.SingleOrDefault(p => p.Id == id);
+                    if (profile == null)
+                    {
+                        continue;
+                    }
+
+                    profile.GroupSortWeight = sortWeightIndex;
+                }
+
+                db.SaveChanges();
+            }
+        }
     }
 }

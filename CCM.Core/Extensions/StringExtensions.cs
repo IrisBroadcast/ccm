@@ -85,7 +85,7 @@ namespace CCM.Core.Extensions
         }
 
         /// <summary>
-        /// Returnerar b�rjan av str�ngen fram till angiven str�ng
+        /// Returns the beginning of the string, until given string
         /// </summary>
         public static string LeftOf(this string s, string untilString)
         {
@@ -110,6 +110,5 @@ namespace CCM.Core.Extensions
             }
             return string.Format("{0}...", s.Substring(0, length - 3));
         }
-
     }
 }

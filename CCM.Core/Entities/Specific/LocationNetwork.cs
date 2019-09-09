@@ -39,14 +39,13 @@ namespace CCM.Core.Entities.Specific
         {
             Id = id;
             Cidr = cidr;
-            IPNetwork network;
-            IPNetwork.TryParse(ipAddress, cidr, out network);
+            IPNetwork.TryParse(ipAddress, cidr, out var network);
             Network = network;
         }
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", Id, Network != null ? Network.ToString() : "");
+            return $"{Id} {(Network != null ? Network.ToString() : "")}";
         }
     }
 }

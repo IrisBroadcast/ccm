@@ -45,14 +45,14 @@ namespace CCM.Data.Entities
 
         public string DlgHashId { get; set; }
         public string DlgHashEnt { get; set; }
-        
+
         public Guid? FromId { get; set; }
         [ForeignKey("FromId")]
         public virtual RegisteredSipEntity FromSip { get; set; }
         public string FromUsername { get; set; }
         public string FromDisplayName { get; set; }
         public string FromTag { get; set; } // Not in use?
-        
+
         public Guid? ToId { get; set; }
         [ForeignKey("ToId")]
         public virtual RegisteredSipEntity ToSip { get; set; }

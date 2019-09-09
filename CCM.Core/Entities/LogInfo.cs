@@ -32,6 +32,6 @@ namespace CCM.Core.Entities
     {
         public string Application { get; set; }
         public DateTime MinDate { get; set; }
-        public int Count { get; set; }       
+        public int Count { get; set; }
     }
 }

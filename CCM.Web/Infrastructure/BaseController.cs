@@ -51,6 +51,7 @@ namespace CCM.Web.Infrastructure
             }
 
             Response.Cookies.Add(cookie);
+            // TODO: When is this called, redirection is not working
             return RedirectToAction("Index");
         }
 

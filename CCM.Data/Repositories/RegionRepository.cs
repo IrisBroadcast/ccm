@@ -30,7 +30,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Data.Entity;
 using CCM.Core.Entities;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
@@ -47,7 +46,7 @@ namespace CCM.Data.Repositories
         {
             using (var db = GetDbContext())
             {
-                Entities.RegionEntity dbRegion;
+                RegionEntity dbRegion;
                 var timeStamp = DateTime.UtcNow;
 
                 if (region.Id != Guid.Empty)
@@ -63,19 +62,18 @@ namespace CCM.Data.Repositories
                 }
                 else
                 {
-                    dbRegion = new Entities.RegionEntity
+                    dbRegion = new RegionEntity
                     {
                         Id = Guid.NewGuid(),
                         CreatedBy = region.CreatedBy,
                         CreatedOn = timeStamp,
-                        Locations = new Collection<Entities.LocationEntity>()
+                        Locations = new Collection<LocationEntity>()
                     };
 
                     region.Id = dbRegion.Id;
                     region.CreatedOn = dbRegion.CreatedOn;
                     db.Regions.Add(dbRegion);
                 }
-
 
                 dbRegion.Name = region.Name;
                 dbRegion.UpdatedBy = region.UpdatedBy;
@@ -121,7 +119,7 @@ namespace CCM.Data.Repositories
                 return MapToRegion(dbRegion, true);
             }
         }
-        
+
         public List<Region> GetAll()
         {
             using (var db = GetDbContext())
@@ -169,7 +167,7 @@ namespace CCM.Data.Repositories
             };
         }
 
-        public static Location MapToLocation(Entities.LocationEntity dbLocation)
+        public static Location MapToLocation(LocationEntity dbLocation)
         {
             if (dbLocation == null) return null;
 

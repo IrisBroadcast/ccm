@@ -312,9 +312,6 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
             if ($scope.containsString(item.LocationShortName, search)) {
                 return true;
             }
-            if ($scope.containsString(item.UserDisplayName, search)) {
-                return true;
-            }
             return false;
         }
         return true;

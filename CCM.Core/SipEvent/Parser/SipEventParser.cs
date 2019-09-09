@@ -33,7 +33,11 @@ using NLog;
 namespace CCM.Core.SipEvent.Parser
 {
     /// <summary>
-    /// Parses incoming Sip registrar messages in JSON format
+    /// Parses incoming SIP registrar messages in JSON format.
+    /// The format on the incoming messages is custom made
+    /// and the details can be found in the 'connect' project
+    /// on Github. Be sure to check that you are using the right
+    /// version of 'connect' that formats the messages in JSON.
     /// </summary>
     public class SipEventParser : ISipEventParser
     {
@@ -63,8 +67,7 @@ namespace CCM.Core.SipEvent.Parser
                 ToDisplayName = ParseDisplayName(kamailioData.ToDisplayName),
                 UserAgent = kamailioData.UserAgentHeader,
                 Registrar = kamailioData.Registrar,
-                //PhysicalCodecUri = new SipUri(kamailioData.PoolUri),
-
+                RegType = kamailioData.RegType,
                 Ip = kamailioData.Ip.SenderIp,
                 Port = kamailioData.Ip.SenderPort,
                 Expires = kamailioData.Expires,
@@ -102,7 +105,7 @@ namespace CCM.Core.SipEvent.Parser
                 FromDisplayName = ParseDisplayName(kamailioData.FromDisplayName),
                 ToDisplayName = ParseDisplayName(kamailioData.ToDisplayName),
                 FromSipUri = new SipUri(kamailioData.FromUri),
-                ToSipUri = new SipUri(kamailioData.ToUri),
+                ToSipUri = new SipUri(kamailioData.RequestUri), //new SipUri(kamailioData.ToUri),
                 FromTag = kamailioData.FromTag,
                 ToTag = kamailioData.ToTag,
             };

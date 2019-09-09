@@ -47,7 +47,11 @@ namespace CCM.Core.SipEvent
             _sipRepository = sipRepository;
             _callRepository = callRepository;
         }
-        
+
+        /// <summary>
+        /// Handle incoming SIP message
+        /// </summary>
+        /// <param name="sipMessage"></param>
         public SipEventHandlerResult HandleSipMessage(SipMessageBase sipMessage)
         {
             if (log.IsDebugEnabled)
@@ -60,17 +64,17 @@ namespace CCM.Core.SipEvent
                 case SipRegistrationMessage regMessage:
                     {
                         // Handle registration message
-                        // TODO: XXX is this done on each registration and rereg?
+                        // This is the proper way to unregister
                         if (regMessage.Expires == 0)
                         {
-                            return UnregisterCodec(new SipRegistrationExpireMessage { SipAddress = regMessage.Sip });
+                            return UnregisterCodec(new SipRegistrationExpireMessage { SipAddress = regMessage.Sip }, regMessage.RegType);
                         }
                         return RegisterCodec(regMessage);
                     }
                 case SipRegistrationExpireMessage expireMessage:
                     {
                         // Handle unregistered expire message
-                        return UnregisterCodec(expireMessage);
+                        return UnregisterCodec(expireMessage, null);
                     }
                 case SipDialogMessage dialogMessage:
                     {
@@ -87,28 +91,40 @@ namespace CCM.Core.SipEvent
 
         public SipEventHandlerResult RegisterCodec(SipRegistrationMessage sipMessage)
         {
-            // TODO: is this step necessary?
-            var sip = new RegisteredSip
-            {
-                IP = sipMessage.Ip,
-                Port = sipMessage.Port,
-                ServerTimeStamp = sipMessage.UnixTimeStamp,
-                SIP = sipMessage.Sip.UserAtHost,
-                UserAgentHead = sipMessage.UserAgent,
-                Registrar = sipMessage.Registrar,
-                Username = sipMessage.Sip.UserAtHost,
-                DisplayName = string.IsNullOrEmpty(sipMessage.ToDisplayName) ? sipMessage.FromDisplayName : sipMessage.ToDisplayName,
-                Expires = sipMessage.Expires
-            };
+            var userAgentRegistration = new UserAgentRegistration(
+                sipUri: sipMessage.Sip.UserAtHost,
+                userAgentHeader: sipMessage.UserAgent,
+                username: sipMessage.Sip.UserAtHost,
+                displayName: string.IsNullOrEmpty(sipMessage.ToDisplayName) ? sipMessage.FromDisplayName : sipMessage.ToDisplayName,
+                registrar: sipMessage.Registrar,
+                ipAddress: sipMessage.Ip,
+                port: sipMessage.Port,
+                expirationTimeSeconds: sipMessage.Expires,
+                serverTimeStamp: sipMessage.UnixTimeStamp
+                );
 
-            return _sipRepository.UpdateRegisteredSip(sip);
+            return _sipRepository.UpdateRegisteredSip(userAgentRegistration);
         }
 
-        private SipEventHandlerResult UnregisterCodec(SipRegistrationExpireMessage expireMessage)
+        private SipEventHandlerResult UnregisterCodec(SipRegistrationExpireMessage expireMessage, string regType = null)
         {
-            return _sipRepository.DeleteRegisteredSip(expireMessage.SipAddress.UserAtHost);
+            var sipAddress = expireMessage.SipAddress.UserAtHost;
+            if (regType == "delete")
+            {
+                log.Info($"Unregister Codec {sipAddress}, {regType}");
+                Call codecCall = _callRepository.GetCallBySipAddress(sipAddress);
+                if (codecCall != null)
+                {
+                    log.Info($"Unregistrating codec but it's in a call {sipAddress}");
+                }
+            }
+            return _sipRepository.DeleteRegisteredSip(sipAddress);
         }
 
+        /// <summary>
+        /// Handles the dialog received
+        /// </summary>
+        /// <param name="sipDialogMessage"></param>
         private SipEventHandlerResult HandleDialog(SipDialogMessage sipDialogMessage)
         {
             switch (sipDialogMessage.Status)
@@ -121,6 +137,7 @@ namespace CCM.Core.SipEvent
                     log.Info("Received End command from Kamailio. HangUp reason: {0}, From: {1}, To: {2}", sipDialogMessage.HangupReason, sipDialogMessage.FromSipUri, sipDialogMessage.ToSipUri);
                     return CloseCall(sipDialogMessage);
                 case DialogStatus.SingleBye:
+                    // If BYE in kamailio and no dialog is in Kamailio, a single bye is sent to CCM
                     // TODO: Handle single bye message and close call
                     log.Info("Received SingleBye command from Kamailio. HangUp reason: {0}, From: {1}, To: {2}", sipDialogMessage.HangupReason, sipDialogMessage.FromSipUri, sipDialogMessage.ToSipUri);
                     return NothingChangedResult;
@@ -143,17 +160,17 @@ namespace CCM.Core.SipEvent
 
             var call = new Call();
 
-            // If the user-part is numeric, we make the assumption 
-            // that it is a phone number (even though sip-address 
+            // If the user-part is numeric, we make the assumption
+            // that it is a phone number (even though sip-address
             // can be of the numeric kind)
             var fromSip = sipMessage.FromSipUri.User.IsNumeric() ? sipMessage.FromSipUri.User : sipMessage.FromSipUri.UserAtHost;
-            var from = _sipRepository.GetCachedRegisteredSips().SingleOrDefault(rs => rs.Sip == fromSip);
+            var from = _sipRepository.GetRegisteredUserAgents().SingleOrDefault(x => x.SipUri == fromSip);
             call.FromSip = fromSip;
             call.FromDisplayName = sipMessage.FromDisplayName;
             call.FromId = from?.Id ?? Guid.Empty;
 
             var toSip = sipMessage.ToSipUri.User.IsNumeric() ? sipMessage.ToSipUri.User : sipMessage.ToSipUri.UserAtHost;
-            var to = _sipRepository.GetCachedRegisteredSips().SingleOrDefault(rs => rs.Sip == toSip);
+            var to = _sipRepository.GetRegisteredUserAgents().SingleOrDefault(x => x.SipUri == toSip);
             call.ToSip = toSip;
             call.ToDisplayName = sipMessage.ToDisplayName;
             call.ToId = to?.Id ?? Guid.Empty;
@@ -200,7 +217,7 @@ namespace CCM.Core.SipEvent
                 return NothingChangedResult;
             }
         }
-        
+
         private SipEventHandlerResult NothingChangedResult => SipMessageResult(SipEventChangeStatus.NothingChanged);
         private SipEventHandlerResult SipMessageResult(SipEventChangeStatus status) { return new SipEventHandlerResult() { ChangeStatus = status }; }
         private SipEventHandlerResult SipMessageResult(SipEventChangeStatus status, Guid id) { return new SipEventHandlerResult() { ChangeStatus = status, ChangedObjectId = id }; }

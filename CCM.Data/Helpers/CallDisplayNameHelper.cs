@@ -24,13 +24,16 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO: Move this to CCM.Core.Helpers?
+
 using CCM.Core.Helpers;
+using CCM.Data.Entities;
 
 namespace CCM.Data.Helpers
 {
     public class CallDisplayNameHelper
     {
-        public static string GetDisplayName(Entities.RegisteredSipEntity regSip, string callDisplayName, string callUserName, string sipDomain)
+        public static string GetDisplayName(RegisteredSipEntity regSip, string callDisplayName, string callUserName, string sipDomain)
         {
             return DisplayNameHelper.GetDisplayName(
                 regSip != null ? regSip.DisplayName : string.Empty,

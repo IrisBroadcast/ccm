@@ -24,14 +24,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using CCM.Core.Discovery;
+using CCM.Core.Entities.Discovery;
 using CCM.DiscoveryApi.Authentication;
 using CCM.DiscoveryApi.Models.DiscoveryV2Models.Filters;
 using CCM.DiscoveryApi.Models.DiscoveryV2Models.Profiles;

@@ -25,39 +25,43 @@
  */
 
 using System;
+using System.Globalization;
 using CCM.Core.SipEvent.Messages;
 using Newtonsoft.Json;
+using NLog;
 
 namespace CCM.Core.SipEvent
 {
     public class KamailioSipEvent
     {
+        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         // Topic: Registration
-        [JsonProperty(PropertyName = "event")] public SipEventType Event { get; set; } // "register"
+        [JsonProperty(PropertyName = "event")] public SipEventType Event { get; set; } // "register"/"regexpire"
         [JsonProperty(PropertyName = "timestamp")] public long TimeStamp { get; set; }
         [JsonProperty(PropertyName = "registrar")] public string Registrar { get; set; } // "sipregistrar.sr.se"
-        [JsonProperty(PropertyName = "regtype")] public string RegType { get; set; } // "rereg"
+        [JsonProperty(PropertyName = "regtype")] public string RegType { get; set; } // "rereg/new/delete"
         [JsonProperty(PropertyName = "expires")] public int Expires { get; set; }
         [JsonProperty(PropertyName = "method")] public string Method { get; set; } // "REGISTER"
-        [JsonProperty(PropertyName = "from_uri")] public string FromUri { get; set; } // "sip:test1249@contrib.sr.se" Json-parameter heter from_uri i dialog-meddelande
+        [JsonProperty(PropertyName = "from_uri")] public string FromUri { get; set; } // "sip:test1249@contrib.sr.se"
         [JsonProperty(PropertyName = "from_displayname")] public string FromDisplayName { get; set; } // "Karlstad 11"
         [JsonProperty(PropertyName = "to_uri")] public string ToUri { get; set; } // "<null>"
         [JsonProperty(PropertyName = "to_displayname")] public string ToDisplayName { get; set; } // "<null>"
         [JsonProperty(PropertyName = "auth_user")] public string AuthUser { get; set; } // "test1249"
         [JsonProperty(PropertyName = "user_agent")] public string UserAgentHeader { get; set; } // "Asterisk PBX 11.13"
-        [JsonProperty(PropertyName = "requesturi")] public string RequestUri { get; set; } // "sip:contrib.sr.se" Json-parameter heter request_uri i dialog-meddelande
         [JsonProperty(PropertyName = "contact_uri")] public string ContactUri { get; set; } // "<sip:1249@192.121.194.213:5080>"
         [JsonProperty(PropertyName = "call_id")] public string CallId { get; set; } // "338a@contrib.sr.se"
 
         // Topic: Dialog start
         [JsonProperty(PropertyName = "sipserver")] public string SipServer { get; set; } // "sipregistrar.sr.se"
+        [JsonProperty(PropertyName = "request_uri")] public string RequestUri { get; set; } // "sip:contrib.sr.se", The actual requested destination. where to_uri contains the first "destination" that could be a relay
         [JsonProperty(PropertyName = "dialog_state")] public string DialogState { get; set; } // "start"
         [JsonProperty(PropertyName = "dhash_id")] public string DialogHashId { get; set; } // "10300"
         [JsonProperty(PropertyName = "dhash_ent")] public string DialogHashEntry { get; set; } // "2697"
         [JsonProperty(PropertyName = "pool_uri")] public string PoolUri { get; set; } // "sip:studio-pool-004@contrib.sr.se"
         [JsonProperty(PropertyName = "to_tag")] public string ToTag { get; set; } // "<null>"
         [JsonProperty(PropertyName = "from_tag")] public string FromTag { get; set; } // "svE1Cx0ksdjnQ-Csidg60B6H02bNXbfQ"
-        [JsonProperty(PropertyName = "mediastatus")] public string MediaStatus { get; set; } // ""
+        [JsonProperty(PropertyName = "mediastatus")] public string MediaStatus { get; set; } // "NAT/RTPproxy"
         [JsonProperty(PropertyName = "sdp")] public string Sdp { get; set; } // "v=0....."
         [JsonProperty(PropertyName = "debug_origuri")] public string DebugOrigUri { get; set; } // "<null>"
 
@@ -75,10 +79,17 @@ namespace CCM.Core.SipEvent
 
         public string UnixTimeStampToDateTime(long unixTimeStamp)
         {
-            // TODO: Maybe move this to a helper function
-            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dtDateTime.ToString();
+            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+
+            try
+            {
+                dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+                return dtDateTime.ToString(CultureInfo.InvariantCulture);
+            }
+            catch (Exception)
+            {
+                return dtDateTime.ToString(CultureInfo.InvariantCulture);
+            }
         }
     }
 
@@ -89,5 +100,4 @@ namespace CCM.Core.SipEvent
         [JsonProperty(PropertyName = "our_ip")] public string OurIp { get; set; } // 192.121.194.200
         [JsonProperty(PropertyName = "our_port")] public int OurPort { get; set; } // "5060"
     }
-
 }

@@ -41,6 +41,9 @@ namespace CCM.Data.Entities
 
         public virtual ProfileGroupEntity ProfileGroup { get; set; }
         public virtual ProfileEntity Profile { get; set; }
+
+        [Column("SortIndex")]
         public int SortIndex { get; set; }
+        //public int SortIndexForProfileInGroup { get; set; } // TODO: Rename this so that we know
     }
 }

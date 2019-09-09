@@ -40,8 +40,8 @@ namespace CCM.Core.Helpers
             IPAddress.TryParse(y, out yAddress);
 
             if (xAddress == null && yAddress == null) { return 0; }
-            if (xAddress == null) { return -1; } 
-            if (yAddress == null) { return 1; } 
+            if (xAddress == null) { return -1; }
+            if (yAddress == null) { return 1; }
 
             byte[] first = xAddress.GetAddressBytes();
             byte[] second = yAddress.GetAddressBytes();

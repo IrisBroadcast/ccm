@@ -46,12 +46,18 @@ namespace CCM.Web.Controllers
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly ISipAccountManager _sipAccountManager;
+        private readonly ISipAccountRepository _sipAccountRepository;
         private readonly ICodecTypeRepository _codecTypeRepository;
         private readonly IOwnersRepository _ownersRepository;
 
-        public SipAccountController(ISipAccountManager userManager, ICodecTypeRepository codecTypeRepository, IOwnersRepository ownersRepository)
+        public SipAccountController(
+            ISipAccountManager sipAccountManager,
+            ISipAccountRepository sipAccountRepository,
+            ICodecTypeRepository codecTypeRepository,
+            IOwnersRepository ownersRepository)
         {
-            _sipAccountManager = userManager;
+            _sipAccountManager = sipAccountManager;
+            _sipAccountRepository = sipAccountRepository;
             _codecTypeRepository = codecTypeRepository;
             _ownersRepository = ownersRepository;
         }
@@ -62,7 +68,7 @@ namespace CCM.Web.Controllers
                 ? _sipAccountManager.GetAll()
                 : _sipAccountManager.Find(search);
 
-            var defaultCodecType = new CodecType() { Id = Guid.NewGuid(), Name = "Oklassificerade" }; // TODO: Englishfy
+            var defaultCodecType = new CodecType() { Id = Guid.NewGuid(), Name = Resources.Sip_Account_Undefined_Codec_Types_Category_Name };
             sipAccounts.ForEach(a => { a.CodecType = a.CodecType ?? defaultCodecType; });
 
             sipAccounts = sipAccounts.OrderBy(a => a.CodecType.Name ?? string.Empty).ThenBy(a => a.UserName ?? string.Empty).ToList();
@@ -141,7 +147,7 @@ namespace CCM.Web.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("CreateUser", "Användaren kunde inte sparas"); // TODO: Resource, english
+                        ModelState.AddModelError("CreateUser", Resources.Sip_Account_Could_Not_Be_Saved);
                     }
                 }
             }
@@ -189,7 +195,7 @@ namespace CCM.Web.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("EditUser", "Användaren kunde inte sparas"); // TODO: Resource, english
+                        ModelState.AddModelError("EditUser", Resources.Sip_Account_Could_Not_Be_Saved);
                     }
                 }
             }

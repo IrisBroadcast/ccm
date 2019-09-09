@@ -29,6 +29,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CCM.Data.Entities.Base
 {
+    /// <summary>
+    /// IMPORTANT, Every class inheriting from EntityBase is subject to a cache re:evaluation.
+    /// </summary>
     public abstract class EntityBase
     {
         [Key]

@@ -34,6 +34,5 @@ namespace CCM.Core.Entities
         public string PropertyName { get; set; }
         public string Type { get; set; }
         public string FullPropertyName { get; set; }
-       
     }
 }

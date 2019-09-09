@@ -36,119 +36,219 @@ namespace CCM.Core.Cache
 {
     public static class LazyCacheExtensions
     {
-        #region RegisteredSips
-
         // Cache time in seconds
-        public static int CacheTimeCachedRegisteredSips = ApplicationSettings.CacheTimeLiveData;
-        public static int CacheTimeOngoingCalls = ApplicationSettings.CacheTimeLiveData;
-        public static int CacheTimeOldCalls = ApplicationSettings.CacheTimeLiveData;
+        public static int CacheTimeLiveData = ApplicationSettings.CacheTimeLiveData;
 
         public static int CacheTimeFilter = ApplicationSettings.CacheTimeConfigData;
         public static int CacheTimeProfiles = ApplicationSettings.CacheTimeConfigData;
-        public static int CacheTimeSettings = ApplicationSettings.CacheTimeConfigData;
+        public static int CacheTimeProfileGroups = ApplicationSettings.CacheTimeConfigData;
+        public static int CacheTimeLocations = ApplicationSettings.CacheTimeConfigData;
+        public static int CacheTimeUserAgents = ApplicationSettings.CacheTimeConfigData;
+        public static int CacheTimeUserAgentsAndProfiles = ApplicationSettings.CacheTimeConfigData;
+        public static int CacheTimeSipAccounts = ApplicationSettings.CacheTimeConfigData;
 
-        private const string RegisteredSipsKey = "RegisteredSips";
+        // Cache keys
+        private const string RegisteredUserAgentsDiscoveryKey = "RegisteredUserAgentsDiscovery";
+        private const string RegisteredUserAgentsCodecInformationKey = "RegisteredUserAgentsCodecInformation";
+        private const string RegisteredUserAgentsKey = "RegisteredUserAgents";
+        private const string OngoingCallsKey = "OngoingCalls";
+        private const string CallHistoryKey = "CallHistory";
+        private const string SettingsKey = "Settings";
+        private const string LocationNetworksKey = "LocationNetworks";
+        private const string LocationsAndProfilesKey = "LocationsAndProfiles";
+        private const string AvailableFiltersKey = "AvailableFilters";
+        private const string AllProfileNamesAndSdpKey = "AllProfileNamesAndSdp";
+        private const string ProfileGroupsKey = "ProfileGroups";
+        private const string UserAgentsKey = "UserAgents";
+        private const string UserAgentsAndProfilesKey = "UserAgentsAndProfiles";
+        private const string SipAccountsKey = "SipAccounts";
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public static List<RegisteredSipDto> GetOrAddRegisteredSips(this IAppCache cache, Func<List<RegisteredSipDto>> registeredSipsLoader)
+        // TODO: Make some decisions on how we deal with replication changes that doesn't trigger a reload of cache if this instance was not the one saving changes.
+
+        #region SipAccounts
+        public static List<SipAccount> GetOrAddSipAccounts(this IAppCache cache, Func<List<SipAccount>> sipAccountsLoader)
         {
-            using (new TimeMeasurer("GetCachedRegisteredSips from cache."))
-            {
-                var list = cache.GetOrAdd(RegisteredSipsKey, registeredSipsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeCachedRegisteredSips));
-                return list;
-            }
-        }
-        
-        public static void ClearRegisteredSips(this IAppCache cache)
-        {
-            log.Debug("Removing registered sips from cache");
-            cache.Remove(RegisteredSipsKey);
+            return cache.GetOrAdd(SipAccountsKey, sipAccountsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeSipAccounts));
         }
 
+        public static void ClearSipAccounts(this IAppCache cache)
+        {
+            log.Debug("Removing sip accounts from cache");
+            cache.Remove(SipAccountsKey);
+        }
         #endregion
-      
-        #region Settings
 
-        private const string SettingsKey = "Settings";
-
-        public static List<Setting> GetSettings(this IAppCache cache, Func<List<Setting>> loader)
+        #region RegisteredUserAgents
+        public static IEnumerable<RegisteredUserAgent> GetOrAddRegisteredUserAgents(this IAppCache cache, Func<IEnumerable<RegisteredUserAgent>> registeredUserAgentsLoader)
         {
-            var list = cache.GetOrAdd(SettingsKey, loader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeSettings));
-            return list;
+            return cache.GetOrAdd(RegisteredUserAgentsKey, registeredUserAgentsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLiveData));
         }
 
+        public static IEnumerable<RegisteredUserAgentDiscovery> GetOrAddRegisteredUserAgentsDiscovery(this IAppCache cache, Func<IEnumerable<RegisteredUserAgentDiscovery>> registeredUserAgentsDiscoveryLoader)
+        {
+            return cache.GetOrAdd(RegisteredUserAgentsDiscoveryKey, registeredUserAgentsDiscoveryLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLiveData));
+        }
 
-        public static void ResetSettings(this IAppCache cache)
+        public static IEnumerable<RegisteredUserAgentCodecInformation> GetOrAddRegisteredUserAgentsCodecInformation(this IAppCache cache, Func<IEnumerable<RegisteredUserAgentCodecInformation>> registeredUserAgentsCodecInformationLoader)
+        {
+            return cache.GetOrAdd(RegisteredUserAgentsCodecInformationKey, registeredUserAgentsCodecInformationLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLiveData));
+        }
+
+        public static void ClearRegisteredUserAgents(this IAppCache cache)
+        {
+            log.Debug("Removing registered user agents from cache");
+            cache.Remove(RegisteredUserAgentsKey);
+
+            log.Debug("Removing registered user agents discovery from cache");
+            cache.Remove(RegisteredUserAgentsDiscoveryKey);
+
+            log.Debug("Removing registered user agents codec information from cache");
+            cache.Remove(RegisteredUserAgentsCodecInformationKey);
+        }
+        #endregion
+
+        #region OngoingCalls
+        public static IReadOnlyCollection<OnGoingCall> GetOrAddOngoingCalls(this IAppCache cache, Func<IReadOnlyCollection<OnGoingCall>> ongoingCallsLoader)
+        {
+            return cache.GetOrAdd(OngoingCallsKey, ongoingCallsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLiveData));
+        }
+
+        public static void ClearOngoingCalls(this IAppCache cache)
+        {
+            log.Debug("Removing ongoing calls from cache");
+            cache.Remove(OngoingCallsKey);
+        }
+        #endregion
+
+        #region CallHistory
+        public static IList<OldCall> GetOrAddCallHistory(this IAppCache cache, Func<IList<OldCall>> callHistoryLoader)
+        {
+            return cache.GetOrAdd(CallHistoryKey, callHistoryLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLiveData));
+        }
+
+        public static void ClearCallHistory(this IAppCache cache)
+        {
+            log.Debug("Removing call history from cache");
+            cache.Remove(CallHistoryKey);
+        }
+        #endregion
+
+        #region Settings
+        public static List<Setting> GetOrAddSettings(this IAppCache cache, Func<List<Setting>> settingsLoader)
+        {
+            return cache.GetOrAdd(SettingsKey, settingsLoader);
+        }
+
+        public static void ClearSettings(this IAppCache cache)
         {
             log.Debug("Removing settings from cache");
             cache.Remove(SettingsKey);
         }
-
         #endregion
 
         #region LocationNetworks
-
-        private const string LocationNetworksKey = "LocationNetworks";
-
         public static List<LocationNetwork> GetOrAddLocationNetworks(this IAppCache cache, Func<List<LocationNetwork>> loader)
         {
-            var list = cache.GetOrAdd(LocationNetworksKey, loader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeSettings));
+            var list = cache.GetOrAdd(LocationNetworksKey, loader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLocations));
             return list;
         }
 
-        public static void ResetLocationNetworks(this IAppCache cache)
+        public static Dictionary<Guid, LocationAndProfiles> GetOrAddLocationsAndProfiles(this IAppCache cache, Func<Dictionary<Guid, LocationAndProfiles>> loader)
+        {
+            return cache.GetOrAdd(LocationsAndProfilesKey, loader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLocations));
+        }
+
+        public static void ClearLocationNetworks(this IAppCache cache)
         {
             log.Debug("Removing location networks from cache");
             cache.Remove(LocationNetworksKey);
-        }
 
+            log.Debug("Removing locations and profiles from cache");
+            cache.Remove(LocationsAndProfilesKey);
+        }
         #endregion
 
         #region AvailableFilters
-
-        private const string AvailableFiltersKey = "AvailableFilters";
-
         public static IList<AvailableFilter> GetAvailableFilters(this IAppCache cache, Func<IList<AvailableFilter>> loader)
         {
+            // TODO: Should not be called like this?!
             var list = cache.GetOrAdd(AvailableFiltersKey, loader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeFilter));
             return list;
         }
 
-        public static void ResetAvailableFilters(this IAppCache cache)
+        public static void ClearAvailableFilters(this IAppCache cache)
         {
             log.Debug("Removing available filters from cache");
             cache.Remove(AvailableFiltersKey);
         }
-
         #endregion
 
         #region Profiles
-
-        private const string ProfilesKey = "Profiles";
-
-        public static IList<ProfileNameAndSdp> GetProfiles(this IAppCache cache, Func<IList<ProfileNameAndSdp>> loader)
+        public static IList<ProfileNameAndSdp> GetOrAddAllProfileNamesAndSdp(this IAppCache cache, Func<IList<ProfileNameAndSdp>> allProfileNamesAndSdpLoader)
         {
-            return cache.GetOrAdd(ProfilesKey, loader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeProfiles));
+            return cache.GetOrAdd(AllProfileNamesAndSdpKey, allProfileNamesAndSdpLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeProfiles));
         }
 
-        public static void ResetProfiles(this IAppCache cache)
+        public static void ClearProfiles(this IAppCache cache)
         {
-            log.Debug("Removing profiles from cache");
-            cache.Remove(ProfilesKey);
+            log.Debug("Removing all profile names and sdp from cache");
+            cache.Remove(AllProfileNamesAndSdpKey);
+        }
+        #endregion
+
+        #region ProfileGroups
+        public static List<ProfileGroup> GetOrAddProfileGroups(this IAppCache cache, Func<List<ProfileGroup>> profileGroupsLoader)
+        {
+            return cache.GetOrAdd(ProfileGroupsKey, profileGroupsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeProfileGroups));
         }
 
+        public static void ClearProfileGroups(this IAppCache cache)
+        {
+            log.Debug("Removing profile groups from cache");
+            cache.Remove(ProfileGroupsKey);
+        }
+        #endregion
+
+        #region UserAgent
+        public static List<UserAgent> GetOrAddUserAgents(this IAppCache cache, Func<List<UserAgent>> userAgentsLoader)
+        {
+            return cache.GetOrAdd(UserAgentsKey, userAgentsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeUserAgents));
+        }
+
+        public static Dictionary<Guid, UserAgentAndProfiles> GetOrAddUserAgentsAndProfiles(this IAppCache cache, Func<Dictionary<Guid, UserAgentAndProfiles>> userAgentsAndProfilesLoader)
+        {
+            return cache.GetOrAdd(UserAgentsAndProfilesKey, userAgentsAndProfilesLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeUserAgentsAndProfiles));
+        }
+
+        public static void ClearUserAgents(this IAppCache cache)
+        {
+            // INFO: Cleared if User Agent or Profiles are changed in database
+            log.Debug("Removing user agents from cache");
+            cache.Remove(UserAgentsKey);
+
+            log.Debug("Removing user agents and profiles from cache");
+            cache.Remove(UserAgentsAndProfilesKey);
+        }
         #endregion
 
         #region Full reload
-
         public static void FullReload(this IAppCache cache)
         {
-            cache.ClearRegisteredSips();
-            cache.ResetLocationNetworks();
-            cache.ResetSettings();
+            log.Info("Full cache reload");
+            // TODO: Maybe divide this function in to more granularity
+            cache.ClearSipAccounts();
+            cache.ClearRegisteredUserAgents(); // Make sure that this one is cleared if user agents change
+            cache.ClearOngoingCalls();
+            cache.ClearCallHistory();
+            cache.ClearLocationNetworks();
+            cache.ClearSettings();
+            cache.ClearAvailableFilters();
+            cache.ClearProfiles();
+            cache.ClearProfileGroups();
+            cache.ClearUserAgents();
         }
-
         #endregion
 
     }

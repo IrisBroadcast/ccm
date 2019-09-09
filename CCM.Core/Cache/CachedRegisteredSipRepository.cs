@@ -27,21 +27,14 @@
 using System;
 using System.Collections.Generic;
 using CCM.Core.Entities;
-using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Repositories;
 using LazyCache;
-using NLog;
-using System.Linq;
-using CCM.Core.Codec;
 using CCM.Core.SipEvent;
 
 namespace CCM.Core.Cache
 {
     public class CachedRegisteredSipRepository : IRegisteredSipRepository
     {
-        #region Members and constructor
-        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
-
         private readonly IRegisteredSipRepository _internalRepository;
         private readonly IAppCache _lazyCache;
 
@@ -50,54 +43,54 @@ namespace CCM.Core.Cache
             _lazyCache = cache;
             _internalRepository = internalRepository;
         }
-        #endregion
 
-        public SipEventHandlerResult UpdateRegisteredSip(RegisteredSip registeredSip)
+        public IEnumerable<RegisteredUserAgentDiscovery> GetRegisteredUserAgentsDiscovery()
         {
-            // TODO: XXX Does this look strange. Here we actually look in the database? Not very efficient maybe
-            var result = _internalRepository.UpdateRegisteredSip(registeredSip);
+            return _lazyCache.GetOrAddRegisteredUserAgentsDiscovery(() => _internalRepository.GetRegisteredUserAgentsDiscovery());
+        }
+
+        public IEnumerable<RegisteredUserAgent> GetRegisteredUserAgents()
+        {
+            return _lazyCache.GetOrAddRegisteredUserAgents(() => _internalRepository.GetRegisteredUserAgents());
+        }
+
+        public SipEventHandlerResult UpdateRegisteredSip(UserAgentRegistration userAgentRegistration)
+        {
+            var result = _internalRepository.UpdateRegisteredSip(userAgentRegistration);
 
             // When reregistration of codec already in cache, just update timestamp
             if (result.ChangeStatus == SipEventChangeStatus.NothingChanged && result.ChangedObjectId != Guid.Empty)
             {
-                var regSip = GetCachedRegisteredSips().FirstOrDefault(rs => rs.Id == result.ChangedObjectId);
-                if (regSip != null)
-                {
-                    regSip.Updated = DateTime.UtcNow;
-                    return result;
-                }
+                // TODO: When GetRegisteredSips is gone, decide over this
+                //var regSip = GetRegisteredSips().FirstOrDefault(rs => rs.Id == result.ChangedObjectId);
+                //if (regSip != null)
+                //{
+                //    regSip.Updated = DateTime.UtcNow;
+                //    return result;
+                //}
+                return result;
             }
 
             // Otherwise reload cache.
-            _lazyCache.ClearRegisteredSips();
+            _lazyCache.ClearRegisteredUserAgents();
             return result;
         }
-        
-        public List<RegisteredSipDto> GetCachedRegisteredSips()
-        {
-            return _lazyCache.GetOrAddRegisteredSips(() => _internalRepository.GetCachedRegisteredSips());
-        }
-        
+
         public SipEventHandlerResult DeleteRegisteredSip(string sipAddress)
         {
             var result = _internalRepository.DeleteRegisteredSip(sipAddress);
 
             if (result.ChangeStatus == SipEventChangeStatus.CodecRemoved)
             {
-                _lazyCache.ClearRegisteredSips();
+                _lazyCache.ClearRegisteredUserAgents();
             }
 
             return result;
         }
 
-        public List<CodecInformation> GetCodecInformationList()
+        public IEnumerable<RegisteredUserAgentCodecInformation> GetRegisteredUserAgentsCodecInformation()
         {
-            return _internalRepository.GetCodecInformationList();
-        }
-
-        public CodecInformation GetCodecInformation(string sipAddress)
-        {
-            return _internalRepository.GetCodecInformation(sipAddress);
+            return _lazyCache.GetOrAddRegisteredUserAgentsCodecInformation(() => _internalRepository.GetRegisteredUserAgentsCodecInformation());
         }
 
     }

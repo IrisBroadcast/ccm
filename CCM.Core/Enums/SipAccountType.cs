@@ -30,8 +30,8 @@ namespace CCM.Core.Enums
 {
     public enum SipAccountType
     {
-        [Description("Vanligt SIP-konto")] SipAccount = 0,
-        [Description("SIP-alias")] SipAlias = 1,
-        [Description("Pool-kodare")] PoolCodec = 2
+        [Description("Description_SipAccount")] SipAccount = 0,
+        [Description("Description_SipAlias")] SipAlias = 1,
+        [Description("Description_PoolCodec")] PoolCodec = 2
     }
 }

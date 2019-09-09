@@ -40,29 +40,46 @@ namespace CCM.Core.Cache
 
         public CachedCallRepository(IAppCache cache, ICallRepository internalRepository)
         {
-            // No calls are cached
+            // TODO: Use cache call on the other queries
             _lazyCache = cache;
             _internalRepository = internalRepository;
         }
 
-        public IList<OnGoingCall> GetOngoingCalls(bool anonomize) { return _internalRepository.GetOngoingCalls(anonomize); }
-        public bool CallExists(string callId, string hashId, string hashEnt) { return _internalRepository.CallExists(callId, hashId, hashEnt); }
-        public CallInfo GetCallInfo(string callId, string hashId, string hashEnt) { return _internalRepository.GetCallInfo(callId, hashId, hashEnt); }
-        public CallInfo GetCallInfoById(Guid callId) { return _internalRepository.GetCallInfoById(callId); }
-        public Call GetCallBySipAddress(string sipAddress) { return _internalRepository.GetCallBySipAddress(sipAddress); }
+        public IReadOnlyCollection<OnGoingCall> GetOngoingCalls(bool anonymize)
+        {
+            return _lazyCache.GetOrAddOngoingCalls(() => _internalRepository.GetOngoingCalls(anonymize));
+        }
+
+        public bool CallExists(string callId, string hashId, string hashEnt)
+        {
+            return _internalRepository.CallExists(callId, hashId, hashEnt);
+        }
+
+        public CallInfo GetCallInfo(string callId, string hashId, string hashEnt)
+        {
+            return _internalRepository.GetCallInfo(callId, hashId, hashEnt);
+        }
+
+        public CallInfo GetCallInfoById(Guid callId)
+        {
+            return _internalRepository.GetCallInfoById(callId);
+        }
+
+        public Call GetCallBySipAddress(string sipAddress)
+        {
+            return _internalRepository.GetCallBySipAddress(sipAddress);
+        }
 
         public void UpdateCall(Call call)
         {
             _internalRepository.UpdateCall(call);
-            // Some registered codecs may have changed state. Reload cache.
-            _lazyCache.ClearRegisteredSips();
+            _lazyCache.ClearOngoingCalls();
         }
 
         public void CloseCall(Guid callId)
         {
             _internalRepository.CloseCall(callId);
-            // Some registered codecs may have changed state. Reload cache.
-            _lazyCache.ClearRegisteredSips();
+            _lazyCache.ClearOngoingCalls();
         }
 
     }

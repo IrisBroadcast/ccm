@@ -40,7 +40,7 @@ using NUnit.Framework;
 namespace CCM.Tests.ControllerTests.External
 {
     [TestFixture]
-    public class AccountControllerTests
+    public class AccountControllerTests: IDisposable
     {
         private AccountController _sut;
 
@@ -48,7 +48,7 @@ namespace CCM.Tests.ControllerTests.External
         public void SetUp()
         {
             _sut = new AccountController(
-                new SipAccountManager(new SipAccountRepository(new CachingService()), new CachingService()),
+                new SipAccountManager(new SipAccountRepository(new CachingService())),
                 new OwnersRepository(new CachingService()),
                 new CodecTypeRepository(new CachingService()));
 
@@ -109,6 +109,19 @@ namespace CCM.Tests.ControllerTests.External
             // Delete
             var deleteResult = _sut.Delete(model.UserName) as OkNegotiatedContentResult<string>;
             Assert.AreEqual("User deleted", deleteResult?.Content);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            // Use SupressFinalize in case a subclass 
+            // of this type implements a finalizer.
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            ((IDisposable)_sut).Dispose();
         }
     }
 }

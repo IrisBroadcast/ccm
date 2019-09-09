@@ -35,6 +35,7 @@ namespace CCM.Core.Interfaces.Managers
         SipAccount GetById(Guid userId);
         SipAccount GetByUserName(string userName);
         SipAccount GetByRegisteredSip(Guid registeredSipId);
+        SipAccount GetSipAccountByUserName(string username);
         List<SipAccount> GetAll();
         List<SipAccount> Find(string startsWith);
         void Create(SipAccount account);

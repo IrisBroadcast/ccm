@@ -57,6 +57,8 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Resources.Studios</a>
                         @Html.Action("Menu", "StudioMonitor", new { area = "" })
                     </li>
+                    
+                    <li><a href="#" onclick="return popitup('menu.html')">Info</a></li>
 
                     <!-- Administration -->
                     @if (User.IsInRole(Roles.Admin))
@@ -85,6 +87,7 @@
                                 <li>@Html.ActionLink(Resources.Users, "Index", "User")</li>
                                 <li class="dropdown-menu--divider"><div> </div></li>
                                 <li>@Html.ActionLink(@Resources.Logs, "Index", "Log")</li>
+                                <li>@Html.ActionLink(@Resources.Debug_Title, "Index", "Debugging")</li>
                             </ul>
                         </li>
                     }
@@ -144,6 +147,14 @@
     window.codecControlHost = @Html.Raw("'" + codecControlHost + "'");
     window.codecControlUserName = @Html.Raw("'" + codecControlUserName + "'");
     window.codecControlPassword = @Html.Raw("'" + codecControlPassword + "'");
+
+    function popitup(url) {
+        var newwindow = window.open('http://dev-ccm.sr.se/menu.html','name','height=850,width=680,left=1000,top=50, scrollbars=yes,titlebar=yes,toolbar=yes,resizable=yes,menubar=yes');
+        if (window.focus) {
+            newwindow.focus();
+        }
+        return false;
+    }
     </script>
 </body>
 </html>

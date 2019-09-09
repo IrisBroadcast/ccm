@@ -28,12 +28,12 @@ namespace CCM.Core.SipEvent.Messages
 {
     public class SipRegistrationExpireMessage : SipMessageBase
     {
-        public SipUri SipAddress { get; set; }  // Sip-URL
+        public SipUri SipAddress { get; set; }  // Sip-URI
         public string ReceivedIp { get; set; }  // IP-address the message was sent from
 
         public override string ToDebugString()
         {
-            return string.Format("SipAddress:{0}, ReceivedIp:{1}", SipAddress, ReceivedIp);
+            return $"SipAddress:{SipAddress}, ReceivedIp:{ReceivedIp}";
         }
     }
 }

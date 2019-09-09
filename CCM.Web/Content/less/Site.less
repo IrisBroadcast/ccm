@@ -996,19 +996,13 @@ input[type="checkbox"].input-validation-error {
     overflow-y: scroll;
 }
 
-/*
-.navbar.ccm-sub-navbar--admin {
-     TODO: what is this? 
-    margin-bottom: 0;
-}
-*/
-
 .ccm-sub-navbar--admin {
     &--header {
         padding: 0;
         margin: 0;
         float: none;
         min-height: 60px;
+
         .navbar-brand {
             padding: 0 15px;
             margin: 0;
@@ -1016,7 +1010,15 @@ input[type="checkbox"].input-validation-error {
             height: 60px;
             font-weight: 600;
         }
+
+        .navbar-page-description {
+            padding: 0;
+            margin: 0;
+            line-height: 30px;
+            font-weight: 400;
+        }
     }
+
     &--links {
         margin-bottom: 2px;
     }
@@ -1639,8 +1641,10 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
             }
 
             .progress {
-                margin-bottom: 0;
-                width: 100%;
+                margin: 0 auto;
+                padding: 0;
+                width: 70%;
+                max-width: 130px;
             }
         }
     }
@@ -1770,15 +1774,15 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
     input[type=range].ccm-ui-mixer--slider:focus {
         outline: none;
     }
-
+    /* Track */
     input[type=range].ccm-ui-mixer--slider::-webkit-slider-runnable-track {
         width: 100%;
         height: 26px;
         cursor: pointer;
-        box-shadow: 0px 0px 0px #ffffff, 0px 0px 0px #ffffff;
-        background: #e0e0e0;
-        border-radius: 2px;
-        border: 0px solid #000000;
+        box-shadow: 0px 0px 2px #ffffff, 0px 0px 2px #ffffff;
+        background: #fff;
+        border-radius: 4px;
+        border: 1px solid #ccc;
     }
 
     input[type=range].ccm-ui-mixer--slider::-webkit-slider-thumb {
@@ -1790,9 +1794,9 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         background: rgba(51, 125, 126, 0.52);
         cursor: pointer;
         -webkit-appearance: none;
-        margin-top: 3px;
+        margin-top: 2px;
     }
-
+    /* Track */
     input[type=range].ccm-ui-mixer--slider:focus::-webkit-slider-runnable-track {
         background: #e0e0e0;
     }
@@ -1802,9 +1806,9 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         height: 26px;
         cursor: pointer;
         box-shadow: 0px 0px 0px #ffffff, 0px 0px 0px #ffffff;
-        background: #e0e0e0;
-        border-radius: 0px;
-        border: 0px solid #000000;
+        background: #fff;
+        border-radius: 4px;
+        border: 1px solid #ccc;
     }
 
     input[type=range].ccm-ui-mixer--slider::-moz-range-thumb {
@@ -1812,11 +1816,12 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         border: 1.5px solid rgba(0, 46, 0, 0.57);
         height: 20px;
         width: 17px;
-        border-radius: 6px;
+        border-radius: 4px;
         background: rgba(51, 125, 126, 0.52);
         cursor: pointer;
+        margin-top: 2px;
     }
-
+    /* Track */
     input[type=range].ccm-ui-mixer--slider::-ms-track {
         width: 100%;
         height: 26px;
@@ -1829,14 +1834,14 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
     input[type=range].ccm-ui-mixer--slider::-ms-fill-lower {
         background: #a0a0a0;
         border: 0px solid #000000;
-        border-radius: 0px;
+        border-radius: 4px;
         box-shadow: 0px 0px 0px #ffffff, 0px 0px 0px #ffffff;
     }
 
     input[type=range].ccm-ui-mixer--slider::-ms-fill-upper {
         background: #e0e0e0;
         border: 0px solid #000000;
-        border-radius: 0px;
+        border-radius: 4px;
         box-shadow: 0px 0px 0px #ffffff, 0px 0px 0px #ffffff;
     }
 
@@ -1844,14 +1849,14 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
         box-shadow: 0px 0px 0px rgba(0, 0, 62, 0.67), 0px 0px 0px rgba(0, 0, 88, 0.67);
         border: 1.5px solid rgba(0, 46, 0, 0.57);
         width: 17px;
-        border-radius: 6px;
+        border-radius: 4px;
         background: rgba(51, 125, 126, 0.52);
         cursor: pointer;
         height: 20px;
     }
 
     input[type=range].ccm-ui-mixer--slider:focus::-ms-fill-lower {
-        background: #e0e0e0;
+        background: #fff;
     }
 
     input[type=range].ccm-ui-mixer--slider:focus::-ms-fill-upper {
@@ -1870,6 +1875,13 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 .ccm-ui-pop-tab {
     .form-control--horizontal {
         width: unset;
+    }
+
+    &--control {
+        margin: 0 -5px;
+    }
+
+    &--information {
     }
 }
 
@@ -1949,171 +1961,115 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
                 font-size: 2.5em;
             }
 
-            .progress {
+            .db-control {
+                display: inline-block;
                 margin-bottom: 0;
                 width: 100%;
             }
         }
     }
-    /*.vu-group {
-        margin-right: 0;
+
+    &-vu {
         overflow: hidden;
-        width: 50%;
-        margin-bottom: 10px;
-        margin-top: 10px;
 
-        &--left {
-            float: left;
-        }
-
-        &--right {
-            float: right;
-        }
-
-        &--text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            float: left;
+        &--feedback {
             text-align: center;
             width: 100%;
-            font-size: 90%;
-            font-weight: 600;
         }
 
-        .progress {
-            width: 40%;
-            margin-left: 8%;
-            height: 110px;
-            position: relative;
+        .vu-group {
+            margin-right: 0;
             overflow: hidden;
-            float: left;
+            width: 50%;
+            margin-bottom: 10px;
+            margin-top: 10px;
 
-            .progress-marker-target-0 {
-                background: rgba(39, 83, 121, 0.65);
-                display: block;
-                position: absolute;
-                bottom: 75%;
-                left: 0;
-                right: 0;
-                height: 2%;
-                z-index: 1;
+            &--left {
+                float: left;
             }
 
-            .progress-bar {
-                width: 40px;
-                position: absolute;
-                bottom: 0;
-
-                &.green {
-                    background-color: @progress-bar-low;
-                }
-
-                &.yellow {
-                    background-color: @progress-bar-mid;
-                }
-
-                &.red {
-                    background-color: @progress-bar-top;
-                }
-            }
-        }
-    }*/
-}
-
-.ccm-ui-popmixer--unit-vu {
-    overflow: hidden;
-
-    .vu-group {
-        margin-right: 0;
-        overflow: hidden;
-        width: 50%;
-        margin-bottom: 10px;
-        margin-top: 10px;
-
-        &--left {
-            float: left;
-        }
-
-        &--right {
-            float: right;
-        }
-
-        &--text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            float: left;
-            text-align: center;
-            width: 100%;
-            font-size: 90%;
-            font-weight: 600;
-        }
-
-        .progress {
-            width: 30%;
-            margin: 0 10%;
-            height: 100px;
-            position: relative;
-            overflow: hidden;
-            float: left;
-            background: #dedede;
-            border: 2px solid #d1d1d1;
-
-            .progress-marker-target-0 {
-                background: rgba(39, 83, 121, 0.65);
-                display: block;
-                position: absolute;
-                bottom: 75%;
-                left: 0;
-                right: 0;
-                height: 2%;
-                z-index: 1;
+            &--right {
+                float: right;
             }
 
-            .progress-bar {
+            &--text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                float: left;
+                text-align: center;
                 width: 100%;
-                position: absolute;
-                bottom: 0;
+                font-size: 90%;
+                font-weight: 600;
+            }
 
-                &.green {
-                    background-color: @progress-bar-low;
+            .progress {
+                width: 30%;
+                margin: 0 10%;
+                height: 100px;
+                position: relative;
+                overflow: hidden;
+                float: left;
+                background: #dedede;
+                border: 2px solid #d1d1d1;
+
+                .progress-marker-target-0 {
+                    background: rgba(39, 83, 121, 0.65);
+                    display: block;
+                    position: absolute;
+                    bottom: 75%;
+                    left: 0;
+                    right: 0;
+                    height: 2%;
+                    z-index: 1;
                 }
 
-                &.yellow {
-                    background-color: @progress-bar-mid;
-                }
+                .progress-bar {
+                    width: 100%;
+                    position: absolute;
+                    bottom: 0;
 
-                &.red {
-                    background-color: @progress-bar-top;
+                    &.green {
+                        background-color: @progress-bar-low;
+                    }
+
+                    &.yellow {
+                        background-color: @progress-bar-mid;
+                    }
+
+                    &.red {
+                        background-color: @progress-bar-top;
+                    }
                 }
+            }
+        }
+    }
+
+    &-gpo {
+        overflow: hidden;
+        margin-top: 10px;
+
+        .gpo-group {
+            float: left;
+        }
+
+        .btn.gpo {
+            margin: 0 5px;
+            width: 70px;
+            height: 50px;
+            width: unset !important;
+            padding: 12px !important;
+            white-space: normal;
+            text-align: center;
+            padding: initial;
+            overflow: hidden;
+
+            &:first-child {
+                margin-left: 0;
             }
         }
     }
 }
 
-.ccm-ui-popmixer--unit-gpo {
-    overflow: hidden;
-    margin-top: 10px;
-
-    .gpo-group {
-        float: left;
-    }
-
-    .btn.gpo {
-        margin: 0 5px;
-        width: 70px;
-        height: 50px;
-        width: unset !important;
-        padding: 12px !important;
-        white-space: normal;
-        text-align: center;
-        padding: initial;
-        overflow: hidden;
-
-        &:first-child {
-            margin-left: 0;
-        }
-    }
-}
 
 .ccm-ui-pop--logtextarea {
     display: block;

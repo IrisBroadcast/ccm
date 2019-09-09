@@ -28,6 +28,11 @@ using System;
 
 namespace CCM.Core.Attributes
 {
+    /// <summary>
+    /// A MetaType is used for Discovery filtering. This one is used
+    /// in combination with MetaProperty attribute. To describe a
+    /// subset class/model that have more MetaProperties defined.
+    /// </summary>
     public class MetaTypeAttribute : Attribute
     {
     }

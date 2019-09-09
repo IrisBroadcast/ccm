@@ -53,6 +53,5 @@ namespace CCM.Core.Entities.Specific
         public string ToCodecTypeColor { get; set; }
 
         public int DurationSeconds => Convert.ToInt32(DateTime.UtcNow.Subtract(Started).TotalSeconds);
-
     }
 }

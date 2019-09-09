@@ -35,8 +35,8 @@ namespace CCM.Data.Entities
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public int? GroupSortWeight { get; set; }
 
         public virtual ICollection<ProfileGroupProfileOrdersEntity> OrderedProfiles { get; set; }
-
     }
 }

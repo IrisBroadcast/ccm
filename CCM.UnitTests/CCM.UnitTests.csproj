@@ -74,6 +74,7 @@
     <Compile Include="CCM.Core\CryptoHelperTests.cs" />
     <Compile Include="CCM.Core\DisplayNameHelperTests.cs" />
     <Compile Include="CCM.Core\Extensions\StringExtensionsTests.cs" />
+    <Compile Include="CCM.Core\Helpers\PasswordGeneration\PasswordGeneratorTests.cs" />
     <Compile Include="CCM.Core\Kamailio\KamailioDataParserTests.cs" />
     <Compile Include="CCM.Core\Kamailio\KamailioMessageParserTests_Dialog.cs" />
     <Compile Include="CCM.Core\Kamailio\KamailioMessageParserTests_Registration.cs" />

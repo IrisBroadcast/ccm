@@ -50,7 +50,7 @@ namespace CCM.Data.Repositories
                 return roles;
             }
         }
-        
+
         private CcmRole MapToRole(RoleEntity dbRole)
         {
             return dbRole == null ? null : new CcmRole

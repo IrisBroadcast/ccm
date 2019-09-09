@@ -31,7 +31,7 @@ namespace CCM.DiscoveryApi.Infrastructure
 {
     public static class ApplicationSettings
     {
-        // URL to CCM Web, so that the internal REST call calls the actual server
+        // URL to CCM Web, so that the internal REST call calls the actual server, used in Discovery service
         public static Uri CcmHost => new Uri(ConfigurationManager.AppSettings["CCMHost"]);
         public static string DiscoveryUsername => ConfigurationManager.AppSettings["DiscoveryUsername"]; // TODO: Is this really in use anymore?
         public static string DiscoveryPassword => ConfigurationManager.AppSettings["DiscoveryPassword"]; // TODO: Is this really in use anymore?

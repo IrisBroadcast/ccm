@@ -261,11 +261,11 @@
 
                                     @if (hasWriteRights)
                                     {
-                                        <div class="col-md-5 list-ccm--reg-ua-comment" title="{{sip.Comment ? '@Resources.Edit_Comment' : '@Resources.Add_Comment'}}" ng-dblclick="editComment(sip.Id)" ng-class="sip.Comment ? 'list-ccm--reg-ua-comment--edit' : 'list-ccm--reg-ua-comment--edit-empty'"><span>{{sip.Comment}}&nbsp;</span></div>
+                                        <div class="col-md-5 list-ccm--reg-ua-comment" title="{{sip.UserComment ? '@Resources.Edit_Comment' : '@Resources.Add_Comment'}}" ng-dblclick="editComment(sip.Id)" ng-class="sip.UserComment ? 'list-ccm--reg-ua-comment--edit' : 'list-ccm--reg-ua-comment--edit-empty'"><span>{{sip.UserComment}}&nbsp;</span></div>
                                     }
                                     else
                                     {
-                                        <div class="col-md-5 list-ccm--reg-ua-comment">{{sip.Comment}}&nbsp;</div>
+                                        <div class="col-md-5 list-ccm--reg-ua-comment">{{sip.UserComment}}&nbsp;</div>
                                     }
                                     <div class="col-md-1 list-ccm--reg-ua-logo-small" ng-if="sip.Image.length > 0">
                                         <img ng-src="@Url.Content("~/Images/Agents")/{{sip.Image}}" alt="" />
@@ -385,7 +385,7 @@
                 <div class="row" ng-show="info.FinalUserInterfaceLink.length > 0">
                     <label class="col-md-3">@Resources.Web_Interface</label>
                     <div class="col-lg-9">
-                        <a href="#" ng-click="openAdmin(info.FinalUserInterfaceLink, info.Width, info.Height, info.UseScrollbars)" ng-hide="!canAx && info.ActiveX">
+                        <a href="{{info.FinalUserInterfaceLink}}" onclick="return false;" ng-click="openAdmin(info.FinalUserInterfaceLink, info.Width, info.Height, info.UseScrollbars); $event.stopPropagation();" ng-hide="!canAx && info.ActiveX">
                             {{info.FinalUserInterfaceLink}}
                         </a>
                         <span ng-show="!canAx && info.ActiveX">{{info.FinalUserInterfaceLink}} (@Resources.Requires_Activex)</span>
@@ -412,10 +412,10 @@
                                         <div class="level-gain">
                                             <div class="db-value">
                                                 {{input.value}}
-                                                <progress class="progress" max="{{ info.InputMaxDb - info.InputMinDb }}" min="0" value="{{ input.value - info.InputMinDb }}"></progress>
+                                                <!--<progress class="db-control" max="{{ info.InputMaxDb - info.InputMinDb }}" min="0" value="{{ input.value - info.InputMinDb }}"></progress>-->
                                             </div>
                                             <div class="db-range-control">
-                                                <input type="range" name="range" class="ccm-ui-mixer--slider" ng-model="input.value" ng-min="info.InputMinDb" ng-max="info.InputMaxDb">
+                                                <!--<input type="range" name="range" class="ccm-ui-mixer--slider" ng-model="input.changeValue" ng-mousedown="input.interactingValue=true" ng-mouseup="rangeSetInputTo(input, input.changeValue)" min="{{info.InputMinDb}}" max="{{info.InputMaxDb}}">-->
                                             </div>
                                             <div class="row db-control">
                                                 <button class="btn btn-default" ng-click="setGainLevel(input, -1)">
@@ -452,7 +452,10 @@
                         </div>
 
                         <div class="row">
-                            <div class="ccm-ui-popmixer--unit-vu col-md-12">
+                            <div class="ccm-ui-popmixer--unit-vu--feedback" ng-hide="codecMeteringAvailable">
+                                <h3>@Resources.Codec_Error_No_Audio_Metering_Status_Available</h3>
+                            </div>
+                            <div ng-show="codecMeteringAvailable" class="ccm-ui-popmixer--unit-vu col-md-12">
                                 <div class="vu-group vu-group--left">
                                     <vu-meter level="rxL"></vu-meter>
                                     <vu-meter level="rxR"></vu-meter>

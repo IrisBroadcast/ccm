@@ -32,16 +32,16 @@ namespace CCM.Web.InputValidation.ValidationAttributes
 {
     public class RequiredIfAttribute : ValidationAttribute
     {
-        private readonly string condition;
+        private readonly string _condition;
 
         public RequiredIfAttribute(string condition)
         {
-            this.condition = condition;
+            _condition = condition;
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            Delegate conditionFunction = CreateExpression(validationContext.ObjectType, condition);
+            Delegate conditionFunction = CreateExpression(validationContext.ObjectType, _condition);
             bool conditionMet = (bool)conditionFunction.DynamicInvoke(validationContext.ObjectInstance);
             if (conditionMet)
             {

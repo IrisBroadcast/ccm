@@ -53,7 +53,10 @@ namespace CCM.Web.Controllers.ApiExternal
         private readonly IOwnersRepository _ownersRepository;
         private readonly ICodecTypeRepository _codecTypeRepository;
 
-        public AccountController(ISipAccountManager userManager, IOwnersRepository ownersRepository, ICodecTypeRepository codecTypeRepository)
+        public AccountController(
+            ISipAccountManager userManager,
+            IOwnersRepository ownersRepository,
+            ICodecTypeRepository codecTypeRepository)
         {
             _sipAccountManager = userManager;
             _ownersRepository = ownersRepository;
@@ -215,7 +218,6 @@ namespace CCM.Web.Controllers.ApiExternal
                 {
                     return InternalServerError(new ApplicationException("User not deleted"));
                 }
-                
                 return Ok("User deleted");
             }
             catch (Exception ex)
@@ -224,6 +226,5 @@ namespace CCM.Web.Controllers.ApiExternal
                 return InternalServerError(new ApplicationException("User could not be deleted. " + ex.Message));
             }
         }
-       
     }
 }

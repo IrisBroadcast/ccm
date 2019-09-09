@@ -45,8 +45,9 @@ namespace CCM.Web.Controllers
         private readonly IUserAgentRepository _userAgentRepository;
         private readonly IProfileRepository _profileRepository;
 
-
-        // Must be in sync with implemented API:s in CodecControl
+        /// <summary>
+        /// Must be in sync with implemented API:s in CodecControl
+        /// </summary>
         public static List<CodecApiInformation> AvailableApis => new List<CodecApiInformation>
         {
             new CodecApiInformation { DisplayName = "Prodys IkusNet", Name = "IkusNet" },
@@ -55,7 +56,9 @@ namespace CCM.Web.Controllers
             new CodecApiInformation { DisplayName = "Baresip Proprietary", Name = "BaresipRest" }
         };
 
-        public UserAgentsController(IUserAgentRepository userAgentRepository, IProfileRepository profileRepository, ICodecPresetRepository codecPresetRepository)
+        public UserAgentsController(IUserAgentRepository userAgentRepository,
+            IProfileRepository profileRepository,
+            ICodecPresetRepository codecPresetRepository)
         {
             _userAgentRepository = userAgentRepository;
             _profileRepository = profileRepository;
@@ -242,8 +245,7 @@ namespace CCM.Web.Controllers
                 imageFile.SaveAs(filename);
                 userAgent.Image = newFile;
 
-                // TODO: Replicated image to the other server.
-                // TODO: Or even better, store at a common file area
+                // TODO: Replicated image to the other server. Or even better, store at a common file area. Use a config parameter on where to save images.
             }
             return userAgent;
         }

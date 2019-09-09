@@ -40,8 +40,9 @@ namespace CCM.Web.Controllers.Api
             _callRepository = callRepository;
         }
 
-        public IList<OnGoingCall> Post()
+        public IReadOnlyCollection<OnGoingCall> Post()
         {
+            // TODO: Maybe this needs to be a sorted readonly list?
             return _callRepository.GetOngoingCalls(true);
         }
     }

@@ -40,7 +40,7 @@ namespace CCM.Tests.CacheTests
         {
             IAppCache cache = new CachingService();
 
-            var profiles = cache.GetProfiles(
+            var profiles = cache.GetOrAddAllProfileNamesAndSdp(
                 () => new List<ProfileNameAndSdp>()
                 {
                     new ProfileNameAndSdp() {Name = "Profile 1", Sdp = "Sdp A"},
@@ -52,7 +52,7 @@ namespace CCM.Tests.CacheTests
             Assert.AreEqual(3, profiles.Count);
             Assert.AreEqual("Profile 3", profiles[2].Name);
 
-            var sameProfiles = cache.GetProfiles(null);
+            var sameProfiles = cache.GetOrAddAllProfileNamesAndSdp(null);
             Assert.IsNotNull(sameProfiles);
             Assert.AreEqual(3, sameProfiles.Count);
             Assert.AreEqual("Profile 3", profiles[2].Name);
@@ -63,7 +63,7 @@ namespace CCM.Tests.CacheTests
         {
             IAppCache cache = new CachingService();
 
-            var profiles = cache.GetProfiles(
+            var profiles = cache.GetOrAddAllProfileNamesAndSdp(
                 () => new List<ProfileNameAndSdp>()
                 {
                     new ProfileNameAndSdp() {Name = "Profile 1", Sdp = "Sdp A"},
@@ -75,9 +75,9 @@ namespace CCM.Tests.CacheTests
             Assert.AreEqual(3, profiles.Count);
             Assert.AreEqual("Profile 3", profiles[2].Name);
 
-            cache.ResetProfiles();
+            cache.ClearProfiles();
 
-            var sameProfiles = cache.GetProfiles(null);
+            var sameProfiles = cache.GetOrAddAllProfileNamesAndSdp(null);
             Assert.IsNull(sameProfiles);
         }
 

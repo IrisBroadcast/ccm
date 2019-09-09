@@ -33,8 +33,8 @@ using CCM.Core.Interfaces.Repositories;
 namespace CCM.Web.Controllers.Api
 {
     /// <summary>
-    /// TODO: Check the actual use of this, SÄL-dialer? or NG-dialer
-    /// Returns a filtered list of historical calls
+    /// Returns a filtered list of historical calls.
+    /// Is called from CCM frontend when filters are selected.
     /// </summary>
     public class OldCallFilteredController : ApiController
     {

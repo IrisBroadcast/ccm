@@ -28,6 +28,15 @@ using System;
 
 namespace CCM.Core.Attributes
 {
+    /// <summary>
+    /// A MetaProperty is used for Discovery filtering. Used on models
+    /// where you want to be able to access the property. This property
+    /// can then be used for adding additional Meta information to the
+    /// Discovery return.
+    /// The MetaType attribute is used for describing a subset, or a class/model
+    /// in a class/model. Then inside that model you have to define
+    /// MetaProperties.
+    /// </summary>
     public class MetaPropertyAttribute : Attribute
     {
     }

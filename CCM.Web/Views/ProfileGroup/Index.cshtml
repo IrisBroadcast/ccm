@@ -4,12 +4,15 @@
 
 @{
     ViewBag.Title = Resources.Profile_Groups;
+    int sortCounter = 0;
 }
 
 @section scripts {
+    @Scripts.Render("~/bundles/jqueryui")
+
     <script type="text/javascript">
 
-        $(function() {
+        /*$(function () {
             $('#nameColumn').on('click', function() {
                 if ($('#SortBy').val() !== "0") {
                     $('#Direction').val("0");
@@ -23,7 +26,28 @@
                 $('#searchForm').submit();
             });
 
-        });
+        });*/
+
+        $(function() {
+            // Profile sorting
+            $("#profileGroups").sortable({
+                update: function() {
+                    var data = [];
+                    $('#profileGroups .profilegroup-row').each(function(index, element) {
+                        $(element).find('.sortWeight').val(index);
+                        data.push({ id: $(element).find('.profileGroupId').val(), sortweight: index });
+                    });
+                    $.ajax({
+                        url: 'ProfileGroup/SetProfileGroupSortWeight',
+                        type: "POST",
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8"
+                    });
+                }
+            });
+            $("#profileGroups").disableSelection();
+        })
     </script>
 }
 
@@ -43,7 +67,10 @@
             <div class="navbar-header ccm-sub-navbar--admin--header">
                 <span class="navbar-brand">@Resources.Profile_Groups</span>
             </div>
-            <div class="navbar ccm-sub-navbar--admin--links" >
+            <div class="navbar-header ccm-sub-navbar--admin--header">
+                <span class="navbar-page-description">@Resources.Profile_Group_Page_Description</span>
+            </div>
+            <div class="navbar ccm-sub-navbar--admin--links">
                 @if (User.IsInRole(Roles.Admin))
                 {
                     <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
@@ -59,17 +86,23 @@
     <div class="panel panel-default">
         <div class="panel-heading list-ccm-heading">
             <div class="row">
-                <div class="col-md-11 sort-column" id="nameColumn">@Resources.Name</div>
+                <div class="col-md-1"> </div>
+                <div class="col-md-3">@Resources.Name</div>
+                <div class="col-md-7">@Resources.Description</div>
                 <div class="col-md-1"></div>
             </div>
         </div>
-        <div class="panel-body-lp">
+        <div class="panel-body-lp" id="profileGroups">
             @foreach (var profilegroup in Model)
             {
-                <div class="">
+                <div class="profilegroup-row">
+                    @Html.Hidden("SortIndex", sortCounter, new { @class = "sortWeight" })
+                    @Html.HiddenFor(p => profilegroup.Id, new { @class = "profileGroupId" })
                     <div class="panel-body-item row">
                         <a data-toggle="collapse" data-parent="#accordion" href="#@profilegroup.Id">
-                            <div class="col-md-11">@profilegroup.Name</div>
+                            <div class="col-md-1"><!-- @profilegroup.GroupSortWeight --></div>
+                            <div class="col-md-3">@profilegroup.Name</div>
+                            <div class="col-md-7">@profilegroup.Description</div>
 
                             <div class="col-md-1 text-right list-ccm-icongroup">
                                 @if (User.IsInRole(Roles.Admin))
@@ -95,6 +128,7 @@
                         </div>
                     </div>
                 </div>
+                sortCounter++;
             }
         </div>
     </div>

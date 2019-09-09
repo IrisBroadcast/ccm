@@ -76,6 +76,7 @@ namespace CCM.Data.Repositories
 
                 dbCall.Updated = DateTime.UtcNow;
                 dbCall.Closed = true;
+                // TODO: Is it necessary to save this closing of the call, to then remove it later?
                 db.SaveChanges();
 
                 // Save call history
@@ -90,7 +91,7 @@ namespace CCM.Data.Repositories
                 }
                 else
                 {
-                    log.Error(string.Format("Unable to save call history with the call fromSip: {0}, toSip: {1}, hash id: {2}, hash ent: {3}", dbCall.FromSip, dbCall.ToSip, dbCall.DlgHashId, dbCall.DlgHashEnt));
+                    log.Error($"Unable to save call history with the call fromSip: {dbCall.FromSip}, toSip: {dbCall.ToSip}, hash id: {dbCall.DlgHashId}, hash ent: {dbCall.DlgHashEnt}");
                 }
             }
         }
@@ -200,18 +201,18 @@ namespace CCM.Data.Repositories
                         }
                         else
                         {
-                            log.Error(string.Format("Unable to save call history with call id: {0}, hash id: {1}, hash ent: {2}", call.CallId, call.DlgHashId, call.DlgHashEnt));
+                            log.Error($"Unable to save call history with call id: {call.CallId}, hash id: {call.DlgHashId}, hash ent: {call.DlgHashEnt}");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                log.Error(ex, string.Format("Error saving/updating call with call id: {0}, hash id; {1}, hash ent: {2}", call.CallId, call.DlgHashId, call.DlgHashEnt));
+                log.Error(ex, $"Error saving/updating call with call id: {call.CallId}, hash id: {call.DlgHashId}, hash ent: {call.DlgHashEnt}");
             }
         }
 
-        public IList<OnGoingCall> GetOngoingCalls(bool anonomize)
+        public IReadOnlyCollection<OnGoingCall> GetOngoingCalls(bool anonymize)
         {
             using (var db = GetDbContext())
             {
@@ -227,13 +228,13 @@ namespace CCM.Data.Repositories
                     .Include(c => c.ToSip.Location)
                     .Include(c => c.ToSip.Location.Region)
                     .Where(call => !call.Closed).ToList();
-                return dbCalls.Select(dbCall => MapToOngoingCall(dbCall, _settingsManager.SipDomain, anonomize))
-                    .Where(call => call != null).ToList();
+                return dbCalls.Select(dbCall => MapToOngoingCall(dbCall, _settingsManager.SipDomain, anonymize)).ToList().AsReadOnly();
             }
         }
 
         private OnGoingCall MapToOngoingCall(CallEntity dbCall, string sipDomain, bool anonymize)
         {
+            // TODO: Fix this mapping, and maybe redo the query?
             var fromDisplayName = CallDisplayNameHelper.GetDisplayName(dbCall.FromSip, dbCall.FromDisplayName, dbCall.FromUsername, sipDomain);
             var toDisplayName = CallDisplayNameHelper.GetDisplayName(dbCall.ToSip, dbCall.ToDisplayName, dbCall.ToUsername, sipDomain);
 
@@ -266,6 +267,7 @@ namespace CCM.Data.Repositories
 
         private CallHistory MapToCallHistory(CallEntity call, string sipDomain)
         {
+            // TODO: Clean up this null checks
             var callHistory = new CallHistory()
             {
                 CallId = call.Id,
@@ -302,7 +304,7 @@ namespace CCM.Data.Repositories
                     : string.Empty,
                 FromSip = call.FromSip != null ? call.FromSip.SIP : call.FromUsername,
                 FromTag = call.FromTag,
-                FromUserAgentHead = call.FromSip != null ? call.FromSip.UserAgentHead : string.Empty,
+                FromUserAgentHead = call.FromSip != null ? call.FromSip.UserAgentHeader : string.Empty,
                 FromUsername = call.FromSip != null ? call.FromSip.Username : call.FromUsername,
                 SipCallId = call.SipCallID,
                 Started = call.Started,
@@ -336,7 +338,7 @@ namespace CCM.Data.Repositories
                     : string.Empty,
                 ToSip = call.ToSip != null ? call.ToSip.SIP : call.ToUsername,
                 ToTag = call.ToTag,
-                ToUserAgentHead = call.ToSip != null ? call.ToSip.UserAgentHead : string.Empty,
+                ToUserAgentHead = call.ToSip != null ? call.ToSip.UserAgentHeader : string.Empty,
                 ToUsername = call.ToSip != null ? call.ToSip.Username : call.ToUsername,
                 IsPhoneCall = call.IsPhoneCall
             };
@@ -374,7 +376,7 @@ namespace CCM.Data.Repositories
                 Id = dbSip.Id,
                 SIP = dbSip.SIP,
                 DisplayName = dbSip.DisplayName,
-                UserAgentHead = dbSip.UserAgentHead,
+                UserAgentHead = dbSip.UserAgentHeader,
                 Username = dbSip.Username,
                 User = MapUser(dbSip.User),
             };
@@ -391,6 +393,5 @@ namespace CCM.Data.Repositories
                 DisplayName = dbAccount.DisplayName,
             };
         }
-
     }
 }

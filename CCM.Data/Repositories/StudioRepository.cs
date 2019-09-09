@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using CCM.Core.Entities;
-using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
@@ -138,11 +137,10 @@ namespace CCM.Data.Repositories
                 return dbStudios.Select(MapToStudio).OrderBy(g => g.Name).ToList();
             }
         }
-        
+
         private Studio MapToStudio(StudioEntity dbStudio)
         {
             return Mapper.Map<Studio>(dbStudio);
         }
-        
     }
 }

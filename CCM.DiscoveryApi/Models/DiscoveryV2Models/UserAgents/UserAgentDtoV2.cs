@@ -40,7 +40,7 @@ namespace CCM.DiscoveryApi.Models.DiscoveryV2Models.UserAgents
         [JsonProperty("profiles")]
         public List<string> Profiles { get; set; }
 
-        [JsonProperty("metadata")]  
+        [JsonProperty("metadata")]
         public List<KeyValuePairDtoV2> MetaData { get; set; }
     }
 }

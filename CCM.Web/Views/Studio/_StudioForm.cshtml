@@ -27,8 +27,8 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.AudioInputNames, new { @class = "control-label col-md-2" })
-        <div class="col-md-10"><!-- TODO: ENGLISH REOURSIFY -->
-            @Html.EditorFor(model => model.AudioInputNames, new { htmlAttributes = new { @class = "form-control", placeholder= "Kommaseparerad lista med mikrofonernas namn" } })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.AudioInputNames, new { htmlAttributes = new { @class = "form-control", placeholder = Resources.Studio_Comma_Separated_List_With_Input_Names } })
             @Html.ValidationMessageFor(model => model.AudioInputNames, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -51,8 +51,8 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.GpoNames, new { @class = "control-label col-md-2" })
-        <div class="col-md-10"><!-- TODO: ENGLISHIFY-->
-            @Html.EditorFor(model => model.GpoNames, new { htmlAttributes = new { @class = "form-control", placeholder= "Kommaseparerad lista med namn på GPO:er" } })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.GpoNames, new { htmlAttributes = new { @class = "form-control", placeholder = Resources.Studio_Comma_Separated_List_With_Gpo_Names } })
             @Html.ValidationMessageFor(model => model.GpoNames, "", new { @class = "text-danger" })
         </div>
     </div>

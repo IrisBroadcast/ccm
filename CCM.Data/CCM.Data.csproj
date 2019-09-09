@@ -98,14 +98,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CCMDbContext.cs" />
-    <Content Include="ChangeScripts\2018-10-17\settings_data.sql" />
     <Compile Include="Entities\CallEntity.cs" />
     <Compile Include="Entities\CallHistoryEntity.cs" />
     <Compile Include="Entities\CityEntity.cs" />
     <Compile Include="Entities\CodecPresetEntity.cs" />
-    <Compile Include="Entities\CodecPresetUserAgent.cs" />
+    <Compile Include="Entities\CodecPresetUserAgentEntity.cs" />
     <Compile Include="Entities\CodecTypeEntity.cs" />
     <Compile Include="Entities\Base\EntityBase.cs" />
+    <Compile Include="Entities\DocumentDb\CodecControlApiRepository.cs" />
+    <Compile Include="Entities\DocumentDb\DocumentDbEntity.cs" />
     <Compile Include="Entities\FilterEntity.cs" />
     <Compile Include="Entities\LocationEntity.cs" />
     <Compile Include="Entities\LogEntity.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Repositories\CityRepository.cs" />
     <Compile Include="Repositories\CodecPresetRepository.cs" />
     <Compile Include="Repositories\CodecTypeRepository.cs" />
+    <Compile Include="Repositories\DocumentDb\BaseDocumentRepository.cs" />
     <Compile Include="Repositories\EntityRepositoryBase.cs" />
     <Compile Include="Repositories\FilterRepository.cs" />
     <Compile Include="Repositories\LogRepository.cs" />
@@ -143,15 +145,17 @@
     <Compile Include="Repositories\ProfileRepository.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\SettingsRepository.cs" />
-    <Compile Include="Repositories\SimpleRegisteredSipRepository.cs" />
-    <Compile Include="Repositories\Specialized\LocationInfoRepository.cs" />
-    <Compile Include="Repositories\Specialized\RegisteredSipDetailsRepository.cs" />
+    <Compile Include="Repositories\LocationInfoRepository.cs" />
+    <Compile Include="Repositories\RegisteredSipDetailsRepository.cs" />
     <Compile Include="Repositories\UserAgentRepository.cs" />
     <Compile Include="Repositories\SipAccountRepository.cs" />
     <Compile Include="Repositories\CcmUserRepository.cs" />
     <Compile Include="Repositories\RegisteredSipRepository.cs" />
-    <Content Include="ChangeScripts\2019-07-29\adding_registrar.sql" />
-    <Content Include="ExampleData\Dump20190417.sql" />
+    <Content Include="Database\ChangeScripts\2019-08-27\adding_groupsortweight.sql" />
+    <Content Include="Database\ExampleData\Dump20190417.sql" />
+    <Content Include="Database\ExampleData\Dump20190417-cleanup.sql" />
+    <Content Include="Database\ChangeScripts\2018-10-17\settings_data.sql" />
+    <Content Include="Database\ChangeScripts\2019-07-29\adding_registrar.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -164,9 +168,7 @@
       <Name>CCM.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ExampleData\2019-04-17\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

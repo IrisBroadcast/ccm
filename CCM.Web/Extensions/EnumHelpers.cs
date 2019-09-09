@@ -38,7 +38,7 @@ namespace CCM.Web.Extensions
         {
             return Enum.GetValues(typeof(T))
                 .OfType<Enum>()
-                .Select(a => new SelectListItem() { Text = a.Description(), Value = a.ToString() })
+                .Select(a => new SelectListItem() { Text = a.DescriptionAsResource(), Value = a.ToString() })
                 .ToList();
         }
     }

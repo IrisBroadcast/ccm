@@ -31,11 +31,11 @@ namespace CCM.Web.InputValidation.ValidationAttributes
 {
     public class MustContainUpperCaseLettersAttribute : ValidationAttribute
     {
-        private readonly int minimumCount;
+        private readonly int _minimumCount;
 
         public MustContainUpperCaseLettersAttribute(int minimumCount)
         {
-            this.minimumCount = minimumCount;
+            _minimumCount = minimumCount;
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -47,9 +47,9 @@ namespace CCM.Web.InputValidation.ValidationAttributes
             }
 
             var numberOfUpperCase = stringValue.Count(char.IsUpper);
-            if (numberOfUpperCase < minimumCount)
+            if (numberOfUpperCase < _minimumCount)
             {
-                var errorMessage = string.Format(Resources.Password_Must_Contain_Upper_Case_Characters_At_Least_X, minimumCount);
+                var errorMessage = string.Format(Resources.Password_Must_Contain_Upper_Case_Characters_At_Least_X, _minimumCount);
                 return new ValidationResult(errorMessage);
             }
 

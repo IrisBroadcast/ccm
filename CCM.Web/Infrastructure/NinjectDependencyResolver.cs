@@ -28,18 +28,19 @@ using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using CCM.Core.Cache;
+using CCM.Core.Helpers.PasswordGeneration;
 using CCM.Core.Interfaces;
 using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.Interfaces.Repositories.Specialized;
 using CCM.Core.Managers;
 using CCM.Core.Service;
 using CCM.Core.SipEvent;
 using CCM.Core.SipEvent.Parser;
 using CCM.Data.Repositories;
-using CCM.Data.Repositories.Specialized;
 using CCM.Web.Infrastructure.SignalR;
+using CCM.Web.Mappers;
+using CCM.Web.Infrastructure.PasswordGeneration;
 using LazyCache;
 using Ninject;
 
@@ -76,18 +77,16 @@ namespace CCM.Web.Infrastructure
             _kernel.Bind<IAppCache>().To<CachingService>();
 
             _kernel.Bind<ISipMessageManager>().To<KamailioMessageManager>();
-            _kernel.Bind<ISimpleRegisteredSipRepository>().To<SimpleRegisteredSipRepository>();
-            _kernel.Bind<IRegisteredSipDetailsRepository>().To<RegisteredSipDetailsRepository>();
+            _kernel.Bind<IKamailioMessageParser>().To<KamailioMessageParser>();
+            _kernel.Bind<ISipEventParser>().To<SipEventParser>();
+            _kernel.Bind<IKamailioDataParser>().To<KamailioDataParser>();
+
             _kernel.Bind<ISipAccountManager>().To<SipAccountManager>();
             _kernel.Bind<ICcmUserRepository>().To<CcmUserRepository>();
-            _kernel.Bind<ISipAccountRepository>().To<SipAccountRepository>();
             _kernel.Bind<IRoleRepository>().To<RoleRepository>();
             _kernel.Bind<ISettingsManager>().To<SettingsManager>();
-            _kernel.Bind<IProfileRepository>().To<ProfileRepository>();
-            _kernel.Bind<IProfileGroupRepository>().To<ProfileGroupRepository>();
             _kernel.Bind<ILocationManager>().To<LocationManager>();
             _kernel.Bind<IOwnersRepository>().To<OwnersRepository>();
-            _kernel.Bind<IUserAgentRepository>().To<UserAgentRepository>();
             _kernel.Bind<IRegionRepository>().To<RegionRepository>();
             _kernel.Bind<IFilterManager>().To<FilterManager>();
             _kernel.Bind<IFilterRepository>().To<FilterRepository>();
@@ -97,23 +96,53 @@ namespace CCM.Web.Infrastructure
             _kernel.Bind<IStatisticsManager>().To<StatisticsManager>();
             _kernel.Bind<ICodecPresetRepository>().To<CodecPresetRepository>();
             _kernel.Bind<ILogRepository>().To<LogRepository>();
+
             _kernel.Bind<IGuiHubUpdater>().To<WebGuiHubUpdater>();
             _kernel.Bind<IStatusHubUpdater>().To<CodecStatusHubUpdater>();
-            _kernel.Bind<IKamailioMessageParser>().To<KamailioMessageParser>();
-            _kernel.Bind<ISipEventParser>().To<SipEventParser>();
-            _kernel.Bind<IKamailioDataParser>().To<KamailioDataParser>();
-            _kernel.Bind<ICallHistoryRepository>().To<CallHistoryRepository>();
+
             _kernel.Bind<IDiscoveryService>().To<DiscoveryService>();
             _kernel.Bind<ILocationInfoRepository>().To<LocationInfoRepository>();
             _kernel.Bind<IStudioRepository>().To<StudioRepository>();
+
+            // Managers
+            _kernel.Bind<IRegisteredSipsManager>().To<RegisteredSipsManager>();
+
+            // Registered user-agents and details
             _kernel.Bind<IRegisteredSipRepository>().To<CachedRegisteredSipRepository>();
             _kernel.Bind<IRegisteredSipRepository>().To<RegisteredSipRepository>().WhenInjectedInto<CachedRegisteredSipRepository>();
+            _kernel.Bind<IRegisteredSipDetailsRepository>().To<RegisteredSipDetailsRepository>();
+
             _kernel.Bind<ICallRepository>().To<CachedCallRepository>();
             _kernel.Bind<ICallRepository>().To<CallRepository>().WhenInjectedInto<CachedCallRepository>();
+
+            _kernel.Bind<ICallHistoryRepository>().To<CachedCallHistoryRepository>();
+            _kernel.Bind<ICallHistoryRepository>().To<CallHistoryRepository>().WhenInjectedInto<CachedCallHistoryRepository>();
+
+            _kernel.Bind<IUserAgentRepository>().To<CachedUserAgentRepository>();
+            _kernel.Bind<IUserAgentRepository>().To<UserAgentRepository>().WhenInjectedInto<CachedUserAgentRepository>();
+
             _kernel.Bind<ISettingsRepository>().To<CachedSettingsRepository>();
             _kernel.Bind<ISettingsRepository>().To<SettingsRepository>().WhenInjectedInto<CachedSettingsRepository>();
+
             _kernel.Bind<ILocationRepository>().To<CachedLocationRepository>();
             _kernel.Bind<ILocationRepository>().To<LocationRepository>().WhenInjectedInto<CachedLocationRepository>();
+
+            _kernel.Bind<IProfileRepository>().To<CachedProfileRepository>();
+            _kernel.Bind<IProfileRepository>().To<ProfileRepository>().WhenInjectedInto<CachedProfileRepository>();
+
+            _kernel.Bind<IProfileGroupRepository>().To<CachedProfileGroupRepository>();
+            _kernel.Bind<IProfileGroupRepository>().To<ProfileGroupRepository>().WhenInjectedInto<CachedProfileGroupRepository>();
+
+            _kernel.Bind<ISipAccountRepository>().To<CachedSipAccountRepository>();
+            _kernel.Bind<ISipAccountRepository>().To<SipAccountRepository>().WhenInjectedInto<CachedSipAccountRepository>();
+
+            _kernel.Bind<IPasswordGenerator>().To<PasswordGenerator>();
+            _kernel.Bind<IPasswordGeneratorConfigurationProvider>().To<PasswordGeneratorConfigurationProvider>();
+
+            _kernel.Bind<RegisteredUserAgentViewModelsProvider>().ToSelf();
+            _kernel.Bind<CodecStatusViewModelsProvider>().ToSelf();
+            _kernel.Bind<IPasswordGenerator>().To<PasswordGenerator>();
+            _kernel.Bind<IPasswordGeneratorConfigurationProvider>().To<PasswordGeneratorConfigurationProvider>();
         }
     }
 }
