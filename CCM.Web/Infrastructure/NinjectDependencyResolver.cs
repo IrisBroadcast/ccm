@@ -141,8 +141,6 @@ namespace CCM.Web.Infrastructure
 
             _kernel.Bind<RegisteredUserAgentViewModelsProvider>().ToSelf();
             _kernel.Bind<CodecStatusViewModelsProvider>().ToSelf();
-            _kernel.Bind<IPasswordGenerator>().To<PasswordGenerator>();
-            _kernel.Bind<IPasswordGeneratorConfigurationProvider>().To<PasswordGeneratorConfigurationProvider>();
         }
     }
 }
