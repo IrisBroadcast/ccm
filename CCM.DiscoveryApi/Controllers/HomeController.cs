@@ -40,7 +40,6 @@ namespace CCM.DiscoveryApi.Controllers
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             var buildDate = ApplicationSettings.BuildDate;
-            var deployServer = ApplicationSettings.Server;
             var html = @"<!DOCTYPE html>
                 <html>
                 <head>
