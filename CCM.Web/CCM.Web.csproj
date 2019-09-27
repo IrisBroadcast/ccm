@@ -261,6 +261,7 @@
     <Compile Include="Authentication\ApiAuthorizeAttribute.cs" />
     <Compile Include="Authentication\CcmApiAuthorizeAttribute.cs" />
     <Compile Include="Controllers\ApiExternal\CodecInformationController.cs" />
+    <Compile Include="Controllers\ApiExternal\HealthController.cs" />
     <Compile Include="Controllers\ApiExternal\PasswordGeneratorController.cs" />
     <Compile Include="Infrastructure\WarnFilterAttribute.cs" />
     <Compile Include="Infrastructure\CertificateHelper.cs" />
