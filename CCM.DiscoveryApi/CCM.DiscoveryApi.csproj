@@ -106,6 +106,7 @@
     <Compile Include="Controllers\DiscoveryV2Controller.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controllers\HealthController.cs" />
     <Compile Include="Models\DiscoveryV2Models\Filters\FilterV2.cs" />
     <Compile Include="Models\DiscoveryV2Models\Filters\FilterOptionV2.cs" />
     <Compile Include="Models\DiscoveryV2Models\Profiles\ProfileDtoV2.cs" />
