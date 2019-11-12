@@ -32,14 +32,14 @@ namespace CCM.Core.Entities
             string sipAddress,
             string ip,
             string api,
-            string gpoNames,
+            string userAgent,
             int nrOfInputs,
             int nrOfGpos)
         {
             SipAddress = sipAddress;
             Ip = ip;
             Api = api;
-            GpoNames = gpoNames;
+            UserAgent = userAgent;
             NrOfInputs = nrOfInputs;
             NrOfGpos = nrOfGpos;
         }
@@ -47,7 +47,7 @@ namespace CCM.Core.Entities
         public string SipAddress { get; }
         public string Ip { get; }
         public string Api { get; }
-        public string GpoNames { get; }
+        public string UserAgent { get; }
         public int NrOfInputs { get; }
         public int NrOfGpos { get; }
     }

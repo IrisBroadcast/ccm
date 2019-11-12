@@ -68,8 +68,11 @@ namespace CCM.Web.Controllers.ApiExternal
                     sipAddress: sipAddress,
                     ip: null,
                     api: null,
-                    gpoNames: null,
+                    userAgent: null,
                     nrOfInputs: 0,
+                    nrOfOutputs: 0,
+                    nrOfHeadphones: 0,
+                    nrOfGpis:0,
                     nrOfGpos: 0);
             }
 

@@ -36,15 +36,21 @@ namespace CCM.Web.Models.ApiExternal
             string sipAddress,
             string ip,
             string api,
-            string gpoNames,
+            string userAgent,
             int nrOfInputs,
+            int nrOfOutputs,
+            int nrOfHeadphones,
+            int nrOfGpis,
             int nrOfGpos)
         {
             SipAddress = sipAddress;
             Ip = ip;
             Api = api;
-            GpoNames = gpoNames;
+            UserAgent = userAgent; 
             NrOfInputs = nrOfInputs;
+            NrOfOutputs = nrOfOutputs;
+            NrOfHeadphones = nrOfHeadphones;
+            NrOfGpis = nrOfGpis;
             NrOfGpos = nrOfGpos;
         }
 
@@ -58,10 +64,22 @@ namespace CCM.Web.Models.ApiExternal
         public string Api { get; protected set; }
 
         [DataMember]
-        public string GpoNames { get; protected set; }
+        public string UserAgent { get; protected set; }
+
+        //[DataMember]
+        //public string GpoNames { get; protected set; } // TODO: Remove this from database columns as well.. 
 
         [DataMember]
         public int NrOfInputs { get; protected set; }
+
+        [DataMember]
+        public int NrOfOutputs { get; protected set; }
+
+        [DataMember]
+        public int NrOfHeadphones { get; protected set; }
+
+        [DataMember]
+        public int NrOfGpis { get; protected set; }
 
         [DataMember]
         public int NrOfGpos { get; protected set; }

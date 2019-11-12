@@ -500,6 +500,7 @@ namespace CCM.Data.Repositories
                                 Sip = x.SIP,
                                 Ip = x.IP,
                                 UserAgentApi = x.UserAgent.Api,
+                                UserAgentRaw = x.UserAgentHeader,
                                 UserAgentGpoNames = x.UserAgent.GpoNames,
                                 UserAgentInputs = x.UserAgent.Inputs,
                                 UserAgentNrOfGpos = x.UserAgent.NrOfGpos
@@ -518,7 +519,7 @@ namespace CCM.Data.Repositories
                             sipAddress: x.Sip,
                             ip: x.Ip,
                             api: x.UserAgentApi,
-                            gpoNames: x.UserAgentGpoNames,
+                            userAgent: x.UserAgentRaw,
                             nrOfInputs: x.UserAgentInputs,
                             nrOfGpos: x.UserAgentNrOfGpos);
                     }).ToList();

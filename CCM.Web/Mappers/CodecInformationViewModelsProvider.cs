@@ -22,12 +22,16 @@ namespace CCM.Web.Mappers
 
             return registeredUserAgents.Select(x =>
             {
+                // TODO: This one gives not right information, Headphones, Outputs and GPI's
                 return new CodecInformationViewModel(
                     sipAddress: x.SipAddress,
                     ip: x.Ip,
                     api: x.Api,
-                    gpoNames: x.GpoNames,
+                    userAgent: x.UserAgent,
                     nrOfInputs: x.NrOfInputs,
+                    nrOfOutputs: 2,
+                    nrOfHeadphones: x.NrOfInputs,
+                    nrOfGpis: x.NrOfGpos,
                     nrOfGpos: x.NrOfGpos);
             }).ToList();
 
