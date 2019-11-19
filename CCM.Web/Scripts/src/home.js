@@ -165,6 +165,10 @@ ccmApp.directive('vuMeter', function () {
     };
 });
 
+ccmApp.component("loadingOverlay", {
+    template: "<div class='overlay'><div class = 'spinner'/></div>"
+});
+
 var ccmControllers = angular.module('ccmControllers', []);
 
 /* *******************************************************

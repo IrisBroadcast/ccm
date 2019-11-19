@@ -64,22 +64,6 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             });
     };
 
-    /*$scope.startAudioStatus = function () {
-        if (angular.isDefined(audioStatusUpdateHandle)) return;
-
-        audioStatusUpdateHandle = $interval(function () {
-            $scope.getAudioStatus();
-        },
-        audioStatusUpdateInterval);
-    };
-
-    $scope.stopAudioStatus = function () {
-        if (angular.isDefined(audioStatusUpdateHandle)) {
-            $interval.cancel(audioStatusUpdateHandle);
-            audioStatusUpdateHandle = undefined;
-        }
-    };*/
-
     $scope.startAudioUpdateHub = function () {
         $scope.signalrConnection = new signalR.HubConnectionBuilder()
             .withUrl($scope.codecControlHost + "/audioStatusHub")
@@ -163,8 +147,6 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
     };
 
     $scope.updateAudioStatus = function (audioStatus) {
-        $scope.codecMeteringAvailable = true;
-
         for (var i = 0; i < audioStatus.inputStatus.length; i++) {
             $scope.setInputValue(audioStatus.inputStatus[i]);
         }
@@ -184,6 +166,8 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             $scope.rxL = fallback($scope.rxL, convertVuToPercentage(audioStatus.vuValues.rxLeft));
             $scope.rxR = fallback($scope.rxR, convertVuToPercentage(audioStatus.vuValues.rxRight));
         });
+
+        $scope.codecMeteringAvailable = true;
     };
 
     $scope.setInputValue = function (inputStatus) {

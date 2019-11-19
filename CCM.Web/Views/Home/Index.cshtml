@@ -403,75 +403,81 @@
                 </ul>
 
                 <div class="tab-content">
-
                     <div class="tab-pane active" id="inputtab">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="ccm-ui-popmixer--unit" ng-repeat="input in inputs track by input.id">
-                                    <div class="widgets">
-                                        <div class="level-gain">
-                                            <div class="db-value">
-                                                {{input.value}}
-                                                <!--<progress class="db-control" max="{{ info.InputMaxDb - info.InputMinDb }}" min="0" value="{{ input.value - info.InputMinDb }}"></progress>-->
-                                            </div>
-                                            <div class="db-range-control">
-                                                <!--<input type="range" name="range" class="ccm-ui-mixer--slider" ng-model="input.changeValue" ng-mousedown="input.interactingValue=true" ng-mouseup="rangeSetInputTo(input, input.changeValue)" min="{{info.InputMinDb}}" max="{{info.InputMaxDb}}">-->
-                                            </div>
-                                            <div class="row db-control">
-                                                <button class="btn btn-default" ng-click="setGainLevel(input, -1)">
-                                                    <!--<span class="value">-</span>-->
-                                                    <svg version="1.1" id="Minus" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                                         width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
-                                                        <path id="Line_Minus_1" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M5,24h38" />
-                                                    </svg>
-                                                </button>
+                        <div class="overlay-container">
+                            <loading-overlay ng-hide="codecMeteringAvailable" />
+                            <div ng-style="{ visibility : codecMeteringAvailable ? 'visible': 'hidden'}">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="ccm-ui-popmixer--unit" ng-repeat="input in inputs track by input.id">
+                                            <div class="widgets">
+                                                <div class="level-gain">
+                                                    <div class="db-value">
+                                                        {{input.value}}
+                                                        <!--<progress class="db-control" max="{{ info.InputMaxDb - info.InputMinDb }}" min="0" value="{{ input.value - info.InputMinDb }}"></progress>-->
+                                                    </div>
+                                                    <div class="db-range-control">
+                                                        <!--<input type="range" name="range" class="ccm-ui-mixer--slider" ng-model="input.changeValue" ng-mousedown="input.interactingValue=true" ng-mouseup="rangeSetInputTo(input, input.changeValue)" min="{{info.InputMinDb}}" max="{{info.InputMaxDb}}">-->
+                                                    </div>
+                                                    <div class="row db-control">
+                                                        <button class="btn btn-default" ng-click="setGainLevel(input, -1)">
+                                                            <!--<span class="value">-</span>-->
+                                                            <svg version="1.1" id="Minus" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                                                 width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+                                                            <path id="Line_Minus_1" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M5,24h38" />
 
-                                                <button class="btn btn-default" ng-click="setGainLevel(input, 1)">
-                                                    <!--<span class="value">+</span>-->
-                                                    <svg version="1.1" id="Plus" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                                         width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
-                                                        <path id="Line_Plus_1" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M24,5l0,38" />
-                                                        <path id="Line_Plus_2" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M5,24h38" />
-                                                    </svg>
-                                                </button>
+                                                            </svg>
+                                                        </button>
+                                                        <button class="btn btn-default" ng-click="setGainLevel(input, 1)">
+                                                            <!--<span class="value">+</span>-->
+                                                            <svg version="1.1" id="Plus" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                                                 width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+                                                            <path id="Line_Plus_1" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M24,5l0,38" />
+
+                                                            <path id="Line_Plus_2" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M5,24h38" />
+
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            <button class="btn mixer-input-toggle"
+                                                    ng-class="{'btn-primary': input.enabled == true && !input.disabled, 'btn-default': input.enabled == false && !input.disabled }"
+                                                    ng-disabled="input.disabled"
+                                                    ng-click="toggleInputEnabled(input)">
+                                                ON {{input.number}}
+                                            </button>
                                         </div>
                                     </div>
-                                    <button class="btn mixer-input-toggle"
-                                            ng-class="{'btn-primary': input.enabled == true && !input.disabled, 'btn-default': input.enabled == false && !input.disabled }"
-                                            ng-disabled="input.disabled"
-                                            ng-click="toggleInputEnabled(input)">
-                                        ON {{input.number}}
-                                    </button>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <hr />
-                        </div>
-
-                        <div class="row">
-                            <div class="ccm-ui-popmixer--unit-vu--feedback" ng-hide="codecMeteringAvailable">
-                                <h3>@Resources.Codec_Error_No_Audio_Metering_Status_Available</h3>
-                            </div>
-                            <div ng-show="codecMeteringAvailable" class="ccm-ui-popmixer--unit-vu col-md-12">
-                                <div class="vu-group vu-group--left">
-                                    <vu-meter level="rxL"></vu-meter>
-                                    <vu-meter level="rxR"></vu-meter>
+                                <div class="row">
+                                    <hr />
                                 </div>
-                                <div class="vu-group vu-group--right">
-                                    <vu-meter level="txL"></vu-meter>
-                                    <vu-meter level="txR"></vu-meter>
-                                </div>
-                            </div>
 
-                            <div class="ccm-ui-popmixer--unit-gpo col-md-12">
-                                <button ng-repeat="gpo in gpos" class="btn gpo"
-                                        ng-class="{'btn-success': gpo.active == true, 'btn-default': gpo.active == false }"
-                                        ng-click="setGpo(gpo)">
-                                    {{gpo.name}}
-                                </button>
+                                <div class="row">
+                                    <div class="ccm-ui-popmixer--unit-vu--feedback" ng-hide="codecMeteringAvailable">
+                                        <h3>@Resources.Codec_Error_No_Audio_Metering_Status_Available</h3>
+                                    </div>
+                                    <div ng-show="codecMeteringAvailable" class="ccm-ui-popmixer--unit-vu col-md-12">
+                                        <div class="vu-group vu-group--left">
+                                            <vu-meter level="rxL"></vu-meter>
+                                            <vu-meter level="rxR"></vu-meter>
+                                        </div>
+                                        <div class="vu-group vu-group--right">
+                                            <vu-meter level="txL"></vu-meter>
+                                            <vu-meter level="txR"></vu-meter>
+                                        </div>
+                                    </div>
+
+                                    <div class="ccm-ui-popmixer--unit-gpo col-md-12">
+                                        <button ng-repeat="gpo in gpos" class="btn gpo"
+                                                ng-class="{'btn-success': gpo.active == true, 'btn-default': gpo.active == false }"
+                                                ng-click="setGpo(gpo)">
+                                            {{gpo.name}}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
