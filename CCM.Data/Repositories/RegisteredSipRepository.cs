@@ -246,6 +246,12 @@ namespace CCM.Data.Repositories
             changedProperties.Remove(nameof(entry.Entity.ServerTimeStamp));
             changedProperties.Remove(nameof(entry.Entity.Expires));
 
+            foreach (var props in changedProperties)
+            {
+                log.Debug($"Relevant {entry.Entity.SIP} changes: {props.ToString()}");   
+            }
+
+
             return changedProperties.Any();
         }
 
