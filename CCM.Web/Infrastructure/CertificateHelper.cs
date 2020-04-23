@@ -67,7 +67,7 @@ namespace CCM.Web.Infrastructure
                 return false;
             }
 
-            log.Info("Accepting request to {0} although certificate name mismatch", request.Address);
+            log.Debug("Accepting request to {0} although certificate name mismatch", request.Address);
             return true;
         }
     }

@@ -63,13 +63,13 @@ namespace CCM.Web.Infrastructure.SignalR
 
                 if (callInfo != null)
                 {
-                    log.Debug($"CodecStatusHub. Call started. From: {callInfo.FromId}, To: {callInfo.ToId}");
+                    log.Debug($"CodecStatusHub. Call started. From:{callInfo.FromId}, To:{callInfo.ToId}");
                     UpdateCodecStatusByGuid(callInfo.FromId);
                     UpdateCodecStatusByGuid(callInfo.ToId);
                 }
                 else
                 {
-                    log.Error($"CodecStatusHub. Call started but was not found in database. Call Id: {callId}");
+                    log.Error($"CodecStatusHub. Call started but was not found in database. Call Id:{callId}");
                 }
             }
 
@@ -81,13 +81,13 @@ namespace CCM.Web.Infrastructure.SignalR
 
                 if (call != null)
                 {
-                    log.Debug($"CodecStatusHub. Call closed. From: {call.FromId}, To: {call.ToId}, Call Id: {callId}");
+                    log.Debug($"CodecStatusHub. Call closed. From:{call.FromId}, to:{call.ToId}, call id:{callId}");
                     UpdateCodecStatusByGuid(call.FromId);
                     UpdateCodecStatusByGuid(call.ToId);
                 }
                 else
                 {
-                    log.Error($"CodecStatusHub. Call closed but was not found in call history. Call Id: {callId}");
+                    log.Error($"CodecStatusHub. Call closed but was not found in call history. Call id:{callId}");
                 }
             }
 
@@ -111,7 +111,7 @@ namespace CCM.Web.Infrastructure.SignalR
                 CodecStatusHub.UpdateCodecStatusRemoved(codecStatus);
             }
 
-            log.Debug($"CodecStatusHub. Status: {updateResult.ChangeStatus}, Id: {updateResult.ChangedObjectId}, SipAddress: {updateResult.SipAddress}");
+            log.Debug($"CodecStatusHub. Status:{updateResult.ChangeStatus}, id:{updateResult.ChangedObjectId}, sip address:{updateResult.SipAddress}");
         }
 
         private void UpdateCodecStatusByGuid(Guid id)

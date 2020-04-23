@@ -115,7 +115,7 @@ namespace CCM.Core.SipEvent
                 Call codecCall = _callRepository.GetCallBySipAddress(sipAddress);
                 if (codecCall != null)
                 {
-                    log.Info($"Unregistrating codec but it's in a call {sipAddress}");
+                    log.Warn($"Unregistrating codec but it's in a call {sipAddress}");
                 }
             }
             return _sipRepository.DeleteRegisteredSip(sipAddress);
@@ -134,27 +134,28 @@ namespace CCM.Core.SipEvent
                 case DialogStatus.End:
                     // TODO: Check hangup reason. Only close calls where reason = Normal
                     // TODO: Handle timeout message and add warning to call but don't end it
-                    log.Info("Received End command from Kamailio. HangUp reason: {0}, From: {1}, To: {2}", sipDialogMessage.HangupReason, sipDialogMessage.FromSipUri, sipDialogMessage.ToSipUri);
+                    log.Info("Received End command from Kamailio. HangUp reason:{0}, from:{1}, to:{2}", sipDialogMessage.HangupReason, sipDialogMessage.FromSipUri, sipDialogMessage.ToSipUri);
                     return CloseCall(sipDialogMessage);
                 case DialogStatus.SingleBye:
                     // If BYE in kamailio and no dialog is in Kamailio, a single bye is sent to CCM
                     // TODO: Handle single bye message and close call
-                    log.Info("Received SingleBye command from Kamailio. HangUp reason: {0}, From: {1}, To: {2}", sipDialogMessage.HangupReason, sipDialogMessage.FromSipUri, sipDialogMessage.ToSipUri);
+                    log.Info("Received SingleBye command from Kamailio. HangUp reason:{0}, from:{1}, to:{2}", sipDialogMessage.HangupReason, sipDialogMessage.FromSipUri, sipDialogMessage.ToSipUri);
                     return NothingChangedResult;
                 default:
+                    log.Debug("Received no DialogStatus from:{0}, to:{1}", sipDialogMessage.FromSipUri, sipDialogMessage.ToSipUri);
                     return NothingChangedResult;
             }
         }
 
         public SipEventHandlerResult RegisterCall(SipDialogMessage sipMessage)
         {
-            log.Debug("Register call from {0} to {1}, call id \"{2}\", hash id:\"{3}\", hash entry:\"{4}\"",
+            log.Debug("Register call from:{0} to:{1}, call id:{2}, hash id:{3}, hash entry:{4}",
                 sipMessage.FromSipUri.UserAtHost, sipMessage.ToSipUri.UserAtHost, sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
 
             if (_callRepository.CallExists(sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry))
             {
                 // TODO: Find out what HashId and HashEntry is and if they are both needed
-                log.Debug("Call with id {0}, hash id:{1}, hash entry:{2} already exists", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
+                log.Debug("Call with id:{0}, hash id:{1}, hash entry:{2} already exists", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
                 return NothingChangedResult;
             }
 
@@ -185,12 +186,12 @@ namespace CCM.Core.SipEvent
             call.IsPhoneCall = sipMessage.FromSipUri.User.IsNumeric() || sipMessage.ToSipUri.User.IsNumeric();
 
             _callRepository.UpdateCall(call);
-            return SipMessageResult(SipEventChangeStatus.CallStarted, call.Id);
+            return SipMessageResult(SipEventChangeStatus.CallStarted, call.Id, call.FromSip);
         }
 
         public SipEventHandlerResult CloseCall(SipDialogMessage sipMessage)
         {
-            log.Debug("Closing call with id:\"{0}\", hash id:\"{1}\", hash entry:\"{2}\"", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
+            log.Debug("Closing call with id:{0}, hash id:{1}, hash entry:{2}, from:{3}, to:{4}", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry, sipMessage.FromSipUri, sipMessage.ToSipUri);
 
             try
             {
@@ -198,22 +199,22 @@ namespace CCM.Core.SipEvent
 
                 if (call == null)
                 {
-                    log.Warn("Unable to find call with call id: {0}, hash id:{1}, hash entry:{2}", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
+                    log.Warn("Unable to find call with call id:{0}, hash id:{1}, hash entry:{2}", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
                     return NothingChangedResult;
                 }
 
                 if (call.Closed)
                 {
-                    log.Warn("Call with call id: {0} already closed", sipMessage.CallId);
+                    log.Warn("Call with call id:{0} already closed", sipMessage.CallId);
                     return NothingChangedResult;
                 }
 
                 _callRepository.CloseCall(call.Id);
-                return SipMessageResult(SipEventChangeStatus.CallClosed, call.Id);
+                return SipMessageResult(SipEventChangeStatus.CallClosed, call.Id, call.FromSipAddress);
             }
             catch (Exception ex)
             {
-                log.Error(ex, "Error while closing call with call id: {0}", sipMessage.CallId);
+                log.Error(ex, "Error while closing call with call id:{0}", sipMessage.CallId);
                 return NothingChangedResult;
             }
         }
@@ -221,6 +222,7 @@ namespace CCM.Core.SipEvent
         private SipEventHandlerResult NothingChangedResult => SipMessageResult(SipEventChangeStatus.NothingChanged);
         private SipEventHandlerResult SipMessageResult(SipEventChangeStatus status) { return new SipEventHandlerResult() { ChangeStatus = status }; }
         private SipEventHandlerResult SipMessageResult(SipEventChangeStatus status, Guid id) { return new SipEventHandlerResult() { ChangeStatus = status, ChangedObjectId = id }; }
+        private SipEventHandlerResult SipMessageResult(SipEventChangeStatus status, Guid id, string sipAddress) { return new SipEventHandlerResult() { ChangeStatus = status, ChangedObjectId = id, SipAddress = sipAddress }; }
 
     }
 }

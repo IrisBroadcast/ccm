@@ -36,7 +36,7 @@ namespace CCM.Core.SipEvent
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", ChangeStatus, ChangedObjectId);
+            return string.Format("Change status:{0}, changed object id:{1}, sip address:{2}", ChangeStatus, ChangedObjectId, SipAddress);
         }
 
         public static SipEventHandlerResult NothingChanged => new SipEventHandlerResult { ChangeStatus = SipEventChangeStatus.NothingChanged };

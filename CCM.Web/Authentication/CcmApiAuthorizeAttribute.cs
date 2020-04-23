@@ -36,7 +36,7 @@ namespace CCM.Web.Authentication
 
         public override void OnAuthorization(HttpActionContext actionContext)
         {
-            log.Info("Authorization");
+            log.Debug("Authorization CCM Api");
 
             if (!IsAuthorized(actionContext))
             {
@@ -48,11 +48,11 @@ namespace CCM.Web.Authentication
         {
             if (!actionContext.RequestContext.Principal.Identity.IsAuthenticated)
             {
-                log.Info("Authorization failed because user is not authenticated");
+                log.Warn("Authorization CCM Api failed because user is not authenticated");
                 return false;
             }
 
-            log.Info("Attribute roles: {0}", Roles);
+            log.Debug("Attribute CCM Api roles: {0}", Roles);
 
             if (Roles.Length > 0)
             {
@@ -61,12 +61,12 @@ namespace CCM.Web.Authentication
                 {
                     if (actionContext.RequestContext.Principal.IsInRole(role.Trim()))
                     {
-                        log.Info("User {0} is in role {1}", actionContext.RequestContext.Principal.Identity.Name, role);
+                        log.Debug("User {0} is in role {1}", actionContext.RequestContext.Principal.Identity.Name, role);
                         return true;
                     }
                     else
                     {
-                        log.Info("User {0} is NOT in role {1}", actionContext.RequestContext.Principal.Identity.Name, role);
+                        log.Debug("User {0} is NOT in role {1}", actionContext.RequestContext.Principal.Identity.Name, role);
                     }
                 }
                 return false;

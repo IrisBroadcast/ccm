@@ -107,7 +107,11 @@ namespace CCM.Web.Controllers.ApiRegistrar
 
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug("SIP message, Handled: {0}, Parsed: {1}, Result: {2}", sipEvent.ToLogString(), sipMessage.ToDebugString(), result?.ChangeStatus);
+                    log.Debug("SIP message, Handled: {0}, Parsed: {1}, ChangeStatus:{2}", sipEvent.ToLogString(), sipMessage.ToDebugString(), result?.ChangeStatus);
+                }
+                else if (result.ChangeStatus == SipEventChangeStatus.CallStarted || result.ChangeStatus == SipEventChangeStatus.CallClosed)
+                {
+                    log.Debug("SIP message, Handled: {0}, Parsed: {1}, ChangeStatus:{2}", sipEvent.ToLogString(), sipMessage.ToDebugString(), result?.ChangeStatus);
                 }
 
                 if (result == null)
