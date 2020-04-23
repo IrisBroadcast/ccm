@@ -108,6 +108,7 @@ namespace CCM.Core.SipEvent.Parser
                 ToSipUri = new SipUri(kamailioData.RequestUri), //new SipUri(kamailioData.ToUri),
                 FromTag = kamailioData.FromTag,
                 ToTag = kamailioData.ToTag,
+                HangupReason = kamailioData.HangupReason
             };
 
             return dialog;
