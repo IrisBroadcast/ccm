@@ -66,10 +66,10 @@ namespace CCM.Core.Cache
             return _lazyCache.GetOrAddCallHistory(() => _internalRepository.GetOldCalls(callCount, anonymize));
         }
 
-        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount)
+        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount, bool limitByMonth)
         {
             return _internalRepository.GetOldCallsFiltered(region, codecType, sipAddress, searchString, anonymize,
-                onlyPhoneCalls, callCount);
+                onlyPhoneCalls, callCount, limitByMonth);
         }
 
         public IList<CallHistory> GetCallHistoriesByDate(DateTime startTime, DateTime endTime)

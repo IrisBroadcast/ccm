@@ -499,13 +499,33 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
         $scope.refreshOld();
     }
 
+    // Borrowed from: https://davidwalsh.name/javascript-debounce-function
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
+    var refreshOldFilteredDebounce = debounce(function() {
+        $scope.refreshOldFiltered();
+    }, 800);
+
     $scope.$watch('codecType',
         function(newValue, oldValue) {
             if (newValue === oldValue) {
                 return;
             }
             console.log('Codec type changed', $scope.codecType);
-            $scope.refreshOldFiltered();
+            refreshOldFilteredDebounce();
         });
 
     $scope.$watch('region',
@@ -514,7 +534,7 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
                 return;
             }
             console.log('Region changed', $scope.region);
-            $scope.refreshOldFiltered();
+            refreshOldFilteredDebounce();
         });
 
     $scope.$watch('searchString',
@@ -523,7 +543,7 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
                 return;
             }
             console.log('Search string changed', $scope.searchString);
-            $scope.refreshOldFiltered();
+            refreshOldFilteredDebounce();
         });
 
     $scope.searchKeyUp = function(keyCode) {
@@ -532,7 +552,7 @@ ccmControllers.controller('overviewController', function($scope, $http, $interva
             $scope.searchString = "";
         }
     };
-
+    
     // Night-mode, full-overview , shift + i = 73, ctrl + i = 9
     $scope.uiStateNightmode = false;
     $scope.keyPressed = function(e) {

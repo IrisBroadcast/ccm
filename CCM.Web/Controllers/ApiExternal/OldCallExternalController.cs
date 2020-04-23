@@ -47,7 +47,7 @@ namespace CCM.Web.Controllers.ApiExternal
         public IList<OldCall> Get(string region = "", string codecType = "", string sipAddress = "", string search = "", bool onlyPhoneCalls = false, int callCount = 20)
         {
             // TODO: Remove when world domination is achievied in the NG project
-            var oldCalls = _callHistoryRepository.GetOldCallsFiltered(region, codecType, sipAddress, search, false, onlyPhoneCalls, callCount);
+            var oldCalls = _callHistoryRepository.GetOldCallsFiltered(region, codecType, sipAddress, search, false, onlyPhoneCalls, callCount, true);
             return oldCalls;
         }
     }

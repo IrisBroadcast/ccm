@@ -49,7 +49,7 @@ namespace CCM.Web.Controllers.Api
 
         public IList<OldCall> Get(string region = "", string codecType = "", string search = "")
         {
-            var oldCalls = _callHistoryRepository.GetOldCallsFiltered(region, codecType, "", search, true, false, _settingsManager.LatestCallCount);
+            var oldCalls = _callHistoryRepository.GetOldCallsFiltered(region, codecType, "", search, true, false, _settingsManager.LatestCallCount, true);
             return oldCalls;
         }
     }

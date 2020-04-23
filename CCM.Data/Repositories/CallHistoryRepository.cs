@@ -146,7 +146,7 @@ namespace CCM.Data.Repositories
             }
         }
 
-        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount)
+        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount, bool limitByMonth)
         {
             using (var db = GetDbContext())
             {
@@ -186,6 +186,12 @@ namespace CCM.Data.Repositories
                         ch.FromUsername.Contains(searchString) ||
                         ch.ToUsername.Contains(searchString)
                     );
+                }
+
+                if (limitByMonth)
+                {
+                    var monthLimit = DateTime.Today.AddMonths(-1);
+                    query = query.Where(ch => ch.Ended >= monthLimit);
                 }
 
                 var dbCalls = query.OrderByDescending(callHistory => callHistory.Ended).Take(callCount).ToList();
