@@ -84,7 +84,7 @@ namespace CCM.Core.Helpers
                 if (username.Length <= 6)
                 {
                     // Internal short phone number
-                    return username;
+                    return s;
                 }
 
                 return Resources.External_Phone_Number;
@@ -109,7 +109,8 @@ namespace CCM.Core.Helpers
                 if (username.Length <= 6)
                 {
                     // Internal short phone number
-                    return string.Format("Ank {0}", username);
+                    return s;
+                    //return string.Format("Ank {0}", username);
                     // TODO: Resourcify so that it becomes international
                 }
 
