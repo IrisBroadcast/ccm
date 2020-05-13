@@ -166,13 +166,13 @@ namespace CCM.Core.SipEvent
             // can be of the numeric kind)
             //var fromSip = sipMessage.FromSipUri.User.IsNumeric() ? sipMessage.FromSipUri.User : sipMessage.FromSipUri.UserAtHost;
             var from = _sipRepository.GetRegisteredUserAgents().SingleOrDefault(x => x.SipUri == sipMessage.FromSipUri.UserAtHost);
-            call.FromSip = (!from && sipMessage.FromSipUri.User.IsNumeric() ? sipMessage.FromSipUri.User : sipMessage.FromSipUri.UserAtHost);
+            call.FromSip = (from?.Id == null && sipMessage.FromSipUri.User.IsNumeric() ? sipMessage.FromSipUri.User : sipMessage.FromSipUri.UserAtHost);
             call.FromDisplayName = sipMessage.FromDisplayName;
             call.FromId = from?.Id ?? Guid.Empty;
 
             //var toSip = sipMessage.ToSipUri.User.IsNumeric() ? sipMessage.ToSipUri.User : sipMessage.ToSipUri.UserAtHost;
             var to = _sipRepository.GetRegisteredUserAgents().SingleOrDefault(x => x.SipUri == sipMessage.ToSipUri.UserAtHost);
-            call.ToSip = (!to && sipMessage.ToSipUri.User.IsNumeric() ? sipMessage.ToSipUri.User : sipMessage.ToSipUri.UserAtHost);
+            call.ToSip = (to?.Id == null && sipMessage.ToSipUri.User.IsNumeric() ? sipMessage.ToSipUri.User : sipMessage.ToSipUri.UserAtHost);
             call.ToDisplayName = sipMessage.ToDisplayName;
             call.ToId = to?.Id ?? Guid.Empty;
 
