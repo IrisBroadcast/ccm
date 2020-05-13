@@ -164,15 +164,15 @@ namespace CCM.Core.SipEvent
             // If the user-part is numeric, we make the assumption
             // that it is a phone number (even though sip-address
             // can be of the numeric kind)
-            var fromSip = sipMessage.FromSipUri.User.IsNumeric() ? sipMessage.FromSipUri.User : sipMessage.FromSipUri.UserAtHost;
-            var from = _sipRepository.GetRegisteredUserAgents().SingleOrDefault(x => x.SipUri == fromSip);
-            call.FromSip = fromSip;
+            //var fromSip = sipMessage.FromSipUri.User.IsNumeric() ? sipMessage.FromSipUri.User : sipMessage.FromSipUri.UserAtHost;
+            var from = _sipRepository.GetRegisteredUserAgents().SingleOrDefault(x => x.SipUri == sipMessage.FromSipUri.UserAtHost);
+            call.FromSip = (!from && sipMessage.FromSipUri.User.IsNumeric() ? sipMessage.FromSipUri.User : sipMessage.FromSipUri.UserAtHost);
             call.FromDisplayName = sipMessage.FromDisplayName;
             call.FromId = from?.Id ?? Guid.Empty;
 
-            var toSip = sipMessage.ToSipUri.User.IsNumeric() ? sipMessage.ToSipUri.User : sipMessage.ToSipUri.UserAtHost;
-            var to = _sipRepository.GetRegisteredUserAgents().SingleOrDefault(x => x.SipUri == toSip);
-            call.ToSip = toSip;
+            //var toSip = sipMessage.ToSipUri.User.IsNumeric() ? sipMessage.ToSipUri.User : sipMessage.ToSipUri.UserAtHost;
+            var to = _sipRepository.GetRegisteredUserAgents().SingleOrDefault(x => x.SipUri == sipMessage.ToSipUri.UserAtHost);
+            call.ToSip = (!to && sipMessage.ToSipUri.User.IsNumeric() ? sipMessage.ToSipUri.User : sipMessage.ToSipUri.UserAtHost);
             call.ToDisplayName = sipMessage.ToDisplayName;
             call.ToId = to?.Id ?? Guid.Empty;
 
