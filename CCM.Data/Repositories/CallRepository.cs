@@ -245,21 +245,21 @@ namespace CCM.Data.Repositories
                 FromId = GuidHelper.GuidString(dbCall.FromId),
                 FromSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.FromUsername) : dbCall.FromUsername,
                 FromDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(fromDisplayName) : fromDisplayName,
-                FromCodecTypeColor = dbCall.FromSip != null && dbCall.FromSip.User != null && dbCall.FromSip.User.CodecType != null ? dbCall.FromSip.User.CodecType.Color : string.Empty,
-                FromCodecTypeName = dbCall.FromSip != null && dbCall.FromSip.User != null && dbCall.FromSip.User.CodecType != null ? dbCall.FromSip.User.CodecType.Name : string.Empty,
-                FromComment = dbCall.FromSip != null && dbCall.FromSip.User != null ? dbCall.FromSip.User.Comment : string.Empty,
-                FromLocationName = dbCall.FromSip != null && dbCall.FromSip.Location != null ? dbCall.FromSip.Location.Name : string.Empty,
-                FromLocationShortName = dbCall.FromSip != null && dbCall.FromSip.Location != null ? dbCall.FromSip.Location.ShortName : string.Empty,
-                FromRegionName = dbCall.FromSip != null && dbCall.FromSip.Location != null && dbCall.FromSip.Location.Region != null ? dbCall.FromSip.Location.Region.Name : string.Empty,
+                FromCodecTypeColor = dbCall.FromSip?.User?.CodecType?.Color ?? string.Empty,
+                FromCodecTypeName = dbCall.FromSip?.User?.CodecType?.Name ?? string.Empty,
+                FromComment = dbCall.FromSip?.User?.Comment ?? string.Empty,
+                FromLocationName = dbCall.FromSip?.Location?.Name ?? string.Empty,
+                FromLocationShortName = dbCall.FromSip?.Location?.ShortName ?? string.Empty,
+                FromRegionName = dbCall.FromSip?.Location?.Region?.Name ?? string.Empty,
                 ToId = GuidHelper.GuidString(dbCall.ToId),
                 ToSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.ToUsername) : dbCall.ToUsername,
                 ToDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(toDisplayName) : toDisplayName,
-                ToCodecTypeColor = dbCall.ToSip != null && dbCall.ToSip.User != null && dbCall.ToSip.User.CodecType != null ? dbCall.ToSip.User.CodecType.Color : string.Empty,
-                ToCodecTypeName = dbCall.ToSip != null && dbCall.ToSip.User != null && dbCall.ToSip.User.CodecType != null ? dbCall.ToSip.User.CodecType.Name : string.Empty,
-                ToComment = dbCall.ToSip != null && dbCall.ToSip.User != null ? dbCall.ToSip.User.Comment : string.Empty,
-                ToLocationName = dbCall.ToSip != null && dbCall.ToSip.Location != null ? dbCall.ToSip.Location.Name : string.Empty,
-                ToLocationShortName = dbCall.ToSip != null && dbCall.ToSip.Location != null ? dbCall.ToSip.Location.ShortName : string.Empty,
-                ToRegionName = dbCall.ToSip != null && dbCall.ToSip.Location != null && dbCall.ToSip.Location.Region != null ? dbCall.ToSip.Location.Region.Name : string.Empty
+                ToCodecTypeColor = dbCall.ToSip?.User?.CodecType?.Color ?? string.Empty,
+                ToCodecTypeName = dbCall.ToSip?.User?.CodecType?.Name ?? string.Empty,
+                ToComment = dbCall.ToSip?.User?.Comment ?? string.Empty,
+                ToLocationName = dbCall.ToSip?.Location?.Name ?? string.Empty,
+                ToLocationShortName = dbCall.ToSip?.Location?.ShortName ?? string.Empty,
+                ToRegionName = dbCall.ToSip?.Location?.Region?.Name ?? string.Empty
             };
 
             return onGoingCall;
@@ -274,72 +274,44 @@ namespace CCM.Data.Repositories
                 DlgHashEnt = call.DlgHashEnt,
                 DlgHashId = call.DlgHashId,
                 Ended = call.Updated,
-                FromCodecTypeColor = call.FromSip != null && call.FromSip.User != null && call.FromSip.User.CodecType != null
-                    ? call.FromSip.User.CodecType.Color
-                    : string.Empty,
-                FromCodecTypeId = call.FromSip != null && call.FromSip.User != null && call.FromSip.User.CodecType != null
-                    ? call.FromSip.User.CodecType.Id
-                    : Guid.Empty,
-                FromCodecTypeName = call.FromSip != null && call.FromSip.User != null && call.FromSip.User.CodecType != null
-                    ? call.FromSip.User.CodecType.Name
-                    : string.Empty,
-                FromComment = call.FromSip != null && call.FromSip.User != null ? call.FromSip.User.Comment : string.Empty,
+                FromCodecTypeColor = call.FromSip?.User?.CodecType?.Color ?? string.Empty,
+                FromCodecTypeId = call.FromSip?.User?.CodecType?.Id ?? Guid.Empty,
+                FromCodecTypeName = call.FromSip?.User?.CodecType?.Name ?? string.Empty,
+                FromComment = call.FromSip?.User?.Comment ?? string.Empty,
                 FromDisplayName = CallDisplayNameHelper.GetDisplayName(call.FromSip, call.FromDisplayName, call.FromUsername, sipDomain),
                 FromId = call.FromId ?? Guid.Empty,
-                FromLocationComment = call.FromSip != null && call.FromSip.Location != null ? call.FromSip.Location.Comment : string.Empty,
-                FromLocationId = call.FromSip != null && call.FromSip.Location != null ? call.FromSip.Location.Id : Guid.Empty,
-                FromLocationName = call.FromSip != null && call.FromSip.Location != null ? call.FromSip.Location.Name : string.Empty,
-                FromLocationShortName = call.FromSip != null && call.FromSip.Location != null ? call.FromSip.Location.ShortName : string.Empty,
-                FromOwnerId = call.FromSip != null && call.FromSip.User != null && call.FromSip.User.Owner != null
-                        ? call.FromSip.User.Owner.Id
-                        : Guid.Empty,
-                FromOwnerName = call.FromSip != null && call.FromSip.User != null && call.FromSip.User.Owner != null
-                        ? call.FromSip.User.Owner.Name
-                        : string.Empty,
-                FromRegionId = call.FromSip != null && call.FromSip.Location != null && call.FromSip.Location.Region != null
-                    ? call.FromSip.Location.Region.Id
-                    : Guid.Empty,
-                FromRegionName = call.FromSip != null && call.FromSip.Location != null && call.FromSip.Location.Region != null
-                    ? call.FromSip.Location.Region.Name
-                    : string.Empty,
-                FromSip = call.FromSip != null ? call.FromSip.SIP : call.FromUsername,
+                FromLocationComment = call.FromSip?.Location?.Comment ?? string.Empty,
+                FromLocationId = call.FromSip?.Location?.Id ?? Guid.Empty,
+                FromLocationName = call.FromSip?.Location?.Name ?? string.Empty,
+                FromLocationShortName = call.FromSip?.Location?.ShortName ?? string.Empty,
+                FromOwnerId = call.FromSip?.User?.Owner?.Id ?? Guid.Empty,
+                FromOwnerName = call.FromSip?.User?.Owner?.Name ?? string.Empty,
+                FromRegionId = call.FromSip?.Location?.Region?.Id ?? Guid.Empty,
+                FromRegionName = call.FromSip?.Location?.Region?.Name ?? string.Empty,
+                FromSip = call.FromSip?.SIP ?? call.FromUsername,
                 FromTag = call.FromTag,
-                FromUserAgentHead = call.FromSip != null ? call.FromSip.UserAgentHeader : string.Empty,
-                FromUsername = call.FromSip != null ? call.FromSip.Username : call.FromUsername,
+                FromUserAgentHead = call.FromSip?.UserAgentHeader ?? string.Empty,
+                FromUsername = call.FromSip?.Username ?? call.FromUsername,
                 SipCallId = call.SipCallID,
                 Started = call.Started,
-                ToCodecTypeColor = call.ToSip != null && call.ToSip.User != null && call.ToSip.User.CodecType != null
-                        ? call.ToSip.User.CodecType.Color
-                        : string.Empty,
-                ToCodecTypeId = call.ToSip != null && call.ToSip.User != null && call.ToSip.User.CodecType != null
-                        ? call.ToSip.User.CodecType.Id
-                        : Guid.Empty,
-                ToCodecTypeName = call.ToSip != null && call.ToSip.User != null && call.ToSip.User.CodecType != null
-                        ? call.ToSip.User.CodecType.Name
-                        : string.Empty,
-                ToComment = call.ToSip != null && call.ToSip.User != null ? call.ToSip.User.Comment : string.Empty,
+                ToCodecTypeColor = call.ToSip?.User?.CodecType?.Color ?? string.Empty,
+                ToCodecTypeId = call.ToSip?.User?.CodecType?.Id ?? Guid.Empty,
+                ToCodecTypeName = call.ToSip?.User?.CodecType?.Name ?? string.Empty,
+                ToComment = call.ToSip?.User?.Comment ?? string.Empty,
                 ToDisplayName = CallDisplayNameHelper.GetDisplayName(call.ToSip, call.ToDisplayName, call.ToUsername, sipDomain),
                 ToId = call.ToId ?? Guid.Empty,
-                ToLocationComment = call.ToSip != null && call.ToSip.Location != null ? call.ToSip.Location.Comment : string.Empty,
-                ToLocationId = call.ToSip != null && call.ToSip.Location != null ? call.ToSip.Location.Id : Guid.Empty,
-                ToLocationName = call.ToSip != null && call.ToSip.Location != null ? call.ToSip.Location.Name : string.Empty,
-                ToLocationShortName = call.ToSip != null && call.ToSip.Location != null ? call.ToSip.Location.ShortName : string.Empty,
-                ToOwnerId = call.ToSip != null && call.ToSip.User != null && call.ToSip.User.Owner != null
-                        ? call.ToSip.User.Owner.Id
-                        : Guid.Empty,
-                ToOwnerName = call.ToSip != null && call.ToSip.User != null && call.ToSip.User.Owner != null
-                        ? call.ToSip.User.Owner.Name
-                        : string.Empty,
-                ToRegionId = call.ToSip != null && call.ToSip.Location != null && call.ToSip.Location.Region != null
-                    ? call.ToSip.Location.Region.Id
-                    : Guid.Empty,
-                ToRegionName = call.ToSip != null && call.ToSip.Location != null && call.ToSip.Location.Region != null
-                    ? call.ToSip.Location.Region.Name
-                    : string.Empty,
-                ToSip = call.ToSip != null ? call.ToSip.SIP : call.ToUsername,
+                ToLocationComment = call.ToSip?.Location?.Comment ?? string.Empty,
+                ToLocationId = call.ToSip?.Location?.Id ?? Guid.Empty,
+                ToLocationName = call.ToSip?.Location?.Name ?? string.Empty,
+                ToLocationShortName = call.ToSip?.Location?.ShortName ?? string.Empty,
+                ToOwnerId = call.ToSip?.User?.Owner?.Id ?? Guid.Empty,
+                ToOwnerName = call.ToSip?.User?.Owner?.Name ?? string.Empty,
+                ToRegionId = call.ToSip?.Location?.Region?.Id ?? Guid.Empty,
+                ToRegionName = call.ToSip?.Location?.Region?.Name ?? string.Empty,
+                ToSip = call.ToSip?.SIP ?? call.ToUsername,
                 ToTag = call.ToTag,
-                ToUserAgentHead = call.ToSip != null ? call.ToSip.UserAgentHeader : string.Empty,
-                ToUsername = call.ToSip != null ? call.ToSip.Username : call.ToUsername,
+                ToUserAgentHead = call.ToSip?.UserAgentHeader ?? string.Empty,
+                ToUsername = call.ToSip?.Username ?? call.ToUsername,
                 IsPhoneCall = call.IsPhoneCall
             };
             return callHistory;
