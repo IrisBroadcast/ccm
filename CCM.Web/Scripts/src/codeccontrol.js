@@ -151,6 +151,8 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             $scope.setInputValue(audioStatus.inputStatus[i]);
         }
 
+        $scope.codecMeteringAvailable = true;
+
         $scope.$apply(function() {
             for (var j = 0; j < audioStatus.gpos.length; j++) {
                 var gpoData = audioStatus.gpos[j];
@@ -167,7 +169,6 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             $scope.rxR = fallback($scope.rxR, convertVuToPercentage(audioStatus.vuValues.rxRight));
         });
 
-        $scope.codecMeteringAvailable = true;
     };
 
     $scope.setInputValue = function (inputStatus) {
