@@ -135,7 +135,6 @@ namespace CCM.Data.Repositories
                 }
                 catch (Exception ex)
                 {
-                    log.Error($"GetCallHistoryByCallId error {ex.Message}");
                     var dbCallHistory = db.CallHistories.AsNoTracking().FirstOrDefault(c => c.CallId == callId);
                     return dbCallHistory == null ? null : MapCallHistory(dbCallHistory);
                 }
