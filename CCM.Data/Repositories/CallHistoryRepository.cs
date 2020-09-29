@@ -127,8 +127,18 @@ namespace CCM.Data.Repositories
         {
             using (var db = GetDbContext())
             {
-                var dbCallHistory = db.CallHistories.SingleOrDefault(c => c.CallId == callId);
-                return dbCallHistory == null ? null : MapCallHistory(dbCallHistory);
+                try
+                {
+                    var dbCallHistory = db.CallHistories.AsNoTracking().OrderByDescending(callHistory => callHistory.Ended)
+                        .FirstOrDefault((c) => c.CallId == callId);
+                    return dbCallHistory == null ? null : MapCallHistory(dbCallHistory);
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"GetCallHistoryByCallId error {ex.Message}");
+                    var dbCallHistory = db.CallHistories.AsNoTracking().FirstOrDefault(c => c.CallId == callId);
+                    return dbCallHistory == null ? null : MapCallHistory(dbCallHistory);
+                }
             }
         }
 
