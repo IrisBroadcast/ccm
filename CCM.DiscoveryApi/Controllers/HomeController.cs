@@ -40,6 +40,7 @@ namespace CCM.DiscoveryApi.Controllers
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
             var buildDate = ApplicationSettings.BuildDate;
+            var server = ApplicationSettings.Server;
             var html = @"<!DOCTYPE html>
                 <html>
                 <head>
@@ -76,7 +77,7 @@ namespace CCM.DiscoveryApi.Controllers
                 <body>
                     <div class='container'>
                         <h1>IRIS<br/>Discovery</h1>
-                        <h3>Version: " + version + @"<br/>Build date: " + buildDate + @"</h3>
+                        <h3>Version: " + version + @"<br/>Build date: " + buildDate + @"<br/>Server: " + server + @"</h3>
                     </div>
                 </body>
                 </html>";
