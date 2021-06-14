@@ -70,7 +70,7 @@ paket-files/
 # End of https://www.gitignore.io/api/aspnetcore
 
 node_modules
-**/wwwroot/dist
+#**/wwwroot/dist
 
 # nunit test results
 TestResult.xml
@@ -85,3 +85,4 @@ bootstrap-datetimepicker-build.min.css
 colorpicker.css
 colorpicker.min.css
 *.log
+CCMWeb/appsettings.Development.json

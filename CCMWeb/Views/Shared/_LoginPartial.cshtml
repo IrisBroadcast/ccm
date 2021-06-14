@@ -1,0 +1,59 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@using System.Security.Claims
+
+@if (User.Identity.IsAuthenticated)
+{
+    var identity = (ClaimsIdentity)User.Identity;
+    var fullNameClaim = identity.Claims.SingleOrDefault(c => c.Type == "FullName");
+    var name = fullNameClaim != null ? fullNameClaim.Value : identity.Name;
+
+    <a href="@Url.Action("LogOff", "Account")" class="mui-btn-logoff" title="@Localizer["Logged_In_As"].Value @name, @Localizer["Log_Off"].Value">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+            <g>
+                <g display="none">
+                    <path fill="#020203" d="M34.7,23.7c1.1-1.8,1.8-3.9,1.8-6.2C36.5,11.2,31.3,6,25,6c-6.3,0-11.5,5.2-11.5,11.5c0,2.3,0.7,4.4,1.8,6.2C9.8,27,6,33.1,6,40v4h8v-4c0-6.1,4.9-11,11-11s11,4.9,11,11v4h8v-4C44,33.1,40.2,27,34.7,23.7z M21.5,17.5c0-1.9,1.6-3.5,3.5-3.5s3.5,1.6,3.5,3.5S26.9,21,25,21S21.5,19.4,21.5,17.5z"/>
+                </g>
+                <g display="none">
+                    <rect x="6" y="36" fill="#020203" width="38" height="8"/><path fill="#020203" d="M25,29c-6.3,0-11.5-5.2-11.5-11.5S18.7,6,25,6c6.3,0,11.5,5.2,11.5,11.5S31.3,29,25,29z M25,14c-1.9,0-3.5,1.6-3.5,3.5S23.1,21,25,21s3.5-1.6,3.5-3.5S26.9,14,25,14z"/>
+                </g>
+                <g display="none">
+                    <polygon fill="#020203" points="42.5,45.1 25,39.2 7.5,45.1 4.9,37.5 25,30.8 45.1,37.5"/>
+                    <path fill="#020203" d="M25,29c-6.3,0-11.5-5.2-11.5-11.5S18.7,6,25,6c6.3,0,11.5,5.2,11.5,11.5S31.3,29,25,29z M25,14c-1.9,0-3.5,1.6-3.5,3.5S23.1,21,25,21s3.5-1.6,3.5-3.5S26.9,14,25,14z"/>
+                </g>
+                <g>
+                    <rect x="29" y="6" fill="#020203" width="8" height="12"/>
+                    <rect id="icon-user-left-eye" x="13" y="6" fill="#020203" width="8" height="12"/>
+                    <path fill="#020203" d="M25,44C14.5,44,6,35.5,6,25h8c0,6.1,4.9,11,11,11s11-4.9,11-11h8C44,35.5,35.5,44,25,44z"/>
+                </g>
+            </g>
+        </svg>
+    </a>
+}
+else
+{
+    <a href="@Url.Action("Login", "Account")" class="mui-btn-logon" title="@Localizer["Log_In"].Value">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+            <g>
+                <g display="none">
+                    <path fill="#020203" d="M34.7,23.7c1.1-1.8,1.8-3.9,1.8-6.2C36.5,11.2,31.3,6,25,6c-6.3,0-11.5,5.2-11.5,11.5c0,2.3,0.7,4.4,1.8,6.2C9.8,27,6,33.1,6,40v4h8v-4c0-6.1,4.9-11,11-11s11,4.9,11,11v4h8v-4C44,33.1,40.2,27,34.7,23.7z M21.5,17.5c0-1.9,1.6-3.5,3.5-3.5s3.5,1.6,3.5,3.5S26.9,21,25,21S21.5,19.4,21.5,17.5z"/>
+                </g>
+                <g>
+                    <rect x="29" y="6" fill="#020203" width="8" height="12"/>
+                    <rect id="icon-user-left-eye" x="13" y="6" fill="#020203" width="8" height="12"/>
+                    <rect x="6" y="36" fill="#020203" width="38" height="8"/>
+                </g>
+                <g display="none">
+                    <polygon fill="#020203" points="42.5,45.1 25,39.2 7.5,45.1 4.9,37.5 25,30.8 45.1,37.5"/>
+                    <path fill="#020203" d="M25,29c-6.3,0-11.5-5.2-11.5-11.5S18.7,6,25,6c6.3,0,11.5,5.2,11.5,11.5S31.3,29,25,29z M25,14c-1.9,0-3.5,1.6-3.5,3.5S23.1,21,25,21s3.5-1.6,3.5-3.5S26.9,14,25,14z"/>
+                </g>
+                <g display="none">
+                    <rect x="29" y="6" fill="#020203" width="8" height="12"/>
+                    <rect id="icon-user-left-eye" x="13" y="6" fill="#020203" width="8" height="12"/>
+                    <path fill="#020203" d="M25,44C14.5,44,6,35.5,6,25h8c0,6.1,4.9,11,11,11s11-4.9,11-11h8C44,35.5,35.5,44,25,44z"/>
+                </g>
+            </g>
+        </svg>
+    </a>
+}

@@ -1,0 +1,23 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Core.Entities.CodecType
+
+@{
+    ViewData["Title"] = @Localizer["New_Codec_Type"];
+}
+
+<h2>@Localizer["New_Codec_Type"]</h2>
+<hr />
+
+@using (Html.BeginForm("Create", "CodecTypes", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <partial name="_CodecTypeForm" model="Model" />
+}
+
+@section scripts
+{
+    <script src="~/dist/ccm-form.js"></script>
+}

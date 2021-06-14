@@ -1,0 +1,29 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.User.DeleteUserViewModel
+
+@{
+    ViewData["Title"] = @Localizer["Delete_User"];
+}
+
+<h2>@Localizer["Delete_User"]</h2>
+<hr />
+
+<p>@Localizer["Delete_User_Are_You_Sure"]</p>
+<p>@Model.UserName</p>
+
+@using (Html.BeginForm("Delete", "User", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.UserName)
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "User", null, new { @class = "btn btn-default"})
+            <button type="submit" class="btn btn-danger">@Localizer["Delete"]</button>
+        </div>
+    </div>
+}

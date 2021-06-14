@@ -1,0 +1,81 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@inject ISettingsManager SettingsManager
+@inject IOptions<ApplicationBuildInformation> BuildInformation
+@using CCM.Core.Interfaces.Managers
+@using Microsoft.Extensions.Options
+@using Roles = CCM.Core.Helpers.Roles
+@using CCM.Core.Helpers
+@{
+    string env = @BuildInformation.Value.Environment;
+    var logoClass = (env == "development" ? "development" : (env == "staging" ? "staging" : "production"));
+    string deployVersion = @BuildInformation.Value.Version;
+    string deployServer = @BuildInformation.Value.Server;
+    string buildDateString = @BuildInformation.Value.ReleaseDate;
+    string codecControlHost = @SettingsManager.CodecControlHost;
+    string codecControlUserName = @SettingsManager.CodecControlUserName;
+    string codecControlPassword = @SettingsManager.CodecControlPassword;
+    string discoveryServiceUrl = @SettingsManager.DiscoveryServiceUrl;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="theme-color" content="#337ab7" />
+    <meta name="msapplication-navbutton-color" content="#337ab7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="~/dist/ccm-styles.css">
+    <title>CCM</title>
+
+    @RenderSection("head", required: false)
+</head>
+<body>
+
+    <header class="mui-header">
+        <div class="mui-logo @logoClass">
+            <a href="@Url.Action("Index", "Home")">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 130 50" enable-background="new 0 0 130 50" xml:space="preserve">
+                    <g>
+                        <path fill="#383838" d="M65,44c-10.5,0-19-8.5-19-19S54.5,6,65,6c6.4,0,12.3,3.2,15.8,8.5l-6.7,4.4C72.1,15.8,68.7,14,65,14c-6.1,0-11,4.9-11,11s4.9,11,11,11c3.7,0,7.1-1.8,9.2-4.9l6.7,4.4C77.3,40.8,71.4,44,65,44z" />
+                        <path fill="#383838" d="M25,44C14.5,44,6,35.5,6,25S14.5,6,25,6c6.4,0,12.3,3.2,15.8,8.5l-6.7,4.4C32.1,15.8,28.7,14,25,14c-6.1,0-11,4.9-11,11s4.9,11,11,11c3.7,0,7.1-1.8,9.2-4.9l6.7,4.4C37.3,40.8,31.4,44,25,44z" />
+                        <polygon fill="#383838" points="124,44 116,44 116,15.7 105,32.2 94,15.7 94,44 86,44 86,6 97.1,6 105,17.8 112.9,6 124,6" />
+                    </g>
+                </svg>
+            </a>
+        </div>
+
+        <partial name="_MenuPartial" />
+
+        <div class="mui-search">
+            @RenderSection("search", required: false)
+        </div>
+
+        <div class="mui-login">
+            <partial name="_LoginPartial" />
+        </div>
+    </header>
+
+    <div class="container-fluid body-content">
+        @RenderBody()
+        <hr />
+        <footer class="mui-footer">
+            <p>&copy; 2014 - @DateTime.Now.Year Sveriges Radio. Version <strong>@deployVersion</strong> - <strong>@buildDateString</strong> <strong>@deployServer</strong></p>
+        </footer>
+    </div>
+
+    <script src="~/dist/ccm-main.js"></script>
+
+    @RenderSection("scripts", required: false)
+
+    <script>
+    window.codecControlHost = @Html.Raw("'" + codecControlHost + "'");
+    window.codecControlUserName = @Html.Raw("'" + codecControlUserName + "'");
+    window.codecControlPassword = @Html.Raw("'" + codecControlPassword + "'");
+    window.discoveryServiceUrl = @Html.Raw("'" + discoveryServiceUrl + "'");
+    </script>
+</body>
+</html>

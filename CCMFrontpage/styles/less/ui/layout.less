@@ -1,0 +1,83 @@
+
+.mui-panel {
+
+}
+
+.mui-row {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    width: 100%;
+
+    border-width: 0px 0px 1px 0px;
+    border-color: #dddddd;
+    border-style: solid;
+
+    padding: 0.1rem;
+
+    &:nth-child(odd) {
+        background-color: @list-row-odd;
+    }
+
+    &:nth-child(even) {
+        background-color: @list-row-even;
+    }
+
+    &--feedback {
+        background-color: #f8f8f8;
+        text-align: center;
+        position: relative;
+        display: block;
+        margin-bottom: -1px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 10px 0;
+        border-width: 0px 0px 1px 0px;
+        border-color: #dddddd;
+        border-style: solid;
+        background: none;
+    }
+}
+
+.mui-col {
+    flex: 1 1 auto;
+    align-self: center;
+
+    a {
+        font-weight: 600;
+    }
+}
+
+.mui-col.mui-col--source {
+    flex: 0 0 34%;
+}
+
+.mui-col.mui-col--direction {
+    max-width: 2rem;
+    flex: 0 0 2rem;
+
+    svg {
+        height: 100%;
+        display: block;
+    }
+
+    rect {
+        display: none;
+    }
+
+    polygon {
+        fill: #f3f3f3;
+    }
+}
+
+.mui-col.mui-col--duration {
+    flex: 0 0 11rem;
+    color: #bfbfbf;
+}
+
+
+// Accounts
+
+.account-is-unused {
+    background-color: #ffc5c5 !important;
+}

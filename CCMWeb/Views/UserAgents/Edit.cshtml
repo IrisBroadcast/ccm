@@ -1,0 +1,24 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.UserAgents.UserAgentViewModel
+
+@{
+    ViewData["Title"] = @Localizer["Edit_UserAgent"];
+}
+
+<h2>@Localizer["Edit_UserAgent"]</h2>
+<hr />
+
+@using (Html.BeginForm("Edit", "UserAgents", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+
+    <partial name="_UserAgentForm" model="Model" />
+}
+
+@section scripts
+{
+    <script src="~/dist/ccm-form.js"></script>
+}

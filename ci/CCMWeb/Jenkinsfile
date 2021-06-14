@@ -1,0 +1,87 @@
+def application = [
+    stackname: "ipk",
+    name: "ccm",
+]
+
+def jenkinsWorkerConstraint = "!arm"
+def httpProxy = env.HTTP_PROXY
+def dockerRegistry = env.DOCKER_REGISTRY
+def dockerFile = "ci/CCMWeb/Dockerfile"
+def dockerImageEnvName = "IMAGE_NAME"
+
+def config = [
+    dockerHost: "msc.sr.se",
+    dockerHostCredentialsId: "dockerHostUser",
+    tempFilesPath: "/mnt/nfs/msc-nfs/stacks",
+    dockerComposeFrom: "./ci/CCMWeb/docker-compose.yml",
+]
+
+node(jenkinsWorkerConstraint) {
+    stage("Clone repository") {
+       checkout scm
+    }
+
+    def buildVersion = "0.0.0"
+    def buildEnvironment = "Dev"
+
+    // Use tag name as build version if existing (used in the bottom footer of main page in the application)
+    if(env.TAG_NAME) {
+        buildVersion = env.TAG_NAME
+        buildEnvironment = "Prod"
+    }
+
+    // Modify the buildinformation.json file in the repository
+    sh "sed -i \"s/APP_VERSION/\"${buildVersion}\"/g\" ./CCMWeb/buildinformation.json"
+    sh "sed -i \"s/APP_ENVIRONMENT/\"${buildEnvironment}\"/g\" ./CCMWeb/buildinformation.json"
+    sh "sed -i \"s/APP_SERVER/\"${config.dockerHost}\"/g\" ./CCMWeb/buildinformation.json"
+
+    sh '''
+        BUILDINFORMATION="./CCMWeb/buildinformation.json"
+        DATE=$(date '+%Y-%m-%d %H:%M:%S')
+        sed -i "s/APP_NAME/Codec Control Monitor/g" $BUILDINFORMATION
+        sed -i "s/APP_RELEASE_DATE/${DATE}/g" $BUILDINFORMATION
+    '''
+    // Print the modified file
+    sh 'cat ./CCMWeb/buildinformation.json'
+
+    def fullImageName
+    docker.withRegistry(dockerRegistry) {
+        stage("Build image") {
+            def buildArgs = ["HTTP_PROXY=${httpProxy}", "HTTPS_PROXY=${httpProxy}", "http_proxy=${httpProxy}", "https_proxy=${httpProxy}"]
+            def argsString = ""
+            buildArgs.each{
+                argsString += "--build-arg ${it} "
+            }
+
+            argsString += "-f ${dockerFile} ."
+
+            image = docker.build("${application.stackname}-${application.name}", argsString)
+        }
+
+        stage("Push image to registry") {
+            image.push()
+        }
+
+        fullImageName = image.imageName()
+    }
+
+    withCredentials([usernamePassword(credentialsId: config.dockerHostCredentialsId, passwordVariable: "pass", usernameVariable: "user")]) {
+        def dockerHost = [
+            allowAnyHosts: true,
+            user: user,
+            password: pass,
+            host: config.dockerHost,
+            name: config.dockerHost,
+        ]
+
+        def dockerComposeDest = "${config.tempFilesPath}/${env.BUILD_TAG}".replaceAll("\\s","-")
+
+        stage("Update service on ${dockerHost.host}") {
+            sshCommand remote: dockerHost, command: "mkdir -p ${dockerComposeDest}"
+            sshPut remote: dockerHost, from: config.dockerComposeFrom, into: "${dockerComposeDest}/docker-compose.yml"
+            sshCommand remote: dockerHost, command: "${dockerImageEnvName}=${fullImageName} docker stack deploy -c ${dockerComposeDest}/docker-compose.yml ${application.stackname}"
+        }
+    }
+
+    cleanWs notFailBuild: true
+}

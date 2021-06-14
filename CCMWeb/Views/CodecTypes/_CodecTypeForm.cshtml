@@ -1,0 +1,30 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Core.Entities.CodecType
+
+<div class="form-group">
+    @Html.Label(@Localizer["Name"].Value, @Localizer["Name"].Value, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.Label(@Localizer["Color"].Value, @Localizer["Color"].Value, new { @class = "col-md-2 control-label" })
+    <div class="col-md-2">
+        <div class="input-group color">
+            @Html.TextBoxFor(m => m.Color, new { @class = "form-control colorpicker-selection" })
+            <span class="input-group-addon"><i></i></span>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id)
+
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "CodecTypes", null, new { @class = "btn btn-default" })
+        <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
+    </div>
+</div>

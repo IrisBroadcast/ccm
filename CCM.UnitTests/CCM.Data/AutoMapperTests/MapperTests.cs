@@ -28,7 +28,6 @@ using System;
 using AutoMapper;
 using coreentities = CCM.Core.Entities;
 using dataentities = CCM.Data.Entities;
-using CCM.Web.Infrastructure;
 using NUnit.Framework;
 
 namespace CCM.UnitTests.CCM.Data.AutoMapperTests
@@ -36,10 +35,17 @@ namespace CCM.UnitTests.CCM.Data.AutoMapperTests
     [TestFixture]
     public class MapperTests
     {
+        private IMapper _mapper;
+
         [OneTimeSetUp]
-        public void OneTimeSetUp()
+        public void OneTimeSetUp(IMapper mapper)
         {
-            AutoMapperWebConfiguration.Configure();
+            _mapper = mapper;
+            //TODO: This one should maybe be redone, is test work?
+            //var myProfile = new MyProfile();
+            //var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            //var mapper = new Mapper(configuration);
+            // AutoMapperWebConfiguration.Configure();
         }
 
         [Test]
@@ -56,8 +62,6 @@ namespace CCM.UnitTests.CCM.Data.AutoMapperTests
                 CameraPassword = "pwd",
                 CameraVideoUrl = "/camera",
                 AudioClipNames = "Dagge, Lars-Åke",
-                NrOfGpos = 2,
-                GpoNames = "Grön, Röd",
                 NrOfAudioInputs = 3,
                 AudioInputNames = "Mik1, Mik2, Mik3",
                 InfoText = "En text",
@@ -68,7 +72,7 @@ namespace CCM.UnitTests.CCM.Data.AutoMapperTests
                 UpdatedOn = DateTime.Parse("2017-02-09 13:02:00")
             };
 
-            var studio = Mapper.Map<coreentities.Studio>(dbStudio);
+            var studio = _mapper.Map<coreentities.Studio>(dbStudio);
 
             Assert.AreEqual("Studio 54", studio.Name);
             Assert.AreEqual("test@acip.example.com", studio.CodecSipAddress);
@@ -76,8 +80,6 @@ namespace CCM.UnitTests.CCM.Data.AutoMapperTests
             Assert.AreEqual(true, studio.CameraActive);
             Assert.AreEqual("user", studio.CameraUsername);
             Assert.AreEqual("Dagge, Lars-Åke", studio.AudioClipNames);
-            Assert.AreEqual(2, studio.NrOfGpos);
-            Assert.AreEqual("Grön, Röd", studio.GpoNames);
             Assert.AreEqual(3, studio.NrOfAudioInputs);
             Assert.AreEqual("Mik1, Mik2, Mik3", studio.AudioInputNames);
             Assert.AreEqual("En text", studio.InfoText);
@@ -91,7 +93,7 @@ namespace CCM.UnitTests.CCM.Data.AutoMapperTests
         [Test]
         public void should_map_null_object_without_exception()
         {
-            var studio = Mapper.Map<coreentities.Studio>(null);
+            var studio = _mapper.Map<coreentities.Studio>(null);
             Assert.IsNull(studio);
         }
 
@@ -118,7 +120,7 @@ namespace CCM.UnitTests.CCM.Data.AutoMapperTests
                 UpdatedOn = date2,
             };
 
-            var mappedEntity = Mapper.Map<coreentities.ProfileGroup>(entity);
+            var mappedEntity = _mapper.Map<coreentities.ProfileGroup>(entity);
 
             Assert.AreEqual(namn, mappedEntity.Name);
             Assert.AreEqual(text, mappedEntity.Description);

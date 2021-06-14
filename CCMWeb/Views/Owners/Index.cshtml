@@ -1,0 +1,67 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@using CCM.Core.Helpers
+@using Roles = CCM.Core.Helpers.Roles
+@model System.Collections.Generic.List<CCM.Core.Entities.Owner>
+
+@{
+    ViewData["Title"] = @Localizer["Owners"];
+}
+
+@section search
+{
+    @using (Html.BeginForm("Index", "Owners", FormMethod.Post, new { @class = "navbar-form navbar-right ccm-navbar-search", role = "search" }))
+    {
+        <div class="form-group">
+            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Localizer["Search"]" value="@ViewData["SearchString"]">
+            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Localizer["Search"]</button>
+        </div>
+    }
+}
+
+<div class="row">
+    <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header ccm-sub-navbar--admin--header">
+                <h2>@Localizer["Owners"]</h2>
+                <span class="navbar-page-description"></span>
+            </div>
+            <div class="navbar ccm-sub-navbar--admin--links">
+                @if (User.IsInRole(Roles.Admin))
+                {
+                    <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
+                        <li>@Html.ActionLink(@Localizer["New_Owner"].Value, "Create", "Owners")</li>
+                    </ul>
+                }
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="panel panel-default list-ccm">
+        <div class="panel-heading list-ccm-heading">
+            <div>@Localizer["Name"]</div>
+        </div>
+        <div class="panel-body-lp">
+            @foreach (var owner in Model)
+            {
+                <div class="panel-body-item row">
+                    <div class="col-md-10">@owner.Name</div>
+                    <div class="col-md-1 text-right list-ccm--badge"><span class="badge">@owner.Users.Count</span></div>
+                    <div class="col-md-1 text-right list-ccm-icongroup">
+                        @if (User.IsInRole(Roles.Admin))
+                        {
+                            @Html.ActionLink(" ", "Edit", "Owners", new { @id = owner.Id }, new { @class = "glyphicon glyphicon-pencil list-ccm-inlineicon" })
+                            if (owner.Users.Count == 0)
+                            {
+                                @Html.ActionLink(" ", "Delete", "Owners", new { @id = owner.Id }, new { @class = "glyphicon glyphicon-trash list-ccm-inlineicon" })
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

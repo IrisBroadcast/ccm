@@ -1,0 +1,41 @@
+﻿
+@if (CodecTypesStatistics == null)
+{
+    <p>Loading..</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Number of calls</th>
+                <th>Total minutes</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var date in CodecTypesStatistics)
+            {
+                @if (date.NumberOfCalls != 0)
+                {
+
+                    <tr>
+                        <td>@date.Date</td>
+                        <td>@date.NumberOfCalls</td>
+                        <td>@date.TotaltTimeForCalls</td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+}
+
+
+@code {
+    [Parameter]
+    public IEnumerable<DateBasedStatistics> CodecTypesStatistics { get; set; }
+
+}

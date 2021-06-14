@@ -1,0 +1,24 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Regions.RegionViewModel
+
+@{
+    ViewData["Title"] = @Localizer["New_Region"];
+}
+
+<h2>@Localizer["New_Region"]</h2>
+<hr />
+
+@using (Html.BeginForm("Create", "Regions", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+
+    <partial name="_RegionForm" model="Model" />
+}
+
+@section scripts
+{
+    <script src="~/dist/ccm-form.js"></script>
+}

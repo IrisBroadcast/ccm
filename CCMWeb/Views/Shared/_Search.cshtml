@@ -1,0 +1,10 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+
+<form method="post" action="/@ViewData["Controller"]" class="navbar-form navbar-right">
+    <div class="form-group">
+        <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Localizer["Search"].Value" value="@ViewData["SearchString"]">
+        <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Localizer["Search"].Value</button>
+    </div>
+</form>

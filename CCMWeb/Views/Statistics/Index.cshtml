@@ -1,0 +1,242 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Statistics.StatisticsFilterViewModel
+
+@{
+    ViewData["Title"] = @Localizer["Statistics"];
+}
+
+@section scripts
+{
+    @*<script src="~/bundles/statistics.js"></script>*@
+    <script src="~/js/src/statistics.js"></script>
+}
+
+<div class="row">
+    <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header ccm-sub-navbar--admin--header">
+                <h2>@Localizer["Statistics"]</h2>
+                <span class="navbar-page-description"></span>
+            </div>
+            <div class="navbar ccm-sub-navbar--admin--links" role="tablist">
+                <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
+                    <li role="presentation" class="active"><a href="#locationTab" data-toggle="tab">@Localizer["Locations"]</a></li>
+                    <li role="presentation"><a href="#regionTab" data-toggle="tab">@Localizer["Regions"]</a></li>
+                    <li role="presentation"><a href="#sipAccountsTab" data-toggle="tab">@Localizer["Sip_Accounts"]</a></li>
+                    <li role="presentation"><a href="#codecTypesTab" data-toggle="tab">@Localizer["Codec_Types"]</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="row statistic-dates">
+    <div class="col-md-3">
+        <label for="startDate" class="control-label">
+            @Localizer["From"]:
+            <div class="input-group date" id="startdatetimepicker">
+                <input type="text" class="form-control" id="startDate" />
+                <span class="input-group-addon">
+                    <span class="glyphicon-calendar glyphicon"></span>
+                </span>
+            </div>
+        </label>
+    </div>
+    <div class="col-md-3">
+        <label for="endDate" class="control-label">
+            @Localizer["To"]:
+            <div class="input-group date" id="enddatetimepicker">
+                <input type="text" class="form-control" id="endDate" />
+                <span class="input-group-addon">
+                    <span class="glyphicon-calendar glyphicon"></span>
+                </span>
+            </div>
+        </label>
+    </div>
+</div>
+<hr />
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="locationTab">
+        <div class="row statistic-filters">
+            <div class="col-md-3">
+                <label class="control-label" for="Regions">
+                    @Localizer["Region"]:
+                    @Html.DropDownListFor(m => m.Regions, new SelectList(Model.Regions, "Id", "Name"), new { @class = "form-control" })
+                </label>
+            </div>
+            <div class="col-md-3">
+                <label for="Owners" class="control-label">
+                    @Localizer["Owner"]:
+                    @Html.DropDownListFor(m => m.Owners, new SelectList(Model.Owners, "Id", "Name"), new { @class = "form-control" })
+                </label>
+            </div>
+            <div class="col-md-3">
+                <label for="CodecTypes" class="control-label">
+                    @Localizer["Codec_Type"]:
+                    @Html.DropDownListFor(m => m.CodecTypes, new SelectList(Model.CodecTypes, "Id", "Name"), new { @class = "form-control" })
+                </label>
+            </div>
+            <div class="col-md-3">
+                <label for="locationSearchBtn">
+                    &nbsp;
+                    <button class="btn btn-primary" id="locationSearchBtn">@Localizer["Load"]</button>
+                </label>
+            </div>
+        </div>
+
+        <div class="tabpanel" id="locationChartTabs">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#locationCallsTab" data-toggle="tab" data-target-tab="locationCallsTab">@Localizer["Calls"]</a></li>
+                <li role="presentation"><a href="#locationTimeTab" data-toggle="tab" data-target-tab="locationTimeTab">@Localizer["Call_Time"]</a></li>
+                <li role="presentation"><a href="#locationSimultaneousTab" data-toggle="tab" data-target-tab="locationSimultaneousTab">@Localizer["Call_Simultaneous"]</a></li>
+                <li role="presentation"><a href="#locationSim24HourTab" data-toggle="tab" data-target-tab="locationSim24HourTab">@Localizer["Call_Sim24Hour"]</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="locationCallsTab">
+                    <div class="row">
+                        <div class="col-md-12" id="locationNumberOfCallsChartDiv" style="min-height: 600px;">
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="locationTimeTab">
+                    <div class="row">
+                        <div class="col-md-12" id="locationTotalTimeForCallsChartDiv" style="min-height: 600px;">
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="locationSimultaneousTab">
+                    <div class="row">
+                        <div class="col-md-12" id="locationMaxSimultaneousCallsChartDiv" style="min-height: 600px;">
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="locationSim24HourTab">
+                    <div class="row">
+                        <div class="col-md-12" id="locationSim24HourChartDiv" style="min-height: 600px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="regionTab">
+        <div class="row statistic-filters">
+            <div class="col-md-10">
+                <label class="control-label" for="Regions">
+                    @Localizer["Region"]:
+                    @Html.DropDownListFor(m => m.Regions, new SelectList(Model.Regions, "Id", "Name"), new { @class = "form-control", @id = "regionRegions" })
+                </label>
+            </div>
+            <div class="col-md-2">
+                <label class="control-label" for="regionSearchBtn">
+                    &nbsp;
+                    <button class="btn btn-primary" id="regionSearchBtn">@Localizer["Load"]</button>
+                    <label>
+            </div>
+        </div>
+
+        <div class="tabpanel" id="regionChartTabs">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#regionCallsTab" data-toggle="tab" data-target-tab="regionCallsTab">@Localizer["Calls"]</a></li>
+                <li role="presentation"><a href="#regionTimeTab" data-toggle="tab" data-target-tab="regionTimeTab">@Localizer["Call_Time"]</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="regionCallsTab">
+                    <div class="row">
+                        <div class="col-md-12" id="regionNumberOfCallsChartDiv" style="min-height: 600px;">
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="regionTimeTab">
+                    <div class="row">
+                        <div class="col-md-12" id="regionTimeChartDiv" style="min-height: 600px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="sipAccountsTab">
+        <div class="row statistic-filters">
+            <div class="col-md-10">
+                <label class="control-label">
+                    @Localizer["SIP"]:
+                    @Html.DropDownListFor(m => m.Users, new SelectList(Model.Users, "Id", "UserName"), new { @class = "form-control", @id = "sipAccountsAccounts" })
+                </label>
+            </div>
+            <div class="col-md-2">
+                <label class="control-label" for="sipAccountsSearchBtn">
+                    &nbsp;
+                    <button class="btn btn-primary" id="sipAccountsSearchBtn">@Localizer["Load"]</button>
+                </label>
+            </div>
+        </div>
+
+        <div class="tabpanel" id="sipAccountsChartTabs">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#sipAccountsCallsTab" data-toggle="tab" data-target-tab="sipAccountsCallsTab">@Localizer["Call"]</a></li>
+                <li role="presentation"><a href="#sipAccountsTimeTab" data-toggle="tab" data-target-tab="sipAccountsTimeTab">@Localizer["Call_Time"]</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="sipAccountsCallsTab">
+                    <div class="row">
+                        <div class="col-md-12" id="sipAccountsNumberOfCallsChartDiv" style="min-height: 600px;">
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="sipAccountsTimeTab">
+                    <div class="row">
+                        <div class="col-md-12" id="sipAccountsTimeChartDiv" style="min-height: 600px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="codecTypesTab">
+        <div class="row statistic-filters">
+            <div class="col-md-10">
+                <label class="control-label">
+                    @Localizer["Codec_Type"]:
+                    @Html.DropDownListFor(m => m.CodecTypes, new SelectList(Model.CodecTypes, "Id", "Name"), new { @class = "form-control", @id = "codecTypesCodecTypes" })
+                </label>
+            </div>
+            <div class="col-md-2">
+                <label class="control-label" for="codecTypesSearchBtn">
+                    &nbsp;
+                    <button class="btn btn-primary" id="codecTypesSearchBtn">@Localizer["Load"]</button>
+                </label>
+            </div>
+        </div>
+
+        <div class="tabpanel" id="codecTypesChartTabs">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#codecTypesCallsTab" data-toggle="tab" data-target-tab="codecTypesCallsTab">@Localizer["Calls"]</a></li>
+                <li role="presentation"><a href="#codecTypesTimeTab" data-toggle="tab" data-target-tab="codecTypesTimeTab">@Localizer["Call_Time"]</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="codecTypesCallsTab">
+                    <div class="row">
+                        <div class="col-md-12" id="codecTypeNumberOfCallsChartDiv" style="min-height: 600px;">
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="codecTypesTimeTab">
+                    <div class="row">
+                        <div class="col-md-12" id="codecTypeTimeChartDiv" style="min-height: 600px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

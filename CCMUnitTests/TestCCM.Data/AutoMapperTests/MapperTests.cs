@@ -1,0 +1,89 @@
+/*
+ * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+using System;
+using AutoMapper;
+using coreentities = CCM.Core.Entities;
+using dataentities = CCM.Data.Entities;
+using NUnit.Framework;
+
+namespace CCM.UnitTests.CCM.Data.AutoMapperTests
+{
+    [TestFixture]
+    public class MapperTests
+    {
+        private IMapper _mapper;
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp(IMapper mapper)
+        {
+            _mapper = mapper;
+            //TODO: This one should maybe be redone, is test work?
+            //var myProfile = new MyProfile();
+            //var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            //var mapper = new Mapper(configuration);
+            // AutoMapperWebConfiguration.Configure();
+        }
+
+        [Test]
+        public void should_map_groupentity_to_group()
+        {
+            var guid1 = Guid.NewGuid();
+            var guid2 = Guid.NewGuid();
+            var namn = "Grupp1";
+            var text = "descrition for this group is optional";
+            var user1 = "nisse";
+            var user2 = "klara";
+            var date1 = DateTime.Parse("2017-02-09 13:01:00");
+            var date2 = DateTime.Parse("2017-02-09 13:02:00");
+
+            var entity = new dataentities.ProfileGroupEntity()
+            {
+                Id = guid1,
+                Name = namn,
+                Description = text,
+                CreatedBy = user1,
+                CreatedOn = date1,
+                UpdatedBy = user2,
+                UpdatedOn = date2,
+            };
+
+            var mappedEntity = _mapper.Map<coreentities.ProfileGroup>(entity);
+
+            Assert.AreEqual(namn, mappedEntity.Name);
+            Assert.AreEqual(text, mappedEntity.Description);
+            Assert.AreEqual(user1, mappedEntity.CreatedBy);
+            Assert.AreEqual(date1, mappedEntity.CreatedOn);
+            Assert.AreEqual(user2, mappedEntity.UpdatedBy);
+            Assert.AreEqual(date2, mappedEntity.UpdatedOn);
+
+            Assert.AreEqual(0, mappedEntity.Profiles.Count);
+
+            //var mappedCollectionEntity = mappedEntity.Profiles.First();
+            //Assert.AreEqual(guid2, mappedCollectionEntity.Id);
+        }
+    }
+}

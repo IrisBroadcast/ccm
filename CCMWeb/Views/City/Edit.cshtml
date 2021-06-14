@@ -1,0 +1,24 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Cities.CityViewModel
+
+@{
+    ViewData["Title"] = @Localizer["Edit_City"];
+}
+
+<h2>@Localizer["Edit_City"]</h2>
+<hr />
+
+@using (Html.BeginForm("Edit", "City", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+
+    <partial name="_CityForm" model="Model" />
+}
+
+@section scripts
+{
+    <script src="~/dist/ccm-form.js"></script>
+}

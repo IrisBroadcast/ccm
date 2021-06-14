@@ -1,0 +1,52 @@
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Call.DeleteCallViewModel
+
+@{
+    ViewData["Title"] = @Localizer["Delete_Call"];
+    var warningText = @Localizer["Delete_Call_Are_You_Sure"].Value.Replace("[to]", string.Format("<strong>{0}</strong>", Model.CallToSipAddress)).Replace("[from]", string.Format("<strong>{0}</strong>", Model.CallFromSipAddress)).Replace("[start]", string.Format("<strong>{0}</strong>", Model.CallStarted));
+}
+
+<h2>@Localizer["Delete_Call"]</h2>
+<hr />
+
+<div class="row">
+    <p class="col-md-10">@Html.Raw(warningText)</p>
+</div>
+
+@using (Html.BeginForm("DeleteCall", "Call", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ImSure, new { @class = "col-md-4 control-label" })
+        <div class="col-md-8">
+            <div class="ccm-form-group--checkbox">
+                <div class="ccm-form-group-checkbox--btn">
+                    @Html.CheckBoxFor(m => m.ImSure)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.IHaveChecked, new { @class = "col-md-4 control-label" })
+        <div class="col-md-8">
+            <div class="ccm-form-group--checkbox">
+                <div class="ccm-form-group-checkbox--btn">
+                    @Html.CheckBoxFor(m => m.IHaveChecked)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.HiddenFor(m => m.CallId)
+
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-8">
+            @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "Home", null, new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-primary">@Localizer["Delete"]</button>
+        </div>
+    </div>
+}

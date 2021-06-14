@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  ccm:
+    image: ${IMAGE_NAME}
+    networks:
+      - proxynet
+      - default
+    configs:
+      - source: ccm_appsettings
+        target: /app/appsettings.json
+    volumes:
+      - /mnt/nfs/msc-nfs/docker-share/development/ccm:/ccm
+
+configs:
+  ccm_appsettings:
+    external: true
+
+networks:
+  proxynet:
+    external: true

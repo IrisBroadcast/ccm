@@ -1,0 +1,58 @@
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Profile.ProfileGroupViewModel
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.GroupSortWeight, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.GroupSortWeight, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Profiles, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        <div class="dropdown">
+            <div class="inlineselection-menu">
+                <ul class="sortable-selection" role="menu">
+                    @for (int i = 0; i < Model.Profiles.Count; i++)
+                    {
+                        <li>
+                            <label class="checkbox">
+                                @Html.CheckBoxFor(m => m.Profiles[i].Selected)
+                                @Model.Profiles[i].Name
+                                @Html.HiddenFor(m => m.Profiles[i].Name)
+                                @Html.HiddenFor(m => m.Profiles[i].Id)
+                                @Html.Hidden(string.Format("Profiles[{0}].SortIndex", i), i, new { @class = "sortIndex" })
+                            </label>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id)
+
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "ProfileGroup", null, new { @class = "btn btn-default" })
+        <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
+    </div>
+</div>

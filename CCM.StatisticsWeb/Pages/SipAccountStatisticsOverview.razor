@@ -1,0 +1,47 @@
+﻿@if (SipAccounts == null)
+{
+    <p><em>Loading..</em></p>
+}
+else
+{
+    <EditForm Model="@sipAccountStatisticsModel">
+        <div>
+            <div>
+                <div class="form-group row">
+                    <label for="StartDate">From</label>
+                    <InputDate @bind-Value="sipAccountStatisticsModel.StartTime"></InputDate>
+                    <label for="EndDate">To</label>
+                    <InputDate @bind-Value="sipAccountStatisticsModel.EndTime"></InputDate>
+                </div>
+            </div>
+
+
+
+            <div>
+                <label for="SipAccount">SIP</label>
+
+                <select name="Sip account" @bind="sipAccountStatisticsModel.SipId">
+                    @foreach (var sip in SipAccounts)
+                    {
+                        <option value="@sip.Id">@sip.UserName</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <button id="buttonGetPerson" class="btn btn-primary" @onclick="() => GetSipStatistics(sipAccountStatisticsModel.SipId, sipAccountStatisticsModel.StartTime, sipAccountStatisticsModel.EndTime)">
+            Get Data
+        </button>
+    </EditForm>
+    @if (visible)
+    {
+        <tr>
+            <td colspan="5">
+                <SipAccountStatisticsResult SipAccountStatistics="sipAccountStatisticsOverview"></SipAccountStatisticsResult>
+            </td>
+        </tr>
+    }
+}
+
+
+

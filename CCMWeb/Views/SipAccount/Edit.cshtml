@@ -1,0 +1,134 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.SipAccount.SipAccountEditFormViewModel
+
+@section scripts
+{
+    <script src="~/dist/ccm-form.js"></script>
+}
+
+<h2>@Localizer["Edit_Account"]</h2>
+<hr />
+
+@using (Html.BeginForm("Edit", "SipAccount", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.ValidationSummary(false)
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group" id="displayNameGroup">
+        @Html.LabelFor(m => m.DisplayName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.DisplayName, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Comment, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Comment, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ExtensionNumber, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.ExtensionNumber, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.AccountLocked, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <div class="ccm-form-group--checkbox">
+                <div class="ccm-form-group-checkbox--btn">
+                    @Html.CheckBoxFor(m => m.AccountLocked)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" id="accountTypeGroup">
+        @Html.LabelFor(m => m.AccountType, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.AccountType, Model.AccountTypes, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group" id="ownerGroup">
+        @Html.LabelFor(m => m.OwnerId, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.OwnerId, new SelectList(Model.Owners, "Id", "Name"), "", new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group" id="codecTypeGroup">
+        @Html.LabelFor(m => m.CodecType_Id, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.CodecType_Id, new SelectList(Model.CodecTypes, "Id", "Name"), "", new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ChangePassword, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <div class="ccm-form-group--checkbox">
+                <div class="ccm-form-group-checkbox--btn">
+                    @Html.CheckBoxFor(m => m.ChangePassword, new { id = "changePasswordCheckBox" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="changePasswordFieldsWrapper">
+        <div class="form-group">
+            <label class="col-md-2 control-label">@Localizer["Generate_Password"]</label>
+            <div class="col-md-10">
+                <div class="ccm-form-group--checkbox">
+                    <div class="ccm-form-group-checkbox--btn">
+                        <input id="generatePasswordCheckBox" type="checkbox" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="generatedPasswordWrapper" class="form-group hidden">
+            <label class="col-md-2 control-label">@Localizer["Generated_Password"]</label>
+            <div class="col-md-10">
+                <input id="generatedPassword" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div id="passwordFieldsWrapper">
+            <div class="form-group">
+                @Html.LabelFor(m => m.PasswordDefault, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.PasswordDefault, new { @class = "form-control", @autocomplete = "off" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.PasswordConfirm, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.PasswordFor(m => m.PasswordConfirm, new { @class = "form-control", @autocomplete = "off" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "SipAccount", null, new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
+        </div>
+    </div>
+
+    @Html.HiddenFor(m => m.Id)
+}

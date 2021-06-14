@@ -1,0 +1,27 @@
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Core.Entities.Category
+
+@{
+    ViewData["Title"] = @Localizer["Delete_Category"];
+}
+
+<h2>@Localizer["Delete_Category"]</h2>
+<hr />
+
+<p>@Localizer["Delete_Category_Are_You_Sure"]</p>
+<p>@Model.Name - @Model.Description</p>
+
+@using (Html.BeginForm("Delete", "Category", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.Id)
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "Category", null, new { @class = "btn btn-default"})
+            <button type="submit" class="btn btn-danger">@Localizer["Delete"]</button>
+        </div>
+    </div>
+}

@@ -1,0 +1,18 @@
+version: "3.7"
+services:
+  discovery:
+    image: ${IMAGE_NAME}
+    networks:
+      - proxynet
+      - default
+    configs:
+      - source: discovery_appsettings
+        target: /app/appsettings.json
+
+configs:
+  discovery_appsettings:
+    external: true
+
+networks:
+  proxynet:
+    external: true

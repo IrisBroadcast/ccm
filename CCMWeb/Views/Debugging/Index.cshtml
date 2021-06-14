@@ -1,0 +1,31 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+
+@{
+    ViewData["Title"] = @Localizer["Debug_Title"];
+}
+
+<div class="row">
+    <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header ccm-sub-navbar--admin--header">
+                <h2>@Localizer["Debug_Title"]</h2>
+                <span class="navbar-page-description"></span>
+            </div>
+            <div class="navbar ccm-sub-navbar--admin--links">
+                <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
+                    <li class="active">@Html.ActionLink(@Localizer["Logs_Link_Debugging"].Value, "Index", "Debugging", new { }, new { })</li>
+                    <li>@Html.ActionLink("Get CCM Users", "GetCCMUsers", "Debugging", new { }, new { })</li>
+                    <li>@Html.ActionLink("Get SIP Accounts", "GetSipAccounts", "Debugging", new { }, new { })</li>
+                    <li>@Html.ActionLink("Who Am I", "WhoAmI", "Debugging", new { }, new { })</li>
+                    <li>@Html.ActionLink("Cache info", "CacheInfo", "Debugging", new { }, new { })</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="row">
+
+</div>

@@ -1,0 +1,28 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Core.Entities.MetaType
+
+@{
+    ViewData["Title"] = @Localizer["Delete_MetaType"];
+}
+
+<h2>@Localizer["Delete_MetaType"]</h2>
+<hr />
+
+<p>@Localizer["Delete_MetaType_Are_You_Sure"]</p>
+<p>@Model.Name</p>
+
+@using (Html.BeginForm("Delete", "Meta", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(m => m.Id)
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "Meta", null, new { @class = "btn btn-default"})
+            <button type="submit" class="btn btn-danger">@Localizer["Delete"]</button>
+        </div>
+    </div>
+}

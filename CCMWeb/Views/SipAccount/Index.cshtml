@@ -1,0 +1,77 @@
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@using CCM.Core.Helpers
+@model CCM.Web.Models.SipAccount.SipAccountViewModel
+
+@section search
+{
+    @using (Html.BeginForm("Index", "SipAccount", FormMethod.Post, new { @class = "navbar-form navbar-right ccm-navbar-search", role = "search" }))
+    {
+        <div class="form-group">
+            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Localizer["Search_Account"]" value="@ViewData["SearchString"]">
+            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Localizer["Search"]</button>
+        </div>
+    }
+}
+
+<div class="row">
+    <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header ccm-sub-navbar--admin--header">
+                <h2>@Localizer["Accounts"]</h2>
+                <span class="navbar-page-description"></span>
+            </div>
+            <div class="navbar ccm-sub-navbar--admin--links">
+                <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
+                    <li>@Html.ActionLink(@Localizer["New_Account"].Value, "Create", "SipAccount")</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="panel panel-default list-ccm">
+        <div class="panel-heading list-ccm-heading">
+            <div class="row">
+                <div class="col-md-3">@Localizer["UserName"]</div>
+                <div class="col-md-4">@Localizer["Comment"]</div>
+                <div class="col-md-2">@Localizer["Account_Type"]</div>
+                <div class="col-md-2">@Localizer["Last_Used"]</div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+        <div class="panel-body-lp">
+            @{
+                var lastGuid = Guid.Empty;
+            }
+
+            @foreach (var account in Model.Users)
+            {
+                // Codec Type Header
+                if (account.CodecType != null && account.CodecType.Id != lastGuid)
+                {
+                    <div class="row panel-body-item user list-ccm-group-header" style="border-color: @account.CodecType.Color">
+                        <div class="col-md-12">@account.CodecType.Name</div>
+                    </div>
+
+                    lastGuid = account.CodecType.Id;
+                }
+
+                // Sip Account
+                <div class="row panel-body-item user @(account.IsUnused ? "account-is-unused" : string.Empty)">
+                    <div class="col-md-3">@(string.IsNullOrEmpty(account.DisplayName) ? "" : account.DisplayName + " - ")@account.UserName <span class="@(account.AccountLocked ? "glyphicon glyphicon-lock" : string.Empty)"></span></div>
+                    <div class="col-md-4">@account.Comment</div>
+                    @{
+                        <div class="col-md-2">@account.AccountType.DescriptionAsResource()</div>
+                    }
+                    <div class="col-md-2">@account.LastUsed</div>
+                    <div class="col-md-1 text-right list-ccm-icongroup">
+                        @Html.ActionLink(" ", "Edit", "SipAccount", new { @id = account.Id }, new { @class = "glyphicon glyphicon-pencil list-ccm-inlineicon" })
+                        @Html.ActionLink(" ", "Delete", "SipAccount", new { @id = account.Id }, new { @class = "glyphicon glyphicon-trash list-ccm-inlineicon" })
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

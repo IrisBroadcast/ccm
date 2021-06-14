@@ -1,0 +1,38 @@
+﻿
+@if (SipAccountStatistics == null)
+{
+    <p>Loading..</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Number of calls</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var date in SipAccountStatistics)
+            {
+                @if (date.NumberOfCalls != 0)
+                {
+
+                    <tr>
+                        <td>@date.Date</td>
+                        <td>@date.NumberOfCalls</td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+}
+
+    @code {
+
+        [Parameter]
+        public IEnumerable<DateBasedStatistics> SipAccountStatistics { get; set; }
+    }

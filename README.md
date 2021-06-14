@@ -1,10 +1,10 @@
-The IRIS Call Control Manager and discovery service - CCM
+The IRIS Codec Call Monitor and Discovery service - CCM
 =========================================================
 
 * Web Site: https://www.irisbroadcast.org
 * Github: https://github.com/irisbroadcast
 
-This is the code for the IRIS Call Control Manager and Discovery
+This is the code for the IRIS Codec Call Manager and Discovery
 service developed by Sveriges Radio AB in Sweden. This code has
 been in production for many years and we're proud to share it
 with a larger community!
@@ -72,10 +72,10 @@ for convience. In a future release, these will not be included
 but downloaded by scripts. These libraries have their own
 copyright and licenses.
 
-The IRIS CCM - Codec Call Monitor
+The Application
 =================================
 CCM is a platform for administration and management of an ACIP-compliant SIP
-infrastructure for live radio broadcast.
+codec infrastructure for live radio broadcast.
 
 Architecture
 ------------
@@ -101,7 +101,7 @@ the web services. Development is done in Microsoft Visual Studio 2017.
 
 For databases, the Entity Framework v6 is used.
 
-IRIS Codec Call Monitor (CCM) web - Monitoring & CMS
+IRIS Codec Call Monitor - Monitoring & CMS
 -----------
 The web interface provides an overview of available (and registered) devices as well
 as current broadcast sessions. A user can view registration IP addresses, device types
