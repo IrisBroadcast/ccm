@@ -15,7 +15,7 @@
     <div class="navbar-form navbar-right ccm-navbar-search" role="search">
         <div class="form-group">
             <input type="text" id="searchField" autofocus="autofocus" ng-model="searchString" ng-keydown="searchKeyUp($event.keyCode)" ng-model-options="{ debounce:250 }" class="form-control ccm-navbar-search--field" placeholder="@Localizer["Search"]">
-            <button class="btn btn-default ccm-navbar-search--btn" ng-click="setSearch()">@Localizer["Search"]</button>
+            <button class="btn btn-default ccm-navbar-search--btn" ng-click="setSearch()">@Localizer["Search"]</button> <!-- TODO: This button is not ngclick in use here... -->
         </div>
     </div>
 }
@@ -25,6 +25,10 @@
 
         <!-- Filter headlines -->
         <div class="col-md-2 list-ccm-navigation">
+            <div class="well tab-content">
+                <button class="btn btn-default" type="button" ng-click="resetViewFilters()">@Localizer["Reset filters"]</button>
+            </div>
+
             <ul class="ccm-front-filter--heading nav nav-pills nav-justified hidden-sm hidden-xs">
                 <li class="active list-ccm-tab--region" id="tab-region-btn">
                     <a href="#tab-region-content">

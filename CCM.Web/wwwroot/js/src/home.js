@@ -447,6 +447,15 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         console.log("Sort: ", sort.column, ", descending: ", sort.descending);
     };
 
+    $scope.resetViewFilters = function () {
+        console.log("Resetting filters");
+        $scope.region = "";
+        $scope.regionName = "";
+        $scope.codecType = "";
+        $scope.codecTypeName = "";
+        $scope.searchString = "";
+    };
+
     $scope.setFilterRegion = function (region) {
         $scope.region = region;
         $scope.regionName = region;
