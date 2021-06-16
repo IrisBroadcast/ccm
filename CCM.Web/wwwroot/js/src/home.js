@@ -454,6 +454,8 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         $scope.codecType = "";
         $scope.codecTypeName = "";
         $scope.searchString = "";
+        $scope.category = "";
+        $scope.categoryName = "";
     };
 
     $scope.setFilterRegion = function (region) {
