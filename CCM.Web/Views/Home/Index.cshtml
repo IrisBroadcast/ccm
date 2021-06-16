@@ -200,13 +200,14 @@
                                 </div>
                             </div>
                             <div class="mui-panel ongoing-calls">
-                                <div class="mui-row list-ccm--bg" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.CallId">
+                                <div class="mui-row list-ccm--bg" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
                                     <div class="mui-col mui-col--source">
                                         <span class="list-ccm--type-id" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
                                         <a class="list-ccm--sip-name" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
                                         <span class="list-ccm--sip-name" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{call.fromDisplayName}}</span>
                                         <span class="list-ccm--sip-location" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
                                         <div class="list-ccm--sip-comment">{{call.fromComment}}</div>
+                                        <span>{{call.fromId}}</span>
                                     </div>
                                     <div class="mui-col mui-col--direction">
                                         <?xml version="1.0" encoding="utf-8"?>
@@ -221,6 +222,7 @@
                                         <span class="list-ccm--sip-name-to" ng-if="!call.toId.length" title="{{call.toSip}}">{{call.toDisplayName}}</span>
                                         <span class="list-ccm--sip-location" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
                                         <div class="list-ccm--sip-comment-to">{{call.toComment}}</div>
+                                        <span>{{call.toId}}</span>
                                     </div>
 
                                     <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
@@ -313,6 +315,7 @@
                                             <span ng-if="!sip.inCallWithId.length" title="{{sip.inCallWithSip}}"
                                                   class="list-ccm--reg-ua-name-to--less">{{sip.inCallWithName}}</span>
                                         </span>
+                                        <span>{{sip.id}}</span>
                                     </div>
                                     <div class="col-md-3 list-ccm--reg-ua-location" title="{{sip.locationShortName}}">
                                         {{sip.location}}

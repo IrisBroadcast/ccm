@@ -7,11 +7,13 @@
 @using Microsoft.Extensions.Options
 @using Roles = CCM.Core.Helpers.Roles
 @using CCM.Core.Helpers
+@using CCM.Core.Managers
 @{
     string env = @BuildInformation.Value.Environment;
     var logoClass = (env == "development" ? "development" : (env == "staging" ? "staging" : "production"));
     string deployVersion = @BuildInformation.Value.Version;
     string deployServer = @BuildInformation.Value.Server;
+    string deployEnvironment = BuildInformation.Value.Environment;
     string buildDateString = @BuildInformation.Value.ReleaseDate;
     string codecControlHost = @SettingsManager.CodecControlHost;
     string codecControlUserName = @SettingsManager.CodecControlUserName;
@@ -63,7 +65,7 @@
         @RenderBody()
         <hr />
         <footer class="mui-footer">
-            <p>&copy; 2014 - @DateTime.Now.Year Sveriges Radio. Version <strong>@deployVersion</strong> - <strong>@buildDateString</strong> <strong>@deployServer</strong></p>
+            <p>&copy; 2014 - @DateTime.Now.Year Sveriges Radio. Version <strong>@deployVersion</strong> - <strong>@buildDateString</strong> <strong>@deployServer</strong> (<i>@deployEnvironment</i>)</p>
         </footer>
     </div>
 

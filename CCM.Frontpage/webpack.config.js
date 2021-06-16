@@ -9,7 +9,7 @@ module.exports = {
         "ccm-styles": "./styles/less/Site.less"
     },
     output: {
-        path: path.resolve(__dirname + "/../CCMWeb/wwwroot/dist"),
+        path: path.resolve(__dirname + "/../CCM.Web/wwwroot/dist"),
         filename: "[name].js",
         publicPath: "/"
     },
