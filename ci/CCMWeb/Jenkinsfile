@@ -1,5 +1,5 @@
 def application = [
-    stackname: "ipk",
+    stackname: "contrib",
     name: "ccm",
 ]
 
@@ -28,6 +28,7 @@ node(jenkinsWorkerConstraint) {
     if(env.TAG_NAME) {
         buildVersion = env.TAG_NAME
         buildEnvironment = "Prod"
+        application.stackname = "ipk"
     }
 
     // Modify the buildinformation.json file in the repository
