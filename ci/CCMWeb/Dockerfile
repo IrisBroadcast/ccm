@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/dotnet/sdk:3.1 as builder
 WORKDIR /source
 
 # Copy all csproj file inorder to fetch all nuget packages
-COPY ./CCMCore/*.csproj ./CCMCore/
+COPY ./CCM.Core/*.csproj ./CCM.Core/
 COPY ./CCM.Data/*.csproj ./CCM.Data/
 COPY ./CCM.Web/*.csproj ./CCM.Web/
 
