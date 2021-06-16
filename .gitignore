@@ -86,3 +86,5 @@ colorpicker.css
 colorpicker.min.css
 *.log
 CCMWeb/appsettings.Development.json
+
+logs
