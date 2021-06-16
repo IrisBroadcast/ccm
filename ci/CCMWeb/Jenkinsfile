@@ -32,18 +32,18 @@ node(jenkinsWorkerConstraint) {
     }
 
     // Modify the buildinformation.json file in the repository
-    sh "sed -i \"s/APP_VERSION/\"${buildVersion}\"/g\" ./CCMWeb/buildinformation.json"
-    sh "sed -i \"s/APP_ENVIRONMENT/\"${buildEnvironment}\"/g\" ./CCMWeb/buildinformation.json"
-    sh "sed -i \"s/APP_SERVER/\"${config.dockerHost}\"/g\" ./CCMWeb/buildinformation.json"
+    sh "sed -i \"s/APP_VERSION/\"${buildVersion}\"/g\" ./CCM.Web/buildinformation.json"
+    sh "sed -i \"s/APP_ENVIRONMENT/\"${buildEnvironment}\"/g\" ./CCM.Web/buildinformation.json"
+    sh "sed -i \"s/APP_SERVER/\"${config.dockerHost}\"/g\" ./CCM.Web/buildinformation.json"
 
     sh '''
-        BUILDINFORMATION="./CCMWeb/buildinformation.json"
+        BUILDINFORMATION="./CCM.Web/buildinformation.json"
         DATE=$(date '+%Y-%m-%d %H:%M:%S')
         sed -i "s/APP_NAME/Codec Control Monitor/g" $BUILDINFORMATION
         sed -i "s/APP_RELEASE_DATE/${DATE}/g" $BUILDINFORMATION
     '''
     // Print the modified file
-    sh 'cat ./CCMWeb/buildinformation.json'
+    sh 'cat ./CCM.Web/buildinformation.json'
 
     def fullImageName
     docker.withRegistry(dockerRegistry) {

@@ -5,18 +5,18 @@ FROM mcr.microsoft.com/dotnet/sdk:3.1 as builder
 WORKDIR /source
 
 # Copy all csproj file inorder to fetch all nuget packages
-COPY ./CCMCore/*.csproj ./CCMCore/
-COPY ./CCMDiscoveryApi/*.csproj ./CCMDiscoveryApi/
+COPY ./CCM.Core/*.csproj ./CCM.Core/
+COPY ./CCM.DiscoveryApi/*.csproj ./CCM.DiscoveryApi/
 
 # Get all nuget dependencies
-RUN dotnet restore ./CCMDiscoveryApi/CCM.DiscoveryApi.csproj
+RUN dotnet restore ./CCM.DiscoveryApi/CCM.DiscoveryApi.csproj
 
 # Copy source code
-COPY CCMCore CCMCore
-COPY CCMDiscoveryApi CCMDiscoveryApi
+COPY CCM.Core CCM.Core
+COPY CCM.DiscoveryApi CCM.DiscoveryApi
 
 # Build application
-RUN dotnet publish --configuration Release --output ./out ./CCMDiscoveryApi/CCM.DiscoveryApi.csproj
+RUN dotnet publish --configuration Release --output ./out ./CCM.DiscoveryApi/CCM.DiscoveryApi.csproj
 
 # Switch to runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:3.1

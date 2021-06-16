@@ -32,18 +32,18 @@ node(jenkinsWorkerConstraint) {
     }
 
     // Modify the buildinformation.json file in the repository
-    sh "sed -i \"s/APP_VERSION/\"${buildVersion}\"/g\" ./CCMDiscoveryApi/buildinformation.json"
-    sh "sed -i \"s/APP_ENVIRONMENT/\"${buildEnvironment}\"/g\" ./CCMDiscoveryApi/buildinformation.json"
-    sh "sed -i \"s/APP_SERVER/\"${config.dockerHost}\"/g\" ./CCMDiscoveryApi/buildinformation.json"
+    sh "sed -i \"s/APP_VERSION/\"${buildVersion}\"/g\" ./CCM.DiscoveryApi/buildinformation.json"
+    sh "sed -i \"s/APP_ENVIRONMENT/\"${buildEnvironment}\"/g\" ./CCM.DiscoveryApi/buildinformation.json"
+    sh "sed -i \"s/APP_SERVER/\"${config.dockerHost}\"/g\" ./CCM.DiscoveryApi/buildinformation.json"
 
     sh '''
-        BUILDINFORMATION="./CCMDiscoveryApi/buildinformation.json"
+        BUILDINFORMATION="./CCM.DiscoveryApi/buildinformation.json"
         DATE=$(date '+%Y-%m-%d %H:%M:%S')
         sed -i "s/APP_NAME/SR Discovery/g" $BUILDINFORMATION
         sed -i "s/APP_RELEASE_DATE/${DATE}/g" $BUILDINFORMATION
     '''
     // Print the modified file
-    sh 'cat ./CCMDiscoveryApi/buildinformation.json'
+    sh 'cat ./CCM.DiscoveryApi/buildinformation.json'
 
     def fullImageName
     docker.withRegistry(dockerRegistry) {

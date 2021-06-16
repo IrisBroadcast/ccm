@@ -6,19 +6,19 @@ WORKDIR /source
 
 # Copy all csproj file inorder to fetch all nuget packages
 COPY ./CCMCore/*.csproj ./CCMCore/
-COPY ./CCMData/*.csproj ./CCMData/
-COPY ./CCMWeb/*.csproj ./CCMWeb/
+COPY ./CCM.Data/*.csproj ./CCM.Data/
+COPY ./CCM.Web/*.csproj ./CCM.Web/
 
 # Get all nuget dependencies
-RUN dotnet restore ./CCMWeb/CCM.Web.csproj
+RUN dotnet restore ./CCM.Web/CCM.Web.csproj
 
 # Copy source code
-COPY CCMCore CCMCore
-COPY CCMData CCMData
-COPY CCMWeb CCMWeb
+COPY CCM.Core CCM.Core
+COPY CCM.Data CCM.Data
+COPY CCM.Web CCM.Web
 
 # Build application
-RUN dotnet publish --configuration Release --output ./out ./CCMWeb/CCM.Web.csproj
+RUN dotnet publish --configuration Release --output ./out ./CCM.Web/CCM.Web.csproj
 
 # Switch to runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:3.1
