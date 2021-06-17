@@ -87,7 +87,7 @@ namespace CCM.Data.Repositories
                 UserAgentName = rs.UserAgent?.Name ?? string.Empty,
                 LocationName = rs.Location?.Name ?? string.Empty,
                 LocationComment = rs.Location?.Comment ?? string.Empty,
-                CityName = rs.Location?.City.Name ?? string.Empty,
+                CityName = rs.Location?.City?.Name ?? string.Empty,
                 RegionName = rs.Location?.Region.Name ?? string.Empty,
             };
 

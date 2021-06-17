@@ -28,7 +28,6 @@ using System;
 using System.Globalization;
 using System.Text.Json.Serialization;
 using CCM.Core.SipEvent.Messages;
-using NLog;
 
 namespace CCM.Core.SipEvent.Event
 {

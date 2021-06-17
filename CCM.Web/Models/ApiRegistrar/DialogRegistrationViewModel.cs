@@ -38,15 +38,16 @@ namespace CCM.Web.Models.ApiRegistrar
         public DateTime Started { get; set; }
         public SipCallState State { get; set; } = SipCallState.NONE;
         public bool IsPhoneCall { get; set; }
-        public string Category { get; set; }
         public string SDP { get; set; }
 
         public string FromId { get; set; }
         public string FromUsername { get; set; }
         public string FromDisplayName { get; set; }
+        public string FromCategory { get; set; }
 
         public string ToId { get; set; }
         public string ToUsername { get; set; }
         public string ToDisplayName { get; set; }
+        public string ToCategory { get; set; }
     }
 }

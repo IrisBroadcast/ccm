@@ -71,11 +71,11 @@ namespace CCM.Web.Controllers.ApiRegistrar
         [HttpPost]
         public IActionResult Index(DialogRegistrationViewModel callEvent)
         {
-            //if (callEvent == null)
-            //{
-            //    log.Warn("Call register controller received empty data");
-            //    return BadRequest("Call register controller received empty data");
-            //}
+            if (callEvent == null)
+            {
+                log.Warn("Call register controller received empty data");
+                return BadRequest("Call register controller received empty data");
+            }
 
             //var sipMessage = _sipEventParser.Parse(callEvent);
 

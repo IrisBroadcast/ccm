@@ -32,6 +32,7 @@ using NLog;
 using System.Threading.Tasks;
 using CCM.Core.Interfaces.Parser;
 using CCM.Core.SipEvent.Event;
+using CCM.Core.SipEvent.Messages;
 using CCM.Web.Hubs;
 using Microsoft.Extensions.Logging;
 
@@ -87,7 +88,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
                 return BadRequest();
             }
 
-            var sipMessage = _sipEventParser.Parse(sipEventData);
+            SipMessageBase sipMessage = _sipEventParser.Parse(sipEventData);
             if (sipMessage == null)
             {
                 _logger.LogWarning("Incorrect SIP message format: ", sipEventData);
