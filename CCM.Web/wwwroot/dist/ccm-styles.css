@@ -7356,8 +7356,34 @@ ul.mui-nav {
 .inlineselection-menu li.active {
   background-color: aquamarine;
 }
+.mui-billboard {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  align-content: center;
+}
+.mui-billboard .board {
+  text-align: center;
+  font-kerning: auto;
+}
+.mui-billboard .board .count {
+  font-size: 4rem;
+  font-weight: 600;
+}
+.mui-billboard .board .text {
+  font-size: 1.2rem;
+}
 .mui-call-direction svg {
   height: 2rem;
+}
+.mui-header-filterinfo {
+  height: 0.8rem;
+  border-radius: 0.2rem;
+}
+.mui-header-filterinfo.active {
+  background-image: linear-gradient(45deg, #fff5cf 25%, #ffea96 25%, #ffea96 50%, #fff5cf 50%, #fff5cf 75%, #ffea96 75%, #ffea96 100%);
+  background-size: 42.43px 42.43px;
 }
 @media (max-width: 400px) {
   /* iPhone zoom fix */
@@ -7731,12 +7757,6 @@ input[type="checkbox"].input-validation-error {
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   width: 100%;
-}
-.list-ccm-tab-ongoing--count {
-  font-weight: 800;
-}
-.list-ccm-tab-registered--count {
-  font-weight: 800;
 }
 .list-ccm-container .list-ccm-thead--sort {
   /* List is sorted on this */
@@ -8226,8 +8246,19 @@ input[type="checkbox"].input-validation-error {
   margin: 0;
   line-height: 60px;
 }
-.ccm-front-filter--heading .selected-name,
-.ccm-front-list--heading .selected-name {
+.ccm-front-filter--heading {
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
+  align-items: flex-start;
+}
+.ccm-front-filter--heading li {
+  width: 100%;
+}
+.ccm-front-filter--heading li a {
+  text-align: left;
+}
+.ccm-front-filter--heading .selected-name {
   font-size: 10px;
 }
 .dropdown-toggle {
@@ -8480,38 +8511,6 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 .full-overview .panel-default > .panel-heading {
   background-color: transparent;
   color: #FFFFFF;
-}
-.full-overview .list-ccm-tab-ongoing a {
-  background: #000000 !important;
-  color: #FFFFFF;
-}
-.full-overview .list-ccm-tab-ongoing--count {
-  font-size: 280%;
-  line-height: 0.5;
-  color: #FFC107;
-}
-.full-overview .list-ccm-tab-ongoing--text {
-  display: block;
-}
-.full-overview .list-ccm-tab-registered a {
-  background: #000000 !important;
-  color: #FFFFFF;
-}
-.full-overview .list-ccm-tab-registered--count {
-  font-size: 280%;
-  line-height: 0.5;
-  color: #FFC107;
-}
-.full-overview .list-ccm-tab-registered--text {
-  display: block;
-}
-.full-overview .list-ccm-tab--biglist .list-ccm-tab-ongoing--count,
-.full-overview .list-ccm-tab--biglist .list-ccm-tab-registered--count {
-  font-size: 120%;
-}
-.full-overview .list-ccm-tab--biglist .list-ccm-tab-ongoing--text,
-.full-overview .list-ccm-tab--biglist .list-ccm-tab-registered--text {
-  display: inline-block;
 }
 .full-overview .list-ccm-navigation {
   display: none;

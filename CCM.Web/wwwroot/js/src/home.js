@@ -461,8 +461,10 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     $scope.setFilterRegion = function (region) {
         $scope.region = region;
         $scope.regionName = region;
-        $('#regions li').removeClass('active');
-        $('#regions li:contains(' + $scope.regionName + ')').addClass('active');
+
+        $('#regions-filter li').removeClass('active');
+        $('#regions-filter li:contains(' + $scope.regionName + ')').addClass('active');
+
         $sessionStorage.region = $scope.region;
     };
 
@@ -470,16 +472,16 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         $scope.codecType = codecType;
         $scope.codecTypeName = codecType;
         // TODO: make these correct and maybe just angular fully..
-        $('#codecTypes li').removeClass('active');
-        $('#codecTypes li:contains(' + $scope.codecTypeName + ')').addClass('active');
+        $('#codecTypes-filter li').removeClass('active');
+        $('#codecTypes-filter li:contains(' + $scope.codecTypeName + ')').addClass('active');
         $sessionStorage.codecType = $scope.codecType;
     };
 
     $scope.setFilterCategory = function (category) {
         $scope.category = category;
         $scope.categoryName = category;
-        $('#codecTypes li').removeClass('active');
-        $('#codecTypes li:contains(' + $scope.codecTypeName + ')').addClass('active');
+        $('#categories-filter li').removeClass('active');
+        $('#categories-filter li:contains(' + $scope.categoryName + ')').addClass('active');
         $sessionStorage.category = $scope.category;
     };
 

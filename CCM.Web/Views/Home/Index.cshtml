@@ -21,6 +21,11 @@
 }
 
 <div>
+
+    <div class="mui-header-filterinfo" ng-class="{'active': isFiltered}">
+
+    </div>
+
     <div class="row">
 
         <!-- Filter headlines -->
@@ -53,7 +58,7 @@
             <div class="well tab-content">
                 <!-- Grouping Filter 1 -->
                 <div class="tab-pane ccm-tabpane-filters active" id="tab-region-filter">
-                    <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs">
+                    <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs" id="regions-filter">
                         <li ng-click="setFilterRegion('')">
                             <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
                         </li>
@@ -86,7 +91,7 @@
 
                 <!-- Grouping Filter 2 -->
                 <div class="tab-pane ccm-tabpane-filters" id="tab-codectype-filter">
-                    <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs">
+                    <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs" id="codecTypes-filter">
                         <li ng-click="setFilterCodecType('')">
                             <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
                         </li>
@@ -127,7 +132,7 @@
 
                 <!-- Grouping Filter 3 -->
                 <div class="tab-pane ccm-tabpane-filters" id="tab-category-filter">
-                    <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs">
+                    <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs" id="categories-filter">
                         <li ng-click="setFilterCategory('')">
                             <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
                         </li>
@@ -167,23 +172,18 @@
 
         <div class="col-md-10 list-ccm-container">
             <!-- TABS: Navigation links -->
-            <ul class="ccm-front-list--heading nav nav-pills nav-justified" ng-class="{ 'list-ccm-tab--biglist' : filteredOnGoingCalls.length > 21 }">
+            <div class="mui-billboard">
                 <!-- Ongoing calls headline -->
-                <li class="active list-ccm-tab-ongoing" id="tab-ongoing-btn">
-                    <a href="#ongoing">
-                        <!-- &nbsp; -->
-                        <span id="callCount" class="list-ccm-tab-ongoing--count">{{filteredOnGoingCalls.length}}</span>&nbsp;<span class="list-ccm-tab-ongoing--text">@Localizer["Ongoing_Calls"]</span>
-                        <div class="selected-name">&nbsp;</div>
-                    </a>
-                </li>
+                <div class="board" id="tab-ongoing-btn">
+                    <div class="count">{{filteredOnGoingCalls.length}}</div>
+                    <div class="text">@Localizer["Ongoing_Calls"]</div>
+                </div>
                 <!-- Registered UAs headline -->
-                <li class="list-ccm-tab-registered" id="tab-registered-btn">
-                    <a href="#registered">
-                        <span id="registeredCount" class="list-ccm-tab-registered--count">{{filteredRegisteredSips.length}}</span>&nbsp;<span class="list-ccm-tab-registered--text">@Localizer["Registered_Sips"]</span>
-                        <div class="selected-name">&nbsp;</div>
-                    </a>
-                </li>
-            </ul>
+                <div class="board" id="tab-registered-btn">
+                    <div class="count">{{filteredRegisteredSips.length}}</div>
+                    <div class="text">@Localizer["Registered_Sips"]</div>
+                </div>
+            </div>
 
             <!-- TABS: Main content -->
             <div class="tab-content list-ccm-tab-content">
@@ -260,7 +260,7 @@
                                     <div class="mui-col mui-col--source">
                                         <span class="list-ccm--type-id" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
                                         <a class="list-ccm--sip-name--history" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
-                                        <span class="list-ccm--sip-name--history" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{call.fromDisplayName}}</span>
+                                        <span class="list-ccm--sip-name--history" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{ call.fromDisplayName }}</span>
                                         <span class="list-ccm--sip-location--history" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
                                     </div>
                                     <div class="mui-col mui-col--direction">
@@ -273,7 +273,7 @@
                                     <div class="mui-col mui-col--destination">
                                         <span class="list-ccm--type-id" ng-style="{'background-color': call.toCodecTypeColor}" title="{{call.toCodecTypeName}}">&nbsp;</span>
                                         <a class="list-ccm--sip-name-to--history" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
-                                        <span class="list-ccm--sip-name-to--history" ng-if="!call.toId.length" title="{{call.toSip}}">{{call.toDisplayName}}</span>
+                                        <span class="list-ccm--sip-name-to--history" ng-if="!call.toId.length" title="{{call.toSip}}">{{ call.toDisplayName }}</span>
                                         <span class="list-ccm--sip-location--history" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
                                     </div>
 
@@ -302,7 +302,7 @@
                                 </div>
                             </div>
                             <div class="panel-body-lp list-ccm-registered-uas">
-                                <div class="row panel-body-item " ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.InCall]">
+                                <div class="row panel-body-item " ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
                                     <div class="col-md-3" title="{{sip.sip}}">
                                         <span title="{{sip.codecTypeName}}" class="list-ccm--reg-ua-type-id" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
                                         <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name">{{sip.displayName}}</a>
