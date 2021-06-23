@@ -15,6 +15,10 @@
 
     padding: 0.1rem;
 
+    &.codecs {
+        padding: 0.25rem;
+    }
+
     &:nth-child(odd) {
         background-color: @list-row-odd;
     }
@@ -42,6 +46,34 @@
 .mui-col {
     flex: 1 1 auto;
     align-self: center;
+
+    &--ua-comment {
+        &.edit {
+            cursor: pointer;
+
+            span {
+                border-bottom: 1px dashed @border-color-editable;
+            }
+        }
+
+        &.edit-empty {
+            /* If comment is editable but empty */
+            cursor: cell;
+
+            span {
+                border-bottom: 1px dashed @border-color-editable;
+                width: 20px;
+                display: block;
+            }
+        }
+    }
+
+    &--ua-image {
+        img {
+            max-height: 18px;
+            max-width: 100%;
+        }
+    }
 
     a {
         font-weight: 600;

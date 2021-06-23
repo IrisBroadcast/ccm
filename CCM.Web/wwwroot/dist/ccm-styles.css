@@ -7050,6 +7050,9 @@ button.close {
   border-style: solid;
   padding: 0.1rem;
 }
+.mui-row.codecs {
+  padding: 0.25rem;
+}
 .mui-row:nth-child(odd) {
   background-color: #ffffff;
 }
@@ -7073,6 +7076,25 @@ button.close {
 .mui-col {
   flex: 1 1 auto;
   align-self: center;
+}
+.mui-col--ua-comment.edit {
+  cursor: pointer;
+}
+.mui-col--ua-comment.edit span {
+  border-bottom: 1px dashed #5ca2de;
+}
+.mui-col--ua-comment.edit-empty {
+  /* If comment is editable but empty */
+  cursor: cell;
+}
+.mui-col--ua-comment.edit-empty span {
+  border-bottom: 1px dashed #5ca2de;
+  width: 20px;
+  display: block;
+}
+.mui-col--ua-image img {
+  max-height: 18px;
+  max-width: 100%;
 }
 .mui-col a {
   font-weight: 600;
@@ -7935,36 +7957,11 @@ input[type="checkbox"].input-validation-error {
 .panel-body-lp .panel-body-item .list-ccm--time--history {
   font-size: 14px;
 }
-@media (max-width: 767px) {
-  .panel-body-lp .panel-body-item .list-ccm--reg-ua-comment {
-    font-weight: bold;
-    font-size: 12px;
-  }
-}
-.panel-body-lp .panel-body-item .list-ccm--reg-ua-comment--edit {
-  cursor: pointer;
-}
-.panel-body-lp .panel-body-item .list-ccm--reg-ua-comment--edit span {
-  border-bottom: 1px dashed #5ca2de;
-}
-.panel-body-lp .panel-body-item .list-ccm--reg-ua-comment--edit-empty {
-  /* If comment is editable but empty */
-  cursor: cell;
-}
-.panel-body-lp .panel-body-item .list-ccm--reg-ua-comment--edit-empty span {
-  border-bottom: 1px dashed #5ca2de;
-  width: 20px;
-  display: block;
-}
 .panel-body-lp .panel-body-item .list-ccm--reg-ua-name-to {
   font-weight: bold;
 }
 .panel-body-lp .panel-body-item .list-ccm--reg-ua-name-to--less {
   font-weight: bold;
-}
-.panel-body-lp .panel-body-item .list-ccm--reg-ua-logo-small img {
-  max-height: 18px;
-  max-width: 100%;
 }
 .panel-body-lp .panel-body-item .list-ccm--user-feedback {
   font-weight: bold;

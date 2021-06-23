@@ -200,7 +200,7 @@
                                 </div>
                             </div>
                             <div class="mui-panel ongoing-calls">
-                                <div class="mui-row list-ccm--bg" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
+                                <div class="mui-row list-ccm--bg codecs" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
                                     <div class="mui-col mui-col--source">
                                         <span class="list-ccm--type-id" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
                                         <a class="list-ccm--sip-name" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
@@ -209,7 +209,7 @@
                                         <div class="list-ccm--sip-comment">{{call.fromComment}}</div>
                                         <span>{{call.fromId}}</span>
                                     </div>
-                                    <div class="mui-col mui-col--direction">
+                                    <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)">
                                         <?xml version="1.0" encoding="utf-8"?>
                                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
                                             <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
@@ -224,7 +224,6 @@
                                         <div class="list-ccm--sip-comment-to">{{call.toComment}}</div>
                                         <span>{{call.toId}}</span>
                                     </div>
-
                                     <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
                                         @if (User.IsInRole(Roles.Admin))
                                         {
@@ -256,7 +255,7 @@
                                 </div>
                             </div>
                             <div class="mui-panel calls-history">
-                                <div class="mui-row list-ccm--bg" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
+                                <div class="mui-row list-ccm--bg codecs" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
                                     <div class="mui-col mui-col--source">
                                         <span class="list-ccm--type-id" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
                                         <a class="list-ccm--sip-name--history" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
@@ -301,9 +300,9 @@
                                     <div class="col-md-6 list-ccm-thead-headline" ng-click="changeRegisteredSorting('Comment')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Comment'}">@Localizer["Comment"]</div>
                                 </div>
                             </div>
-                            <div class="panel-body-lp list-ccm-registered-uas">
-                                <div class="row panel-body-item " ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
-                                    <div class="col-md-3" title="{{sip.sip}}">
+                            <div class="mui-panel list-ccm-registered-uas">
+                                <div class="mui-row codecs" ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
+                                    <div class="mui-col mui-col--ua-registered" title="{{sip.sip}}">
                                         <span title="{{sip.codecTypeName}}" class="list-ccm--reg-ua-type-id" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
                                         <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name">{{sip.displayName}}</a>
                                         <span ng-if="sip.inCall">
@@ -317,19 +316,19 @@
                                         </span>
                                         <span>{{sip.id}}</span>
                                     </div>
-                                    <div class="col-md-3 list-ccm--reg-ua-location" title="{{sip.locationShortName}}">
+                                    <div class="mui-col mui-col--ua-location" title="{{sip.locationShortName}}">
                                         {{sip.location}}
                                     </div>
 
                                     @if (hasWriteRights)
                                     {
-                                        <div class="col-md-5 list-ccm--reg-ua-comment" title="{{sip.userComment ? '@Localizer[" Edit_Comment"]' : '@Localizer["Add_Comment"]' }}" ng-dblclick="editComment(sip.id)" ng-class="sip.userComment ? 'list-ccm--reg-ua-comment--edit' : 'list-ccm--reg-ua-comment--edit-empty'"><span>{{sip.userComment}}&nbsp;</span></div>
+                                        <div class="mui-col mui-col--ua-comment" title="{{sip.userComment ? '@Localizer[" Edit_Comment"]' : '@Localizer["Add_Comment"]' }}" ng-dblclick="editComment(sip.id)" ng-class="sip.userComment ? 'edit' : 'edit-empty'"><span>{{sip.userComment}}&nbsp;</span></div>
                                     }
                                     else
                                     {
-                                        <div class="col-md-5 list-ccm--reg-ua-comment">{{sip.userComment}}&nbsp;</div>
+                                        <div class="mui-col mui-col--ua-comment">{{sip.userComment}}&nbsp;</div>
                                     }
-                                    <div class="col-md-1 list-ccm--reg-ua-logo-small" ng-if="sip.image.length > 0">
+                                    <div class="mui-col mui-col--ua-image" ng-if="sip.image.length > 0">
                                         <img ng-src="@Url.Content("~/uaimages")/{{sip.image}}" alt="" />
                                     </div>
                                 </div>
