@@ -89,7 +89,7 @@ namespace CCM.Web.Models.Statistics
         private static string GetWidth(LocationStatisticsMode mode, LocationBasedStatistics stats, double multiplier)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0:0.#}",
-                Math.Max(0.1, GetRawValue(mode, stats)*multiplier*50));
+                Math.Max(0.1, GetRawValue(mode, stats)*multiplier*100));
         }
 
         private static string GetValue(LocationStatisticsMode mode, LocationBasedStatistics stats)

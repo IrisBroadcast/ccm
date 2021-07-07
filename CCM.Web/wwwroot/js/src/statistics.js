@@ -176,14 +176,14 @@ function codecTypesSearch() {
 
 /* *******************************************************
  * Initiate statistics */
-$(function () {
-    var endDate = new Date();
+(function () {
+    let endDate = new Date();
     endDate.setHours(0);
     endDate.setMinutes(0);
     endDate.setSeconds(0);
     endDate.setMilliseconds(0);
 
-    var startDate = new Date(endDate.toISOString());
+    let startDate = new Date(endDate.toISOString());
     startDate.setDate(startDate.getDate() - 30);
 
     $('#startdatetimepicker').datetimepicker({ format: 'YYYY-MM-DD', date: startDate.toISOString() });
@@ -200,4 +200,4 @@ $(function () {
     $('#regionSearchBtn').on("click", regionSearch);
     $('#sipAccountsSearchBtn').on('click', sipAccountsSearch);
     $('#codecTypesSearchBtn').on('click', codecTypesSearch);
-});
+}());

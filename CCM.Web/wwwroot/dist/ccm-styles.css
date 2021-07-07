@@ -7040,7 +7040,75 @@ button.close {
 /* Fonts */
 /* *******************************************************
  * Defaults and resets */
-.mui-row {
+.mui-panel table {
+  width: auto;
+  flex: 1;
+  display: grid;
+  border-collapse: collapse;
+  /* These are just initial values which are overriden using JavaScript when a column is resized */
+  grid-template-columns: minmax(200px, 4fr) minmax(150px, 3fr) minmax(50px, 2fr) minmax(50px, 1fr);
+}
+.mui-panel thead,
+.mui-panel tbody,
+.mui-panel tr {
+  display: contents;
+}
+.mui-panel th,
+.mui-panel td {
+  padding: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mui-panel th {
+  position: sticky;
+  top: 0;
+  background: #6c7ae0;
+  text-align: left;
+  font-weight: normal;
+  font-size: 1.1rem;
+  color: white;
+  position: relative;
+}
+.mui-panel th:last-child {
+  border: 0;
+}
+.mui-panel .resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+  opacity: 0;
+  width: 3px;
+  cursor: col-resize;
+}
+.mui-panel .resize-handle:hover,
+.mui-panel .header--being-resized .resize-handle {
+  opacity: 0.5;
+}
+.mui-panel th:hover .resize-handle {
+  opacity: 0.3;
+}
+.mui-panel td {
+  color: #808080;
+}
+.mui-panel tr:nth-child(even) td {
+  background: #f8f6ff;
+}
+.mui-panel .codec-type {
+  display: inline-block;
+  width: 1rem;
+  height: 0.5rem;
+  margin-right: 0.5rem;
+  align-content: center;
+  border-radius: 1rem;
+}
+.mui-panel .mui-grid {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+}
+.mui-panel .mui-row {
   display: flex;
   flex-direction: row;
   align-content: center;
@@ -7050,16 +7118,16 @@ button.close {
   border-style: solid;
   padding: 0.1rem;
 }
-.mui-row.codecs {
+.mui-panel .mui-row.codecs {
   padding: 0.25rem;
 }
-.mui-row:nth-child(odd) {
+.mui-panel .mui-row:nth-child(odd) {
   background-color: #ffffff;
 }
-.mui-row:nth-child(even) {
+.mui-panel .mui-row:nth-child(even) {
   background-color: #f7f7f7;
 }
-.mui-row--feedback {
+.mui-panel .mui-row--feedback {
   background-color: #f8f8f8;
   text-align: center;
   position: relative;
@@ -7073,50 +7141,50 @@ button.close {
   border-style: solid;
   background: none;
 }
-.mui-col {
+.mui-panel .mui-row .mui-col {
   flex: 1 1 auto;
   align-self: center;
 }
-.mui-col--ua-comment.edit {
+.mui-panel .mui-row .mui-col--ua-comment.edit {
   cursor: pointer;
 }
-.mui-col--ua-comment.edit span {
+.mui-panel .mui-row .mui-col--ua-comment.edit span {
   border-bottom: 1px dashed #5ca2de;
 }
-.mui-col--ua-comment.edit-empty {
+.mui-panel .mui-row .mui-col--ua-comment.edit-empty {
   /* If comment is editable but empty */
   cursor: cell;
 }
-.mui-col--ua-comment.edit-empty span {
+.mui-panel .mui-row .mui-col--ua-comment.edit-empty span {
   border-bottom: 1px dashed #5ca2de;
   width: 20px;
   display: block;
 }
-.mui-col--ua-image img {
+.mui-panel .mui-row .mui-col--ua-image img {
   max-height: 18px;
   max-width: 100%;
 }
-.mui-col a {
+.mui-panel .mui-row .mui-col a {
   font-weight: 600;
 }
-.mui-col.mui-col--source {
+.mui-panel .mui-row .mui-col.mui-col--source {
   flex: 0 0 34%;
 }
-.mui-col.mui-col--direction {
+.mui-panel .mui-row .mui-col.mui-col--direction {
   max-width: 2rem;
   flex: 0 0 2rem;
 }
-.mui-col.mui-col--direction svg {
+.mui-panel .mui-row .mui-col.mui-col--direction svg {
   height: 100%;
   display: block;
 }
-.mui-col.mui-col--direction rect {
+.mui-panel .mui-row .mui-col.mui-col--direction rect {
   display: none;
 }
-.mui-col.mui-col--direction polygon {
+.mui-panel .mui-row .mui-col.mui-col--direction polygon {
   fill: #f3f3f3;
 }
-.mui-col.mui-col--duration {
+.mui-panel .mui-row .mui-col.mui-col--duration {
   flex: 0 0 11rem;
   color: #bfbfbf;
 }

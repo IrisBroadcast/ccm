@@ -293,45 +293,51 @@
                             </div>
 
                             <!-- Registered Sips -->
-                            <div class="panel-heading list-ccm-heading list-ccm-tab-panel-heading">
-                                <div class="row">
-                                    <div class="col-md-3 list-ccm-thead-headline" ng-click="changeRegisteredSorting('DisplayName')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'DisplayName'}">@Localizer["Identity"]</div>
-                                    <div class="col-md-3 list-ccm-thead-headline" ng-click="changeRegisteredSorting('Location')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Location'}">@Localizer["Location"]</div>
-                                    <div class="col-md-6 list-ccm-thead-headline" ng-click="changeRegisteredSorting('Comment')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Comment'}">@Localizer["Comment"]</div>
-                                </div>
-                            </div>
                             <div class="mui-panel list-ccm-registered-uas">
-                                <div class="mui-row codecs" ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
-                                    <div class="mui-col mui-col--ua-registered" title="{{sip.sip}}">
-                                        <span title="{{sip.codecTypeName}}" class="list-ccm--reg-ua-type-id" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
-                                        <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name">{{sip.displayName}}</a>
-                                        <span ng-if="sip.inCall">
-                                            <span class="glyphicon glyphicon-arrow-right list-ccm--reg-ua-call-dir-icon"></span>
-                                            <a ng-if="sip.inCallWithId.length" ng-click="showSipInfo(sip.inCallWithId, sip.inCallWithSip, $event)" href="#"
-                                               title="{{sip.inCallWithSip}}" class="list-ccm--reg-ua-name-to">
-                                                {{sip.inCallWithName}}
-                                            </a>
-                                            <span ng-if="!sip.inCallWithId.length" title="{{sip.inCallWithSip}}"
-                                                  class="list-ccm--reg-ua-name-to--less">{{sip.inCallWithName}}</span>
-                                        </span>
-                                        <span>{{sip.id}}</span>
-                                    </div>
-                                    <div class="mui-col mui-col--ua-location" title="{{sip.locationShortName}}">
-                                        {{sip.location}}
-                                    </div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th data-type="text-long" ng-click="changeRegisteredSorting('DisplayName')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'DisplayName'}">@Localizer["Identity"] <span class="resize-handle"></span></th>
+                                            <th data-type="text-short" ng-click="changeRegisteredSorting('Location')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Location'}">@Localizer["Location"] <span class="resize-handle"></span></th>
+                                            <th data-type="text-short" ng-click="changeRegisteredSorting('Comment')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Comment'}">@Localizer["Comment"] <span class="resize-handle"></span></th>
+                                            <th data-type="text-short"> <span class="resize-handle"></span></th>
+                                        </tr>
+                                    </thead>
 
-                                    @if (hasWriteRights)
-                                    {
-                                        <div class="mui-col mui-col--ua-comment" title="{{sip.userComment ? '@Localizer[" Edit_Comment"]' : '@Localizer["Add_Comment"]' }}" ng-dblclick="editComment(sip.id)" ng-class="sip.userComment ? 'edit' : 'edit-empty'"><span>{{sip.userComment}}&nbsp;</span></div>
-                                    }
-                                    else
-                                    {
-                                        <div class="mui-col mui-col--ua-comment">{{sip.userComment}}&nbsp;</div>
-                                    }
-                                    <div class="mui-col mui-col--ua-image" ng-if="sip.image.length > 0">
-                                        <img ng-src="@Url.Content("~/uaimages")/{{sip.image}}" alt="" />
-                                    </div>
-                                </div>
+                                    <tbody>
+                                        <tr ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
+                                            <td class="mui-col mui-col--ua-registered" title="{{sip.sip}}">
+                                                <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
+                                                <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name">{{sip.displayName}}</a>
+                                                <span ng-if="sip.inCall">
+                                                    <span class="glyphicon glyphicon-arrow-right list-ccm--reg-ua-call-dir-icon"></span>
+                                                    <a ng-if="sip.inCallWithId.length" ng-click="showSipInfo(sip.inCallWithId, sip.inCallWithSip, $event)" href="#"
+                                                        title="{{sip.inCallWithSip}}" class="list-ccm--reg-ua-name-to">
+                                                        {{sip.inCallWithName}}
+                                                    </a>
+                                                    <span ng-if="!sip.inCallWithId.length" title="{{sip.inCallWithSip}}"
+                                                            class="list-ccm--reg-ua-name-to--less">{{sip.inCallWithName}}</span>
+                                                </span>
+                                                <span>{{sip.id}}</span>
+                                            </td>
+                                            <td class="mui-col mui-col--ua-location" title="{{sip.locationShortName}}">
+                                                {{sip.location}}
+                                            </td>
+
+                                            @if (hasWriteRights)
+                                            {
+                                                <td class="mui-col mui-col--ua-comment" title="{{sip.userComment ? '@Localizer[" Edit_Comment"]' : '@Localizer["Add_Comment"]' }}" ng-dblclick="editComment(sip.id)" ng-class="sip.userComment ? 'edit' : 'edit-empty'"><span>{{sip.userComment}}&nbsp;</span></td>
+                                            }
+                                            else
+                                            {
+                                                <td class="mui-col mui-col--ua-comment">{{sip.userComment}}&nbsp;</td>
+                                            }
+                                            <td class="mui-col mui-col--ua-image" ng-if="sip.image.length > 0">
+                                                <img ng-src="@Url.Content("~/uaimages")/{{sip.image}}" alt="" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
                                 <div class="mui-row mui-row--feedback" ng-hide="filteredRegisteredSips.length ">
                                     <span ng-hide="isFiltered">

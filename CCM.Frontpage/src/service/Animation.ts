@@ -1,5 +1,4 @@
 // import Events from '../utils/Events';
-// import HeadtrackerListener from './HeadtrackerListener';
 
 // export default class AnimationView {
 

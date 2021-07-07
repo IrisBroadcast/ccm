@@ -1,6 +1,6 @@
 // import AnimationView from "./service/Animation";
 // import AudioPlayer from "./service/AudioInterface";
-// import HeadtrackerListener from "./service/HeadtrackerListener";
+// import AnimationView from "./service/AnimationView";
 import { ColorPicker } from "./utils/ColorPicker";
 import Events from "./utils/Events";
 import { FilterList } from "./utils/FilterList";
@@ -10,7 +10,7 @@ import { Sortable } from "./utils/Sortable";
 import Tool from './utils/Tools';
 
 export class Application {
-    // private listener: HeadtrackerListener;
+    // private listener: AnimationView;
     // private audio: AudioPlayer;
     // private animation: AnimationView;
 
@@ -19,7 +19,7 @@ export class Application {
     constructor() {
         console.log("Initiated application");
 
-        // this.listener = HeadtrackerListener.getInstance();
+        // this.listener = AnimationView.getInstance();
 
         try {
             Sortable("sortable-selection", function (items) {
@@ -87,15 +87,12 @@ export class Application {
             console.dir(ret.parsed)
         });
 
-
-
-
     }
 }
 
 export default class Main {
     public static load() {
-        console.log("Initiated main");
+        console.log("Initiated form Main");
         const app = new Application();
     }
 }

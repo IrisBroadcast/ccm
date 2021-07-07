@@ -53,7 +53,7 @@ export default class Tools {
         }
     };
 
-    public static $dom = (id) => {
+    public static $dom: any = (id) => {
         // if (this.elementNotAvailable.includes(id)) {
         //     return null;
         // }
@@ -110,5 +110,15 @@ export default class Tools {
             console.warn(`Could not attach event: ${error} for elements with class ${elementClass}`);
             return document.createElement("div");
         }
+    }
+
+    public static $fetchView(url: string, parameters: any) {
+        return fetch(url + "?" + new URLSearchParams(parameters).toString(), {
+                method: "POST",
+                body: JSON.stringify(parameters)
+            })
+            .then((response) => {
+                return response.text();
+            });
     }
 }

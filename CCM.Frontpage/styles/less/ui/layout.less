@@ -1,115 +1,197 @@
 
 .mui-panel {
 
-}
+    table {
+        width: auto;
+        flex: 1;
+        display: grid;
+        border-collapse: collapse;
+        /* These are just initial values which are overriden using JavaScript when a column is resized */
+        grid-template-columns:
+            minmax(200px, 4fr)
+            minmax(150px, 3fr)
+            minmax(50px, 2fr)
+            minmax(50px, 1fr);
+    }
 
-.mui-row {
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    width: 100%;
+    thead,
+    tbody,
+    tr {
+        display: contents;
+    }
 
-    border-width: 0px 0px 1px 0px;
-    border-color: #dddddd;
-    border-style: solid;
-
-    padding: 0.1rem;
-
-    &.codecs {
+    th,
+    td {
         padding: 0.25rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
-    &:nth-child(odd) {
-        background-color: @list-row-odd;
-    }
-
-    &:nth-child(even) {
-        background-color: @list-row-even;
-    }
-
-    &--feedback {
-        background-color: #f8f8f8;
-        text-align: center;
+    th {
+        position: sticky;
+        top: 0;
+        background: #6c7ae0;
+        text-align: left;
+        font-weight: normal;
+        font-size: 1.1rem;
+        color: white;
         position: relative;
-        display: block;
-        margin-bottom: -1px;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        padding: 10px 0;
+    }
+
+    th:last-child {
+        border: 0;
+    }
+
+    .resize-handle {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background: black;
+        opacity: 0;
+        width: 3px;
+        cursor: col-resize;
+    }
+
+    .resize-handle:hover,
+    /* The following selector is needed so the handle is visible during resize even if the mouse isn't over the handle anymore */
+    .header--being-resized .resize-handle {
+        opacity: 0.5;
+    }
+
+    th:hover .resize-handle {
+        opacity: 0.3;
+    }
+
+    td {
+        color: #808080;
+    }
+
+    tr:nth-child(even) td {
+        background: #f8f6ff;
+    }
+
+    .codec-type {
+        display: inline-block;
+        width: 1rem;
+        height: 0.5rem;
+        margin-right: 0.5rem;
+        align-content: center;
+        border-radius: 1rem;
+    }
+
+    .mui-grid {
+        display: grid;
+        grid-template-columns: 2fr 2fr 1fr;
+    }
+
+    .mui-row {
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        width: 100%;
+
         border-width: 0px 0px 1px 0px;
         border-color: #dddddd;
         border-style: solid;
-        background: none;
-    }
-}
 
-.mui-col {
-    flex: 1 1 auto;
-    align-self: center;
+        padding: 0.1rem;
 
-    &--ua-comment {
-        &.edit {
-            cursor: pointer;
+        &.codecs {
+            padding: 0.25rem;
+        }
 
-            span {
-                border-bottom: 1px dashed @border-color-editable;
+        &:nth-child(odd) {
+            background-color: @list-row-odd;
+        }
+
+        &:nth-child(even) {
+            background-color: @list-row-even;
+        }
+
+        &--feedback {
+            background-color: #f8f8f8;
+            text-align: center;
+            position: relative;
+            display: block;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px 0;
+            border-width: 0px 0px 1px 0px;
+            border-color: #dddddd;
+            border-style: solid;
+            background: none;
+        }
+
+        .mui-col {
+            flex: 1 1 auto;
+            align-self: center;
+
+            &--ua-comment {
+                &.edit {
+                    cursor: pointer;
+
+                    span {
+                        border-bottom: 1px dashed @border-color-editable;
+                    }
+                }
+
+                &.edit-empty {
+                    /* If comment is editable but empty */
+                    cursor: cell;
+
+                    span {
+                        border-bottom: 1px dashed @border-color-editable;
+                        width: 20px;
+                        display: block;
+                    }
+                }
+            }
+
+            &--ua-image {
+                img {
+                    max-height: 18px;
+                    max-width: 100%;
+                }
+            }
+
+            a {
+                font-weight: 600;
             }
         }
 
-        &.edit-empty {
-            /* If comment is editable but empty */
-            cursor: cell;
+        .mui-col.mui-col--source {
+            flex: 0 0 34%;
+        }
 
-            span {
-                border-bottom: 1px dashed @border-color-editable;
-                width: 20px;
+        .mui-col.mui-col--direction {
+            max-width: 2rem;
+            flex: 0 0 2rem;
+
+            svg {
+                height: 100%;
                 display: block;
             }
+
+            rect {
+                display: none;
+            }
+
+            polygon {
+                fill: #f3f3f3;
+            }
+        }
+
+        .mui-col.mui-col--duration {
+            flex: 0 0 11rem;
+            color: #bfbfbf;
         }
     }
-
-    &--ua-image {
-        img {
-            max-height: 18px;
-            max-width: 100%;
-        }
-    }
-
-    a {
-        font-weight: 600;
-    }
 }
-
-.mui-col.mui-col--source {
-    flex: 0 0 34%;
-}
-
-.mui-col.mui-col--direction {
-    max-width: 2rem;
-    flex: 0 0 2rem;
-
-    svg {
-        height: 100%;
-        display: block;
-    }
-
-    rect {
-        display: none;
-    }
-
-    polygon {
-        fill: #f3f3f3;
-    }
-}
-
-.mui-col.mui-col--duration {
-    flex: 0 0 11rem;
-    color: #bfbfbf;
-}
-
 
 // Accounts
-
 .account-is-unused {
     background-color: #ffc5c5 !important;
 }
