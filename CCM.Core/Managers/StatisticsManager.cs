@@ -157,8 +157,14 @@ namespace CCM.Core.Managers
         {
             var location = _cachedLocationRepository.GetById(locationId);
             if (location == null)
-                return new HourBasedStatisticsForLocation { LocationId = locationId, LocationName = "", Statistics = new List<HourBasedStatistics>()};
-
+            {
+                return new HourBasedStatisticsForLocation
+                {
+                    LocationId = locationId,
+                    LocationName = "",
+                    Statistics = new List<HourBasedStatistics>()
+                };
+            }
             var allStats = new List<HourBasedStatistics>();
             var callHistories = _cachedCallHistoryRepository.GetCallHistoriesForLocation(startTime, endTime, locationId);
             var current = HourBasedStatistics.Create(startTime);

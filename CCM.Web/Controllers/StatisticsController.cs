@@ -147,8 +147,7 @@ namespace CCM.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetLocationSim24HourChart(DateTime startDate, DateTime endDate, Guid regionId,
-            Guid locationId)
+        public ActionResult GetLocationSim24HourChart(DateTime startDate, DateTime endDate, Guid regionId, Guid locationId)
         {
             var model = new LocationSim24HourChartViewModel
             {
@@ -161,30 +160,13 @@ namespace CCM.Web.Controllers
             return PartialView(model);
         }
 
-        // TODO: Redo with js charts... or similair
-        //public ActionResult GetLocationSim24HourChartImage(DateTime startDate, DateTime endDate, Guid locationId)
-        //{
-        //    var stats = _statisticsManager.GetHourStatisticsForLocation(startDate.ToUniversalTime(),
-        //        endDate.ToUniversalTime().AddDays(1.0), locationId, false);
-
-        //    var chart = new Chart(800, 600)
-        //        .AddTitle(Resources.Call_Simultaneous + " - " + stats.LocationName)
-        //        .AddLegend("")
-        //        .SetXAxis(Resources.Stats_Time_Of_Day);
-        //        chart.AddSeries(
-        //            name: Resources.Stats_Max_In_Period,
-        //            chartType: "Column",
-        //            xValue: stats.Statistics.Select(s => s.Label).ToArray(),
-        //            yValues: stats.Statistics.Select(s => s.MaxSimultaneousCalls).ToArray())
-        //        .AddSeries(
-        //            name: Resources.Stats_Median_In_Period,
-        //            chartType: "Column",
-        //            xValue: stats.Statistics.Select(s => s.Label).ToArray(),
-        //            yValues: stats.Statistics.Select(s => s.MedianNumberOfSimultaneousCalls).ToArray())
-        //            ;
-
-        //    return File(chart.GetBytes("png"), "image/png");
-        //}
+        [HttpPost]
+        public ActionResult GetLocationSim24HourChartData(DateTime startDate, DateTime endDate, Guid regionId, Guid locationId)
+        {
+            var model = _statisticsManager.GetHourStatisticsForLocation(startDate.ToUniversalTime(),
+                endDate.ToUniversalTime().AddDays(1.0), locationId, false);
+            return PartialView(model);
+        }
 
         public ActionResult GetLocationSim24HourCsv(DateTime startDate, DateTime endDate, Guid locationId)
         {

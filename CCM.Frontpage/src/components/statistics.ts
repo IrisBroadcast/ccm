@@ -1,4 +1,4 @@
-import Tool from '../utils/Tools';
+import Tool from "../utils/Tools";
 
 export default class StatisticsView {
     constructor() {
@@ -33,7 +33,7 @@ export default class StatisticsView {
     locationSearch() {
         Tool.$dom("locationSearchBtn").setAttribute("disabled", "true");
 
-        var queryParams = {
+        const queryParams = {
             startDate: Tool.$dom("startDate").value,
             endDate: Tool.$dom("endDate").value,
             regionId: Tool.$dom("Regions").value,
@@ -41,75 +41,78 @@ export default class StatisticsView {
             codecTypeId: Tool.$dom("CodecTypes").value
         };
 
-        var sim24HourParams = {
+        const sim24HourParams = {
             startDate: Tool.$dom("startDate").value,
             endDate: Tool.$dom("endDate").value,
             regionId: Tool.$dom("Regions").value,
-            locationId: '00000000-0000-0000-0000-000000000000'
+            locationId: "00000000-0000-0000-0000-000000000000"
         };
 
-        Tool.$dom("errorInfo").innerHTML = "";
+        Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = `<div class="loading"></div>`;
         Tool.$fetchView("/Statistics/GetLocationNumberOfCallsTable", queryParams).then((content) => {
             Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = content;
             Tool.$dom("locationSearchBtn").removeAttribute("disabled");
         }).catch((error) => {
-            Tool.$dom("errorInfo").innerHTML = "Fel vid laddning av statistik: " + error;
+            Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
             Tool.$dom("locationSearchBtn").removeAttribute("disabled");
         });
-        // $('#locationNumberOfCallsChartDiv').load('/Statistics/GetLocationNumberOfCallsTable', queryParams, function (response, status, xhr) {
-        //     if (status === 'error') {
-        //         Tool.$dom("errorInfo").innerHTML = "Fel vid laddning av statistik: " + xhr.status + " " + xhr.statusText;
-        //         Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        //     } else {
-        //         // $('#locationTotalTimeForCallsChartDiv').load('/Statistics/GetLocationTotaltTimeForCallsTable', queryParams, function (response, status, xhr) {
-        //         //     if (status === 'error') {
-        //         //         Tool.$dom("errorInfo").innerHTML = "Fel vid laddning av statistik: " + xhr.status + " " + xhr.statusText;
-        //         //         Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        //         //     } else {
-        //         //         // $('#locationMaxSimultaneousCallsChartDiv').load('/Statistics/GetLocationMaxSimultaneousCallsTable', queryParams, function (response, status, xhr) {
-        //         //         //     if (status === 'error') {
-        //         //         //         Tool.$dom("errorInfo").innerHTML = "Fel vid laddning av statistik: " + xhr.status + " " + xhr.statusText;
-        //         //         //         Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        //         //         //     } else {
-        //         //         //         // $('#locationSim24HourChartDiv').load('/Statistics/GetLocationSim24HourChart', sim24HourParams, function (response, status, xhr) {
-        //         //         //         //     if (status === 'error') {
-        //         //         //         //         Tool.$dom("errorInfo").innerHTML = "Fel vid laddning av statistik: " + xhr.status + " " + xhr.statusText;
-        //         //         //         //         Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        //         //         //         //     } else {
-        //         //         //         //         Tool.$event("locationSim24HourSelect", "change", this.sim24HourSearch);
-        //         //         //         //         Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        //         //         //         //     }
-        //         //         //         // });
-        //         //         //     }
-        //         //         // });
-        //         //     }
-        //         // });
-        //     }
-        // });
+
+        Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = `<div class="loading"></div>`;
+        Tool.$fetchView("/Statistics/GetLocationTotaltTimeForCallsTable", queryParams).then((content) => {
+            Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = content;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        }).catch((error) => {
+            Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        });
+
+        Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = `<div class="loading"></div>`;
+        Tool.$fetchView("/Statistics/GetLocationMaxSimultaneousCallsTable", queryParams).then((content) => {
+            Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = content;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        }).catch((error) => {
+            Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        });
+
+        Tool.$dom("locationSim24HourChartDiv").innerHTML = `<div class="loading"></div>`;
+        // Tool.$dom("locationSim24HourChartDataDiv").innerHTML = `<div class="loading"></div>`;
+        Tool.$dom("locationSim24HourChartDataDiv").innerHTML = "";
+        Tool.$fetchView("/Statistics/GetLocationSim24HourChart", sim24HourParams).then((content) => {
+            Tool.$dom("locationSim24HourChartDiv").innerHTML = content;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+
+            Tool.$event("locationSim24HourSelect", "change", this.sim24HourSearch.bind(this));
+        }).catch((error) => {
+            Tool.$dom("locationSim24HourChartDiv").innerHTML = `<div class="error">${error}</div>`;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        });
     }
 
     sim24HourSearch() {
         Tool.$dom("locationSim24HourSelect").setAttribute("disabled", "true");
 
-        var sim24HourParams = {
+        const sim24HourParams = {
             startDate: Tool.$dom("startDate").value,
             endDate: Tool.$dom("endDate").value,
             regionId: Tool.$dom("Regions").value,
             locationId: Tool.$dom("locationSim24HourSelect").value
         };
-        // $('#locationSim24HourChartDiv').load('/Statistics/GetLocationSim24HourChart', sim24HourParams, function (response, status, xhr) {
-        //     if (status === 'error') {
-        //         Tool.$dom("errorInfo").innerHTML = "Fel vid laddning av statistik: " + xhr.status + " " + xhr.statusText;
-        //     } else {
-        //         Tool.$event("locationSim24HourSelect", "change", this.sim24HourSearch);
-        //     }
-        // });
+
+        Tool.$dom("locationSim24HourChartDataDiv").innerHTML = `<div class="loading"></div>`;
+        Tool.$fetchView("/Statistics/GetLocationSim24HourChartData", sim24HourParams).then((content) => {
+            Tool.$dom("locationSim24HourChartDataDiv").innerHTML = content;
+            Tool.$dom("locationSim24HourSelect").removeAttribute("disabled");
+        }).catch((error) => {
+            Tool.$dom("locationSim24HourChartDataDiv").innerHTML = `<div class="error">${error}</div>`;
+            Tool.$dom("locationSim24HourSelect").removeAttribute("disabled");
+        });
     }
 
     regionSearch() {
         Tool.$dom("regionSearchBtn").setAttribute("disabled", "true");
 
-        var queryParamsCalls = {
+        const queryParamsCalls = {
             filterType: "Regions",
             chartType: "NumberOfCalls",
             startDate: Tool.$dom("startDate").value,
@@ -117,7 +120,7 @@ export default class StatisticsView {
             filterId: Tool.$dom("regionRegions").value
         };
 
-        var queryParamsTime = {
+        const queryParamsTime = {
             filterType: "Regions",
             chartType: "TotalTimeForCalls",
             startDate: Tool.$dom("startDate").value,
@@ -125,20 +128,24 @@ export default class StatisticsView {
             filterId: Tool.$dom("regionRegions").value
         };
 
-        Tool.$dom("errorInfo").innerHTML = "";
-        // $('#regionNumberOfCallsChartDiv').load('/Statistics/GetDateBasedChart', queryParamsCalls, function (response, status, xhr) {
-        //     if (status === 'error') {
-        //         Tool.$dom("errorInfo").innerHTML = "Fel vid laddning av statistik: " + xhr.status + " " + xhr.statusText;
-        //         Tool.$dom("regionSearchBtn").removeAttribute("disabled");
-        //     } else {
-        //         // $('#regionTimeChartDiv').load('/Statistics/GetDateBasedChart', queryParamsTime, function (response, status, xhr) {
-        //         //     if (status === 'error') {
-        //         //         Tool.$dom("errorInfo").innerHTML = "Fel vid laddning av statistik: " + xhr.status + " " + xhr.statusText;
-        //         //     }
-        //         //     Tool.$dom("regionSearchBtn").removeAttribute("disabled");
-        //         // });
-        //     }
-        // });
+        Tool.$dom("regionNumberOfCallsChartDiv").innerHTML = `<div class="loading"></div>`;
+        Tool.$fetchView("/Statistics/GetDateBasedChart", queryParamsCalls).then((content) => {
+            console.log(content, "##################")
+            Tool.$dom("regionNumberOfCallsChartDiv").innerHTML = content;
+            Tool.$dom("regionSearchBtn").removeAttribute("disabled");
+        }).catch((error) => {
+            Tool.$dom("regionNumberOfCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
+            Tool.$dom("regionSearchBtn").removeAttribute("disabled");
+        });
+
+        Tool.$dom("regionTimeChartDiv").innerHTML = `<div class="loading"></div>`;
+        Tool.$fetchView("/Statistics/GetDateBasedChart", queryParamsTime).then((content) => {
+            Tool.$dom("regionTimeChartDiv").innerHTML = content;
+            Tool.$dom("regionSearchBtn").removeAttribute("disabled");
+        }).catch((error) => {
+            Tool.$dom("regionTimeChartDiv").innerHTML = `<div class="error">${error}</div>`;
+            Tool.$dom("regionSearchBtn").removeAttribute("disabled");
+        });
     }
 
     sipAccountsSearch() {

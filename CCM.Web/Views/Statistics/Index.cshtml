@@ -19,12 +19,12 @@
                 <h2>@Localizer["Statistics"]</h2>
                 <span class="navbar-page-description"></span>
             </div>
-            <div class="navbar ccm-sub-navbar--admin--links" role="tablist">
-                <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
-                    <li role="presentation" class="active"><a href="#locationTab" data-toggle="tab">@Localizer["Locations"]</a></li>
-                    <li role="presentation"><a href="#regionTab" data-toggle="tab">@Localizer["Regions"]</a></li>
-                    <li role="presentation"><a href="#sipAccountsTab" data-toggle="tab">@Localizer["Sip_Accounts"]</a></li>
-                    <li role="presentation"><a href="#codecTypesTab" data-toggle="tab">@Localizer["Codec_Types"]</a></li>
+            <div class="navbar ccm-sub-navbar--admin--links">
+                <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul" role="tablist">
+                    <li role="presentation" class="active"><a href="#locationTab" data-toggle="tab" data-target-tab="locationTab">@Localizer["Locations"]</a></li>
+                    <li role="presentation"><a href="#regionTab" data-toggle="tab" data-target-tab="regionTab">@Localizer["Regions"]</a></li>
+                    <li role="presentation"><a href="#sipAccountsTab" data-toggle="tab" data-target-tab="sipAccountsTab">@Localizer["Sip_Accounts"]</a></li>
+                    <li role="presentation"><a href="#codecTypesTab" data-toggle="tab" data-target-tab="codecTypesTab">@Localizer["Codec_Types"]</a></li>
                 </ul>
             </div>
         </div>
@@ -102,25 +102,29 @@
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="locationCallsTab">
                     <div class="row">
-                        <div class="col-md-12" id="locationNumberOfCallsChartDiv" style="min-height: 600px;">
+                        <div class="col-md-12" id="locationNumberOfCallsChartDiv">
                         </div>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="locationTimeTab">
                     <div class="row">
-                        <div class="col-md-12" id="locationTotalTimeForCallsChartDiv" style="min-height: 600px;">
+                        <div class="col-md-12" id="locationTotalTimeForCallsChartDiv">
                         </div>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="locationSimultaneousTab">
                     <div class="row">
-                        <div class="col-md-12" id="locationMaxSimultaneousCallsChartDiv" style="min-height: 600px;">
+                        <div class="col-md-12" id="locationMaxSimultaneousCallsChartDiv">
                         </div>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="locationSim24HourTab">
                     <div class="row">
-                        <div class="col-md-12" id="locationSim24HourChartDiv" style="min-height: 600px;">
+                        <div class="col-md-12" id="locationSim24HourChartDiv">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" id="locationSim24HourChartDataDiv">
                         </div>
                     </div>
                 </div>
@@ -140,7 +144,7 @@
                 <label class="control-label" for="regionSearchBtn">
                     &nbsp;
                     <button class="btn btn-primary" id="regionSearchBtn">@Localizer["Load"]</button>
-                    <label>
+                <label>
             </div>
         </div>
 

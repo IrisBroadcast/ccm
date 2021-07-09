@@ -1,0 +1,42 @@
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Core.Entities.Statistics.HourBasedStatisticsForLocation
+
+<div>
+    <h3>@Model.LocationName</h3>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>@Localizer["Location"]</th>
+                <th>Hour</th>
+                <th>AverageNumberOfSimCalls</th>
+                <th>Date</th>
+                <th>DayCount</th>
+                <th>MaxSimCalls</th>
+                <th>MedianSimCalls</th>
+                <th>OngoingCalls</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var row in Model.GetSeries())
+        {
+            <tr>
+                <td colspan="8"></td>
+            </tr>
+            @foreach (var res in row)
+            {
+                <tr>
+                    <td>@res.Label</td>
+                    <td>@res.Hour</td>
+                    <td>@res.AverageNumberOfSimultaneousCalls</td>
+                    <td>@res.Date</td>
+                    <td>@res.DayCount</td>
+                    <td>@res.MaxSimultaneousCalls</td>
+                    <td>@res.MedianNumberOfSimultaneousCalls</td>
+                    <td>@res.OngoingCalls</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>

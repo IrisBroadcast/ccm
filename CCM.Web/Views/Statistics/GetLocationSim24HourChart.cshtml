@@ -19,7 +19,4 @@
     <div class="tab-pane--topbanner">
         <a href="@Url.Action("GetLocationSim24HourCsv", new { startDate = Model.StartDate, endDate = Model.EndDate, locationId = Model.LocationId })"><span class="glyphicon glyphicon-download"></span>&nbsp;@Localizer["Download_Csv"]</a>
     </div>
-    <div>
-        <img src="@Url.Action("GetLocationSim24HourChartImage", new { startDate = Model.StartDate, endDate = Model.EndDate, locationId = Model.LocationId})" width="800" height="600" alt="Chart" />
-    </div>
 }

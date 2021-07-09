@@ -22,11 +22,11 @@ export class Application {
         // this.listener = AnimationView.getInstance();
 
         try {
-            Sortable("sortable-selection", function (items) {
+            Sortable("sortable-selection", function(items) {
                 if (!items) {
                     return;
                 }
-                for (var i = 0; i < items.length; i++) {
+                for (let i = 0; i < items.length; i++) {
                     const element = items[i].getElementsByClassName("sortIndex")[0];
                     if (element) {
                         element.setAttribute("value", `${i}`);
@@ -49,12 +49,6 @@ export class Application {
             console.warn(error);
         }
 
-        try {
-            this.SessionDescriptionParse("sdp-field");
-        } catch(error) {
-            console.warn(error);
-        }
-
         const pass = new PasswordGenerator();
         try {
             const userPwButton = Tool.$dom("pwGen");
@@ -70,6 +64,12 @@ export class Application {
         } catch(error) {
             console.warn(error);
         }
+
+        try {
+            this.SessionDescriptionParse("sdp-field");
+        } catch(error) {
+            console.warn(error);
+        }
     }
 
     private SessionDescriptionParse(targetId: string) {
@@ -78,7 +78,7 @@ export class Application {
             throw new Error(`Could not bind any SDP fields '.${targetId}'`);
         }
 
-        sdpElement.addEventListener('keyup', function(ev: any) {
+        sdpElement.addEventListener("keyup", function(ev: any) {
             const text = ev.target.value;
             console.log({ev, text});
 

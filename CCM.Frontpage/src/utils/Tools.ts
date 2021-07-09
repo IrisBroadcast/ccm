@@ -118,7 +118,11 @@ export default class Tools {
                 body: JSON.stringify(parameters)
             })
             .then((response) => {
-                return response.text();
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error(`${response.status} - ${response.statusText}`);
+                }
             });
     }
 }

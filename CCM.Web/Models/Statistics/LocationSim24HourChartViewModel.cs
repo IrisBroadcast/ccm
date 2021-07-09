@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CCM.Core.Entities;
+using CCM.Core.Entities.Statistics;
 using CCM.Web.Properties;
 
 namespace CCM.Web.Models.Statistics
@@ -37,10 +38,7 @@ namespace CCM.Web.Models.Statistics
         [Display(ResourceType = typeof(Resources), Name = "Location")]
         public List<ChartLocationModel> Locations { get; set; }
 
-        public bool LoadChartImage 
-        {
-            get { return LocationId != Guid.Empty; }
-        }
+        public bool LoadChartImage => LocationId != Guid.Empty;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public Guid RegionId { get; set; }

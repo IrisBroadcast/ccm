@@ -150,8 +150,7 @@ namespace CCM.Core.Entities.Statistics
         public DateTime EventTime { get; set; }
         public CallEventType EventType { get; set; }
 
-        public static IEnumerable<HourBasedCallEvent> GetOrderedEvents(IList<CallHistory> callHistories,
-            Guid locationId)
+        public static IEnumerable<HourBasedCallEvent> GetOrderedEvents(IList<CallHistory> callHistories, Guid locationId)
         {
             return GetEvents(callHistories, locationId).OrderBy(e => e.EventTime).ThenBy(e => (int)e.EventType);
         }

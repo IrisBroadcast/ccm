@@ -25,4 +25,3 @@
         </tbody>
     </table>
 </div>
-
