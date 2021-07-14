@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-//using System.Web.UI.WebControls;
 using CCM.Core.Entities.Statistics;
 using CCM.Web.Properties;
 
@@ -53,7 +52,7 @@ namespace CCM.Web.Models.Statistics
             get
             {
                 if (Mode == LocationStatisticsMode.MaxSimultaneousCalls) return Resources.Stats_Number_Of_Simultaneous_Calls;
-                if (Mode == LocationStatisticsMode.TotaltTimeForCalls) return Resources.Stats_Total_Call_Time_In_Minutes;
+                if (Mode == LocationStatisticsMode.TotalTimeForCalls) return Resources.Stats_Total_Call_Time_In_Minutes;
                 return Resources.Stats_Number_Of_Calls;
             }
         }
@@ -81,8 +80,8 @@ namespace CCM.Web.Models.Statistics
             if (Statistics == null || Statistics.Count == 0) return 0;
             if (Mode == LocationStatisticsMode.MaxSimultaneousCalls)
                 return Statistics.Max(s => s.MaxSimultaneousCalls);
-            if (Mode == LocationStatisticsMode.TotaltTimeForCalls)
-                return Statistics.Max(s => s.TotaltTimeForCalls);
+            if (Mode == LocationStatisticsMode.TotalTimeForCalls)
+                return Statistics.Max(s => s.TotalTimeForCalls);
             return Statistics.Max(s => s.NumberOfCalls);
         }
 
@@ -100,7 +99,7 @@ namespace CCM.Web.Models.Statistics
         private static double GetRawValue(LocationStatisticsMode mode, LocationBasedStatistics stats)
         {
             if (mode == LocationStatisticsMode.MaxSimultaneousCalls) return stats.MaxSimultaneousCalls;
-            if (mode == LocationStatisticsMode.TotaltTimeForCalls) return stats.TotaltTimeForCalls;
+            if (mode == LocationStatisticsMode.TotalTimeForCalls) return stats.TotalTimeForCalls;
             return stats.NumberOfCalls;
         }
 
@@ -131,7 +130,7 @@ namespace CCM.Web.Models.Statistics
     public enum LocationStatisticsMode
     {
         NumberOfCalls,
-        TotaltTimeForCalls,
+        TotalTimeForCalls,
         MaxSimultaneousCalls
     }
 }

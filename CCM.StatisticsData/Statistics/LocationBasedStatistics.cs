@@ -37,7 +37,7 @@ namespace CCM.StatisticsData.Statistics
 
         public double AverageTime
         {
-            get { return NumberOfCalls == 0 ? 0 : TotaltTimeForCalls / NumberOfCalls; }
+            get { return NumberOfCalls == 0 ? 0 : TotalTimeForCalls / NumberOfCalls; }
         }
 
         public Guid LocationId { get; set; }
@@ -45,7 +45,7 @@ namespace CCM.StatisticsData.Statistics
         public double MaxCallTime { get; private set; }
         public double MinCallTime { get; private set; }
         public int NumberOfCalls { get; private set; }
-        public double TotaltTimeForCalls { get; private set; }
+        public double TotalTimeForCalls { get; private set; }
         public int MaxSimultaneousCalls { get; private set; }
         public int OngoingCalls { get; private set; }
         public List<CodecTypeData> CodecTypeDataList { get; set; } = new List<CodecTypeData>();
@@ -93,7 +93,7 @@ namespace CCM.StatisticsData.Statistics
             var durationInReportPeriod = ((callEvent.EndTime > reportPeriodEnd ? reportPeriodEnd : callEvent.EndTime) -
                            (callEvent.StartTime < reportPeriodStart ? reportPeriodStart : callEvent.StartTime)).TotalMinutes;
 
-            TotaltTimeForCalls += durationInReportPeriod;
+            TotalTimeForCalls += durationInReportPeriod;
 
             var fromCodec = MapToCodecType(callEvent.FromCodecTypeId, callEvent.FromCodecTypeName);
             GetCodecTypeData(fromCodec);

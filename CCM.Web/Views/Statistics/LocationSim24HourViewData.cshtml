@@ -8,13 +8,13 @@
         <thead>
             <tr>
                 <th>@Localizer["Location"]</th>
-                <th>Hour</th>
                 <th>AverageNumberOfSimCalls</th>
                 <th>Date</th>
                 <th>DayCount</th>
                 <th>MaxSimCalls</th>
                 <th>MedianSimCalls</th>
                 <th>OngoingCalls</th>
+                <th style="width: 3rem">- - @Model.MaxCallCount</th>
             </tr>
         </thead>
         <tbody>
@@ -25,15 +25,20 @@
             </tr>
             @foreach (var res in row)
             {
+                string percent = (((double)res.MaxSimultaneousCalls / (double)Model.MaxCallCount)*100.0).ToString().Replace(",", ".");
                 <tr>
                     <td>@res.Label</td>
-                    <td>@res.Hour</td>
                     <td>@res.AverageNumberOfSimultaneousCalls</td>
                     <td>@res.Date</td>
                     <td>@res.DayCount</td>
                     <td>@res.MaxSimultaneousCalls</td>
                     <td>@res.MedianNumberOfSimultaneousCalls</td>
                     <td>@res.OngoingCalls</td>
+                    <td>
+                        <div class="mui-stats-bar">
+                            <div class="value" style="width: @percent%"></div>
+                        </div>
+                    </td>
                 </tr>
             }
         }

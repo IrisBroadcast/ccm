@@ -36,7 +36,7 @@ namespace CCM.Core.Entities.Statistics
 
         public double AverageTime
         {
-            get { return NumberOfCalls == 0 ? 0 : TotaltTimeForCalls/NumberOfCalls; }
+            get { return NumberOfCalls == 0 ? 0 : TotalTimeForCalls/NumberOfCalls; }
         }
 
         public Guid LocationId { get; set; }
@@ -44,7 +44,7 @@ namespace CCM.Core.Entities.Statistics
         public double MaxCallTime { get; private set; }
         public double MinCallTime { get; private set; }
         public int NumberOfCalls { get; private set; }
-        public double TotaltTimeForCalls { get; private set; }
+        public double TotalTimeForCalls { get; private set; }
         public int MaxSimultaneousCalls { get; private set; }
         public int OngoingCalls { get; private set; }
 
@@ -89,7 +89,7 @@ namespace CCM.Core.Entities.Statistics
             var durationInReportPeriod = ((callEvent.EndTime > reportPeriodEnd ? reportPeriodEnd : callEvent.EndTime) -
                            (callEvent.StartTime < reportPeriodStart ? reportPeriodStart : callEvent.StartTime)).TotalMinutes;
 
-            TotaltTimeForCalls += durationInReportPeriod;
+            TotalTimeForCalls += durationInReportPeriod;
         }
     }
 

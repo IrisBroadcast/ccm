@@ -2,6 +2,26 @@ import Tool from "../utils/Tools";
 
 export default class StatisticsView {
     constructor() {
+
+        // $('#startdatetimepicker').datetimepicker({ format: 'YYYY-MM-DD', date: startDate.toISOString() });
+        // $('#enddatetimepicker').datetimepicker({ format: 'YYYY-MM-DD', date: endDate.toISOString() });
+
+        // $("#startdatetimepicker").on("dp.change", function (e) {
+        //     $('#enddatetimepicker').data("DateTimePicker").minDate(e.date);
+        // });
+        // $("#enddatetimepicker").on("dp.change", function (e) {
+        //     $('#startdatetimepicker').data("DateTimePicker").maxDate(e.date);
+        // });
+
+        this.setDatePickers();
+
+        Tool.$event("locationSearchBtn", "click", this.locationSearch.bind(this));
+        Tool.$event("regionSearchBtn", "click", this.regionSearch.bind(this));
+        Tool.$event("sipAccountsSearchBtn", "click", this.sipAccountsSearch.bind(this));
+        Tool.$event("codecTypesSearchBtn", "click", this.codecTypesSearch.bind(this));
+    }
+
+    setDatePickers() {
         let endDate = new Date();
         endDate.setHours(0);
         endDate.setMinutes(0);
@@ -14,20 +34,9 @@ export default class StatisticsView {
         Tool.$dom("startDate").value = startDate.toISOString().split('T')[0];
         Tool.$dom("endDate").value = endDate.toISOString().split('T')[0];
 
-        // $('#startdatetimepicker').datetimepicker({ format: 'YYYY-MM-DD', date: startDate.toISOString() });
-        // $('#enddatetimepicker').datetimepicker({ format: 'YYYY-MM-DD', date: endDate.toISOString() });
-
-        // $("#startdatetimepicker").on("dp.change", function (e) {
-        //     $('#enddatetimepicker').data("DateTimePicker").minDate(e.date);
-        // });
-        // $("#enddatetimepicker").on("dp.change", function (e) {
-        //     $('#startdatetimepicker').data("DateTimePicker").maxDate(e.date);
-        // });
-
-        Tool.$event("locationSearchBtn", "click", this.locationSearch.bind(this));
-        Tool.$event("regionSearchBtn", "click", this.regionSearch.bind(this));
-        Tool.$event("sipAccountsSearchBtn", "click", this.sipAccountsSearch.bind(this));
-        Tool.$event("codecTypesSearchBtn", "click", this.codecTypesSearch.bind(this));
+        Tool.$event("startDate", "change", (event) => {
+            console.log({event})
+        });
     }
 
     locationSearch() {
@@ -49,7 +58,7 @@ export default class StatisticsView {
         };
 
         Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/GetLocationNumberOfCallsTable", queryParams).then((content) => {
+        Tool.$fetchView("/Statistics/LocationNumberOfCallsView", queryParams).then((content) => {
             Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = content;
             Tool.$dom("locationSearchBtn").removeAttribute("disabled");
         }).catch((error) => {
@@ -58,7 +67,7 @@ export default class StatisticsView {
         });
 
         Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/GetLocationTotaltTimeForCallsTable", queryParams).then((content) => {
+        Tool.$fetchView("/Statistics/LocationTotalTimeForCallsView", queryParams).then((content) => {
             Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = content;
             Tool.$dom("locationSearchBtn").removeAttribute("disabled");
         }).catch((error) => {
@@ -67,7 +76,7 @@ export default class StatisticsView {
         });
 
         Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/GetLocationMaxSimultaneousCallsTable", queryParams).then((content) => {
+        Tool.$fetchView("/Statistics/LocationMaxSimultaneousCallsView", queryParams).then((content) => {
             Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = content;
             Tool.$dom("locationSearchBtn").removeAttribute("disabled");
         }).catch((error) => {
@@ -76,9 +85,8 @@ export default class StatisticsView {
         });
 
         Tool.$dom("locationSim24HourChartDiv").innerHTML = `<div class="loading"></div>`;
-        // Tool.$dom("locationSim24HourChartDataDiv").innerHTML = `<div class="loading"></div>`;
         Tool.$dom("locationSim24HourChartDataDiv").innerHTML = "";
-        Tool.$fetchView("/Statistics/GetLocationSim24HourChart", sim24HourParams).then((content) => {
+        Tool.$fetchView("/Statistics/LocationSim24HourView", sim24HourParams).then((content) => {
             Tool.$dom("locationSim24HourChartDiv").innerHTML = content;
             Tool.$dom("locationSearchBtn").removeAttribute("disabled");
 
@@ -100,7 +108,7 @@ export default class StatisticsView {
         };
 
         Tool.$dom("locationSim24HourChartDataDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/GetLocationSim24HourChartData", sim24HourParams).then((content) => {
+        Tool.$fetchView("/Statistics/LocationSim24HourViewData", sim24HourParams).then((content) => {
             Tool.$dom("locationSim24HourChartDataDiv").innerHTML = content;
             Tool.$dom("locationSim24HourSelect").removeAttribute("disabled");
         }).catch((error) => {
@@ -129,7 +137,7 @@ export default class StatisticsView {
         };
 
         Tool.$dom("regionNumberOfCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/GetDateBasedChart", queryParamsCalls).then((content) => {
+        Tool.$fetchView("/Statistics/RegionNumberOfCallsView", queryParamsCalls).then((content) => {
             console.log(content, "##################")
             Tool.$dom("regionNumberOfCallsChartDiv").innerHTML = content;
             Tool.$dom("regionSearchBtn").removeAttribute("disabled");

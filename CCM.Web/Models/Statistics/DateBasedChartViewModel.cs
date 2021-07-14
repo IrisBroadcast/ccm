@@ -25,16 +25,19 @@
  */
 
 using System;
+using System.Collections.Generic;
+using CCM.Core.Entities.Statistics;
 
 namespace CCM.Web.Models.Statistics
 {
-    public class DateBasedChartModel
+    public class DateBasedChartViewModel
     {
         public DateBasedFilterType FilterType { get; set; }
         public DateBasedChartType ChartType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public Guid FilterId { get; set; }
+        public IList<DateBasedStatistics> Stats { get; set; }
     }
 
     public enum DateBasedFilterType

@@ -35,14 +35,14 @@ namespace CCM.StatisticsData.Statistics
     {
         public double AverageTime
         {
-            get { return NumberOfCalls == 0 ? 0 : TotaltTimeForCalls/NumberOfCalls; }
+            get { return NumberOfCalls == 0 ? 0 : TotalTimeForCalls/NumberOfCalls; }
         }
 
         public DateTime Date { get; set; }
         public double MaxCallTime { get; private set; }
         public double MinCallTime { get; private set; }
         public int NumberOfCalls { get; private set; }
-        public double TotaltTimeForCalls { get; private set; }
+        public double TotalTimeForCalls { get; private set; }
 
         public void AddTime(double timeInMinutes)
         {
@@ -60,7 +60,7 @@ namespace CCM.StatisticsData.Statistics
                 MaxCallTime = timeInMinutes;
             }
 
-            TotaltTimeForCalls += timeInMinutes;
+            TotalTimeForCalls += timeInMinutes;
             NumberOfCalls++;
         }
     }

@@ -58,14 +58,14 @@ namespace CCM.Data.Repositories
             dbUser = MapToUserEntity(ccmUser, dbUser);
 
             _ccmDbContext.Users.Add(dbUser);
-            var result = _ccmDbContext.SaveChanges();
+            var success = _ccmDbContext.SaveChanges();
             ccmUser.Id = dbUser.Id;
-            return result >= 1;
+            return success >= 1;
         }
 
         public bool Update(CcmUser ccmUser)
         {
-            var dbUser = _ccmDbContext.Users.SingleOrDefault(u => u.Id == ccmUser.Id);
+            UserEntity dbUser = _ccmDbContext.Users.SingleOrDefault(u => u.Id == ccmUser.Id);
             if (dbUser == null)
             {
                 return false;
@@ -73,14 +73,12 @@ namespace CCM.Data.Repositories
 
             dbUser = MapToUserEntity(ccmUser, dbUser);
 
-            var result = _ccmDbContext.SaveChanges();
-            return result == 1;
+            return _ccmDbContext.SaveChanges() == 1;
         }
 
         public void UpdatePassword(Guid id, string passwordHash, string salt)
         {
             UserEntity dbUser = _ccmDbContext.Users.SingleOrDefault(u => u.Id == id);
-
             if (dbUser != null)
             {
                 dbUser.PasswordHash = passwordHash;
@@ -92,15 +90,14 @@ namespace CCM.Data.Repositories
         public bool Delete(Guid userId)
         {
             UserEntity user = _ccmDbContext.Users.SingleOrDefault(u => u.Id == userId);
-
             if (user == null)
             {
                 return false;
             }
 
             _ccmDbContext.Users.Remove(user);
-            var result = _ccmDbContext.SaveChanges();
-            return result == 1;
+
+            return _ccmDbContext.SaveChanges() == 1;
         }
 
         public CcmUser GetById(Guid userId)

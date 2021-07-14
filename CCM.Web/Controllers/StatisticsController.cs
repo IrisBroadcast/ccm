@@ -95,8 +95,9 @@ namespace CCM.Web.Controllers
             return Json(statistics);
         }
 
+        #region Location
         [HttpPost]
-        public ActionResult GetLocationNumberOfCallsTable(DateTime startDate, DateTime endDate, Guid regionId,
+        public ActionResult LocationNumberOfCallsView(DateTime startDate, DateTime endDate, Guid regionId,
             Guid ownerId, Guid codecTypeId)
         {
             var model = new LocationStatisticsViewModel
@@ -113,12 +114,12 @@ namespace CCM.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetLocationTotaltTimeForCallsTable(DateTime startDate, DateTime endDate, Guid regionId,
+        public ActionResult LocationTotalTimeForCallsView(DateTime startDate, DateTime endDate, Guid regionId,
             Guid ownerId, Guid codecTypeId)
         {
             var model = new LocationStatisticsViewModel
             {
-                Mode = LocationStatisticsMode.TotaltTimeForCalls,
+                Mode = LocationStatisticsMode.TotalTimeForCalls,
                 StartDate = startDate,
                 EndDate = endDate,
                 RegionId = regionId,
@@ -130,7 +131,7 @@ namespace CCM.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetLocationMaxSimultaneousCallsTable(DateTime startDate, DateTime endDate, Guid regionId,
+        public ActionResult LocationMaxSimultaneousCallsView(DateTime startDate, DateTime endDate, Guid regionId,
             Guid ownerId, Guid codecTypeId)
         {
             var model = new LocationStatisticsViewModel
@@ -147,7 +148,7 @@ namespace CCM.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetLocationSim24HourChart(DateTime startDate, DateTime endDate, Guid regionId, Guid locationId)
+        public ActionResult LocationSim24HourView(DateTime startDate, DateTime endDate, Guid regionId, Guid locationId)
         {
             var model = new LocationSim24HourChartViewModel
             {
@@ -161,7 +162,7 @@ namespace CCM.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetLocationSim24HourChartData(DateTime startDate, DateTime endDate, Guid regionId, Guid locationId)
+        public ActionResult LocationSim24HourViewData(DateTime startDate, DateTime endDate, Guid regionId, Guid locationId)
         {
             var model = _statisticsManager.GetHourStatisticsForLocation(startDate.ToUniversalTime(),
                 endDate.ToUniversalTime().AddDays(1.0), locationId, false);
@@ -218,7 +219,7 @@ namespace CCM.Web.Controllers
         //            .AddCsvSeparator()
         //            .AddCsvValue(stats.NumberOfCalls)
         //            .AddCsvSeparator()
-        //            .AddCsvValue(stats.TotaltTimeForCalls, 0, svCulture)
+        //            .AddCsvValue(stats.TotalTimeForCalls, 0, svCulture)
         //            .AddCsvSeparator()
         //            .AddCsvValue(stats.MaxSimultaneousCalls)
         //            .AppendLine();
@@ -227,20 +228,66 @@ namespace CCM.Web.Controllers
         //    return File(encoding.GetBytes(csv.ToString()), "text/csv",
         //        string.Format("Platser_{0:yyMMdd}_{1:yyMMdd}.csv", startDate, endDate));
         //}
+        #endregion Location
 
-        //[HttpPost]
-        //public ActionResult GetDateBasedChart(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate, Guid filterId)
-        //{
-        //    var model = new DateBasedChartModel
-        //    {
-        //        FilterType = filterType,
-        //        ChartType = chartType,
-        //        EndDate = endDate,
-        //        FilterId = filterId,
-        //        StartDate = startDate
-        //    };
-        //    return PartialView(model);
-        //}
+        #region Region
+        [HttpPost]
+        public ActionResult RegionNumberOfCallsView(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate, Guid filterId)
+        {
+            if (filterId == Guid.Empty)
+            {
+                throw new Exception("Please choose a region");
+            }
+            var model = new DateBasedChartViewModel
+            {
+                FilterType = DateBasedFilterType.Regions,
+                ChartType = DateBasedChartType.NumberOfCalls,
+                EndDate = endDate,
+                FilterId = filterId,
+                StartDate = startDate,
+                Stats = _statisticsManager.GetRegionStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId)
+            };
+
+            return PartialView("RegionStatisticsTable", model);
+        }
+        #endregion Region
+
+        [HttpPost]
+        public ActionResult GetDateBasedChart(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate, Guid filterId)
+        {
+           var model = new DateBasedChartViewModel
+           {
+               FilterType = filterType,
+               ChartType = chartType,
+               EndDate = endDate,
+               FilterId = filterId,
+               StartDate = startDate
+           };
+
+           switch (filterType)
+           {
+               case DateBasedFilterType.Regions:
+                   model.Stats = _statisticsManager.GetRegionStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
+                   break;
+               case DateBasedFilterType.SipAccounts:
+                   model.Stats = _statisticsManager.GetSipStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
+                   break;
+               default:
+                   model.Stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
+                   break;
+           }
+
+           //var chart = new Chart(800, 600)
+           //    .AddTitle(chartType == DateBasedChartType.NumberOfCalls ? Resources.Stats_Number_Of_Calls : Resources.Stats_Total_Call_Time_In_Minutes)
+           //    .SetXAxis(title: Resources.Date)
+           //    .AddSeries(
+           //        chartType: "Column",
+           //        xValue: stats.Select(s => s.Date.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("sv-SE"))).ToArray(),
+           //        yValues: stats.Select(s => chartType == DateBasedChartType.NumberOfCalls ? s.NumberOfCalls : s.TotalTimeForCalls).ToArray())
+           //        ;
+
+           return PartialView(model);
+        }
 
         //public ActionResult GetDateBasedChartImage(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate, Guid filterId)
         //{
@@ -264,7 +311,7 @@ namespace CCM.Web.Controllers
         //        .AddSeries(
         //            chartType: "Column",
         //            xValue: stats.Select(s => s.Date.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("sv-SE"))).ToArray(),
-        //            yValues: stats.Select(s => chartType == DateBasedChartType.NumberOfCalls ? s.NumberOfCalls : s.TotaltTimeForCalls).ToArray())
+        //            yValues: stats.Select(s => chartType == DateBasedChartType.NumberOfCalls ? s.NumberOfCalls : s.TotalTimeForCalls).ToArray())
         //            ;
 
         //    return File(chart.GetBytes("png"), "image/png");
@@ -306,7 +353,7 @@ namespace CCM.Web.Controllers
                     .AddCsvSeparator()
                     .AddCsvValue(row.NumberOfCalls)
                     .AddCsvSeparator()
-                    .AddCsvValue(row.TotaltTimeForCalls, 0, svCulture)
+                    .AddCsvValue(row.TotalTimeForCalls, 0, svCulture)
                     .AddCsvSeparator()
                     .AddCsvValue(row.AverageTime, 0, svCulture)
                     .AddCsvSeparator()

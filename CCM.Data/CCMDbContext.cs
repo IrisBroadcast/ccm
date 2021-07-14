@@ -46,14 +46,6 @@ namespace CCM.Data
             _cache = cache;
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder.UseSqlServer("Data Source=msc.sr.se;User ID=uccm;Password=hHzmZ!b#5emnQ3mC;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-        //    }
-        //}
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // https://docs.microsoft.com/en-us/ef/core/modeling/keys?tabs=fluent-api
@@ -68,7 +60,6 @@ namespace CCM.Data
 
             modelBuilder.Entity<CallHistoryEntity>().HasKey(c => new { c.Id });
 
-
             modelBuilder.Entity<UserAgentProfileOrderEntity>().HasKey(c => new { c.UserAgentId, c.ProfileId });
             //[Key, ForeignKey("UserAgent"), Column("UserAgentId", Order = 0)]
             //public Guid UserAgentId { get; set; }
@@ -76,25 +67,11 @@ namespace CCM.Data
             //[Key, ForeignKey("Profile"), Column("ProfileId", Order = 1)]
             //public Guid ProfileId { get; set; }
 
-
             // CodecType matching Users
             modelBuilder.Entity<CodecTypeEntity>(entity =>
             {
                 entity.HasMany(ct => ct.SipAccounts);
             });
-            //modelBuilder.Entity<SipAccountEntity>(entity =>
-            //{
-            //    entity.HasOne<CodecTypeEntity>();
-            //});
-            //modelBuilder.Entity<SipAccountEntity>().HasOne<CodecTypeEntity>().WithMany().HasForeignKey(ex => ex.CodecTypeId).HasConstraintName("CodecType_Id");
-
-
-            //    base.OnModelCreating(modelBuilder);
-
-            //    modelBuilder.Entity<UserAgentEntity>()
-            //        .HasMany(e => e.CodecPresets)
-            //        .WithMany(e => e.UserAgents)
-            //        .Map(m => m.ToTable("CodecPresetUserAgents").MapLeftKey("UserAgent_Id").MapRightKey("CodecPreset_Id"));
         }
 
         public DbSet<RegisteredCodecEntity> RegisteredCodecs { get; set; }
@@ -156,6 +133,24 @@ namespace CCM.Data
             }
 
             return saveChangesResult;
+
+            //try
+            //{
+            //    _context.SaveChanges();
+            //}
+            //catch (DbEntityValidationException dbEx)
+            //{
+            //    var sb = new StringBuilder();
+            //    foreach (var validationErrors in dbEx.EntityValidationErrors)
+            //    {
+            //        foreach (var validationError in validationErrors.ValidationErrors)
+            //        {
+            //            sb.AppendLine(string.Format("Property: {0} Error: {1}",
+            //                validationError.PropertyName, validationError.ErrorMessage));
+            //        }
+            //    }
+            //    throw new Exception(sb.ToString(), dbEx);
+            //}
         }
     }
 }

@@ -184,6 +184,7 @@ namespace CCM.Core.Entities.Statistics
         public Guid LocationId { get; set; }
         public string LocationName { get; set; }
         public IList<HourBasedStatistics> Statistics { get; set; }
+        public int MaxCallCount => Statistics.Max(data => data.MaxSimultaneousCalls);
 
         public IEnumerable<IList<HourBasedStatistics>> GetSeries()
         {

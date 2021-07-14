@@ -98,7 +98,7 @@ namespace CCM.Data.Repositories
             }
             else
             {
-                log.Info("Could not find user {0}", id);
+                log.Info($"Could not find user '{id}' to delete");
             }
         }
 

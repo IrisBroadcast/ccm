@@ -112,8 +112,7 @@ namespace CCM.Data.Repositories
             dbCallHistory.ToUserAgentHeader = callHistory.ToUserAgentHeader;
             dbCallHistory.ToUsername = callHistory.ToUsername;
 
-            _ccmDbContext.SaveChanges();
-            return true;
+            return _ccmDbContext.SaveChanges() >= 1;
         }
 
         public CallHistory GetById(Guid id)

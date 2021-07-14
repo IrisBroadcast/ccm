@@ -28,7 +28,7 @@ namespace CCM.StatisticsData.Statistics
                 if (Mode == LocationStatisticsMode.MaxSimultaneousCalls) return "Number of simultaneous calls";
 
                 //if (Mode == LocationStatisticsMode.TotaltTimeForCalls) return Resources.Stats_Total_Call_Time_In_Minutes;
-                if (Mode == LocationStatisticsMode.TotaltTimeForCalls) return "Total call time in minutes";
+                if (Mode == LocationStatisticsMode.TotalTimeForCalls) return "Total call time in minutes";
 
                 return "Number of calls";
             }
@@ -107,7 +107,7 @@ namespace CCM.StatisticsData.Statistics
         public enum LocationStatisticsMode
         {
             NumberOfCalls,
-            TotaltTimeForCalls,
+            TotalTimeForCalls,
             MaxSimultaneousCalls
         }
     }
