@@ -122,12 +122,14 @@ namespace CCM.StatisticsData.Controllers
             var statistics = _statisticsRepository.GetRegionStatistics(startTime.ToUniversalTime(), endTime.ToUniversalTime(), regionId);
             return Ok(statistics);
         }
+
         [Route("Api/Statistics/GetSipStatistics")]
         public IActionResult GetSipStatistics(Guid sipId, DateTime startTime, DateTime endTime)
         {
             var statistics = _statisticsRepository.GetSipStatistics(startTime.ToUniversalTime(), endTime.ToUniversalTime(), sipId);
             return Ok(statistics);
         }
+
         [Route("Api/Statistics/GetCategoryStatistics")]
         public IActionResult GetCategoryStatistics(DateTime startTime, DateTime endTime)
         {

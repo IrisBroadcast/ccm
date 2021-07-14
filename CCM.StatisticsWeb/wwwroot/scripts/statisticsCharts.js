@@ -71,7 +71,6 @@ function CreatePieChart(message) {
 
 
 function CreateBarChart(message) {
-
     var svg = d3.select("#bar-chart");
     svg.selectAll("*").remove();
     var dataset = JSON.parse(message);

@@ -85,7 +85,7 @@ namespace CCM.Web.Controllers
 
         public JsonResult GetSipAccountStatistics(DateTime startDate, DateTime endDate, Guid userId)
         {
-            var statistics = _statisticsManager.GetSipStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), userId);
+            var statistics = _statisticsManager.GetSipAccountStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), userId);
             return Json(statistics);
         }
 
@@ -95,10 +95,15 @@ namespace CCM.Web.Controllers
             return Json(statistics);
         }
 
+        public IActionResult GetCategoryStatistics(DateTime startTime, DateTime endTime)
+        {
+            var statistics = _statisticsManager.GetCategoryStatistics(startTime.ToUniversalTime(), endTime.ToUniversalTime());
+            return Ok(statistics);
+        }
+
         #region Location
         [HttpPost]
-        public ActionResult LocationNumberOfCallsView(DateTime startDate, DateTime endDate, Guid regionId,
-            Guid ownerId, Guid codecTypeId)
+        public ActionResult LocationNumberOfCallsView(DateTime startDate, DateTime endDate, Guid regionId, Guid ownerId, Guid codecTypeId)
         {
             var model = new LocationStatisticsViewModel
             {
@@ -114,8 +119,7 @@ namespace CCM.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult LocationTotalTimeForCallsView(DateTime startDate, DateTime endDate, Guid regionId,
-            Guid ownerId, Guid codecTypeId)
+        public ActionResult LocationTotalTimeForCallsView(DateTime startDate, DateTime endDate, Guid regionId, Guid ownerId, Guid codecTypeId)
         {
             var model = new LocationStatisticsViewModel
             {
@@ -131,8 +135,7 @@ namespace CCM.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult LocationMaxSimultaneousCallsView(DateTime startDate, DateTime endDate, Guid regionId,
-            Guid ownerId, Guid codecTypeId)
+        public ActionResult LocationMaxSimultaneousCallsView(DateTime startDate, DateTime endDate, Guid regionId, Guid ownerId, Guid codecTypeId)
         {
             var model = new LocationStatisticsViewModel
             {
@@ -188,7 +191,7 @@ namespace CCM.Web.Controllers
                     .AddCsvValue(hour.MaxSimultaneousCalls)
                     .AppendLine();
             }
-            var encoding = Encoding.GetEncoding(1252);
+            var encoding = Encoding.GetEncoding("UTF-8");
             var locationName =
                 Regex.Replace(stats.LocationName ?? "",
                     string.Join("|", Path.GetInvalidFileNameChars().Select(c => Regex.Escape(c.ToString()))), "")
@@ -197,37 +200,36 @@ namespace CCM.Web.Controllers
                 string.Format("{0}_{1:yyMMdd}_{2:yyMMdd}.csv", locationName, startDate, endDate));
         }
 
-        // TODO: Redo with js charts... or similair
-        //public ActionResult GetLocationStatisticsCsv(DateTime startDate, DateTime endDate, Guid regionId,
-        //    Guid ownerId, Guid codecTypeId)
-        //{
-        //    var statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(),
-        //        endDate.ToUniversalTime().AddDays(1.0), regionId, ownerId, codecTypeId);
-        //    var csv = new StringBuilder();
-        //    csv.AddCsvValue(Resources.Location)
-        //        .AddCsvSeparator()
-        //        .AddCsvValue(Resources.Calls)
-        //        .AddCsvSeparator()
-        //        .AddCsvValue(Resources.Call_Time)
-        //        .AddCsvSeparator()
-        //        .AddCsvValue(Resources.Call_Simultaneous)
-        //        .AppendLine();
-        //    var svCulture = CultureInfo.CreateSpecificCulture("sv-SE");
-        //    foreach (var stats in statistics)
-        //    {
-        //        csv.AddCsvValue(string.IsNullOrWhiteSpace(stats.LocationName) ? "-" : stats.LocationName)
-        //            .AddCsvSeparator()
-        //            .AddCsvValue(stats.NumberOfCalls)
-        //            .AddCsvSeparator()
-        //            .AddCsvValue(stats.TotalTimeForCalls, 0, svCulture)
-        //            .AddCsvSeparator()
-        //            .AddCsvValue(stats.MaxSimultaneousCalls)
-        //            .AppendLine();
-        //    }
-        //    var encoding = Encoding.GetEncoding(1252);
-        //    return File(encoding.GetBytes(csv.ToString()), "text/csv",
-        //        string.Format("Platser_{0:yyMMdd}_{1:yyMMdd}.csv", startDate, endDate));
-        //}
+        public ActionResult GetLocationStatisticsCsv(DateTime startDate, DateTime endDate, Guid regionId, Guid ownerId, Guid codecTypeId)
+        {
+            var statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(),
+                endDate.ToUniversalTime().AddDays(1.0), regionId, ownerId, codecTypeId);
+            var csv = new StringBuilder();
+            csv.AddCsvValue(Resources.Location)
+                .AddCsvSeparator()
+                .AddCsvValue(Resources.Calls)
+                .AddCsvSeparator()
+                .AddCsvValue(Resources.Call_Time)
+                .AddCsvSeparator()
+                .AddCsvValue(Resources.Call_Simultaneous)
+                .AppendLine();
+            var svCulture = CultureInfo.CreateSpecificCulture("sv-SE");
+            foreach (var stats in statistics)
+            {
+                csv.AddCsvValue(string.IsNullOrWhiteSpace(stats.LocationName) ? "-" : stats.LocationName)
+                    .AddCsvSeparator()
+                    .AddCsvValue(stats.NumberOfCalls)
+                    .AddCsvSeparator()
+                    .AddCsvValue(stats.TotalTimeForCalls, 0, svCulture)
+                    .AddCsvSeparator()
+                    .AddCsvValue(stats.MaxSimultaneousCalls)
+                    .AppendLine();
+            }
+            var encoding = Encoding.GetEncoding("UTF-8");
+            var prefix = _localizer["Location"];
+            return File(encoding.GetBytes(csv.ToString()), "text/csv",
+                string.Format("{0}_{1:yyMMdd}_{2:yyMMdd}.csv", prefix, startDate, endDate));
+        }
         #endregion Location
 
         #region Region
@@ -252,85 +254,78 @@ namespace CCM.Web.Controllers
         }
         #endregion Region
 
+        #region SIP Account
         [HttpPost]
-        public ActionResult GetDateBasedChart(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate, Guid filterId)
+        public ActionResult SipAccountNumberOfCallsView(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate, Guid filterId)
         {
-           var model = new DateBasedChartViewModel
-           {
-               FilterType = filterType,
-               ChartType = chartType,
-               EndDate = endDate,
-               FilterId = filterId,
-               StartDate = startDate
-           };
+            if (filterId == Guid.Empty)
+            {
+                throw new Exception("Please choose a sip account");
+            }
+            var model = new DateBasedChartViewModel
+            {
+                FilterType = DateBasedFilterType.Regions,
+                ChartType = DateBasedChartType.NumberOfCalls,
+                EndDate = endDate,
+                FilterId = filterId,
+                StartDate = startDate,
+                Stats = _statisticsManager.GetSipAccountStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId)
+            };
 
-           switch (filterType)
-           {
-               case DateBasedFilterType.Regions:
-                   model.Stats = _statisticsManager.GetRegionStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
-                   break;
-               case DateBasedFilterType.SipAccounts:
-                   model.Stats = _statisticsManager.GetSipStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
-                   break;
-               default:
-                   model.Stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
-                   break;
-           }
-
-           //var chart = new Chart(800, 600)
-           //    .AddTitle(chartType == DateBasedChartType.NumberOfCalls ? Resources.Stats_Number_Of_Calls : Resources.Stats_Total_Call_Time_In_Minutes)
-           //    .SetXAxis(title: Resources.Date)
-           //    .AddSeries(
-           //        chartType: "Column",
-           //        xValue: stats.Select(s => s.Date.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("sv-SE"))).ToArray(),
-           //        yValues: stats.Select(s => chartType == DateBasedChartType.NumberOfCalls ? s.NumberOfCalls : s.TotalTimeForCalls).ToArray())
-           //        ;
-
-           return PartialView(model);
+            return PartialView("SipAccountStatisticsTable", model);
         }
+        #endregion SIP Account
 
-        //public ActionResult GetDateBasedChartImage(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate, Guid filterId)
-        //{
-        //    IList<DateBasedStatistics> stats;
-        //    switch (filterType)
-        //    {
-        //        case DateBasedFilterType.Regions:
-        //            stats = _statisticsManager.GetRegionStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
-        //            break;
-        //        case DateBasedFilterType.SipAccounts:
-        //            stats = _statisticsManager.GetSipStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
-        //            break;
-        //        default:
-        //            stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
-        //            break;
-        //    }
+        #region Codec Type
+        [HttpPost]
+        public ActionResult CodecTypeNumberOfCallsView(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate, Guid filterId)
+        {
+            if (filterId == Guid.Empty)
+            {
+                throw new Exception("Please choose a codec type");
+            }
+            var model = new DateBasedChartViewModel
+            {
+                FilterType = DateBasedFilterType.CodecTypes,
+                ChartType = DateBasedChartType.NumberOfCalls,
+                EndDate = endDate,
+                FilterId = filterId,
+                StartDate = startDate,
+                Stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId)
+            };
 
-        //    var chart = new Chart(800, 600)
-        //        .AddTitle(chartType == DateBasedChartType.NumberOfCalls ? Resources.Stats_Number_Of_Calls : Resources.Stats_Total_Call_Time_In_Minutes)
-        //        .SetXAxis(title: Resources.Date)
-        //        .AddSeries(
-        //            chartType: "Column",
-        //            xValue: stats.Select(s => s.Date.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("sv-SE"))).ToArray(),
-        //            yValues: stats.Select(s => chartType == DateBasedChartType.NumberOfCalls ? s.NumberOfCalls : s.TotalTimeForCalls).ToArray())
-        //            ;
+            return PartialView("CodecTypeStatisticsTable", model);
+        }
+        #endregion Codec Type
 
-        //    return File(chart.GetBytes("png"), "image/png");
-        //}
+        #region Category
+        [HttpPost]
+        public ActionResult CategoryNumberOfCallsView()
+        {
+            return PartialView("CategoryStatisticsTable");
+        }
+        #endregion Category
 
         public ActionResult GetDateBasedCsv(DateBasedFilterType filterType, DateTime startDate, DateTime endDate, Guid filterId)
         {
             IList<DateBasedStatistics> stats;
+            var prefix = "";
             switch (filterType)
             {
                 case DateBasedFilterType.Regions:
                     stats = _statisticsManager.GetRegionStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
+                    prefix = _localizer["Region"];
                     break;
                 case DateBasedFilterType.SipAccounts:
-                    stats = _statisticsManager.GetSipStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
+                    stats = _statisticsManager.GetSipAccountStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
+                    prefix = _localizer["Sip_Accounts"];
+                    break;
+                case DateBasedFilterType.CodecTypes:
+                    stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
+                    prefix = _localizer["Codec_Type"];
                     break;
                 default:
-                    stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
-                    break;
+                    throw new Exception("No filter type selected");
             }
 
             var csv = new StringBuilder();
@@ -346,6 +341,7 @@ namespace CCM.Web.Controllers
                 .AddCsvSeparator()
                 .AddCsvValue(_localizer["Call_Time"] + " / " + _localizer["Longest"])
                 .AppendLine();
+
             var svCulture = CultureInfo.CreateSpecificCulture("sv-SE");
             foreach (var row in stats)
             {
@@ -362,10 +358,7 @@ namespace CCM.Web.Controllers
                     .AddCsvValue(row.MaxCallTime, 0, svCulture)
                     .AppendLine();
             }
-            var encoding = Encoding.GetEncoding(1252);
-            var prefix = filterType == DateBasedFilterType.CodecTypes
-                ? _localizer["Codec_Type"]
-                : filterType == DateBasedFilterType.SipAccounts ? _localizer["Sip_Accounts"] : _localizer["Region"];
+            var encoding = Encoding.GetEncoding("UTF-8");
             return File(encoding.GetBytes(csv.ToString()), "text/csv",
                 string.Format("{0}_{1:yyMMdd}_{2:yyMMdd}.csv", prefix, startDate, endDate));
         }

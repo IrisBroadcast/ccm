@@ -1,7 +1,4 @@
-﻿
-
-
-@if (CategoryDataStatisticsList == null && Regions == null)
+﻿@if (CategoryDataStatisticsList == null && Regions == null)
 {
     <p>Loading..</p>
 }
@@ -50,36 +47,28 @@ else
 
     <table id="categoryTable" class="table table-active">
         <thead>
-            <tr>
-                <th>Name</th>
-                <th>Number of calls</th>
-                <th>Total time</th>
-            </tr>
+        <tr>
+            <th>Name</th>
+            <th>Number of calls</th>
+            <th>Total time</th>
+        </tr>
         </thead>
 
         <tbody>
 
-            @if (catNumOfCalls.Count > 0)
-            {
+        @if (catNumOfCalls.Count > 0)
+        {
 
-                @foreach (var stat in catNumOfCalls)
-                {
-                    <tr>
-                        <td>@stat.Name</td>
-                        <td>@stat.NumberOfCalls</td>
-                        @*  <td>@stat.TotalTimeForCalls</td>*@
-                    </tr>
-                }
+            @foreach (var stat in catNumOfCalls)
+            {
+                <tr>
+                    <td>@stat.Name</td>
+                    <td>@stat.NumberOfCalls</td>
+                    @*  <td>@stat.TotalTimeForCalls</td>*@
+                </tr>
             }
+        }
         </tbody>
 
     </table>
-
-
-
-
-
-
-
 }
-

@@ -25,6 +25,7 @@
                     <li role="presentation"><a href="#regionTab" data-toggle="tab" data-target-tab="regionTab">@Localizer["Regions"]</a></li>
                     <li role="presentation"><a href="#sipAccountsTab" data-toggle="tab" data-target-tab="sipAccountsTab">@Localizer["Sip_Accounts"]</a></li>
                     <li role="presentation"><a href="#codecTypesTab" data-toggle="tab" data-target-tab="codecTypesTab">@Localizer["Codec_Types"]</a></li>
+                    <li role="presentation"><a href="#categoryTab" data-toggle="tab" data-target-tab="categoryTab">@Localizer["Category"]</a></li>
                 </ul>
             </div>
         </div>
@@ -144,26 +145,19 @@
                 <label class="control-label" for="regionSearchBtn">
                     &nbsp;
                     <button class="btn btn-primary" id="regionSearchBtn">@Localizer["Load"]</button>
-                <label>
+                </label>
             </div>
         </div>
 
         <div class="tabpanel" id="regionChartTabs">
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#regionCallsTab" data-toggle="tab" data-target-tab="regionCallsTab">@Localizer["Calls"]</a></li>
-                <li role="presentation"><a href="#regionTimeTab" data-toggle="tab" data-target-tab="regionTimeTab">@Localizer["Call_Time"]</a></li>
             </ul>
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="regionCallsTab">
                     <div class="row">
                         <div class="col-md-12" id="regionNumberOfCallsChartDiv">
-                        </div>
-                    </div>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="regionTimeTab">
-                    <div class="row">
-                        <div class="col-md-12" id="regionTimeChartDiv">
                         </div>
                     </div>
                 </div>
@@ -189,20 +183,13 @@
 
         <div class="tabpanel" id="sipAccountsChartTabs">
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#sipAccountsCallsTab" data-toggle="tab" data-target-tab="sipAccountsCallsTab">@Localizer["Call"]</a></li>
-                <li role="presentation"><a href="#sipAccountsTimeTab" data-toggle="tab" data-target-tab="sipAccountsTimeTab">@Localizer["Call_Time"]</a></li>
+                <li role="presentation" class="active"><a href="#sipAccountsCallsTab" data-toggle="tab" data-target-tab="sipAccountsCallsTab">@Localizer["Calls"]</a></li>
             </ul>
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="sipAccountsCallsTab">
                     <div class="row">
-                        <div class="col-md-12" id="sipAccountsNumberOfCallsChartDiv" style="min-height: 600px;">
-                        </div>
-                    </div>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="sipAccountsTimeTab">
-                    <div class="row">
-                        <div class="col-md-12" id="sipAccountsTimeChartDiv" style="min-height: 600px;">
+                        <div class="col-md-12" id="sipAccountsNumberOfCallsChartDiv">
                         </div>
                     </div>
                 </div>
@@ -229,19 +216,43 @@
         <div class="tabpanel" id="codecTypesChartTabs">
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#codecTypesCallsTab" data-toggle="tab" data-target-tab="codecTypesCallsTab">@Localizer["Calls"]</a></li>
-                <li role="presentation"><a href="#codecTypesTimeTab" data-toggle="tab" data-target-tab="codecTypesTimeTab">@Localizer["Call_Time"]</a></li>
             </ul>
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="codecTypesCallsTab">
                     <div class="row">
-                        <div class="col-md-12" id="codecTypeNumberOfCallsChartDiv" style="min-height: 600px;">
+                        <div class="col-md-12" id="codecTypeNumberOfCallsChartDiv">
                         </div>
                     </div>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="codecTypesTimeTab">
+            </div>
+        </div>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="categoryTab">
+        <div class="row statistic-filters">
+            <div class="col-md-10">
+                <label class="control-label">
+                    @Localizer["Category"]:
+                </label>
+            </div>
+            <div class="col-md-2">
+                <label class="control-label" for="codecTypesSearchBtn">
+                    &nbsp;
+                    <button class="btn btn-primary" id="categorySearchBtn">@Localizer["Load"]</button>
+                </label>
+            </div>
+        </div>
+
+        <div class="tabpanel" id="categoryChartTabs">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#categoryCallsTab" data-toggle="tab" data-target-tab="categoryCallsTab">@Localizer["Calls"]</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="categoryCallsTab">
                     <div class="row">
-                        <div class="col-md-12" id="codecTypeTimeChartDiv" style="min-height: 600px;">
+                        <div class="col-md-12" id="categoryNumberOfCallsChartDiv">
                         </div>
                     </div>
                 </div>

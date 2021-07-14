@@ -1,12 +1,36 @@
-﻿using CCM.StatisticsData.Models;
+﻿/*
+ * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace CCM.StatisticsData.Statistics
+namespace CCM.Core.Entities.Statistics
 {
-
     public class CategoryStatistics
     {
         public string Name { get; set; }
@@ -17,9 +41,6 @@ namespace CCM.StatisticsData.Statistics
     public class DateBasedCategoryStatistics
     {
         public DateTime Date { get; set; }
-       //  public List<CategoryStatistics> CategoryStatisticsList { get; set; } = new List<CategoryStatistics>();
-
-        // TODO List of RegionCategory instead of list above. RegionCategory should contain list of CategoryStatistics?
         public List<RegionCategory> RegionCategories { get; set; } = new List<RegionCategory>();
 
     }
@@ -34,7 +55,7 @@ namespace CCM.StatisticsData.Statistics
             var fromCategory = call.FromLocationCategory;
             var toCategory = call.ToLocationCategory;
 
-           
+
             // Weighting categories. Location category is above Type category in hierarchy. 
             if (string.IsNullOrEmpty(fromCategory))
             {
@@ -102,12 +123,12 @@ namespace CCM.StatisticsData.Statistics
         public string FromTypeCategory { get; set; }
         public string ToTypeCategory { get; set; }
 
-        public static IEnumerable<DateBasedCategoryCallEvent> GetEvents(IList<CallHistoryEntity> callHistories, DateTime reportPeriodStart, DateTime reportPeriodEnd)
+        public static IEnumerable<DateBasedCategoryCallEvent> GetEvents(IList<CallHistory> callHistories, DateTime reportPeriodStart, DateTime reportPeriodEnd)
         {
             return callHistories.SelectMany(callHistory => GetEvents(callHistory, reportPeriodStart, reportPeriodEnd));
         }
 
-        private static IEnumerable<DateBasedCategoryCallEvent> GetEvents(CallHistoryEntity callHistory, DateTime reportPeriodStart, DateTime reportPeriodEnd)
+        private static IEnumerable<DateBasedCategoryCallEvent> GetEvents(CallHistory callHistory, DateTime reportPeriodStart, DateTime reportPeriodEnd)
         {
             var minDate = callHistory.Started >= reportPeriodStart ? callHistory.Started : reportPeriodStart;
             var maxDate = callHistory.Ended <= reportPeriodEnd ? callHistory.Ended : reportPeriodEnd;
@@ -132,4 +153,3 @@ namespace CCM.StatisticsData.Statistics
         }
     }
 }
-

@@ -61,7 +61,6 @@ namespace CCM.StatisticsData.Repositories
 
         }
 
-
         public IEnumerable<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId)
         {
             var callHistory = _callHistoryRepository.GetCallHistoriesByDate(startTime, endTime);
@@ -127,6 +126,7 @@ namespace CCM.StatisticsData.Repositories
                 }
             }
         }
+
         private IEnumerable<DateBasedStatistics> GenerateDateBasedStatisticses(IList<CallHistoryEntity> callHistories, DateTime reportPeriodStart, DateTime reportPeriodEnd)
         {
             if (!callHistories.Any()) return Enumerable.Empty<DateBasedStatistics>();
@@ -229,6 +229,7 @@ namespace CCM.StatisticsData.Repositories
             return dateList.Values.OrderBy(d => d.Date);
             //return dateBasedStatistics.Values.OrderBy(d => d.Date);
         }
+        
         public List<CallHistoryEntity> GetRegion(IList<CallHistoryEntity> callHistory, RegionEntity region)
         {
             List<CallHistoryEntity> callHistoriesForRegion = new List<CallHistoryEntity>();

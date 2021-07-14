@@ -99,7 +99,83 @@ namespace CCM.Core.Managers
             return _regionRepository.GetAll();
         }
 
-        public List<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId)
+        public IEnumerable<DateBasedCategoryStatistics> GetCategoryStatistics(DateTime startTime, DateTime endTime)
+        {
+
+            var categoryStatistics = new List<DateBasedCategoryStatistics>();
+            var callHistory = _cachedCallHistoryRepository.GetCallHistoriesByDate(startTime, endTime);
+
+            if (callHistory == null)
+            {
+                return categoryStatistics;
+            }
+
+            categoryStatistics.AddRange(GenerateDateBasedCategoryStatistics(callHistory, startTime, endTime));
+
+            return categoryStatistics;
+        }
+
+        private IEnumerable<DateBasedCategoryStatistics> GenerateDateBasedCategoryStatistics(IList<CallHistory> callHistories, DateTime reportPeriodStart, DateTime reportPeriodEnd)
+        {
+            if (!callHistories.Any()) return Enumerable.Empty<DateBasedCategoryStatistics>();
+
+            var minDate = reportPeriodStart.ToLocalTime().Date; // callHistories.Min(c => c.Started);
+            var endLocal = reportPeriodEnd.ToLocalTime();
+            var maxDate = endLocal.Date == endLocal ? endLocal.Date.AddDays(-1) : endLocal.Date; // callHistories.Max(c => c.Started.ToLocalTime().Date);
+            var dateList = new Dictionary<DateTime, DateBasedCategoryStatistics>();
+            var dateBasedStatistics = new Dictionary<DateTime, RegionCategory>();
+
+            var date = minDate;
+
+            while (date <= maxDate)
+            {
+                dateList.Add(date, new DateBasedCategoryStatistics { Date = date });
+                dateBasedStatistics.Add(date, new RegionCategory());
+                date = date.AddDays(1.0);
+            }
+
+            var regions = _regionRepository.GetAll();
+            IList<CallHistory> regionHistory = new List<CallHistory>();
+
+            //List<RegionCategory> RegionCategoriesList = new List<RegionCategory>();
+
+            foreach (var region in regions)
+            {
+                regionHistory = _cachedCallHistoryRepository.GetCallHistoriesForRegion(reportPeriodStart, reportPeriodEnd, region.Id);
+
+                foreach (var callEvent in DateBasedCategoryCallEvent.GetEvents(regionHistory, reportPeriodStart, reportPeriodEnd))
+                {
+                    if (!dateList.ContainsKey(callEvent.Date)) continue;
+
+                    if (!dateList[callEvent.Date].RegionCategories.Any(x => x.Name == region.Name))
+                    {
+
+                        dateList[callEvent.Date].RegionCategories.Add(
+                            new RegionCategory
+                            {
+                                Name = region.Name,
+                                Date = callEvent.Date,
+                                CategoryStatisticsList = dateBasedStatistics[callEvent.Date].GetCategoryData(callEvent, callEvent.Duration)
+
+                            });
+                    }
+                    else
+                    {
+                        foreach (var item in dateList[callEvent.Date].RegionCategories)
+                        {
+                            if (item.Name == region.Name && item.Date == callEvent.Date)
+                            {
+                                item.Date = callEvent.Date;
+                                item.CategoryStatisticsList = dateBasedStatistics[callEvent.Date].GetCategoryData(callEvent, callEvent.Duration);
+                            }
+                        }
+                    }
+                }
+            }
+            return dateList.Values.OrderBy(d => d.Date);
+        }
+
+        public IList<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId)
         {
             var callHistories = _cachedCallHistoryRepository.GetCallHistoriesForRegion(startDate, endDate, regionId);
 
@@ -117,7 +193,7 @@ namespace CCM.Core.Managers
             return _cachedSipAccountRepository.GetAll();
         }
 
-        public List<DateBasedStatistics> GetSipStatistics(DateTime startDate, DateTime endDate, Guid userId)
+        public IList<DateBasedStatistics> GetSipAccountStatistics(DateTime startDate, DateTime endDate, Guid userId)
         {
             var user = _cachedSipAccountRepository.GetById(userId);
             var callHistories = user != null ? _cachedCallHistoryRepository.GetCallHistoriesForRegisteredSip(startDate, endDate, user.UserName) : new List<CallHistory>();
