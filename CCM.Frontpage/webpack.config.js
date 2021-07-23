@@ -6,6 +6,7 @@ module.exports = {
     entry: {
         "ccm-form": "./src/ccm-form.ts",
         "ccm-main": "./src/ccm-main.ts",
+        "ccm-statistics": "./src/ccm-statistics.ts",
         "ccm-styles": "./styles/less/Site.less"
     },
     output: {

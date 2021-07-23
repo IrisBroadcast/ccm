@@ -1,4 +1,3 @@
-import StatisticsView from './components/statistics';
 import Tool from './utils/Tools';
 
 export class Application {
@@ -52,8 +51,6 @@ export class Application {
 
         this.setupMenu();
 
-        this.setupStatistics();
-
         this.setupTabs();
     }
 
@@ -87,22 +84,6 @@ export class Application {
                 Tool.$dom("tab-codectype-btn").classList.remove("active");
                 Tool.$dom("tab-region-btn").classList.remove("active");
                 Tool.$dom("tab-category-btn").classList.add("active");
-            });
-
-            Tool.$event("tab-ongoing-btn", "click", (eve) => {
-                Tool.$dom("tab-ongoing-content").style.display = "block";
-                Tool.$dom("tab-registered-content").style.display = "none";
-
-                Tool.$dom("tab-ongoing-btn").classList.add("active");
-                Tool.$dom("tab-registered-btn").classList.remove("active");
-            });
-
-            Tool.$event("tab-registered-btn", "click", (eve) => {
-                Tool.$dom("tab-ongoing-content").style.display = "none";
-                Tool.$dom("tab-registered-content").style.display = "block";
-
-                Tool.$dom("tab-ongoing-btn").classList.remove("active");
-                Tool.$dom("tab-registered-btn").classList.add("active");
             });
 
         } catch(error) {
@@ -191,10 +172,6 @@ export class Application {
         }
 
         Tool.$event("admin-menu-cover", "click", clickOutsideMenu);
-    }
-
-    private setupStatistics() {
-        const statisticsView = new StatisticsView();
     }
 
     private setupTabs() {

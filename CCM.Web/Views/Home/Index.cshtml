@@ -59,7 +59,7 @@
                 <!-- Grouping Filter 1 -->
                 <div class="tab-pane ccm-tabpane-filters active" id="tab-region-filter">
                     <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs" id="regions-filter">
-                        <li ng-click="setFilterRegion('')">
+                        <li ng-click="setFilterRegion('nofilter')">
                             <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
                         </li>
                         @foreach (var region in Model.Regions)
@@ -78,7 +78,7 @@
                     <div class="dropdown">
                         <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="regionsDropDown" aria-expanded="true">{{regionName ? regionName : "@Localizer["All"]"}}<span class="caret"></span></button>
                         <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="regionsDropDown">
-                            <li ng-click="setFilterRegion('')">
+                            <li ng-click="setFilterRegion('nofilter')">
                                 <a href="#">@Localizer["All"]</a>
                             </li>
                             @foreach (var region in Model.Regions)
@@ -92,7 +92,7 @@
                 <!-- Grouping Filter 2 -->
                 <div class="tab-pane ccm-tabpane-filters" id="tab-codectype-filter">
                     <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs" id="codecTypes-filter">
-                        <li ng-click="setFilterCodecType('')">
+                        <li ng-click="setFilterCodecType('nofilter')">
                             <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
                         </li>
                         @foreach (var codecType in Model.CodecTypes)
@@ -114,7 +114,7 @@
                     <div class="dropdown">
                         <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="codecTypesDropDown" aria-expanded="true">{{codecTypeName ? codecTypeName : "@Localizer["All"]"}}<span class="caret"></span></button>
                         <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="codecTypesDropDown">
-                            <li ng-click="setFilterCodecType('')">
+                            <li ng-click="setFilterCodecType('nofilter')">
                                 <a href="#">@Localizer["All"]</a>
                             </li>
                             @foreach (var codecType in Model.CodecTypes)
@@ -133,7 +133,7 @@
                 <!-- Grouping Filter 3 -->
                 <div class="tab-pane ccm-tabpane-filters" id="tab-category-filter">
                     <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs" id="categories-filter">
-                        <li ng-click="setFilterCategory('')">
+                        <li ng-click="setFilterCategory('nofilter')">
                             <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
                         </li>
                         @foreach (var category in Model.Categories)
@@ -152,7 +152,7 @@
                     <div class="dropdown">
                         <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="categoryDropDown" aria-expanded="true">{{categoryName ? categoryName : "@Localizer["All"]"}}<span class="caret"></span></button>
                         <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="categoryDropDown">
-                            <li ng-click="setFilterCategory('')">
+                            <li ng-click="setFilterCategory('nofilter')">
                                 <a href="#">@Localizer["All"]</a>
                             </li>
                             @foreach (var category in Model.Categories)
@@ -174,12 +174,12 @@
             <!-- TABS: Navigation links -->
             <div class="mui-billboard">
                 <!-- Ongoing calls headline -->
-                <div class="board" id="tab-ongoing-btn">
+                <div class="board">
                     <div class="count">{{filteredOnGoingCalls.length}}</div>
                     <div class="text">@Localizer["Ongoing_Calls"]</div>
                 </div>
                 <!-- Registered UAs headline -->
-                <div class="board" id="tab-registered-btn">
+                <div class="board">
                     <div class="count">{{filteredRegisteredSips.length}}</div>
                     <div class="text">@Localizer["Registered_Sips"]</div>
                 </div>
