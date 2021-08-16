@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CCM.Core.Entities.Statistics
 {
@@ -42,8 +41,8 @@ namespace CCM.Core.Entities.Statistics
     {
         public DateTime Date { get; set; }
         public List<RegionCategory> RegionCategories { get; set; } = new List<RegionCategory>();
-
     }
+
     public class RegionCategory
     {
         public DateTime Date { get; set; }
@@ -52,22 +51,17 @@ namespace CCM.Core.Entities.Statistics
 
         public List<CategoryStatistics> GetCategoryData(DateBasedCategoryCallEvent call, double duration)
         {
+            // Weighting categories. Location category is above Type category in hierarchy.
+
             var fromCategory = call.FromLocationCategory;
-            var toCategory = call.ToLocationCategory;
-
-
-            // Weighting categories. Location category is above Type category in hierarchy. 
             if (string.IsNullOrEmpty(fromCategory))
             {
-                fromCategory = call.FromTypeCategory ?? "Ospecificerad";
-            }
-            if (string.IsNullOrEmpty(toCategory))
-            {
-                toCategory = call.ToTypeCategory ?? "Ospecificerad";
+                fromCategory = call.FromTypeCategory ?? "Ospecificerad"; // TODO: localize
             }
 
             if (!CategoryStatisticsList.Any(x => x.Name == fromCategory))
             {
+                // Category did not exist in list, add the new category
                 CategoryStatisticsList.Add(new CategoryStatistics
                 {
                     Name = fromCategory,
@@ -75,9 +69,9 @@ namespace CCM.Core.Entities.Statistics
                     TotalTimeForCalls = duration
                 });
             }
-
             else
             {
+                // Bump up data in list
                 foreach (var item in CategoryStatisticsList)
                 {
                     if (item.Name == fromCategory)
@@ -88,9 +82,15 @@ namespace CCM.Core.Entities.Statistics
                 }
             }
 
-            if (!CategoryStatisticsList.Any(x => x.Name == toCategory))
-
+            var toCategory = call.ToLocationCategory;
+            if (string.IsNullOrEmpty(toCategory))
             {
+                toCategory = call.ToTypeCategory ?? "Ospecificerad"; // TODO: localize
+            }
+
+            if (!CategoryStatisticsList.Any(x => x.Name == toCategory))
+            {
+                // Category did not exist in list, add the new category
                 CategoryStatisticsList.Add(new CategoryStatistics
                 {
                     Name = toCategory,
@@ -98,9 +98,9 @@ namespace CCM.Core.Entities.Statistics
                     TotalTimeForCalls = duration
                 });
             }
-
             else
             {
+                // Bump up data in list
                 foreach (var item in CategoryStatisticsList)
                 {
                     if (item.Name == toCategory)

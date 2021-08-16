@@ -38,7 +38,8 @@ namespace CCM.Core.Interfaces.Repositories
         CallHistory GetCallHistoryByCallId(Guid callId);
         IList<OldCall> GetOldCalls(int callCount, bool anonymize);
         IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount, bool limitByMonth);
-        IList<CallHistory> GetCallHistoriesByDate(DateTime startTime, DateTime endTime);
+
+        IList<CallHistory> GetCallHistoriesByDate(DateTime startDate, DateTime endDate);
         IList<CallHistory> GetCallHistoriesForRegion(DateTime startDate, DateTime endDate, Guid regionId);
         IList<CallHistory> GetCallHistoriesForRegisteredSip(DateTime startDate, DateTime endDate, string sipId);
         IList<CallHistory> GetCallHistoriesForCodecType(DateTime startDate, DateTime endDate, Guid codecTypeId);
@@ -52,10 +53,22 @@ namespace CCM.Core.Interfaces.Repositories
         CallHistory GetCallHistoryByCallId(Guid callId);
         IList<OldCall> GetOldCalls(int callCount, bool anonymize);
         IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount, bool limitByMonth);
+
+        IReadOnlyList<CallHistory> GetOneYearCallHistory();
+
         IList<CallHistory> GetCallHistoriesByDate(DateTime startTime, DateTime endTime);
+        IList<CallHistory> GetCallHistoriesByDate(IReadOnlyList<CallHistory> callHistories, DateTime startTime, DateTime endTime);
+        
         IList<CallHistory> GetCallHistoriesForRegion(DateTime startDate, DateTime endDate, Guid regionId);
+        IList<CallHistory> GetCallHistoriesForRegion(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, Guid regionId);
+
         IList<CallHistory> GetCallHistoriesForRegisteredSip(DateTime startDate, DateTime endDate, string sipId);
+        IList<CallHistory> GetCallHistoriesForRegisteredSip(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, string sipId);
+
         IList<CallHistory> GetCallHistoriesForCodecType(DateTime startDate, DateTime endDate, Guid codecTypeId);
+        IList<CallHistory> GetCallHistoriesForCodecType(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, Guid codecTypeId);
+
         IList<CallHistory> GetCallHistoriesForLocation(DateTime startDate, DateTime endDate, Guid locationId);
+        IList<CallHistory> GetCallHistoriesForLocation(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, Guid locationId);
     }
 }

@@ -199,7 +199,8 @@ export class StatisticsView {
                 });
                 const messenger = await data.json();
                 console.log(messenger);
-                this.CreateBarChart(messenger);
+                // this.CreateBarChart(messenger);
+                this.CreatePieChart(messenger);
             } catch(err) {
                 console.error(err);
             }
@@ -212,18 +213,18 @@ export class StatisticsView {
 
     CreatePieChart(message) {
 
-        var svg = d3.select("svg");
+        var svg = d3.select("#bar-chart");
         svg.selectAll("*").remove();
         document.getElementById('errormessage').innerHTML = "";
 
-        var data = JSON.parse(message);
+        var data = message; //JSON.parse(message);
 
         if (data.length === 0) {
             return document.getElementById('errormessage').innerHTML = '<p>' + "No data" + '</p>';
         }
         var width = 450, height = 450, radius = Math.min(width, height) / 2;
 
-        svg = d3.select("svg")
+        svg = d3.select("#bar-chart")
             .attr("width", width)
             .attr("height", height);
 
@@ -297,7 +298,7 @@ export class StatisticsView {
             height = +svg.attr("height") - margin.top - margin.bottom,
             g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
+        console.log(dataset)
         var x = d3.scaleBand()
             .rangeRound([0, width])
             .padding(0.1);
@@ -306,10 +307,12 @@ export class StatisticsView {
             .rangeRound([height, 0]);
 
         x.domain(dataset.map(function (d) {
+            console.log(d);
             return d.Date;
         }))
 
         y.domain([0, d3.max(dataset, function (d) {
+            console.log("Num", d);
             return Number(d.NumberOfCalls);
         })]);
 

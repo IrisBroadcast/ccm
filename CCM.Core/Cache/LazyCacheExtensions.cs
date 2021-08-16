@@ -41,6 +41,7 @@ namespace CCM.Core.Cache
         private const string RegisteredUserAgentsKey = "RegisteredUserAgents";
         private const string OngoingCallsKey = "OngoingCalls";
         private const string CallHistoryKey = "CallHistory";
+        private const string OneYearCallHistoryKey = "OneYearCallHistory";
         private const string SettingsKey = "Settings";
         private const string LocationNetworksKey = "LocationNetworks";
         private const string LocationsAndProfilesKey = "LocationsAndProfiles";
@@ -55,8 +56,6 @@ namespace CCM.Core.Cache
         private const string SipAccountUserNamesKey = "SipAccountUserNamesKey";
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
-
-        // TODO: Make some decisions on how we deal with replication changes that doesn't trigger a reload of cache if this instance was not the one saving changes.
 
         #region SipAccounts
         public static List<SipAccount> GetOrAddSipAccounts(this IAppCache cache, Func<List<SipAccount>> sipAccountsLoader, int cacheTimeSipAccounts)
@@ -127,10 +126,16 @@ namespace CCM.Core.Cache
             return cache.GetOrAdd(CallHistoryKey, callHistoryLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
         }
 
+        public static IReadOnlyList<CallHistory> GetOrAddOneYearCallHistory(this IAppCache cache, Func<IReadOnlyList<CallHistory>> oneYearCallHistoryLoader, int cacheTimeLiveData)
+        {
+            return cache.GetOrAdd(OneYearCallHistoryKey, oneYearCallHistoryLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
+        }
+
         public static void ClearCallHistory(this IAppCache cache)
         {
             log.Debug("Removing call history from cache");
             cache.Remove(CallHistoryKey);
+            cache.Remove(OneYearCallHistoryKey);
         }
         #endregion
 

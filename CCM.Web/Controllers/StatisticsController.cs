@@ -66,7 +66,7 @@ namespace CCM.Web.Controllers
             model.Regions = _statisticsManager.GetRegions();
             model.Regions.Insert(0, new Region() { Name = Resources.All, Id = Guid.Empty });
 
-            model.Users = _statisticsManager.GetSipUsers();
+            model.Users = _statisticsManager.GetSipAccounts();
 
             return View(model);
         }

@@ -187,7 +187,6 @@
 
             <!-- TABS: Main content -->
             <div class="tab-content list-ccm-tab-content">
-                <!-- TAB: Ongoing and history -->
                 <div class="tab-pane active list-ccm-tab-pane">
                     <div class="row">
                         <div class="panel panel-default">
@@ -250,7 +249,7 @@
                             <div class="panel-heading list-ccm-heading list-ccm-tab-panel-heading">
                                 <div class="row">
                                     <div class="col-md-12 col-title list-ccm-thead-headline">
-                                        <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>&nbsp;@Localizer["Latest_Closed_Calls"]
+                                        @Localizer["Latest_Closed_Calls"]
                                     </div>
                                 </div>
                             </div>
@@ -310,7 +309,13 @@
                                                 <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
                                                 <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name">{{sip.displayName}}</a>
                                                 <span ng-if="sip.inCall">
-                                                    <span class="glyphicon glyphicon-arrow-right list-ccm--reg-ua-call-dir-icon"></span>
+                                                    <span class="mui-registered-incall-dir">
+                                                        <?xml version="1.0" encoding="utf-8"?>
+                                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+                                                            <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
+                                                            <rect x="6.5" y="21" fill="#A0A09F" width="9" height="8"/>
+                                                        </svg>
+                                                    </span>
                                                     <a ng-if="sip.inCallWithId.length" ng-click="showSipInfo(sip.inCallWithId, sip.inCallWithSip, $event)" href="#"
                                                         title="{{sip.inCallWithSip}}" class="list-ccm--reg-ua-name-to">
                                                         {{sip.inCallWithName}}
@@ -323,7 +328,6 @@
                                             <td class="mui-col mui-col--ua-location" title="{{sip.locationShortName}}">
                                                 {{sip.location}}
                                             </td>
-
                                             @if (hasWriteRights)
                                             {
                                                 <td class="mui-col mui-col--ua-comment" title="{{sip.userComment ? '@Localizer[" Edit_Comment"]' : '@Localizer["Add_Comment"]' }}" ng-dblclick="editComment(sip.id)" ng-class="sip.userComment ? 'edit' : 'edit-empty'"><span>{{sip.userComment}}&nbsp;</span></td>

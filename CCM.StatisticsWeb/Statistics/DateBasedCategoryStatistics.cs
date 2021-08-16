@@ -17,8 +17,6 @@ namespace CCM.StatisticsWeb.Statistics
         public DateTime Date { get; set; }
         public string Name { get; set; }
         public IEnumerable<CategoryStatistics> CategoryStatisticsList { get; set; } = new List<CategoryStatistics>();
-
-
     }
 
     public class CategoryStatistics

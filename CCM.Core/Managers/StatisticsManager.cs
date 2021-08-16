@@ -65,30 +65,6 @@ namespace CCM.Core.Managers
             return _codecTypeRepository.GetAll(false);
         }
 
-        public List<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId)
-        {
-            var callHistories = _cachedCallHistoryRepository.GetCallHistoriesByDate(startTime, endTime);
-
-            if (callHistories == null)
-            {
-                return new List<LocationBasedStatistics>();
-            }
-
-            var locations = new Dictionary<Guid, LocationBasedStatistics>();
-            var filter = new CallHistoryFilter(regionId, ownerId, codecTypeId);
-            foreach (var callEvent in LocationCallEvent.GetOrderedEvents(callHistories, filter))
-            {
-                if (!locations.ContainsKey(callEvent.LocationId))
-                    locations.Add(callEvent.LocationId, new LocationBasedStatistics { LocationId = callEvent.LocationId, LocationName = callEvent.LocationName});
-                locations[callEvent.LocationId].AddEvent(callEvent, startTime, endTime);
-            }
-
-            var locationStatisticses = locations.Values.ToList();
-            AddMissingLocations(locationStatisticses, regionId);
-
-            return locationStatisticses.OrderBy(l => l.LocationName).ToList();
-        }
-
         public List<Owner> GetOwners()
         {
             return _ownersRepository.GetAll();
@@ -97,6 +73,11 @@ namespace CCM.Core.Managers
         public List<Region> GetRegions()
         {
             return _regionRepository.GetAll();
+        }
+
+        public List<SipAccount> GetSipAccounts()
+        {
+            return _cachedSipAccountRepository.GetAll();
         }
 
         public IEnumerable<DateBasedCategoryStatistics> GetCategoryStatistics(DateTime startTime, DateTime endTime)
@@ -135,13 +116,13 @@ namespace CCM.Core.Managers
             }
 
             var regions = _regionRepository.GetAll();
-            IList<CallHistory> regionHistory = new List<CallHistory>();
+            //IList<CallHistory> regionHistory = new List<CallHistory>();
 
             //List<RegionCategory> RegionCategoriesList = new List<RegionCategory>();
 
             foreach (var region in regions)
             {
-                regionHistory = _cachedCallHistoryRepository.GetCallHistoriesForRegion(reportPeriodStart, reportPeriodEnd, region.Id);
+                IList<CallHistory> regionHistory = _cachedCallHistoryRepository.GetCallHistoriesForRegion(reportPeriodStart, reportPeriodEnd, region.Id);
 
                 foreach (var callEvent in DateBasedCategoryCallEvent.GetEvents(regionHistory, reportPeriodStart, reportPeriodEnd))
                 {
@@ -149,15 +130,11 @@ namespace CCM.Core.Managers
 
                     if (!dateList[callEvent.Date].RegionCategories.Any(x => x.Name == region.Name))
                     {
-
-                        dateList[callEvent.Date].RegionCategories.Add(
-                            new RegionCategory
-                            {
-                                Name = region.Name,
-                                Date = callEvent.Date,
-                                CategoryStatisticsList = dateBasedStatistics[callEvent.Date].GetCategoryData(callEvent, callEvent.Duration)
-
-                            });
+                        dateList[callEvent.Date].RegionCategories.Add(new RegionCategory {
+                            Name = region.Name,
+                            Date = callEvent.Date,
+                            CategoryStatisticsList = dateBasedStatistics[callEvent.Date].GetCategoryData(callEvent, callEvent.Duration)
+                        });
                     }
                     else
                     {
@@ -186,11 +163,6 @@ namespace CCM.Core.Managers
 
             var regionStatistics = GenerateDateBasedStatisticses(callHistories, startDate, endDate);
             return regionStatistics.OrderBy(r => r.Date).ToList();
-        }
-
-        public List<SipAccount> GetSipUsers()
-        {
-            return _cachedSipAccountRepository.GetAll();
         }
 
         public IList<DateBasedStatistics> GetSipAccountStatistics(DateTime startDate, DateTime endDate, Guid userId)
@@ -227,6 +199,30 @@ namespace CCM.Core.Managers
                 _cachedLocationRepository.GetAll()
                     .Where(l => regionId == Guid.Empty || (l.Region != null && l.Region.Id == regionId))
                     .ToList();
+        }
+
+        public List<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId)
+        {
+            var callHistories = _cachedCallHistoryRepository.GetCallHistoriesByDate(startTime, endTime);
+
+            if (callHistories == null)
+            {
+                return new List<LocationBasedStatistics>();
+            }
+
+            var locations = new Dictionary<Guid, LocationBasedStatistics>();
+            var filter = new CallHistoryFilter(regionId, ownerId, codecTypeId);
+            foreach (var callEvent in LocationCallEvent.GetOrderedEvents(callHistories, filter))
+            {
+                if (!locations.ContainsKey(callEvent.LocationId))
+                    locations.Add(callEvent.LocationId, new LocationBasedStatistics { LocationId = callEvent.LocationId, LocationName = callEvent.LocationName });
+                locations[callEvent.LocationId].AddEvent(callEvent, startTime, endTime);
+            }
+
+            var locationStatisticses = locations.Values.ToList();
+            AddMissingLocations(locationStatisticses, regionId);
+
+            return locationStatisticses.OrderBy(l => l.LocationName).ToList();
         }
 
         public HourBasedStatisticsForLocation GetHourStatisticsForLocation(DateTime startTime, DateTime endTime, Guid locationId, bool noAggregation)
