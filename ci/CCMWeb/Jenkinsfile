@@ -6,14 +6,14 @@ def application = [
 def jenkinsWorkerConstraint = "!arm"
 def httpProxy = env.HTTP_PROXY
 def dockerRegistry = env.DOCKER_REGISTRY
-def dockerFile = "ci/CCMWeb/Dockerfile"
+def dockerFile = "./ci/CCMWeb/Dockerfile"
 def dockerImageEnvName = "IMAGE_NAME"
+def dockerComposeFile = "./ci/CCMWeb/docker-compose.yml"
 
 def config = [
     dockerHost: "msc.sr.se",
     dockerHostCredentialsId: "dockerHostUser",
     tempFilesPath: "/mnt/nfs/msc-nfs/stacks",
-    dockerComposeFrom: "./ci/CCMWeb/docker-compose.yml",
 ]
 
 node(jenkinsWorkerConstraint) {
@@ -23,12 +23,17 @@ node(jenkinsWorkerConstraint) {
 
     def buildVersion = "0.0.0"
     def buildEnvironment = "Dev"
+    def stageConfigFile = "ccm_stage_appsettings"
 
-    // Use tag name as build version if existing (used in the bottom footer of main page in the application)
+    // Use tag name as build version on production build (a build from a tag) - used in the bottom footer of main page in the application
+    // Use specific configuration file on stage version (a build from a branch)
     if(env.TAG_NAME) {
         buildVersion = env.TAG_NAME
         buildEnvironment = "Prod"
         application.stackname = "ipk"
+    } else {
+        sh "sed -i \"s/ccm_prod_appsettings/\"${stageConfigFile}\"/g\" ${dockerComposeFile}"
+        sh "cat $dockerComposeFile"
     }
 
     // Modify the buildinformation.json file in the repository
@@ -79,7 +84,7 @@ node(jenkinsWorkerConstraint) {
 
         stage("Update service on ${dockerHost.host}") {
             sshCommand remote: dockerHost, command: "mkdir -p ${dockerComposeDest}"
-            sshPut remote: dockerHost, from: config.dockerComposeFrom, into: "${dockerComposeDest}/docker-compose.yml"
+            sshPut remote: dockerHost, from: dockerComposeFile, into: "${dockerComposeDest}/docker-compose.yml"
             sshCommand remote: dockerHost, command: "${dockerImageEnvName}=${fullImageName} docker stack deploy -c ${dockerComposeDest}/docker-compose.yml ${application.stackname}"
         }
     }
