@@ -6,13 +6,13 @@ services:
       - proxynet
       - default
     configs:
-      - source: ccm_appsettings
+      - source: ccm_prod_appsettings
         target: /app/appsettings.json
     volumes:
       - /mnt/nfs/msc-nfs/docker-share/development/ccm:/ccm
 
 configs:
-  ccm_appsettings:
+  ccm_prod_appsettings:
     external: true
 
 networks:
