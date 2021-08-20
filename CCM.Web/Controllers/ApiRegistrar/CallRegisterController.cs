@@ -81,8 +81,6 @@ namespace CCM.Web.Controllers.ApiRegistrar
             var sipMessage = new ExternalDialogMessage
             {
                 CallId = callEvent.CallId,
-                CallHashId = callEvent.CallHashId,
-                CallHashEnt = callEvent.CallHashEnt,
                 Status = ExternalDialogStatus.Start,
                 Started = callEvent.Started,
                 Ended = callEvent.Ended,

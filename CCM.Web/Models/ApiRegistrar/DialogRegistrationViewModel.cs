@@ -32,8 +32,6 @@ namespace CCM.Web.Models.ApiRegistrar
     public class DialogRegistrationViewModel
     {
         [JsonPropertyName("callId")] public string CallId { get; set; }
-        [JsonPropertyName("callHashId")] public string CallHashId { get; set; }
-        [JsonPropertyName("callHashEnt")] public string CallHashEnt { get; set; }
 
         [JsonPropertyName("started")] public DateTime? Started { get; set; } = null;
         [JsonPropertyName("ended")] public DateTime? Ended { get; set; } = null;

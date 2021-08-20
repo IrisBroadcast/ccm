@@ -31,8 +31,6 @@ namespace CCM.Core.SipEvent.Messages
     public class ExternalDialogMessage
     {
         public string CallId { get; set; }
-        public string CallHashId { get; set; }
-        public string CallHashEnt { get; set; }
 
         public ExternalDialogStatus Status { get; set; }
         public DateTime? Started { get; set; } = null;

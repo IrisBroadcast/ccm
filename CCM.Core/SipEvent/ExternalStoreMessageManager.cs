@@ -88,8 +88,8 @@ namespace CCM.Core.SipEvent
                 Started = message.Started ?? DateTime.UtcNow,
                 Closed = (message.Ended != null),
                 CallId = message.CallId,
-                DialogHashId = message.CallHashId,
-                DialogHashEnt = message.CallHashEnt,
+                DialogHashId = "",
+                DialogHashEnt = "",
                 Updated = DateTime.UtcNow,
                 State = SipCallState.NONE,
                 SDP = message.SDP
@@ -109,15 +109,15 @@ namespace CCM.Core.SipEvent
 
         public SipEventHandlerResult CloseCall(ExternalDialogMessage message)
         {
-            _logger.LogDebug($"Closing call with id:{message.CallId}, hash id:{message.CallHashId}, hash entry:{message.CallHashEnt}");
+            _logger.LogDebug($"Closing call with id:{message.CallId}");
 
             try
             {
-                CallInfo call = _cachedCallRepository.GetCallInfo(message.CallId, message.CallHashId, message.CallHashEnt);
+                CallInfo call = _cachedCallRepository.GetCallInfo(message.CallId, "", "");
 
                 if (call == null)
                 {
-                    _logger.LogWarning($"Unable to find call with call id:{message.CallId}, hash id:{message.CallHashId}, hash entry:{message.CallHashEnt}");
+                    _logger.LogWarning($"Unable to find call with call id:{message.CallId}");
                     return NothingChangedResult;
                 }
 
