@@ -300,9 +300,19 @@ namespace CCM.Web.Controllers
 
         #region Category
         [HttpPost]
-        public ActionResult CategoryNumberOfCallsView()
+        public ActionResult CategoryNumberOfCallsView(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate)
         {
-            return PartialView("CategoryStatisticsTable");
+
+            var model = new DateBasedChartCategoriesViewModel
+            {
+                FilterType = DateBasedFilterType.CodecTypes,
+                ChartType = DateBasedChartType.NumberOfCalls,
+                EndDate = endDate,
+                StartDate = startDate,
+                Stats = _statisticsManager.GetCategoryStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime())
+        };
+
+            return PartialView("CategoryStatisticsTable", model);
         }
         #endregion Category
 
@@ -324,6 +334,7 @@ namespace CCM.Web.Controllers
                     stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
                     prefix = _localizer["Codec_Type"];
                     break;
+                // TODO: add category here
                 default:
                     throw new Exception("No filter type selected");
             }

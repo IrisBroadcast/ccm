@@ -25,29 +25,31 @@
  */
 
 using System;
-using CCM.Core.Enums;
+using System.Text.Json.Serialization;
 
 namespace CCM.Web.Models.ApiRegistrar
 {
     public class DialogRegistrationViewModel
     {
-        public string CallId { get; set; }
-        public string CallHashId { get; set; }
-        public string CallHashEnt { get; set; }
+        [JsonPropertyName("callId")] public string CallId { get; set; }
+        [JsonPropertyName("callHashId")] public string CallHashId { get; set; }
+        [JsonPropertyName("callHashEnt")] public string CallHashEnt { get; set; }
 
-        public DateTime Started { get; set; }
-        public SipCallState State { get; set; } = SipCallState.NONE;
-        public bool IsPhoneCall { get; set; }
-        public string SDP { get; set; }
+        [JsonPropertyName("started")] public DateTime? Started { get; set; } = null;
+        [JsonPropertyName("ended")] public DateTime? Ended { get; set; } = null;
+        [JsonPropertyName("isPhoneCall")] public bool IsPhoneCall { get; set; }
+        [JsonPropertyName("sdp")] public string SDP { get; set; }
 
-        public string FromId { get; set; }
-        public string FromUsername { get; set; }
-        public string FromDisplayName { get; set; }
-        public string FromCategory { get; set; }
+        [JsonPropertyName("fromId")] public string FromId { get; set; }
+        [JsonPropertyName("fromUsername")] public string FromUsername { get; set; }
+        [JsonPropertyName("fromDisplayname")] public string FromDisplayName { get; set; }
+        [JsonPropertyName("fromIP")] public string FromIPAddress { get; set; }
+        [JsonPropertyName("fromCategory")] public string FromCategory { get; set; }
 
-        public string ToId { get; set; }
-        public string ToUsername { get; set; }
-        public string ToDisplayName { get; set; }
-        public string ToCategory { get; set; }
+        [JsonPropertyName("toId")] public string ToId { get; set; }
+        [JsonPropertyName("toUsername")] public string ToUsername { get; set; }
+        [JsonPropertyName("toDisplayname")] public string ToDisplayName { get; set; }
+        [JsonPropertyName("toIP")] public string ToIPAddress { get; set; }
+        [JsonPropertyName("toCategory")] public string ToCategory { get; set; }
     }
 }

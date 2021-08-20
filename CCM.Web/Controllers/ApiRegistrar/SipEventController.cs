@@ -28,8 +28,6 @@ using System;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.SipEvent;
 using Microsoft.AspNetCore.Mvc;
-using NLog;
-using System.Threading.Tasks;
 using CCM.Core.Interfaces.Parser;
 using CCM.Core.SipEvent.Event;
 using CCM.Core.SipEvent.Messages;

@@ -24,28 +24,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using CCM.Core.Entities;
-using CCM.Core.Entities.Statistics;
-
-namespace CCM.Core.Interfaces.Managers
+namespace CCM.Core.SipEvent.Messages
 {
-    public interface IStatisticsManager
+    public enum ExternalDialogStatus
     {
-        List<CodecType> GetCodecTypes();
-        List<Owner> GetOwners();
-        List<Region> GetRegions();
-        List<SipAccount> GetSipAccounts();
-        IList<Location> GetLocationsForRegion(Guid regionId);
-
-        List<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId);
-        HourBasedStatisticsForLocation GetHourStatisticsForLocation(DateTime startTime, DateTime endTime, Guid locationId, bool noAggregation);
-
-        IList<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId);
-        IList<DateBasedStatistics> GetSipAccountStatistics(DateTime startDate, DateTime endDate, Guid userId);
-        IList<DateBasedStatistics> GetCodecTypeStatistics(DateTime startDate, DateTime endDate, Guid codecTypeId);
-        
-        IList<DateBasedCategoryStatistics> GetCategoryStatistics(DateTime startTime, DateTime endTime);
+        Start,
+        End,
+        Complete
     }
 }

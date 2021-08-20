@@ -183,8 +183,18 @@ export class StatisticsView {
     }
 
     async categorySearch() {
+
+
+        const queryParamsCalls = {
+            filterType: "Categories",
+            chartType: "NumberOfCalls",
+            startDate: Tool.$dom("startDate").value,
+            endDate: Tool.$dom("endDate").value,
+            filterId: Tool.$dom("codecTypesCodecTypes").value
+        };
+
         Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/CategoryNumberOfCallsView", null).then(async (content) => {
+        Tool.$fetchView("/Statistics/CategoryNumberOfCallsView", queryParamsCalls).then(async (content) => {
             Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = content;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
 

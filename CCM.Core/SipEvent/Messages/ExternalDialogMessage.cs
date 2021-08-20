@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,36 @@
  */
 
 using System;
-using System.Collections.Generic;
-using CCM.Core.Entities;
-using CCM.Core.Entities.Statistics;
 
-namespace CCM.Core.Interfaces.Managers
+namespace CCM.Core.SipEvent.Messages
 {
-    public interface IStatisticsManager
+    public class ExternalDialogMessage
     {
-        List<CodecType> GetCodecTypes();
-        List<Owner> GetOwners();
-        List<Region> GetRegions();
-        List<SipAccount> GetSipAccounts();
-        IList<Location> GetLocationsForRegion(Guid regionId);
+        public string CallId { get; set; }
+        public string CallHashId { get; set; }
+        public string CallHashEnt { get; set; }
 
-        List<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId);
-        HourBasedStatisticsForLocation GetHourStatisticsForLocation(DateTime startTime, DateTime endTime, Guid locationId, bool noAggregation);
+        public ExternalDialogStatus Status { get; set; }
+        public DateTime? Started { get; set; } = null;
+        public DateTime? Ended { get; set; } = null;
+        public bool IsPhoneCall { get; set; }
+        public string SDP { get; set; }
 
-        IList<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId);
-        IList<DateBasedStatistics> GetSipAccountStatistics(DateTime startDate, DateTime endDate, Guid userId);
-        IList<DateBasedStatistics> GetCodecTypeStatistics(DateTime startDate, DateTime endDate, Guid codecTypeId);
-        
-        IList<DateBasedCategoryStatistics> GetCategoryStatistics(DateTime startTime, DateTime endTime);
+        public string FromId { get; set; }
+        public string FromUsername { get; set; }
+        public string FromDisplayName { get; set; }
+        public string FromIPAddress { get; set; }
+        public string FromCategory { get; set; }
+
+        public string ToId { get; set; }
+        public string ToUsername { get; set; }
+        public string ToDisplayName { get; set; }
+        public string ToIPAddress { get; set; }
+        public string ToCategory { get; set; }
+
+        public string ToDebugString()
+        {
+            return $"CallId:{CallId}, Started:{Started}, Ended:{Ended}, FromUsername:{FromUsername} ({FromCategory}), ToUsername:{ToUsername} ({ToCategory})";
+        }
     }
 }

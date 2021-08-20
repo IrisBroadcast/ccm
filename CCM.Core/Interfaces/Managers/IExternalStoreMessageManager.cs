@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,28 +24,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections.Generic;
-using CCM.Core.Entities;
-using CCM.Core.Entities.Statistics;
+using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Messages;
 
 namespace CCM.Core.Interfaces.Managers
 {
-    public interface IStatisticsManager
+    public interface IExternalStoreMessageManager
     {
-        List<CodecType> GetCodecTypes();
-        List<Owner> GetOwners();
-        List<Region> GetRegions();
-        List<SipAccount> GetSipAccounts();
-        IList<Location> GetLocationsForRegion(Guid regionId);
-
-        List<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId);
-        HourBasedStatisticsForLocation GetHourStatisticsForLocation(DateTime startTime, DateTime endTime, Guid locationId, bool noAggregation);
-
-        IList<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId);
-        IList<DateBasedStatistics> GetSipAccountStatistics(DateTime startDate, DateTime endDate, Guid userId);
-        IList<DateBasedStatistics> GetCodecTypeStatistics(DateTime startDate, DateTime endDate, Guid codecTypeId);
-        
-        IList<DateBasedCategoryStatistics> GetCategoryStatistics(DateTime startTime, DateTime endTime);
+        SipEventHandlerResult HandleDialog(ExternalDialogMessage dialogMessage);
     }
 }

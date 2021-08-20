@@ -60,90 +60,9 @@ namespace CCM.Data.Repositories
         }
 
         /// <summary>
-        /// Closes a call and saves it to call history
+        /// Update or add information about a call. Can be used to close calls aswell
         /// </summary>
-        /// <param name="callId"></param>
-        public void CloseCall(Guid callId)
-        {
-            var dbCall = _ccmDbContext.Calls.SingleOrDefault(c => c.Id == callId);
-
-            if (dbCall == null)
-            {
-                _logger.LogWarning($"Trying to close call but call with id {callId} doesn't exist");
-                return;
-            }
-
-            // Close call to remove it later
-            dbCall.Closed = true;
-            dbCall.Updated = DateTime.UtcNow;
-            var success = _ccmDbContext.SaveChanges() > 0;
-
-            if (success) {
-                // Save call history
-                var callHistory = MapToCallHistory(dbCall);
-                var callHistorySuccess = _cachedCallHistoryRepository.Save(callHistory);
-
-                if (callHistorySuccess)
-                {
-                    // Remove the original call
-                    _ccmDbContext.Calls.Remove(dbCall);
-                    _ccmDbContext.SaveChanges();
-                }
-                else
-                {
-                    _logger.LogWarning(
-                        $"Unable to save call history with the call fromSip: {dbCall.FromCodec}, toSip: {dbCall.ToCodec}, hash id: {dbCall.DialogHashId}, hash ent: {dbCall.DialogHashEnt}");
-                }
-            }
-        }
-
-        /// <summary>
-        /// CallId, HashId and HashEntry is a unique key for calls in Kamailio
-        /// </summary>
-        /// <param name="callId"></param>
-        /// <param name="hashId"></param>
-        /// <param name="hashEnt"></param>
-        /// <returns></returns>
-        public CallInfo GetCallInfo(string callId, string hashId, string hashEnt)
-        {
-            var dbCall = _ccmDbContext.Calls.SingleOrDefault(c => c.DialogCallId == callId && c.DialogHashId == hashId && c.DialogHashEnt == hashEnt);
-            return MapToCallInfo(dbCall);
-        }
-
-        public CallInfo GetCallInfoById(Guid callId)
-        {
-            var dbCall = _ccmDbContext.Calls.SingleOrDefault(c => c.Id == callId);
-            return MapToCallInfo(dbCall);
-        }
-
-        private CallInfo MapToCallInfo(CallEntity dbCall)
-        {
-            return dbCall == null ? null : new CallInfo
-            {
-                Id = dbCall.Id,
-                Started = dbCall.Started,
-                FromSipAddress = dbCall.FromUsername,
-                ToSipAddress = dbCall.ToUsername,
-                FromId = dbCall.FromId ?? Guid.Empty,
-                ToId = dbCall.ToId ?? Guid.Empty,
-                Closed = dbCall.Closed
-            };
-        }
-
-        public Call GetCallBySipAddress(string sipAddress)
-        {
-            if (string.IsNullOrEmpty(sipAddress))
-            {
-                return null;
-            }
-
-            var dbCall = _ccmDbContext.Calls
-                .OrderByDescending(c => c.Updated) // Last call in case several happens to exist in database
-                .FirstOrDefault(c => !c.Closed && (c.FromUsername == sipAddress || c.ToUsername == sipAddress));
-
-            return MapToCall(dbCall);
-        }
-
+        /// <param name="call"></param>
         public void UpdateCall(Call call)
         {
             try
@@ -212,6 +131,91 @@ namespace CCM.Data.Repositories
             {
                 _logger.LogError(ex, $"Error saving/updating call with call id: {call.CallId}, hash id: {call.DialogHashId}, hash ent: {call.DialogHashEnt}");
             }
+        }
+
+        /// <summary>
+        /// Closes a call and saves it to call history
+        /// </summary>
+        /// <param name="callId"></param>
+        public void CloseCall(Guid callId)
+        {
+            var dbCall = _ccmDbContext.Calls.SingleOrDefault(c => c.Id == callId);
+
+            if (dbCall == null)
+            {
+                _logger.LogWarning($"Trying to close call but call with id {callId} doesn't exist");
+                return;
+            }
+
+            // Close call to remove it later
+            dbCall.Closed = true;
+            dbCall.Updated = DateTime.UtcNow;
+            var success = _ccmDbContext.SaveChanges() > 0;
+
+            if (success) {
+                // Save call history
+                var callHistory = MapToCallHistory(dbCall);
+                var callHistorySuccess = _cachedCallHistoryRepository.Save(callHistory);
+
+                if (callHistorySuccess)
+                {
+                    // Remove the original call
+                    _ccmDbContext.Calls.Remove(dbCall);
+                    _ccmDbContext.SaveChanges();
+                }
+                else
+                {
+                    _logger.LogWarning(
+                        $"Unable to save call history with the call fromSip: {dbCall.FromCodec}, toSip: {dbCall.ToCodec}, hash id: {dbCall.DialogHashId}, hash ent: {dbCall.DialogHashEnt}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// CallId, HashId and HashEntry is a unique key for calls
+        /// </summary>
+        /// <param name="callId"></param>
+        /// <param name="hashId"></param>
+        /// <param name="hashEnt"></param>
+        /// <returns></returns>
+        public CallInfo GetCallInfo(string callId, string hashId, string hashEnt)
+        {
+            var dbCall = _ccmDbContext.Calls.SingleOrDefault(c => c.DialogCallId == callId && c.DialogHashId == hashId && c.DialogHashEnt == hashEnt);
+            return MapToCallInfo(dbCall);
+        }
+
+        public CallInfo GetCallInfoById(Guid callId)
+        {
+            var dbCall = _ccmDbContext.Calls.SingleOrDefault(c => c.Id == callId);
+            return MapToCallInfo(dbCall);
+        }
+
+        private CallInfo MapToCallInfo(CallEntity dbCall)
+        {
+            return dbCall == null ? null : new CallInfo
+            {
+                Id = dbCall.Id,
+                Started = dbCall.Started,
+                FromSipAddress = dbCall.FromUsername,
+                ToSipAddress = dbCall.ToUsername,
+                FromId = dbCall.FromId ?? Guid.Empty,
+                ToId = dbCall.ToId ?? Guid.Empty,
+                Closed = dbCall.Closed
+            };
+        }
+
+        public Call GetCallBySipAddress(string sipAddress)
+        {
+            if (string.IsNullOrEmpty(sipAddress))
+            {
+                return null;
+            }
+
+            var dbCall = _ccmDbContext.Calls
+                .OrderByDescending(c => c.Updated) // Last call in case several happens to exist in database
+                .FirstOrDefault(c => !c.Closed && (c.FromUsername == sipAddress || c.ToUsername == sipAddress));
+
+            return MapToCall(dbCall);
         }
 
         public IReadOnlyCollection<OnGoingCall> GetOngoingCalls(bool anonymize)

@@ -40,11 +40,21 @@ namespace CCM.Web.Models.Statistics
         public IList<DateBasedStatistics> Stats { get; set; }
     }
 
+    public class DateBasedChartCategoriesViewModel
+    {
+        public DateBasedFilterType FilterType { get; set; }
+        public DateBasedChartType ChartType { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public IList<DateBasedCategoryStatistics> Stats { get; set; }
+    }
+
     public enum DateBasedFilterType
     {
         Regions,
         SipAccounts,
-        CodecTypes
+        CodecTypes,
+        Categories
     }
 
     public enum DateBasedChartType

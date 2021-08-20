@@ -80,7 +80,7 @@ namespace CCM.Core.Managers
             return _cachedSipAccountRepository.GetAll();
         }
 
-        public IEnumerable<DateBasedCategoryStatistics> GetCategoryStatistics(DateTime startTime, DateTime endTime)
+        public IList<DateBasedCategoryStatistics> GetCategoryStatistics(DateTime startTime, DateTime endTime)
         {
 
             var categoryStatistics = new List<DateBasedCategoryStatistics>();
@@ -93,7 +93,7 @@ namespace CCM.Core.Managers
 
             categoryStatistics.AddRange(GenerateDateBasedCategoryStatistics(callHistory, startTime, endTime));
 
-            return categoryStatistics;
+            return categoryStatistics.OrderBy(c => c.Date).ToList();
         }
 
         private IEnumerable<DateBasedCategoryStatistics> GenerateDateBasedCategoryStatistics(IList<CallHistory> callHistories, DateTime reportPeriodStart, DateTime reportPeriodEnd)

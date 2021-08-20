@@ -59,8 +59,10 @@ namespace CCM.Web.Infrastructure
             services.AddTransient<ILocationManager, LocationManager>();
             services.AddTransient<IRegisteredCodecsManager, RegisteredCodecsManager>();
             services.AddTransient<ISettingsManager, SettingsManager>();
-            services.AddTransient<ISipMessageManager, SipMessageManager>();
             services.AddTransient<IStatisticsManager, StatisticsManager>();
+
+            services.AddTransient<ISipMessageManager, SipMessageManager>();
+            services.AddTransient<IExternalStoreMessageManager, ExternalStoreMessageManager>();
 
             services.AddTransient<ICachedCallHistoryRepository, CachedCallHistoryRepository>();
             services.AddTransient<ICallHistoryRepository, CallHistoryRepository>();

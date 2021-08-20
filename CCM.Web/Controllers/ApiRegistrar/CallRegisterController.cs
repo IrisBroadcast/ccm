@@ -30,6 +30,7 @@ using Microsoft.AspNetCore.Mvc;
 using NLog;
 using System.Threading.Tasks;
 using CCM.Core.Interfaces.Parser;
+using CCM.Core.SipEvent.Messages;
 using CCM.Web.Hubs;
 using CCM.Web.Models.ApiRegistrar;
 
@@ -43,20 +44,20 @@ namespace CCM.Web.Controllers.ApiRegistrar
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly ISipEventParser _sipEventParser;
-        private readonly ISipMessageManager _sipMessageManager;
+        private readonly IExternalStoreMessageManager _externalStoreMessageManager;
         private readonly IWebGuiHubUpdater _webGuiHubUpdater;
         private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
         private readonly ISettingsManager _settingsManager;
 
         public CallRegisterController(
             ISipEventParser sipEventParser,
-            ISipMessageManager sipMessageManager,
+            IExternalStoreMessageManager externalStoreMessageManager,
             IWebGuiHubUpdater webGuiHubUpdater,
             ICodecStatusHubUpdater codecStatusHubUpdater,
             ISettingsManager settingsManager)
         {
             _sipEventParser = sipEventParser;
-            _sipMessageManager = sipMessageManager;
+            _externalStoreMessageManager = externalStoreMessageManager;
             _webGuiHubUpdater = webGuiHubUpdater;
             _codecStatusHubUpdater = codecStatusHubUpdater;
             _settingsManager = settingsManager;
@@ -69,7 +70,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
         }
 
         [HttpPost]
-        public IActionResult Index(DialogRegistrationViewModel callEvent)
+        public IActionResult Index([FromBody] DialogRegistrationViewModel callEvent)
         {
             if (callEvent == null)
             {
@@ -77,30 +78,39 @@ namespace CCM.Web.Controllers.ApiRegistrar
                 return BadRequest("Call register controller received empty data");
             }
 
-            //var sipMessage = _sipEventParser.Parse(callEvent);
+            var sipMessage = new ExternalDialogMessage
+            {
+                CallId = callEvent.CallId,
+                CallHashId = callEvent.CallHashId,
+                CallHashEnt = callEvent.CallHashEnt,
+                Status = ExternalDialogStatus.Start,
+                Started = callEvent.Started,
+                Ended = callEvent.Ended,
+                IsPhoneCall = callEvent.IsPhoneCall,
+                SDP = callEvent.SDP,
+                FromId = callEvent.FromId,
+                FromUsername = callEvent.FromUsername,
+                FromDisplayName = callEvent.FromDisplayName,
+                FromIPAddress = callEvent.FromIPAddress,
+                FromCategory = callEvent.FromCategory,
+                ToId = callEvent.ToId,
+                ToUsername = callEvent.ToUsername,
+                ToDisplayName = callEvent.ToDisplayName,
+                ToIPAddress = callEvent.ToIPAddress,
+                ToCategory = callEvent.ToCategory
+            };
 
-            //if (sipMessage == null)
-            //{
-            //    log.Warn("Incorrect SIP message format: ", callEvent);
-            //    return BadRequest();
-            //}
+            SipEventHandlerResult result = _externalStoreMessageManager.HandleDialog(sipMessage);
 
-            //SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-
-            //if (log.IsDebugEnabled)
-            //{
-            //    log.Debug("SIP message, Handled: {0}, Parsed: {1}, Result: {2}", callEvent.ToLogString(), sipMessage.ToDebugString(), result?.ChangeStatus);
-            //}
-
-            //if (result == null)
-            //{
-            //    log.Warn("Kamailio message was handled but result was null");
-            //}
-            //else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
-            //{
-            //    _webGuiHubUpdater.Update(result); // First web gui
-            //    _codecStatusHubUpdater.Update(result); // Then codec status to external clients
-            //}
+            if (result == null)
+            {
+                log.Warn("External message was handled but result was null");
+            }
+            else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
+            {
+                _webGuiHubUpdater.Update(result); // First web gui
+                _codecStatusHubUpdater.Update(result); // Then codec status to external clients
+            }
 
             return Ok();
         }

@@ -1,21 +1,20 @@
 ﻿
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
-@model CCM.Web.Models.Statistics.DateBasedChartViewModel
+@model CCM.Web.Models.Statistics.DateBasedChartCategoriesViewModel
 
 @*<div class="tab-pane--topbanner">
     <a href="@Url.Action("GetDateBasedCsv", new { filterType = Model.FilterType, startDate = Model.StartDate, endDate = Model.EndDate, filterId = Model.FilterId })"><span class="glyphicon glyphicon-download"></span>&nbsp;@Localizer["Download_Csv"]</a>
 </div>*@
-@*<div>
+<div>
     <h3>@Localizer["Stats_Number_Of_Calls"]</h3>
     <table class="table table-condensed">
         <thead>
             <tr>
                 <th>@Localizer["Date"]</th>
+                <th>@Localizer["Region"]</th>
+                <th>@Localizer["Name"]</th>
                 <th>@Localizer["Calls"]</th>
-                <th>@Localizer["Average"] @Localizer["Call_Time"]</th>
-                <th>@Localizer["Shortest"] @Localizer["Call_Time"]</th>
-                <th>@Localizer["Longest"] @Localizer["Call_Time"]</th>
                 <th>@Localizer["Total"] @Localizer["Call_Time"]</th>
             </tr>
         </thead>
@@ -25,54 +24,60 @@
                 var previousDate = @Model.StartDate;
                 var printedDate = false;
             }
-            @foreach (var row in Model.Stats)
+            @foreach (var dd in Model.Stats)
             {
-                if (row.NumberOfCalls == 0)
+                @foreach (var cats in dd.RegionCategories)
                 {
-                    if (printedDate == false)
+                    @foreach (var row in cats.CategoryStatisticsList)
                     {
-                        printedDate = true;
-                        zeroCallsStartDate = row.Date;
+
+                        if (row.NumberOfCalls == 0)
+                        {
+                            if (printedDate == false)
+                            {
+                                printedDate = true;
+                                zeroCallsStartDate = cats.Date; // row.Date;
+                            }
+                        }
+                        else if (printedDate)
+                        {
+                            <tr>
+                                <td colspan="6">@zeroCallsStartDate</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    &#65076;
+                                    &#xFE34;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">@previousDate</td>
+                            </tr>
+                            printedDate = false;
+                        }
+                        else
+                        {
+                            printedDate = false;
+
+                        }
+                        previousDate = cats.Date;
+
+                        if (row.NumberOfCalls != 0)
+                        {
+                            <tr>
+                                <td class="col-md-3">@dd.Date - @cats.Date</td>
+                                <td>@cats.Name</td>
+                                <td>@row.Name</td>
+                                <td>@row.NumberOfCalls</td>
+                                <td>@row.TotalTimeForCalls</td>
+                            </tr>
+                        }
                     }
                 }
-                else if (printedDate)
-                {
-                    <tr>
-                        <td colspan="6">@zeroCallsStartDate</td>
-                    </tr>
-                    <tr>
-                        <td colspan="6">
-                            &#65076;
-                            &#xFE34;
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="6">@previousDate</td>
-                    </tr>
-                    printedDate = false;
-                }
-                else
-                {
-                    printedDate = false;
-
-                }
-                previousDate = row.Date;
-
-                if (row.NumberOfCalls != 0)
-                {
-                    <tr>
-                        <td class="col-md-3">@row.Date</td>
-                        <td>@row.NumberOfCalls</td>
-                        <td>@row.AverageTimeView</td>
-                        <td>@row.MinCallTimeView</td>
-                        <td>@row.MaxCallTimeView</td>
-                        <td>@row.TotalTimeForCallsView</td>
-                    </tr>
-                }
             }
-        </tbody>
+            </tbody>
     </table>
-</div>*@
+</div>
 
 <div id="errormessage"></div>
 <div>
