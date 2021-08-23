@@ -112,9 +112,12 @@ namespace CCM.Data.Repositories
                         Id = Guid.NewGuid()
                     };
                     db.RegisteredCodecs.Add(dbSip);
+                    _logger.LogWarning($"UPDATE_: SIP: {registration.SipUri} {registration.ExpirationTimeSeconds} (SAVING NEW_)");
                 }
-
-                _logger.LogWarning($"UPDATE_: SIP: {registration.SipUri} {registration.ExpirationTimeSeconds} -- Updated:{dbSip.Updated} (SAVING_)");
+                else
+                {
+                    _logger.LogWarning($"UPDATE_: SIP: {registration.SipUri} {registration.ExpirationTimeSeconds} -- Updated:{dbSip.Updated} (SAVING OLD_)");
+                }
 
                 // Match and map
                 var userAgentId = GetUserAgentId(registration.UserAgentHeader);

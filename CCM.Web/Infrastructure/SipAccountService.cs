@@ -56,18 +56,23 @@ namespace CCM.Web.Infrastructure
 
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    await Task.Delay(5000, stoppingToken);
+                    await Task.Delay(15000, stoppingToken);
 
                     var useragents = _registeredRepository.GetRegisteredCodecsUpdateTimes().ToList();
                     var expireTime = DateTime.UtcNow;
 
                     foreach (var sip in useragents)
                     {
-                        if (sip.Updated < expireTime.AddSeconds(-(sip.Expires + 20)))
+                        var expectedAfter = expireTime.AddSeconds(-(sip.Expires + 30));
+                        if (sip.Updated < expectedAfter)
                         {
-                            _logger.LogInformation($"EXPIRED: SIP: {sip.SIP} {sip.Expires} -- Updated:{sip.Updated} < # Expected latest:{expireTime.AddSeconds(-(sip.Expires + 20))} # Now:{expireTime}");
+                            _logger.LogInformation($"EXPIRED: SIP: {sip.SIP} Expire:{sip.Expires}+30 -- Expected later than this:{expectedAfter} but was Updated:{sip.Updated} # Now:{expireTime}");
                             _registeredRepository.DeleteRegisteredSip(sip.SIP);
                             // TODO: this does not trigger websocket info maybe?
+                        }
+                        else
+                        {
+                            _logger.LogInformation($"FINE___: SIP: {sip.SIP} Expire:{sip.Expires}+30 -- Expected later than this:{expectedAfter} ___ was Updated:{sip.Updated} # Now:{expireTime}");
                         }
                     }
                 }
