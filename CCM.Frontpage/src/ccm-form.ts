@@ -44,7 +44,7 @@ export class Application {
         }
 
         try {
-            ColorPicker("colorpicker-selection");
+            ColorPicker("colorpicker-selection", "colorpicker-preview");
         } catch(error) {
             console.warn(error);
         }

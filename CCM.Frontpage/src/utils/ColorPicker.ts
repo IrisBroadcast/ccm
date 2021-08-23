@@ -7,7 +7,7 @@ import Tools from "./Tools";
  *
  * @param {string} - Color picker HTMLElement class
  */
-export function ColorPicker(targetClass: string) {
+export function ColorPicker(targetClass: string, previewClass: string = null) {
     const targets = document.getElementsByClassName(targetClass);
     if (targets == null || targets.length === 0) {
         throw new Error(`Could not bind color picker to target class '.${targetClass}'`);
@@ -19,14 +19,16 @@ export function ColorPicker(targetClass: string) {
         const currentColor = targets[index].getAttribute("value");
         console.log(currentColor);
         if(currentColor.indexOf("#") > -1) {
-            console.log("Alles gut");
+            console.log("All good with the hash");
         } else {
             targets[index].setAttribute("value", `#${currentColor}`);
         }
         Tools.$event(targets[index], "input", (key) => {
-            let elem = document.getElementsByTagName("body")[0];
+            let elem = previewClass != null ? document.getElementById(previewClass) : document.getElementsByTagName("body")[0];
             elem.style.backgroundColor = key.target.value;
         });
+        let elem = previewClass != null ? document.getElementById(previewClass) : document.getElementsByTagName("body")[0];
+        elem.style.backgroundColor = targets[index].getAttribute("value");
     }
 
 	// Background adjustment

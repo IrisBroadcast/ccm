@@ -1088,4 +1088,7 @@
   <data name="Regular_Expression" xml:space="preserve">
     <value>Reguljärt uttryck</value>
   </data>
+  <data name="No_Codec_Control_Available" xml:space="preserve">
+    <value>Ingen kodarstyrning tillgänglig</value>
+  </data>
 </root>

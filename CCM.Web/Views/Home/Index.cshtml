@@ -191,7 +191,7 @@
                     <div class="row">
                         <div class="panel panel-default">
                             <!-- Ongoing calls -->
-                            <div class="panel-heading list-ccm-heading list-ccm-tab-panel-heading">
+                            <div class="mui-panel-heading">
                                 <div class="row">
                                     <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'FromDisplayName'}">@Localizer["Caller"]</div>
                                     <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('ToDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'ToDisplayName'}">@Localizer["Callee"]</div>
@@ -246,14 +246,16 @@
                             </div>
 
                             <!-- Old calls / History -->
-                            <div class="panel-heading list-ccm-heading list-ccm-tab-panel-heading">
-                                <div class="row">
-                                    <div class="col-md-12 col-title list-ccm-thead-headline">
-                                        @Localizer["Latest_Closed_Calls"]
+                            <div class="mui-panel-heading">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#toggle-calls-history">
+                                    <div class="row">
+                                        <div class="col-md-12 col-title list-ccm-thead-headline">
+                                            @Localizer["Latest_Closed_Calls"]
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
-                            <div class="mui-panel calls-history">
+                            <div class="mui-panel calls-history collapse" id="toggle-calls-history">
                                 <div class="mui-row list-ccm--bg codecs" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
                                     <div class="mui-col mui-col--source">
                                         <span class="list-ccm--type-id" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
@@ -373,8 +375,16 @@
     <!-- Navigation -->
     <ul class="nav nav-tabs ccm-ui-pop-nav">
         <li class="active"><a href="#reginfo" data-toggle="tab">@Localizer["Information"]</a></li>
-        <li id="codecControlTab" ng-show="codecOnline"><a href="#control" data-toggle="tab">@Localizer["Codec_Control"]</a></li>
-        <li ng-hide="info.isAuthenticated"><a href="@Url.Action("Login", "Account")" title="@Localizer["Log_In"].Value">@Localizer["Login_For_Codec_Control"]</a></li>
+        @if (hasWriteRights)
+        {
+            <li id="codecControlTab" ng-show="codecOnline"><a href="#control" data-toggle="tab">@Localizer["Codec_Control"]</a></li>
+            <li ng-show="isLoading"><a href="#control-loading">@Localizer["Loading"]</a></li>
+            <li ng-show="!codecOnline && !isLoading"><a href="#no-control">@Localizer["No_Codec_Control_Available"]</a></li>
+        }
+        else
+        {
+            <li><a href="@Url.Action("Login", "Account")" title="@Localizer["Log_In"].Value">@Localizer["Login_For_Codec_Control"]</a></li>
+        }
     </ul>
 
     <!-- Header, codecname, logo, close btn -->

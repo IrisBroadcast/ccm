@@ -7074,6 +7074,11 @@ button.close {
 .mui-panel th:last-child {
   border: 0;
 }
+.mui-panel-heading {
+  padding: 0.5rem;
+  background-color: #e9e9e9;
+  border-bottom: 1px solid #ddd;
+}
 .mui-panel .resize-handle {
   position: absolute;
   top: 0;
@@ -8124,17 +8129,6 @@ input[type="checkbox"].input-validation-error {
 .list-ccm-registered .list-ccm-thead-headline {
   cursor: pointer;
 }
-.list-ccm-tab-panel-heading {
-  /* TODO: remove col-title-pointer 
-    .col-title-pointer {
-        cursor: pointer;
-    }*/
-  /* col-title?????? TODO */
-}
-.list-ccm-tab-panel-heading .col-title-pointer,
-.list-ccm-tab-panel-heading .col-title {
-  font-weight: bold;
-}
 .list-ccm-tab-content {
   margin-top: 5px;
   max-width: 100%;
@@ -9171,6 +9165,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 .overlay-container {
   position: relative;
   overflow: hidden;
+  min-height: 20vh;
 }
 .overlay-container .overlay {
   position: absolute;

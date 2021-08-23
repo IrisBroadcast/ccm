@@ -3,6 +3,8 @@
  * Codec control for front page popup */
 ccmControllers.controller('sipInfoController', function ($scope, $http, $interval, $uibModalInstance, sipid, sipAddress) {
 
+    $scope.isLoading = true;
+
     $scope.codecControlHost = window.codecControlHost;
     $scope.userName = window.codecControlUserName;
     $scope.password = window.codecControlPassword;
@@ -438,12 +440,15 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             $scope.selectedLine = lines[0];
 
             $scope.checkCodecAvailable();
+            $scope.isLoading = false;
         } else {
             console.warn('Codec-control is not Authorized');
+            $scope.isLoading = false;
         }
     },
     (error) => {
         console.error("No answer from '/api/RegisteredCodec/ById/?id=" + $scope.sipid + "'", error);
+        $scope.isLoading = false;
     });
 
     // Utilities

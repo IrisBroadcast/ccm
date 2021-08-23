@@ -2086,6 +2086,15 @@ namespace CCM.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ingen kodarstyrning tillgänglig.
+        /// </summary>
+        public static string No_Codec_Control_Available {
+            get {
+                return ResourceManager.GetString("No_Codec_Control_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ingen kodare kunde hittas.
         /// </summary>
         public static string No_Codec_Found {

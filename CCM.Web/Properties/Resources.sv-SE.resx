@@ -1052,4 +1052,7 @@
   <data name="Logs_Delete_All_Records_From_Log" xml:space="preserve">
     <value>Rensa alla loggar</value>
   </data>
+  <data name="No_Codec_Control_Available" xml:space="preserve">
+    <value>Ingen kodarstyrning tillgänglig</value>
+  </data>
 </root>
