@@ -50,13 +50,13 @@ namespace CCM.Web.Infrastructure
         {
             _logger.LogInformation($"*********** Starting SIP Account Background service ************");
 
-            using (var scope = _serviceProvider.CreateScope())
+            while (!stoppingToken.IsCancellationRequested)
             {
-                var _registeredRepository = scope.ServiceProvider.GetRequiredService<ICachedRegisteredCodecRepository>();
+                await Task.Delay(15000, stoppingToken);
 
-                while (!stoppingToken.IsCancellationRequested)
+                using (var scope = _serviceProvider.CreateScope())
                 {
-                    await Task.Delay(15000, stoppingToken);
+                    var _registeredRepository = scope.ServiceProvider.GetRequiredService<ICachedRegisteredCodecRepository>();
 
                     var useragents = _registeredRepository.GetRegisteredCodecsUpdateTimes().ToList();
                     var expireTime = DateTime.UtcNow;
@@ -77,6 +77,7 @@ namespace CCM.Web.Infrastructure
                     }
                 }
             }
+
             _logger.LogInformation($"*********** Stopping SIP Account Background service ************");
         }
     }
