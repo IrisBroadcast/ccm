@@ -2482,6 +2482,15 @@ namespace CCM.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Återställ filter.
+        /// </summary>
+        public static string Reset_filters {
+            get {
+                return ResourceManager.GetString("Reset filters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Roll.
         /// </summary>
         public static string Role {

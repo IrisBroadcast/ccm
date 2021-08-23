@@ -1091,4 +1091,7 @@
   <data name="No_Codec_Control_Available" xml:space="preserve">
     <value>Ingen kodarstyrning tillgänglig</value>
   </data>
+  <data name="Reset filters" xml:space="preserve">
+    <value>Återställ filter</value>
+  </data>
 </root>

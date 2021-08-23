@@ -8383,14 +8383,14 @@ input[type="checkbox"].input-validation-error {
   max-height: 300px;
   overflow-y: scroll;
 }
+.ccm-sub-navbar--admin {
+  border: 0;
+}
 .ccm-sub-navbar--admin--header {
   padding: 0;
   margin: 0;
   float: none;
   min-height: 60px;
-}
-.ccm-sub-navbar--admin--header h2 {
-  margin: 0 0.5rem;
 }
 .ccm-sub-navbar--admin--header .navbar-page-description {
   padding: 0;
