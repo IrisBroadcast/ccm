@@ -7078,6 +7078,7 @@ button.close {
   padding: 0.5rem;
   background-color: #e9e9e9;
   border-bottom: 1px solid #ddd;
+  border-radius: 3px 3px 0 0;
 }
 .mui-panel .resize-handle {
   position: absolute;

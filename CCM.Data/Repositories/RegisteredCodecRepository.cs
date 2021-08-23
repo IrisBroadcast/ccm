@@ -413,6 +413,7 @@ namespace CCM.Data.Repositories
             // TODO: solve this
             userAgentHeader = (userAgentHeader ?? string.Empty).Trim();
 
+            // Get user agents and their identifiers, sort and match on the longest identifier length so it's not the wildcard that catches them all
             var allUserAgents = _cachedUserAgentRepository.GetAll()
                 .Where(ua => !string.IsNullOrEmpty(ua.Identifier))
                 .Select(ua => new UserAgentInfo(
@@ -423,11 +424,11 @@ namespace CCM.Data.Repositories
                 .OrderByDescending(ua => ua.Identifier.Length)
                 .ThenBy(ua => ua.Identifier).ToList();
 
-            _logger.LogInformation($"UA Indata {userAgentHeader}");
-            foreach (var uaAgent in allUserAgents)
-            {
-                _logger.LogInformation($"UA Match {uaAgent.Identifier} {uaAgent.MatchType}");
-            }
+            _logger.LogDebug($"UA Indata {userAgentHeader}");
+            //foreach (var uaAgent in allUserAgents)
+            //{
+            //    _logger.LogInformation($"UA Match {uaAgent.Identifier} {uaAgent.MatchType}");
+            //}
 
             //var dbUserAgent = allUserAgents.FirstOrDefault(u =>
             //    u.MatchType == UserAgentPatternMatchType.Begins_With && userAgentHeader.StartsWith(u.Identifier));
@@ -454,7 +455,7 @@ namespace CCM.Data.Repositories
                     Match m = Regex.Match(userAgentHeader, u.Identifier, RegexOptions.IgnoreCase);
                     if (m.Success)
                     {
-                        _logger.LogInformation($"Found '{m.Value}' at position {m.Index}.");
+                        _logger.LogDebug($"UA Found '{m.Value}' at position {m.Index}.");
                         return true;
                     }
                 }
@@ -463,12 +464,14 @@ namespace CCM.Data.Repositories
 
             if (dbUserAgent != null)
             {
-                _logger.LogInformation($"UA Match => {dbUserAgent.Identifier} {dbUserAgent.MatchType} on {userAgentHeader}");
+                _logger.LogDebug($"UA Match {dbUserAgent.MatchType} => {dbUserAgent.Identifier} on {userAgentHeader}");
                 return dbUserAgent.UserAgentId;
             }
 
             dbUserAgent = allUserAgents.FirstOrDefault(u =>
                 u.MatchType != UserAgentPatternMatchType.Regular_Expression && userAgentHeader.Contains(u.Identifier));
+
+            _logger.LogDebug($"UA Match {dbUserAgent?.MatchType} => {dbUserAgent?.Identifier} on {userAgentHeader}");
 
             return dbUserAgent?.UserAgentId;
         }

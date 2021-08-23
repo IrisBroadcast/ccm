@@ -309,7 +309,7 @@
                                         <tr ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
                                             <td class="mui-col mui-col--ua-registered" title="{{sip.sip}}">
                                                 <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
-                                                <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name">{{sip.displayName}}</a>
+                                                <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name" title="{{sip.id}}">{{sip.displayName}}</a>
                                                 <span ng-if="sip.inCall">
                                                     <span class="mui-registered-incall-dir">
                                                         <?xml version="1.0" encoding="utf-8"?>
@@ -325,7 +325,6 @@
                                                     <span ng-if="!sip.inCallWithId.length" title="{{sip.inCallWithSip}}"
                                                             class="list-ccm--reg-ua-name-to--less">{{sip.inCallWithName}}</span>
                                                 </span>
-                                                <span>{{sip.id}}</span>
                                             </td>
                                             <td class="mui-col mui-col--ua-location" title="{{sip.locationShortName}}">
                                                 {{sip.location}}
