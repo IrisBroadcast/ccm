@@ -63,11 +63,11 @@ namespace CCM.Web.Infrastructure
 
                     foreach (var sip in useragents)
                     {
-                        var expectedAfter = expireTime.AddSeconds(-(sip.Expires + 30));
+                        var expectedAfter = expireTime.AddSeconds(-(sip.Expires + 20));
                         if (sip.Updated < expectedAfter)
                         {
-                            _logger.LogInformation($"EXPIRED: SIP: {sip.SIP} Expire:{sip.Expires}+30 -- Expected later than this:{expectedAfter} but was Updated:{sip.Updated} # Now:{expireTime}");
-                            //_registeredRepository.DeleteRegisteredSip(sip.SIP);
+                            _logger.LogInformation($"EXPIRED: SIP: {sip.SIP} Expire:{sip.Expires}+20 -- Expected later than this:{expectedAfter} but was Updated:{sip.Updated} # Now:{expireTime}");
+                            _registeredRepository.DeleteRegisteredSip(sip.SIP);
                             // TODO: this does not trigger websocket info maybe?
                         }
                         else
