@@ -124,6 +124,8 @@ namespace CCM.Data
             // Make the actual save
             var saveChangesResult = base.SaveChanges();
 
+            log.Info($"NOWNOW: SIP: # Now:{DateTime.UtcNow}");
+
             shouldInvalidateCache = shouldInvalidateCache && saveChangesResult > 0;
             if (shouldInvalidateCache)
             {

@@ -67,7 +67,7 @@ namespace CCM.Web.Infrastructure
                         if (sip.Updated < expectedAfter)
                         {
                             _logger.LogInformation($"EXPIRED: SIP: {sip.SIP} Expire:{sip.Expires}+30 -- Expected later than this:{expectedAfter} but was Updated:{sip.Updated} # Now:{expireTime}");
-                            _registeredRepository.DeleteRegisteredSip(sip.SIP);
+                            //_registeredRepository.DeleteRegisteredSip(sip.SIP);
                             // TODO: this does not trigger websocket info maybe?
                         }
                         else
