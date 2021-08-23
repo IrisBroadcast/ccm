@@ -147,7 +147,11 @@ export class Application {
             // mark the section as "currently not collapsed"
             element.setAttribute("data-collapsed", "false");
 
-            window.addEventListener("scroll", clickOutsideMenu, false);
+            // determine if the menu is filling the whole screen then disable scroll
+            if (window.innerHeight >= sectionHeight) {
+                window.addEventListener("scroll", clickOutsideMenu, false);
+            }
+
             Tool.$dom("admin-menu-cover").classList.add("open");
         }
 
