@@ -516,7 +516,7 @@ namespace CCM.Data.Repositories
         public IEnumerable<RegisteredUserAgentMiniInformation> GetRegisteredCodecsUpdateTimes()
         {
             var result = _ccmDbContext.RegisteredCodecs
-                .AsNoTracking()
+                //.AsNoTracking()
                 .Select(x =>
                     new
                     {
