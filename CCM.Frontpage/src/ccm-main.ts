@@ -4,18 +4,18 @@ export class Application {
     constructor() {
         console.log("Initiated application");
 
-        try {
-            // Mobile sized menu system
-            Tool.$eventByClass("navbar-toggle", "click", (e) => {
-                console.log("Pressed: ", e);
-                const elements = document.getElementsByClassName("ccm-top-navbar-container");
-                for(let i = 0; i < elements.length; i++) {
-                    elements[i].classList.toggle("ccm-top-navbar-container--expanded");
-                }
-            });
-        } catch(error) {
-            console.error(error);
-        }
+        // try {
+        //     // Mobile sized menu system
+        //     Tool.$eventByClass("navbar-toggle", "click", (e) => {
+        //         console.log("Pressed: ", e);
+        //         const elements = document.getElementsByClassName("ccm-top-navbar-container");
+        //         for(let i = 0; i < elements.length; i++) {
+        //             elements[i].classList.toggle("ccm-top-navbar-container--expanded");
+        //         }
+        //     });
+        // } catch(error) {
+        //     console.error(error);
+        // }
 
         try {
             // Dropdowns and accordions

@@ -635,13 +635,13 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     }
 
     // Night-mode, full-overview , shift + i = 73, ctrl + i = 9
-    $scope.uiStateNightmode = false;
-    $scope.keyPressed = function (e) {
-        if (e.which === 9) {
-            console.log("Triggered nightmode");
-            $scope.uiStateNightmode = !$scope.uiStateNightmode;
-        }
-    };
+    // $scope.uiStateNightmode = false;
+    // $scope.keyPressed = function (e) {
+    //     if (e.which === 9) {
+    //         console.log("Triggered nightmode");
+    //         $scope.uiStateNightmode = !$scope.uiStateNightmode;
+    //     }
+    // };
 });
 
 var makeUrlAbsolute = function (url) {
