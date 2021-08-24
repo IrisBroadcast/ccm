@@ -2,6 +2,16 @@ version: "3.7"
 services:
   ccm:
     image: ${IMAGE_NAME}
+    environment:
+      ASPNETCORE_HTTPS_PORT: https://+:5001
+      ASPNETCORE_URLS: http://+:5000
+      ASPNETCORE_Kestrel__Certificates__Default__Password: DOCKER-SECRET->stage_ccm_certificate_password
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /ccm/certificates/stage-ccm.pfx
+    secrets:
+      - stage_ccm_certificate_password
+    ports:
+      - 5000:80
+      - 5001:443
     networks:
       - proxynet
       - default
@@ -17,4 +27,8 @@ configs:
 
 networks:
   proxynet:
+    external: true
+
+secrets:
+  stage_ccm_certificate_password:
     external: true
