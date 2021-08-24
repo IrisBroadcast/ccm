@@ -26,79 +26,86 @@
 
     </div>
 
-    <div class="row">
+    <!-- Filter headlines -->
+    <div class="mui-panel">
+        <div class="mui-content">
+            <button class="btn btn-default" type="button" ng-click="resetViewFilters()">@Localizer["Reset filters"]</button>
+        </div>
 
-        <!-- Filter headlines -->
-        <div class="col-md-2 list-ccm-navigation">
-            <div class="well tab-content">
-                <button class="btn btn-default" type="button" ng-click="resetViewFilters()">@Localizer["Reset filters"]</button>
+        <div class="mui-content">
+            <!-- Grouping Filter 1 -->
+            <div class="ccm-tabpane-filters hidden-sm hidden-xs">
+                <h5>
+                    @Localizer["Regions"]
+                    <span class="selected-name"> ({{regionName ? regionName : "@Localizer["All"]"}})</span>
+                </h5>
+                <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs mui-filter-cloud" id="regions-filter">
+                    <li ng-click="setFilterRegion('nofilter')" class="nofilter">
+                        <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
+                    </li>
+                    @foreach (var region in Model.Regions)
+                    {
+                        <li ng-click="setFilterRegion('@region')" class="ccm-tabpane-filter--link">
+                            <a href="#">@region</a>
+                        </li>
+                    }
+                </ul>
             </div>
-
-            <ul class="ccm-front-filter--heading nav nav-pills nav-justified hidden-sm hidden-xs">
-                <li class="active list-ccm-tab--region" id="tab-region-btn">
-                    <a href="#tab-region-content">
-                        @Localizer["Regions"]
-                        <div class="selected-name">({{regionName ? regionName : "@Localizer["All"]"}})</div>
-                    </a>
-                </li>
-                <li class="list-ccm-tab--codectypes" id="tab-codectype-btn">
-                    <a href="#tab-codectype-content">
-                        @Localizer["Codec_Types"]
-                        <div class="selected-name">({{codecTypeName ? codecTypeName : "@Localizer["All"]"}})</div>
-                    </a>
-                </li>
-                <li class="list-ccm-tab--category" id="tab-category-btn">
-                    <a href="#tab-category-content">
-                        @Localizer["Category"]
-                        <div class="selected-name">({{categoryName ? categoryName : "@Localizer["All"]"}})</div>
-                    </a>
-                </li>
-            </ul>
-
-            <div class="well tab-content">
-                <!-- Grouping Filter 1 -->
-                <div class="tab-pane ccm-tabpane-filters active" id="tab-region-filter">
-                    <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs" id="regions-filter">
+            <div class="ccm-tabpane-filters visible-sm visible-xs">
+                <h5>
+                    @Localizer["Regions"]
+                    <span class="selected-name"> ({{regionName ? regionName : "@Localizer["All"]"}})</span>
+                </h5>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="regionsDropDown" aria-expanded="true">{{regionName ? regionName : "@Localizer["All"]"}}<span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="regionsDropDown">
                         <li ng-click="setFilterRegion('nofilter')">
-                            <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
+                            <a href="#">@Localizer["All"]</a>
                         </li>
                         @foreach (var region in Model.Regions)
                         {
-                            <li ng-click="setFilterRegion('@region')" class="ccm-tabpane-filter--link">
-                                <a href="#">@region</a>
-                            </li>
+                            <li ng-click="setFilterRegion('@region')"><a href="#">@region</a></li>
                         }
                     </ul>
                 </div>
-                <div class="tab-pane ccm-tabpane-filters visible-sm visible-xs">
-                    <h4>
-                        @Localizer["Regions"]
-                        <span class="selected-name"> ({{regionName ? regionName : "@Localizer["All"]"}})</span>
-                    </h4>
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="regionsDropDown" aria-expanded="true">{{regionName ? regionName : "@Localizer["All"]"}}<span class="caret"></span></button>
-                        <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="regionsDropDown">
-                            <li ng-click="setFilterRegion('nofilter')">
-                                <a href="#">@Localizer["All"]</a>
-                            </li>
-                            @foreach (var region in Model.Regions)
-                            {
-                                <li ng-click="setFilterRegion('@region')"><a href="#">@region</a></li>
-                            }
-                        </ul>
-                    </div>
-                </div>
+            </div>
 
-                <!-- Grouping Filter 2 -->
-                <div class="tab-pane ccm-tabpane-filters" id="tab-codectype-filter">
-                    <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs" id="codecTypes-filter">
+            <!-- Grouping Filter 2 -->
+            <div class="ccm-tabpane-filters hidden-sm hidden-xs">
+                <h5>
+                    @Localizer["Codec_Types"]
+                    <span class="selected-name"> ({{codecTypeName ? codecTypeName : "@Localizer["All"]"}})</span>
+                </h5>
+                <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs mui-filter-cloud" id="codecTypes-filter">
+                    <li ng-click="setFilterCodecType('nofilter')" class="nofilter">
+                        <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
+                    </li>
+                    @foreach (var codecType in Model.CodecTypes)
+                    {
+                        <li ng-click="setFilterCodecType('@codecType.Name')">
+                            <a href="#" class="ccm-tabpane-filter--link">
+                                <span @(string.IsNullOrWhiteSpace(codecType.Color) ? string.Empty : string.Format("style=background-color:{0};", codecType.Color))>&nbsp;</span>
+                                @codecType.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="ccm-tabpane-filters visible-sm visible-xs">
+                <h5>
+                    @Localizer["Codec_Types"]
+                    <span class="selected-name"> ({{codecTypeName ? codecTypeName : "@Localizer["All"]"}})</span>
+                </h5>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="codecTypesDropDown" aria-expanded="true">{{codecTypeName ? codecTypeName : "@Localizer["All"]"}}<span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="codecTypesDropDown">
                         <li ng-click="setFilterCodecType('nofilter')">
-                            <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
+                            <a href="#">@Localizer["All"]</a>
                         </li>
                         @foreach (var codecType in Model.CodecTypes)
                         {
                             <li ng-click="setFilterCodecType('@codecType.Name')">
-                                <a href="#" class="ccm-tabpane-filter--link">
+                                <a href="#">
                                     <span @(string.IsNullOrWhiteSpace(codecType.Color) ? string.Empty : string.Format("style=background-color:{0};", codecType.Color))>&nbsp;</span>
                                     @codecType.Name
                                 </a>
@@ -106,253 +113,231 @@
                         }
                     </ul>
                 </div>
-                <div class="tab-pane ccm-tabpane-filters visible-sm visible-xs">
-                    <h4>
-                        @Localizer["Codec_Types"]
-                        <span class="selected-name"> ({{codecTypeName ? codecTypeName : "@Localizer["All"]"}})</span>
-                    </h4>
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="codecTypesDropDown" aria-expanded="true">{{codecTypeName ? codecTypeName : "@Localizer["All"]"}}<span class="caret"></span></button>
-                        <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="codecTypesDropDown">
-                            <li ng-click="setFilterCodecType('nofilter')">
-                                <a href="#">@Localizer["All"]</a>
-                            </li>
-                            @foreach (var codecType in Model.CodecTypes)
-                            {
-                                <li ng-click="setFilterCodecType('@codecType.Name')">
-                                    <a href="#">
-                                        <span @(string.IsNullOrWhiteSpace(codecType.Color) ? string.Empty : string.Format("style=background-color:{0};", codecType.Color))>&nbsp;</span>
-                                        @codecType.Name
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
+            </div>
 
-                <!-- Grouping Filter 3 -->
-                <div class="tab-pane ccm-tabpane-filters" id="tab-category-filter">
-                    <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs" id="categories-filter">
+            <!-- Grouping Filter 3 -->
+            <div class="ccm-tabpane-filters hidden-sm hidden-xs">
+                <h5>
+                    @Localizer["Category"]
+                    <span class="selected-name"> ({{categoryName ? categoryName : "@Localizer["All"]"}})</span>
+                </h5>
+                <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs mui-filter-cloud" id="categories-filter">
+                    <li ng-click="setFilterCategory('nofilter')" class="nofilter">
+                        <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
+                    </li>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <li ng-click="setFilterCategory('@category.Name')" class="ccm-tabpane-filter--link">
+                            <a href="#">@category.Name</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="ccm-tabpane-filters visible-sm visible-xs">
+                <h5>
+                    @Localizer["Category"]
+                    <span class="selected-name"> ({{categoryName ? categoryName : "@Localizer["All"]"}})</span>
+                </h5>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="categoryDropDown" aria-expanded="true">{{categoryName ? categoryName : "@Localizer["All"]"}}<span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="categoryDropDown">
                         <li ng-click="setFilterCategory('nofilter')">
-                            <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
+                            <a href="#">@Localizer["All"]</a>
                         </li>
                         @foreach (var category in Model.Categories)
                         {
-                            <li ng-click="setFilterCategory('@category.Name')" class="ccm-tabpane-filter--link">
-                                <a href="#">@category.Name</a>
+                            <li ng-click="setFilterCategory('@category.Name')">
+                                <a href="#">
+                                    @category.Name
+                                </a>
                             </li>
                         }
                     </ul>
                 </div>
-                <div class="tab-pane ccm-tabpane-filters visible-sm visible-xs">
-                    <h4>
-                        @Localizer["Category"]
-                        <span class="selected-name"> ({{categoryName ? categoryName : "@Localizer["All"]"}})</span>
-                    </h4>
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="categoryDropDown" aria-expanded="true">{{categoryName ? categoryName : "@Localizer["All"]"}}<span class="caret"></span></button>
-                        <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="categoryDropDown">
-                            <li ng-click="setFilterCategory('nofilter')">
-                                <a href="#">@Localizer["All"]</a>
-                            </li>
-                            @foreach (var category in Model.Categories)
-                            {
-                                <li ng-click="setFilterCategory('@category.Name')">
-                                    <a href="#">
-                                        @category.Name
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
+            </div>
 
+        </div>
+    </div>
+
+    <div class="mui-panel">
+        <!-- Billboard top info -->
+        <div class="mui-billboard">
+            <!-- Ongoing calls headline -->
+            <div class="board">
+                <div class="count">{{filteredOnGoingCalls.length}}</div>
+                <div class="text">@Localizer["Ongoing_Calls"]</div>
+            </div>
+            <!-- Registered UAs headline -->
+            <div class="board">
+                <div class="count">{{filteredRegisteredSips.length}}</div>
+                <div class="text">@Localizer["Registered_Sips"]</div>
             </div>
         </div>
 
-        <div class="col-md-10 list-ccm-container">
-            <!-- TABS: Navigation links -->
-            <div class="mui-billboard">
-                <!-- Ongoing calls headline -->
-                <div class="board">
-                    <div class="count">{{filteredOnGoingCalls.length}}</div>
-                    <div class="text">@Localizer["Ongoing_Calls"]</div>
-                </div>
-                <!-- Registered UAs headline -->
-                <div class="board">
-                    <div class="count">{{filteredRegisteredSips.length}}</div>
-                    <div class="text">@Localizer["Registered_Sips"]</div>
+        <!-- Ongoing calls -->
+        <div class="mui-content">
+            <div class="mui-content-heading">
+                <div class="row">
+                    <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'FromDisplayName'}">@Localizer["Caller"]</div>
+                    <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('ToDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'ToDisplayName'}">@Localizer["Callee"]</div>
+                    <div class="col-md-2 list-ccm-thead-headline text-right" ng-click="changeOngoingCallSorting('DurationSeconds')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'DurationSeconds'}">@Localizer["Call_Duration"]&nbsp;<span class="glyphicon glyphicon-time" aria-hidden="true"></span></div>
                 </div>
             </div>
+            <div class="mui-content ongoing-calls">
+                <div class="mui-row list-ccm--bg codecs" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
+                    <div class="mui-col mui-col--source">
+                        <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
+                        <a class="list-ccm--sip-name" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
+                        <span class="list-ccm--sip-name" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{call.fromDisplayName}}</span>
+                        <span class="list-ccm--sip-location" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
+                        <div class="list-ccm--sip-comment">{{call.fromComment}}</div>
+                    </div>
+                    <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)">
+                        <?xml version="1.0" encoding="utf-8"?>
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+                            <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
+                            <rect x="6.5" y="21" fill="#A0A09F" width="9" height="8"/>
+                        </svg>
+                    </div>
+                    <div class="mui-col mui-col--destination">
+                        <span class="codec-type" ng-style="{'background-color': call.toCodecTypeColor}" title="{{call.toCodecTypeName}}">&nbsp;</span>
+                        <a class="list-ccm--sip-name-to" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
+                        <span class="list-ccm--sip-name-to" ng-if="!call.toId.length" title="{{call.toSip}}">{{call.toDisplayName}}</span>
+                        <span class="list-ccm--sip-location" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
+                        <div class="list-ccm--sip-comment-to">{{call.toComment}}</div>
+                    </div>
+                    <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
+                        @if (User.IsInRole(Roles.Admin))
+                        {
+                            <a href="@Url.Action("DeleteCall", "Call") /{{call.callId}}" class="list-ccm--ongoing-time list-ccm--trash-call">{{call.startedLocal | timeAgo:currentTime}}<span class="trash glyphicon-trash glyphicon"></span></a>
+                        }
+                        else
+                        {
+                            <span class="list-ccm--ongoing-time">{{call.startedLocal | timeAgo:currentTime}}</span>
+                        }
+                    </div>
+                </div>
 
-            <!-- TABS: Main content -->
-            <div class="tab-content list-ccm-tab-content">
-                <div class="tab-pane active list-ccm-tab-pane">
+                <div class="mui-row mui-row--feedback" ng-hide="filteredOnGoingCalls.length">
+                    <span ng-hide="isFiltered">
+                        @Localizer["No_Ongoing_Calls"]
+                    </span>
+                    <span ng-show="isFiltered">
+                        @Localizer["No_Items_In_Filtered_Result"]
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Old calls / History -->
+        <div class="mui-content">
+            <div class="mui-content-heading">
+                <a data-toggle="collapse" data-parent="#accordion" href="#toggle-calls-history">
                     <div class="row">
-                        <div class="panel panel-default">
-                            <!-- Ongoing calls -->
-                            <div class="mui-panel-heading">
-                                <div class="row">
-                                    <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'FromDisplayName'}">@Localizer["Caller"]</div>
-                                    <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('ToDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'ToDisplayName'}">@Localizer["Callee"]</div>
-                                    <div class="col-md-2 list-ccm-thead-headline text-right" ng-click="changeOngoingCallSorting('DurationSeconds')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'DurationSeconds'}">@Localizer["Call_Duration"]&nbsp;<span class="glyphicon glyphicon-time" aria-hidden="true"></span></div>
-                                </div>
-                            </div>
-                            <div class="mui-panel ongoing-calls">
-                                <div class="mui-row list-ccm--bg codecs" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
-                                    <div class="mui-col mui-col--source">
-                                        <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
-                                        <a class="list-ccm--sip-name" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
-                                        <span class="list-ccm--sip-name" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{call.fromDisplayName}}</span>
-                                        <span class="list-ccm--sip-location" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
-                                        <div class="list-ccm--sip-comment">{{call.fromComment}}</div>
-                                    </div>
-                                    <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)">
-                                        <?xml version="1.0" encoding="utf-8"?>
-                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-                                            <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
-                                            <rect x="6.5" y="21" fill="#A0A09F" width="9" height="8"/>
-                                        </svg>
-                                    </div>
-                                    <div class="mui-col mui-col--destination">
-                                        <span class="codec-type" ng-style="{'background-color': call.toCodecTypeColor}" title="{{call.toCodecTypeName}}">&nbsp;</span>
-                                        <a class="list-ccm--sip-name-to" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
-                                        <span class="list-ccm--sip-name-to" ng-if="!call.toId.length" title="{{call.toSip}}">{{call.toDisplayName}}</span>
-                                        <span class="list-ccm--sip-location" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
-                                        <div class="list-ccm--sip-comment-to">{{call.toComment}}</div>
-                                    </div>
-                                    <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
-                                        @if (User.IsInRole(Roles.Admin))
-                                        {
-                                            <a href="@Url.Action("DeleteCall", "Call") /{{call.callId}}" class="list-ccm--ongoing-time list-ccm--trash-call">{{call.startedLocal | timeAgo:currentTime}}<span class="trash glyphicon-trash glyphicon"></span></a>
-                                        }
-                                        else
-                                        {
-                                            <span class="list-ccm--ongoing-time">{{call.startedLocal | timeAgo:currentTime}}</span>
-                                        }
-                                    </div>
-                                </div>
-
-                                <div class="mui-row mui-row--feedback" ng-hide="filteredOnGoingCalls.length">
-                                    <span ng-hide="isFiltered">
-                                        @Localizer["No_Ongoing_Calls"]
-                                    </span>
-                                    <span ng-show="isFiltered">
-                                        @Localizer["No_Items_In_Filtered_Result"]
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Old calls / History -->
-                            <div class="mui-panel-heading">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#toggle-calls-history">
-                                    <div class="row">
-                                        <div class="col-md-12 col-title list-ccm-thead-headline">
-                                            @Localizer["Latest_Closed_Calls"]
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="mui-panel calls-history collapse" id="toggle-calls-history">
-                                <div class="mui-row list-ccm--bg codecs" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
-                                    <div class="mui-col mui-col--source">
-                                        <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
-                                        <a class="list-ccm--sip-name--history" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
-                                        <span class="list-ccm--sip-name--history" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{ call.fromDisplayName }}</span>
-                                        <span class="list-ccm--sip-location--history" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
-                                    </div>
-                                    <div class="mui-col mui-col--direction">
-                                        <?xml version="1.0" encoding="utf-8"?>
-                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-                                            <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
-                                            <rect x="6.5" y="21" fill="#A0A09F" width="9" height="8"/>
-                                        </svg>
-                                    </div>
-                                    <div class="mui-col mui-col--destination">
-                                        <span class="codec-type" ng-style="{'background-color': call.toCodecTypeColor}" title="{{call.toCodecTypeName}}">&nbsp;</span>
-                                        <a class="list-ccm--sip-name-to--history" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
-                                        <span class="list-ccm--sip-name-to--history" ng-if="!call.toId.length" title="{{call.toSip}}">{{ call.toDisplayName }}</span>
-                                        <span class="list-ccm--sip-location--history" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
-                                    </div>
-
-                                    <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
-                                        <div class="list-ccm--time--history" title="{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }} - {{ call.ended | date:'yyyy-MM-dd HH:mm:ss' }}">{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }}</div>
-                                        <div class="list-ccm--time--history" title="{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }} - {{ call.ended | date:'yyyy-MM-dd HH:mm:ss' }}">{{ call.duration }}</div>
-                                    </div>
-                                </div>
-
-                                <div class="mui-row mui-row--feedback" ng-hide="filteredOldCalls.length">
-                                    <span ng-hide="isFiltered">
-                                        @Localizer["No_Items_In_Filtered_Call_History"]
-                                    </span>
-                                    <span ng-show="isFiltered">
-                                        @Localizer["No_Items_In_Filtered_Result"]
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Registered Sips -->
-                            <div class="mui-panel list-ccm-registered-uas">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th data-type="text-long" ng-click="changeRegisteredSorting('DisplayName')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'DisplayName'}">@Localizer["Identity"] <span class="resize-handle"></span></th>
-                                            <th data-type="text-short" ng-click="changeRegisteredSorting('Location')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Location'}">@Localizer["Location"] <span class="resize-handle"></span></th>
-                                            <th data-type="text-short" ng-click="changeRegisteredSorting('Comment')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Comment'}">@Localizer["Comment"] <span class="resize-handle"></span></th>
-                                            <th data-type="text-short"> <span class="resize-handle"></span></th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
-                                            <td class="mui-col mui-col--ua-registered" title="{{sip.sip}}">
-                                                <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
-                                                <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name" title="{{sip.id}}">{{sip.displayName}}</a>
-                                                <span ng-if="sip.inCall">
-                                                    <span class="mui-registered-incall-dir">
-                                                        <?xml version="1.0" encoding="utf-8"?>
-                                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-                                                            <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
-                                                            <rect x="6.5" y="21" fill="#A0A09F" width="9" height="8"/>
-                                                        </svg>
-                                                    </span>
-                                                    <a ng-if="sip.inCallWithId.length" ng-click="showSipInfo(sip.inCallWithId, sip.inCallWithSip, $event)" href="#"
-                                                        title="{{sip.inCallWithSip}}" class="list-ccm--reg-ua-name-to">
-                                                        {{sip.inCallWithName}}
-                                                    </a>
-                                                    <span ng-if="!sip.inCallWithId.length" title="{{sip.inCallWithSip}}"
-                                                            class="list-ccm--reg-ua-name-to--less">{{sip.inCallWithName}}</span>
-                                                </span>
-                                            </td>
-                                            <td class="mui-col mui-col--ua-location" title="{{sip.locationShortName}}">
-                                                {{sip.location}}
-                                            </td>
-                                            @if (hasWriteRights)
-                                            {
-                                                <td class="mui-col mui-col--ua-comment" title="{{sip.userComment ? '@Localizer[" Edit_Comment"]' : '@Localizer["Add_Comment"]' }}" ng-dblclick="editComment(sip.id)" ng-class="sip.userComment ? 'edit' : 'edit-empty'"><span>{{sip.userComment}}&nbsp;</span></td>
-                                            }
-                                            else
-                                            {
-                                                <td class="mui-col mui-col--ua-comment">{{sip.userComment}}&nbsp;</td>
-                                            }
-                                            <td class="mui-col mui-col--ua-image" ng-if="sip.image.length > 0">
-                                                <img ng-src="@Url.Content("~/uaimages")/{{sip.image}}" alt="" />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <div class="mui-row mui-row--feedback" ng-hide="filteredRegisteredSips.length ">
-                                    <span ng-hide="isFiltered">
-                                        @Localizer["No_Registered_User_Agents"]
-                                    </span>
-                                    <span ng-show="isFiltered">
-                                        @Localizer["No_Items_In_Filtered_Result"]
-                                    </span>
-                                </div>
-                            </div>
+                        <div class="col-md-12 col-title list-ccm-thead-headline">
+                            @Localizer["Latest_Closed_Calls"]
                         </div>
                     </div>
+                </a>
+            </div>
+            <div class="mui-content calls-history collapse" id="toggle-calls-history">
+                <div class="mui-row list-ccm--bg codecs" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
+                    <div class="mui-col mui-col--source">
+                        <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
+                        <a class="list-ccm--sip-name--history" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
+                        <span class="list-ccm--sip-name--history" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{ call.fromDisplayName }}</span>
+                        <span class="list-ccm--sip-location--history" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
+                    </div>
+                    <div class="mui-col mui-col--direction">
+                        <?xml version="1.0" encoding="utf-8"?>
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+                            <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
+                            <rect x="6.5" y="21" fill="#A0A09F" width="9" height="8"/>
+                        </svg>
+                    </div>
+                    <div class="mui-col mui-col--destination">
+                        <span class="codec-type" ng-style="{'background-color': call.toCodecTypeColor}" title="{{call.toCodecTypeName}}">&nbsp;</span>
+                        <a class="list-ccm--sip-name-to--history" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
+                        <span class="list-ccm--sip-name-to--history" ng-if="!call.toId.length" title="{{call.toSip}}">{{ call.toDisplayName }}</span>
+                        <span class="list-ccm--sip-location--history" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
+                    </div>
+
+                    <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
+                        <div class="list-ccm--time--history" title="{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }} - {{ call.ended | date:'yyyy-MM-dd HH:mm:ss' }}">{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+                        <div class="list-ccm--time--history" title="{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }} - {{ call.ended | date:'yyyy-MM-dd HH:mm:ss' }}">{{ call.duration }}</div>
+                    </div>
+                </div>
+
+                <div class="mui-row mui-row--feedback" ng-hide="filteredOldCalls.length">
+                    <span ng-hide="isFiltered">
+                        @Localizer["No_Items_In_Filtered_Call_History"]
+                    </span>
+                    <span ng-show="isFiltered">
+                        @Localizer["No_Items_In_Filtered_Result"]
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registered User Agents -->
+        <div class="mui-content">
+            <div class="mui-content list-ccm-registered-uas">
+                <table>
+                    <thead>
+                        <tr>
+                            <th data-type="text-long" ng-click="changeRegisteredSorting('DisplayName')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'DisplayName'}">@Localizer["Identity"] <span class="resize-handle"></span></th>
+                            <th data-type="text-short" ng-click="changeRegisteredSorting('Location')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Location'}">@Localizer["Location"] <span class="resize-handle"></span></th>
+                            <th data-type="text-short" ng-click="changeRegisteredSorting('Comment')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Comment'}">@Localizer["Comment"] <span class="resize-handle"></span></th>
+                            <th data-type="text-short"> <span class="resize-handle"></span></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
+                            <td class="mui-col mui-col--ua-registered" title="{{sip.sip}}">
+                                <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
+                                <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name" title="{{sip.id}}">{{sip.displayName}}</a>
+                                <span ng-if="sip.inCall">
+                                    <span class="mui-registered-incall-dir">
+                                        <?xml version="1.0" encoding="utf-8"?>
+                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+                                            <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
+                                            <rect x="6.5" y="21" fill="#A0A09F" width="9" height="8"/>
+                                        </svg>
+                                    </span>
+                                    <a ng-if="sip.inCallWithId.length" ng-click="showSipInfo(sip.inCallWithId, sip.inCallWithSip, $event)" href="#"
+                                        title="{{sip.inCallWithSip}}" class="list-ccm--reg-ua-name-to">
+                                        {{sip.inCallWithName}}
+                                    </a>
+                                    <span ng-if="!sip.inCallWithId.length" title="{{sip.inCallWithSip}}"
+                                            class="list-ccm--reg-ua-name-to--less">{{sip.inCallWithName}}</span>
+                                </span>
+                            </td>
+                            <td class="mui-col mui-col--ua-location" title="{{sip.locationShortName}}">
+                                {{sip.location}}
+                            </td>
+                            @if (hasWriteRights)
+                            {
+                                <td class="mui-col mui-col--ua-comment" title="{{sip.userComment ? '@Localizer[" Edit_Comment"]' : '@Localizer["Add_Comment"]' }}" ng-dblclick="editComment(sip.id)" ng-class="sip.userComment ? 'edit' : 'edit-empty'"><span>{{sip.userComment}}&nbsp;</span></td>
+                            }
+                            else
+                            {
+                                <td class="mui-col mui-col--ua-comment">{{sip.userComment}}&nbsp;</td>
+                            }
+                            <td class="mui-col mui-col--ua-image" ng-if="sip.image.length > 0">
+                                <img ng-src="@Url.Content("~/uaimages")/{{sip.image}}" alt="" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="mui-row mui-row--feedback" ng-hide="filteredRegisteredSips.length ">
+                    <span ng-hide="isFiltered">
+                        @Localizer["No_Registered_User_Agents"]
+                    </span>
+                    <span ng-show="isFiltered">
+                        @Localizer["No_Items_In_Filtered_Result"]
+                    </span>
                 </div>
             </div>
         </div>

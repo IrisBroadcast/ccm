@@ -1,4 +1,8 @@
 
+body {
+    overflow-y: scroll;
+}
+
 .mui-billboard {
     display: flex;
     flex-direction: row;
@@ -9,6 +13,7 @@
     .board {
         text-align: center;
         font-kerning: auto;
+        padding: 1rem 0;
 
         .count {
             font-size: 4rem;
@@ -34,5 +39,17 @@
     &.active {
         background-image: linear-gradient(45deg, #fff5cf 25%, #ffea96 25%, #ffea96 50%, #fff5cf 50%, #fff5cf 75%, #ffea96 75%, #ffea96 100%);
         background-size: 42.43px 42.43px;
+    }
+}
+
+.mui-filter-cloud {
+    li {
+        float: left;
+        margin: 2px !important;
+
+        a {
+            padding: 0.2rem 0.5rem !important;
+            background: #fff5cf;
+        }
     }
 }

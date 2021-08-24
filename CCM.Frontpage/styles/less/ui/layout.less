@@ -1,6 +1,8 @@
 
 .mui-panel {
 
+    padding: 0.5rem 0;
+
     table {
         width: auto;
         flex: 1;
@@ -44,11 +46,10 @@
         border: 0;
     }
 
-    &-heading {
-        padding: 0.5rem;
-        background-color: @text-header-bg;
-        border-bottom: 1px solid #ddd;
-        border-radius: 3px 3px 0 0;
+    .list-ccm-thead--sort {
+        /* List is sorted on this */
+        text-decoration: underline;
+        font-weight: 800;
     }
 
     .resize-handle {
@@ -174,7 +175,7 @@
             max-width: 2rem;
             width: 2rem;
             flex: 0 0 2rem;
-            display: block;
+            display: inline-block;
         }
     }
 
@@ -204,6 +205,15 @@
         flex: 1 1 6rem;
         color: #bfbfbf;
         text-align: right;
+    }
+}
+
+.mui-content {
+    &-heading {
+        padding: 0.5rem;
+        background-color: @text-header-bg;
+        border-bottom: 1px solid #ddd;
+        border-radius: 3px 3px 0 0;
     }
 }
 

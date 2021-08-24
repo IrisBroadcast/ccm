@@ -459,11 +459,11 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     };
 
     $scope.setFilterRegion = function (region) {
-        if (region == "nofilter" || region === "") {
+        if (region == "nofilter" || region === "" || region === null) {
             $scope.region = "";
             $scope.regionName = "";
             $('#regions-filter li').removeClass('active');
-            $('#regions-filter li:contains(nofilter)').addClass('active');
+            $('#regions-filter li.nofilter').addClass('active');
         } else {
             $scope.region = region;
             $scope.regionName = region;
@@ -475,11 +475,11 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     };
 
     $scope.setFilterCodecType = function (codecType) {
-        if (codecType == "nofilter" || codecType === "") {
+        if (codecType == "nofilter" || codecType === "" || codecType === null) {
             $scope.codecType = "";
             $scope.codecTypeName = "";
             $('#codecTypes-filter li').removeClass('active');
-            $('#codecTypes-filter li:contains(nofilter)').addClass('active');
+            $('#codecTypes-filter li.nofilter').addClass('active');
         } else {
             $scope.codecType = codecType;
             $scope.codecTypeName = codecType;
@@ -493,11 +493,11 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     };
 
     $scope.setFilterCategory = function (category) {
-        if (category == "nofilter" || category === "") {
+        if (category == "nofilter" || category === "" || category === null) {
             $scope.category = "";
             $scope.categoryName = "";
             $('#categories-filter li').removeClass('active');
-            $('#categories-filter li:contains(nofilter)').addClass('active');
+            $('#categories-filter li.nofilter').addClass('active');
         } else {
             $scope.category = category;
             $scope.categoryName = category;
@@ -554,6 +554,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     // Set filter inits from session
     $scope.setFilterRegion($sessionStorage.region);
     $scope.setFilterCodecType($sessionStorage.codecType);
+    $scope.setFilterCategory($sessionStorage.category);
     $scope.searchString = '';
     $scope.searchKeyUp = function (keyCode) {
         if (keyCode === 27) {
@@ -633,6 +634,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     var checkIfFiltered = function() {
         $scope.isFiltered = viewIsFiltered();
     }
+    checkIfFiltered();
 
     // Night-mode, full-overview , shift + i = 73, ctrl + i = 9
     // $scope.uiStateNightmode = false;
