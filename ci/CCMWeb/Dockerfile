@@ -1,4 +1,4 @@
-# Get base image
+# Get base image (user is root)
 FROM mcr.microsoft.com/dotnet/sdk:3.1 as builder
 
 # Create work directory folder

@@ -23,7 +23,7 @@ node(jenkinsWorkerConstraint) {
 
     def buildVersion = "0.0.0"
     def buildEnvironment = "Dev"
-    def stageConfigFile = "ccm_stage_appsettings"
+    def stageConfigFile = "ccm_stage_appsettings_2"
 
     // Use tag name as build version on production build (a build from a tag) - used in the bottom footer of main page in the application
     // Use specific configuration file on stage version (a build from a branch)
@@ -31,9 +31,6 @@ node(jenkinsWorkerConstraint) {
         buildVersion = env.TAG_NAME
         buildEnvironment = "Prod"
         application.stackname = "ipk"
-    } else {
-        sh "sed -i \"s/ccm_prod_appsettings/\"${stageConfigFile}\"/g\" ${dockerComposeFile}"
-        sh "cat $dockerComposeFile"
     }
 
     // Modify the buildinformation.json file in the repository
