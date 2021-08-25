@@ -2,6 +2,11 @@ version: "3.7"
 services:
   ccm:
     image: ${IMAGE_NAME}
+    logging:
+        driver: json-file
+        options:
+          max-file: "5"
+          max-size: 20m
     environment:
       ASPNETCORE_URLS: http://+:80
     networks:
