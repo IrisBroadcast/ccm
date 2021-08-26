@@ -209,7 +209,7 @@
                     <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
                         @if (User.IsInRole(Roles.Admin))
                         {
-                            <a href="@Url.Action("DeleteCall", "Call") /{{call.callId}}" class="list-ccm--ongoing-time list-ccm--trash-call">{{call.startedLocal | timeAgo:currentTime}}<span class="trash glyphicon-trash glyphicon"></span></a>
+                            <a href="@Url.Action("DeleteCall", "Call")/{{call.callId}}" class="list-ccm--ongoing-time list-ccm--trash-call">{{call.startedLocal | timeAgo:currentTime}}<span class="trash glyphicon-trash glyphicon"></span></a>
                         }
                         else
                         {
