@@ -77,6 +77,7 @@ namespace CCM.Core.SipEvent
 
             var call = new Call
             {
+                Id = Guid.Parse(message.CallId),
                 FromSip = message.FromUsername,
                 FromDisplayName = message.FromDisplayName,
                 FromId = Guid.Parse(message.FromId),
