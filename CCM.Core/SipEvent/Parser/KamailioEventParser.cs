@@ -31,8 +31,8 @@ using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Parser;
 using CCM.Core.SipEvent.Event;
 using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Models;
 using Microsoft.Extensions.Logging;
-using NLog;
 
 namespace CCM.Core.SipEvent.Parser
 {
@@ -46,12 +46,12 @@ namespace CCM.Core.SipEvent.Parser
     /// version of 'connect' that formats the messages with string
     /// separation. Or try to see if you can implement the JSON version.
     /// </summary>
-    public class SipMessageParser : ISipMessageParser
+    public class KamailioEventParser : IKamailioEventParser
     {
-        private readonly ILogger<SipMessageParser> _logger;
+        private readonly ILogger<KamailioEventParser> _logger;
         private readonly ISettingsManager _settingsManager;
 
-        public SipMessageParser(ISettingsManager settingsManager, ILogger<SipMessageParser> logger)
+        public KamailioEventParser(ISettingsManager settingsManager, ILogger<KamailioEventParser> logger)
         {
             _settingsManager = settingsManager;
             _logger = logger;

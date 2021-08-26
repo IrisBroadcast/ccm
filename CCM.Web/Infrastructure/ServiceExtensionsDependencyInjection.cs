@@ -52,7 +52,7 @@ namespace CCM.Web.Infrastructure
             services.AddTransient<IPasswordGeneratorConfigurationProvider, PasswordGeneratorConfigurationProvider>();
             services.AddTransient<IPasswordGenerator, PasswordGenerator>();
 
-            services.AddTransient<ISipMessageParser, SipMessageParser>();
+            services.AddTransient<IKamailioEventParser, KamailioEventParser>();
             services.AddTransient<ISipEventParser, SipEventParser>();
 
             services.AddTransient<IFilterManager, FilterManager>();

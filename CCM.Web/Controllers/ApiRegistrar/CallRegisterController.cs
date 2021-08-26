@@ -31,6 +31,7 @@ using NLog;
 using System.Threading.Tasks;
 using CCM.Core.Interfaces.Parser;
 using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Models;
 using CCM.Web.Hubs;
 using CCM.Web.Models.ApiRegistrar;
 

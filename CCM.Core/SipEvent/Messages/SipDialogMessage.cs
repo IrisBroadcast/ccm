@@ -24,6 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using CCM.Core.SipEvent.Models;
+
 namespace CCM.Core.SipEvent.Messages
 {
     public class SipDialogMessage : SipMessageBase

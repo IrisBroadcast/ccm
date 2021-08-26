@@ -27,6 +27,7 @@
 using System.Collections.Generic;
 using CCM.Core.Entities;
 using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Models;
 
 namespace CCM.Core.Interfaces.Repositories
 {

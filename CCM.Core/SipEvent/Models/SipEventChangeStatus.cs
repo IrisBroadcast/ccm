@@ -24,12 +24,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.SipEvent.Messages;
-
-namespace CCM.Core.Interfaces.Parser
+namespace CCM.Core.SipEvent.Models
 {
-    public interface ISipMessageParser
+    public enum SipEventChangeStatus
     {
-        SipMessageBase Parse(string message);
+        NothingChanged = 0,
+        CallStarted,
+        CallClosed,
+        CodecAdded,
+        CodecUpdated,
+        CodecRemoved
     }
 }

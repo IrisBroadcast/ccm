@@ -29,6 +29,7 @@ using System.Text.RegularExpressions;
 using CCM.Core.Interfaces.Parser;
 using CCM.Core.SipEvent.Event;
 using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Models;
 using Microsoft.Extensions.Logging;
 using NLog;
 

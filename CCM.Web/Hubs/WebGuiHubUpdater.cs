@@ -28,6 +28,7 @@ using System;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Models;
 using CCM.Web.Mappers;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;

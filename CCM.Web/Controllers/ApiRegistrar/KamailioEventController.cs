@@ -28,6 +28,7 @@ using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Parser;
 using CCM.Core.SipEvent;
 using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Models;
 using CCM.Web.Hubs;
 using CCM.Web.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +45,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly ISipMessageManager _sipMessageManager;
-        private readonly ISipMessageParser _sipMessageParser;
+        private readonly IKamailioEventParser _kamailioEventParser;
         private readonly IWebGuiHubUpdater _webGuiHubUpdater;
         private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
         private readonly ISettingsManager _settingsManager;
@@ -52,14 +53,14 @@ namespace CCM.Web.Controllers.ApiRegistrar
 
         public KamailioEventController(
             ISipMessageManager sipMessageManager,
-            ISipMessageParser sipMessageParser,
+            IKamailioEventParser kamailioEventParser,
             IWebGuiHubUpdater webGuiHubUpdater,
             ICodecStatusHubUpdater codecStatusHubUpdater,
             ISettingsManager settingsManager,
             RegisteredUserAgentViewModelsProvider registeredUserAgentViewModelsProvider)
         {
             _sipMessageManager = sipMessageManager;
-            _sipMessageParser = sipMessageParser;
+            _kamailioEventParser = kamailioEventParser;
             _webGuiHubUpdater = webGuiHubUpdater;
             _codecStatusHubUpdater = codecStatusHubUpdater;
             _settingsManager = settingsManager;
@@ -91,7 +92,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
                 return BadRequest();
             }
 
-            SipMessageBase sipMessage = _sipMessageParser.Parse(message);
+            SipMessageBase sipMessage = _kamailioEventParser.Parse(message);
 
             if (sipMessage == null)
             {

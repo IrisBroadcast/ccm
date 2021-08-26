@@ -24,15 +24,21 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace CCM.Core.SipEvent
+using System;
+
+namespace CCM.Core.SipEvent.Models
 {
-    public enum SipEventChangeStatus
+    public class SipEventHandlerResult
     {
-        NothingChanged = 0,
-        CallStarted,
-        CallClosed,
-        CodecAdded,
-        CodecUpdated,
-        CodecRemoved
+        public SipEventChangeStatus ChangeStatus { get; set; }
+        public Guid ChangedObjectId { get; set; }
+        public string SipAddress { get; set; }
+
+        public override string ToString()
+        {
+            return $"Change status:{ChangeStatus}, Changed object id:{ChangedObjectId}, SIP address:{SipAddress}";
+        }
+
+        public static SipEventHandlerResult NothingChanged => new SipEventHandlerResult { ChangeStatus = SipEventChangeStatus.NothingChanged };
     }
 }

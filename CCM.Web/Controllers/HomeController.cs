@@ -28,6 +28,7 @@ using System;
 using System.Linq;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Models;
 using CCM.Web.Hubs;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models.Home;

@@ -31,6 +31,7 @@ using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Interfaces.Parser;
 using CCM.Core.SipEvent.Event;
 using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Models;
 using CCM.Web.Hubs;
 using Microsoft.Extensions.Logging;
 

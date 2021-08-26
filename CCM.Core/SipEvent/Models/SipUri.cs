@@ -27,7 +27,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace CCM.Core.SipEvent
+namespace CCM.Core.SipEvent.Models
 {
     public class SipUri
     {
@@ -59,7 +59,6 @@ namespace CCM.Core.SipEvent
             try
             {
                 // Handle display name
-
                 string displayName = "";
                 if (sipAddress.Contains("<"))
                 {

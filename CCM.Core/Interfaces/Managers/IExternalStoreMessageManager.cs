@@ -26,6 +26,7 @@
 
 using CCM.Core.SipEvent;
 using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Models;
 
 namespace CCM.Core.Interfaces.Managers
 {

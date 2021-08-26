@@ -25,6 +25,7 @@
  */
 
 using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Models;
 
 namespace CCM.Web.Hubs
 {

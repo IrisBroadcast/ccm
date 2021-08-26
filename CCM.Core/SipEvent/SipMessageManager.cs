@@ -31,6 +31,7 @@ using CCM.Core.Extensions;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Models;
 using Microsoft.Extensions.Logging;
 using NLog;
 

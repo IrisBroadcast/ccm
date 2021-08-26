@@ -30,6 +30,7 @@ using CCM.Core.Enums;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Models;
 using Microsoft.Extensions.Logging;
 
 namespace CCM.Core.SipEvent

@@ -29,6 +29,7 @@ using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Models;
 using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
 using Microsoft.AspNetCore.SignalR;

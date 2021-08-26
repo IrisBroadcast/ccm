@@ -32,6 +32,7 @@ using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using LazyCache;
 using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Models;
 
 namespace CCM.Core.Cache
 {

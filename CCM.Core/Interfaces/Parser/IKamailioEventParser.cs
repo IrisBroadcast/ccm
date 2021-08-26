@@ -24,21 +24,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
+using CCM.Core.SipEvent.Messages;
 
-namespace CCM.Core.SipEvent
+namespace CCM.Core.Interfaces.Parser
 {
-    public class SipEventHandlerResult
+    public interface IKamailioEventParser
     {
-        public SipEventChangeStatus ChangeStatus { get; set; }
-        public Guid ChangedObjectId { get; set; }
-        public string SipAddress { get; set; }
-
-        public override string ToString()
-        {
-            return $"Change status:{ChangeStatus}, Changed object id:{ChangedObjectId}, SIP address:{SipAddress}";
-        }
-
-        public static SipEventHandlerResult NothingChanged => new SipEventHandlerResult { ChangeStatus = SipEventChangeStatus.NothingChanged };
+        SipMessageBase Parse(string message);
     }
 }
