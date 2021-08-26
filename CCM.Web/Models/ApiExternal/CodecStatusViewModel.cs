@@ -33,11 +33,11 @@ namespace CCM.Web.Models.ApiExternal
         // Registration
         public CodecState State { get; set; }
         public string SipAddress { get; set; }
-        public Guid Id { get; set; } // Not in use ... yet
+        public Guid Id { get; set; } // TODO: Not in use ... yet
         public string PresentationName { get; set; }
-        public string DisplayName { get; set; } // Not in use ... yet
+        public string DisplayName { get; set; } //TODO:  Not in use ... yet
         // Call
-        public bool InCall { get; set; } // Not in use .. yet
+        public bool InCall { get; set; } // TODO: Not in use .. yet
         public string ConnectedToSipAddress { get; set; }
         public string ConnectedToPresentationName { get; set; }
         public string ConnectedToLocation { get; set; }

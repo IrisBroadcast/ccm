@@ -59,6 +59,7 @@ namespace CCM.Web.Mappers
             var registeredUserAgents = _cachedRegisteredCodecRepository.GetRegisteredUserAgents();
             var ongoingCalls = _cachedCallRepository.GetOngoingCalls(true);
 
+            // TODO: This one is problematic since some information is shared with signalr clients, but some codecs are not registered..
             var userAgentsOnline = registeredUserAgents.Select(regSip =>
             {
                 var result = new CodecStatusViewModel

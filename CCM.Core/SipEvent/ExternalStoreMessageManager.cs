@@ -69,15 +69,14 @@ namespace CCM.Core.SipEvent
         {
             _logger.LogDebug($"Register call from:{message.FromUsername} to:{message.ToUsername}, call id:{message.CallId}");
 
-            //if (_cachedCallRepository.CallExists(message.CallId, message.CallHashId, message.CallHashEnt))
-            //{
-            //    _logger.LogDebug($"Call with id:{message.CallId}, hash id:{message.CallHashId}, hash entry:{message.CallHashEnt} already exists");
-            //    return NothingChangedResult;
-            //}
+            if (_cachedCallRepository.CallExists(message.CallId, "", "") || (message.Ended != null))
+            {
+                _logger.LogDebug($"Call with id:{message.CallId} already exists or Ended received={(message.Ended != null)}, closing it instead");
+                return CloseCall(message);
+            }
 
             var call = new Call
             {
-                Id = Guid.Parse(message.CallId),
                 FromSip = message.FromUsername,
                 FromDisplayName = message.FromDisplayName,
                 FromId = Guid.Parse(message.FromId),
@@ -98,14 +97,7 @@ namespace CCM.Core.SipEvent
 
             _cachedCallRepository.UpdateCall(call);
 
-            if (call.Closed)
-            {
-                return SipMessageResult(SipEventChangeStatus.CallClosed, call.Id, call.FromSip);
-            }
-            else
-            {
-                return SipMessageResult(SipEventChangeStatus.CallStarted, call.Id, call.FromSip);
-            }
+            return SipMessageResult(SipEventChangeStatus.CallClosed, call.Id, call.FromSip);
         }
 
         public SipEventHandlerResult CloseCall(ExternalDialogMessage message)
