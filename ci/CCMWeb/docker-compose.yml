@@ -2,19 +2,29 @@ version: "3.7"
 services:
   ccm:
     image: ${IMAGE_NAME}
+    logging:
+      driver: json-file
+      options:
+        max-file: "5"
+        max-size: 20m
+    deploy:
+      placement:
+          constraints: [node.role == manager]
+    environment:
+      ASPNETCORE_URLS: http://+:80
     networks:
       - proxynet
       - default
     configs:
-      - source: ccm_prod_appsettings
+      - source: ccm_stage_appsettings
         target: /app/appsettings.json
     volumes:
       - /mnt/nfs/msc-nfs/docker-share/development/ccm:/ccm
 
 configs:
-  ccm_prod_appsettings:
+  ccm_stage_appsettings:
     external: true
-
 networks:
   proxynet:
     external: true
+
