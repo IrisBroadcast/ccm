@@ -33,7 +33,6 @@ using CCM.Core.Interfaces.Repositories;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models.Category;
 using Microsoft.AspNetCore.Mvc;
-using LocationViewModel = CCM.Web.Models.Category.LocationViewModel;
 
 namespace CCM.Web.Controllers
 {

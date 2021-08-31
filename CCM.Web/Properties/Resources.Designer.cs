@@ -1906,6 +1906,15 @@ namespace CCM.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to minuter.
+        /// </summary>
+        public static string Minutes {
+            get {
+                return ResourceManager.GetString("Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Namn.
         /// </summary>
         public static string Name {
@@ -2802,6 +2811,15 @@ namespace CCM.Web.Properties {
         public static string Unable_To_Resolve_Address {
             get {
                 return ResourceManager.GetString("Unable_To_Resolve_Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Okänd kategori.
+        /// </summary>
+        public static string Unknown_Category {
+            get {
+                return ResourceManager.GetString("Unknown Category", resourceCulture);
             }
         }
         

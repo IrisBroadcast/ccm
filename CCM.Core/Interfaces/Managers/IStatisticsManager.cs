@@ -46,6 +46,7 @@ namespace CCM.Core.Interfaces.Managers
         IList<DateBasedStatistics> GetSipAccountStatistics(DateTime startDate, DateTime endDate, Guid userId);
         IList<DateBasedStatistics> GetCodecTypeStatistics(DateTime startDate, DateTime endDate, Guid codecTypeId);
         
-        IList<DateBasedCategoryStatistics> GetCategoryStatistics(DateTime startTime, DateTime endTime);
+        IList<CategoryCallStatistic> GetCategoryCallStatistics(DateTime startTime, DateTime endTime);
+        IList<CategoryItemStatistic> GetCategoryStatistics(DateTime startTime, DateTime endTime);
     }
 }

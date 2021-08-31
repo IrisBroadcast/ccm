@@ -1058,4 +1058,10 @@
   <data name="Reset filters" xml:space="preserve">
     <value>Återställ filter</value>
   </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minuter</value>
+  </data>
+  <data name="Unknown Category" xml:space="preserve">
+    <value>Okänd kategori</value>
+  </data>
 </root>

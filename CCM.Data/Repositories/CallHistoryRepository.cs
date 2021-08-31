@@ -240,6 +240,18 @@ namespace CCM.Data.Repositories
         private string MapGuidString(Guid guid) { return guid == Guid.Empty ? string.Empty : guid.ToString(); }
 
         #region Statistics
+        public IReadOnlyList<CallHistory> GetOneYearCallHistory()
+        {
+            var nowTime = DateTime.Now;
+            var startTime = DateTime.Now.AddYears(-1);
+            var callHistories = _ccmDbContext.CallHistories
+                .AsNoTracking()
+                .OrderByDescending(callHistory => callHistory.Ended)
+                .Where(c => c.Started < nowTime && c.Ended >= startTime)
+                .ToList();
+            return callHistories.Select(MapCallHistory).ToList();
+        }
+
         public IList<CallHistory> GetCallHistoriesByDate(DateTime startTime, DateTime endTime)
         {
             return GetFiltered(c => c.Started < endTime && c.Ended >= startTime);
@@ -300,18 +312,6 @@ namespace CCM.Data.Repositories
             return locationId == Guid.Empty
                 ? new List<CallHistory>()
                 : callHistories.Where(c => c.Started < endDate && c.Ended >= startDate && (c.FromLocationId == locationId || c.ToLocationId == locationId)).ToList();
-        }
-
-        public IReadOnlyList<CallHistory> GetOneYearCallHistory()
-        {
-            var nowTime = DateTime.Now;
-            var startTime = DateTime.Now.AddYears(-1);
-            var callHistories = _ccmDbContext.CallHistories
-                .AsNoTracking()
-                .OrderByDescending(callHistory => callHistory.Ended)
-                .Where(c => c.Started < nowTime && c.Ended >= startTime)
-                .ToList();
-            return callHistories.Select(MapCallHistory).ToList();
         }
 
         private IList<CallHistory> GetFiltered(Expression<Func<CallHistoryEntity, bool>> filterExpression)

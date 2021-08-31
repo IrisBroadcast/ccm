@@ -95,6 +95,12 @@ namespace CCM.Web.Controllers
             return Json(statistics);
         }
 
+        public IActionResult GetCategoryCallStatistics(DateTime startTime, DateTime endTime)
+        {
+            var statistics = _statisticsManager.GetCategoryCallStatistics(startTime.ToUniversalTime(), endTime.ToUniversalTime());
+            return Ok(statistics);
+        }
+
         public IActionResult GetCategoryStatistics(DateTime startTime, DateTime endTime)
         {
             var statistics = _statisticsManager.GetCategoryStatistics(startTime.ToUniversalTime(), endTime.ToUniversalTime());
@@ -300,17 +306,49 @@ namespace CCM.Web.Controllers
 
         #region Category
         [HttpPost]
+        public ActionResult CategoryCallNumberOfCallsView(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate)
+        {
+
+            var model = new DateBasedChartCallCategoriesViewModel
+            {
+                FilterType = DateBasedFilterType.Categories,
+                ChartType = DateBasedChartType.NumberOfCalls,
+                EndDate = endDate,
+                StartDate = startDate,
+                Stats = _statisticsManager.GetCategoryCallStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0))
+            };
+
+            return PartialView("CategoryCallStatisticsTable", model);
+        }
+
+        [HttpPost]
         public ActionResult CategoryNumberOfCallsView(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate)
         {
 
             var model = new DateBasedChartCategoriesViewModel
             {
-                FilterType = DateBasedFilterType.CodecTypes,
+                FilterType = DateBasedFilterType.Categories,
                 ChartType = DateBasedChartType.NumberOfCalls,
                 EndDate = endDate,
                 StartDate = startDate,
-                Stats = _statisticsManager.GetCategoryStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime())
-        };
+                Stats = _statisticsManager.GetCategoryStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0))
+            };
+
+            return PartialView("CategoryStatisticsTable", model);
+        }
+
+        [HttpPost]
+        public ActionResult CategoryNumberOfCallsViewOld(DateBasedFilterType filterType, DateBasedChartType chartType, DateTime startDate, DateTime endDate)
+        {
+
+            var model = new DateBasedChartCategoriesViewModel
+            {
+                FilterType = DateBasedFilterType.Categories,
+                ChartType = DateBasedChartType.NumberOfCalls,
+                EndDate = endDate,
+                StartDate = startDate,
+                Stats = _statisticsManager.GetCategoryStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0))
+            };
 
             return PartialView("CategoryStatisticsTable", model);
         }

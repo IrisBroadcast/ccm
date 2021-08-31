@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,51 +24,25 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Collections.Generic;
-using CCM.Core.Entities.Statistics;
 
-namespace CCM.Web.Models.Statistics
+namespace CCM.Core.Entities.Statistics
 {
-    public class DateBasedChartViewModel
+    public class CategoryCallStatistic
     {
-        public DateBasedFilterType FilterType { get; set; }
-        public DateBasedChartType ChartType { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public Guid FilterId { get; set; }
-        public IList<DateBasedStatistics> Stats { get; set; }
+        public int NumberOfCalls { get; set; } = 0;
+        public string Part1Category { get; set; } = "";
+        public string Part2Category { get; set; } = "";
+        public List<double> CallTimes { get; set; } = new List<double>();
+        public double TotalCallTime { get; set; } = 0;
+        public string CallDisplayName => $"{Part1Category} - {Part2Category}";
     }
 
-    public class DateBasedChartCategoriesViewModel
+    public class CategoryItemStatistic
     {
-        public DateBasedFilterType FilterType { get; set; }
-        public DateBasedChartType ChartType { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public IList<CategoryItemStatistic> Stats { get; set; }
-    }
-
-    public class DateBasedChartCallCategoriesViewModel
-    {
-        public DateBasedFilterType FilterType { get; set; }
-        public DateBasedChartType ChartType { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public IList<CategoryCallStatistic> Stats { get; set; }
-    }
-
-    public enum DateBasedFilterType
-    {
-        Regions,
-        SipAccounts,
-        CodecTypes,
-        Categories
-    }
-
-    public enum DateBasedChartType
-    {
-        NumberOfCalls,
-        TotalTimeForCalls
+        public int NumberOfCalls { get; set; } = 0;
+        public string Category { get; set; } = "";
+        public List<double> CallTimes { get; set; } = new List<double>();
+        public double TotalCallTime { get; set; } = 0;
     }
 }

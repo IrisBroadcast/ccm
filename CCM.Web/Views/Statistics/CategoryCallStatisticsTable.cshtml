@@ -1,0 +1,60 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Statistics.DateBasedChartCallCategoriesViewModel
+
+@*<div class="tab-pane--topbanner">
+    <a href="@Url.Action("GetDateBasedCsv", new { filterType = Model.FilterType, startDate = Model.StartDate, endDate = Model.EndDate, filterId = Model.FilterId })"><span class="glyphicon glyphicon-download"></span>&nbsp;@Localizer["Download_Csv"]</a>
+</div>*@
+<div>
+    <h3>@Localizer["Stats_Number_Of_Calls"]</h3>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>@Localizer["From"]</th>
+                <th>@Localizer["To"]</th>
+                <th>@Localizer["Total"] @Localizer["Calls"]</th>
+                <th>@Localizer["Total"] @Localizer["Call_Time"]</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var row in @Model.Stats)
+            {
+                if (row.NumberOfCalls != 0)
+                {
+                    <tr>
+                        <td style="text-transform: capitalize">
+                            @if (string.IsNullOrEmpty(row.Part1Category))
+                            {
+                                @Localizer["Unknown Category"]
+                            }
+                            else
+                            {
+                                @row.Part1Category
+                            }
+                        </td>
+                        <td style="text-transform: capitalize">
+                            @if (string.IsNullOrEmpty(row.Part2Category))
+                            {
+                                @Localizer["Unknown Category"]
+                            }
+                            else
+                            {
+                                @row.Part2Category
+                            }
+                        </td>
+                        <td>@row.NumberOfCalls</td>
+                        <td>@TimeSpan.FromSeconds(row.TotalCallTime).ToString(@"hh\:mm") @Localizer["Hours"]</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="errormessage"></div>
+<div>
+    <svg id="display"></svg>
+
+    <svg id="bar-chart" width="650" height="400"></svg>
+</div>

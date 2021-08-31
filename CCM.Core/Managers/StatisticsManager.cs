@@ -31,10 +31,10 @@ using CCM.Core.Entities;
 using CCM.Core.Entities.Statistics;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace CCM.Core.Managers
 {
-
     public class StatisticsManager : IStatisticsManager
     {
         private readonly ICachedCallHistoryRepository _cachedCallHistoryRepository;
@@ -80,76 +80,129 @@ namespace CCM.Core.Managers
             return _cachedSipAccountRepository.GetAll();
         }
 
-        public IList<DateBasedCategoryStatistics> GetCategoryStatistics(DateTime startTime, DateTime endTime)
+        public IList<CategoryCallStatistic> GetCategoryCallStatistics(DateTime startTime, DateTime endTime)
         {
-
-            var categoryStatistics = new List<DateBasedCategoryStatistics>();
+            var categoryStatistics = new List<CategoryCallStatistic>();
             var callHistory = _cachedCallHistoryRepository.GetCallHistoriesByDate(startTime, endTime);
-
             if (callHistory == null)
             {
                 return categoryStatistics;
             }
-
-            categoryStatistics.AddRange(GenerateDateBasedCategoryStatistics(callHistory, startTime, endTime));
-
-            return categoryStatistics.OrderBy(c => c.Date).ToList();
+            return GenerateDateBasedCategoryStatistics(callHistory, startTime, endTime) ?? new List<CategoryCallStatistic>();
         }
 
-        private IEnumerable<DateBasedCategoryStatistics> GenerateDateBasedCategoryStatistics(IList<CallHistory> callHistories, DateTime reportPeriodStart, DateTime reportPeriodEnd)
+        public IList<CategoryItemStatistic> GetCategoryStatistics(DateTime startTime, DateTime endTime)
         {
-            if (!callHistories.Any()) return Enumerable.Empty<DateBasedCategoryStatistics>();
-
-            var minDate = reportPeriodStart.ToLocalTime().Date; // callHistories.Min(c => c.Started);
-            var endLocal = reportPeriodEnd.ToLocalTime();
-            var maxDate = endLocal.Date == endLocal ? endLocal.Date.AddDays(-1) : endLocal.Date; // callHistories.Max(c => c.Started.ToLocalTime().Date);
-            var dateList = new Dictionary<DateTime, DateBasedCategoryStatistics>();
-            var dateBasedStatistics = new Dictionary<DateTime, RegionCategory>();
-
-            var date = minDate;
-
-            while (date <= maxDate)
+            var categoryStatistics = new List<CategoryItemStatistic>();
+            var callHistory = _cachedCallHistoryRepository.GetCallHistoriesByDate(startTime, endTime);
+            if (callHistory == null)
             {
-                dateList.Add(date, new DateBasedCategoryStatistics { Date = date });
-                dateBasedStatistics.Add(date, new RegionCategory());
-                date = date.AddDays(1.0);
+                return categoryStatistics;
             }
+            return GenerateCategoryStatistics(callHistory, startTime, endTime) ?? new List<CategoryItemStatistic>();
+        }
 
-            var regions = _regionRepository.GetAll();
-            //IList<CallHistory> regionHistory = new List<CallHistory>();
+        private List<CategoryCallStatistic> GenerateDateBasedCategoryStatistics(IList<CallHistory> callHistories, DateTime reportPeriodStart, DateTime reportPeriodEnd)
+        {
+            if (!callHistories.Any()) return new List<CategoryCallStatistic>();
 
-            //List<RegionCategory> RegionCategoriesList = new List<RegionCategory>();
-
-            foreach (var region in regions)
+            Dictionary<Tuple<string, string>, CategoryCallStatistic> receivers = new Dictionary<Tuple<string, string>, CategoryCallStatistic>();
+            
+            foreach (var call in callHistories)
             {
-                IList<CallHistory> regionHistory = _cachedCallHistoryRepository.GetCallHistoriesForRegion(reportPeriodStart, reportPeriodEnd, region.Id);
+                var fromCat = string.IsNullOrEmpty(call.FromCodecTypeCategory) == false ? call.FromCodecTypeCategory.ToLower() : string.IsNullOrEmpty(call.FromLocationCategory) == false ? call.FromLocationCategory.ToLower() : "";
+                var toCat = string.IsNullOrEmpty(call.ToCodecTypeCategory) == false ? call.ToCodecTypeCategory.ToLower() : string.IsNullOrEmpty(call.ToLocationCategory) == false ? call.ToLocationCategory.ToLower() : "";
+                
+                string[] combi = { fromCat, toCat };
+                Array.Sort(combi);
+                var key = new Tuple<string, string>(combi[0], combi[1]);
 
-                foreach (var callEvent in DateBasedCategoryCallEvent.GetEvents(regionHistory, reportPeriodStart, reportPeriodEnd))
+                double callTime = (call.Ended - call.Started).TotalSeconds;
+
+                if (receivers.TryGetValue(key, out CategoryCallStatistic item))
                 {
-                    if (!dateList.ContainsKey(callEvent.Date)) continue;
-
-                    if (!dateList[callEvent.Date].RegionCategories.Any(x => x.Name == region.Name))
+                    item.NumberOfCalls++;
+                    item.Part1Category = combi[0] ?? "";
+                    item.Part2Category = combi[1] ?? "";
+                    item.CallTimes.Add(callTime);
+                    item.TotalCallTime += callTime;
+                }
+                else
+                {
+                    receivers.Add(key, new CategoryCallStatistic
                     {
-                        dateList[callEvent.Date].RegionCategories.Add(new RegionCategory {
-                            Name = region.Name,
-                            Date = callEvent.Date,
-                            CategoryStatisticsList = dateBasedStatistics[callEvent.Date].GetCategoryData(callEvent, callEvent.Duration)
-                        });
-                    }
-                    else
-                    {
-                        foreach (var item in dateList[callEvent.Date].RegionCategories)
-                        {
-                            if (item.Name == region.Name && item.Date == callEvent.Date)
-                            {
-                                item.Date = callEvent.Date;
-                                item.CategoryStatisticsList = dateBasedStatistics[callEvent.Date].GetCategoryData(callEvent, callEvent.Duration);
-                            }
-                        }
-                    }
+                        NumberOfCalls = 1,
+                        Part1Category = combi[0] ?? "",
+                        Part2Category = combi[1] ?? "",
+                        CallTimes = new List<double> { callTime },
+                        TotalCallTime = callTime
+                    });
                 }
             }
-            return dateList.Values.OrderBy(d => d.Date);
+
+            return receivers.Values.ToList();
+        }
+
+        private List<CategoryItemStatistic> GenerateCategoryStatistics(IList<CallHistory> callHistories, DateTime reportPeriodStart, DateTime reportPeriodEnd)
+        {
+            if (!callHistories.Any()) return new List<CategoryItemStatistic>();
+
+            var categories = new Dictionary<string, CategoryItemStatistic>();
+
+            foreach (var call in callHistories)
+            {
+                var fromCat = string.IsNullOrEmpty(call.FromCodecTypeCategory) == false ? call.FromCodecTypeCategory.ToLower() : string.IsNullOrEmpty(call.FromLocationCategory) == false ? call.FromLocationCategory.ToLower() : "";
+                var toCat = string.IsNullOrEmpty(call.ToCodecTypeCategory) == false ? call.ToCodecTypeCategory.ToLower() : string.IsNullOrEmpty(call.ToLocationCategory) == false ? call.ToLocationCategory.ToLower() : "";
+
+                double callTime = (call.Ended - call.Started).TotalSeconds;
+                
+                // Categories statistics
+                if (string.IsNullOrEmpty(fromCat))
+                {
+                    fromCat = call?.FromCodecTypeName?.ToLower() ?? "";
+                }
+                if (categories.TryGetValue(fromCat, out CategoryItemStatistic existingFrom))
+                {
+                    existingFrom.NumberOfCalls++;
+                    existingFrom.Category = fromCat;
+                    existingFrom.CallTimes.Add(callTime);
+                    existingFrom.TotalCallTime += callTime;
+                }
+                else
+                {
+                    categories.Add(fromCat, new CategoryItemStatistic
+                    {
+                        NumberOfCalls = 1,
+                        Category = fromCat,
+                        CallTimes = new List<double> { callTime },
+                        TotalCallTime = callTime
+                    });
+                }
+
+                if (string.IsNullOrEmpty(toCat))
+                {
+                    toCat = call?.ToCodecTypeName ?? "";
+                }
+                if (categories.TryGetValue(toCat, out CategoryItemStatistic existingTo))
+                {
+                    existingTo.NumberOfCalls++;
+                    existingTo.Category = toCat;
+                    existingTo.CallTimes.Add(callTime);
+                    existingTo.TotalCallTime += callTime;
+                }
+                else
+                {
+                    categories.Add(toCat, new CategoryItemStatistic
+                    {
+                        NumberOfCalls = 1,
+                        Category = toCat,
+                        CallTimes = new List<double> { callTime },
+                        TotalCallTime = callTime
+                    });
+                }
+            }
+
+            return categories.Values.ToList();
         }
 
         public IList<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId)

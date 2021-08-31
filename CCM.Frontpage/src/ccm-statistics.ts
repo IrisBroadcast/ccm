@@ -190,11 +190,12 @@ export class StatisticsView {
             chartType: "NumberOfCalls",
             startDate: Tool.$dom("startDate").value,
             endDate: Tool.$dom("endDate").value,
-            filterId: Tool.$dom("codecTypesCodecTypes").value
+            filterId: ""
         };
 
+        // Number of call combinations per category itneraction
         Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/CategoryNumberOfCallsView", queryParamsCalls).then(async (content) => {
+        Tool.$fetchView("/Statistics/CategoryCallNumberOfCallsView", queryParamsCalls).then(async (content) => {
             Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = content;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
 
@@ -218,6 +219,34 @@ export class StatisticsView {
             Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
         });
+
+        // Separated category items
+        Tool.$dom("categoryNumberOfItemsChartDiv").innerHTML = `<div class="loading"></div>`;
+        Tool.$fetchView("/Statistics/CategoryNumberOfCallsView", queryParamsCalls).then(async (content) => {
+            Tool.$dom("categoryNumberOfItemsChartDiv").innerHTML = content;
+            Tool.$dom("categorySearchBtn").removeAttribute("disabled");
+
+            try {
+                const parameters = new URLSearchParams({
+                    startTime: Tool.$dom("startDate").value,
+                    endTime: Tool.$dom("endDate").value
+                });
+                // const data = await fetch("/Statistics/GetCategoryStatistics?" + parameters.toString(), {
+                //     method: "POST",
+                //     body: JSON.stringify(parameters)
+                // });
+                // const messenger = await data.json();
+                // console.log(messenger);
+                // // this.CreateBarChart(messenger);
+                // this.CreatePieChart(messenger);
+            } catch(err) {
+                console.error(err);
+            }
+        }).catch((error) => {
+            Tool.$dom("categoryNumberOfItemsChartDiv").innerHTML = `<div class="error">${error}</div>`;
+            Tool.$dom("categorySearchBtn").removeAttribute("disabled");
+        });
+
     }
 
 
