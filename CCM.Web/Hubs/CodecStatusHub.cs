@@ -24,15 +24,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CCM.Web.Hubs
 {

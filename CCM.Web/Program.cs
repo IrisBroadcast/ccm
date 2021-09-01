@@ -39,7 +39,7 @@ namespace CCM.Web
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Info("Starting application CCM");
+                logger.Info($"Starting application CCM {DateTime.Now}");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception exception)
@@ -58,21 +58,22 @@ namespace CCM.Web
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    // Bind application settings from appsettings.json
-                    //services.Configure<ApplicationSettingsWeb>(hostContext.Configuration.GetSection("App"));
                 })
                 .ConfigureAppConfiguration(configBuilder =>
                 {
-                    //configBuilder.AddJsonFile("appsettings.json").AddCommandLine(args, replacement)
+                    // Adding file that build server updates values in
                     configBuilder.AddJsonFile("buildinformation.json");
+
+                    // Adding support for environment variables
                     configBuilder.AddEnvironmentVariables();
 
+                    // Potentially adding support for command line arguments
                     if (args != null)
                     {
                         configBuilder.AddCommandLine(args);
                     }
                 })
-                .ConfigureWebHostDefaults(webBuilder =>
+                .ConfigureWebHostDefaults(webBuilder => // Kestrel
                 {
                     webBuilder.UseStartup<Startup>();
                 })

@@ -48,7 +48,7 @@ namespace CCM.Web.Infrastructure
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation($"*********** Starting SIP Account Background service ************");
+            _logger.LogInformation($"*********** Starting CCM SIP Account Background service ************");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -66,19 +66,15 @@ namespace CCM.Web.Infrastructure
                         var expectedAfter = expireTime.AddSeconds(-(sip.Expires + 20));
                         if (sip.Updated < expectedAfter)
                         {
-                            _logger.LogInformation($"EXPIRED: SIP: {sip.SIP} Expire:{sip.Expires}+20 -- Expected later than this:{expectedAfter} but was Updated:{sip.Updated} # Now:{expireTime}");
+                            _logger.LogDebug($"Cleanup service found expired registration: {sip.SIP} Expire:{sip.Expires}+20 -- Expected later than this:{expectedAfter} but was Updated:{sip.Updated} # Now:{expireTime}");
                             _registeredRepository.DeleteRegisteredSip(sip.SIP);
                             // TODO: this does not trigger websocket info maybe?
-                        }
-                        else
-                        {
-                            _logger.LogInformation($"FINE___: SIP: {sip.SIP} Expire:{sip.Expires}+30 -- Expected later than this:{expectedAfter} ___ was Updated:{sip.Updated} # Now:{expireTime}");
                         }
                     }
                 }
             }
 
-            _logger.LogInformation($"*********** Stopping SIP Account Background service ************");
+            _logger.LogInformation($"*********** Stopping CCM SIP Account Background service ************");
         }
     }
 }

@@ -45,15 +45,6 @@ namespace CCM.Data.Entities
         [Key, Column("ProfileId", Order = 1)]
         public Guid ProfileId { get; set; }
 
-        //public virtual UserAgentEntity UserAgent { get; set; }
-
-        //[Key, ForeignKey("UserAgent"), Column("UserAgentId", Order = 0)]
-        //public Guid UserAgentId { get; set; }
-
-        //public virtual ProfileCodecEntity Profile { get; set; }
-
-        //[Key, ForeignKey("Profile"), Column("ProfileId", Order = 1)]
-        //public Guid ProfileId { get; set; }
         [Column("SortIndex")]
         public int ProfileSortIndexForUserAgent { get; set; }
     }

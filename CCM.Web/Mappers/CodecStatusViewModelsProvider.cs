@@ -31,6 +31,7 @@ using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Web.Models.ApiExternal;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace CCM.Web.Mappers
 {
@@ -59,7 +60,6 @@ namespace CCM.Web.Mappers
             var registeredUserAgents = _cachedRegisteredCodecRepository.GetRegisteredUserAgents();
             var ongoingCalls = _cachedCallRepository.GetOngoingCalls(true);
 
-            // TODO: This one is problematic since some information is shared with signalr clients, but some codecs are not registered..
             var userAgentsOnline = registeredUserAgents.Select(regSip =>
             {
                 var result = new CodecStatusViewModel
@@ -80,6 +80,7 @@ namespace CCM.Web.Mappers
                     result.IsCallingPart = isFromCaller;
                     result.ConnectedToSipAddress = isFromCaller ? call.ToSip : call.FromSip;
                     result.ConnectedToPresentationName = isFromCaller ? call.ToDisplayName : call.FromDisplayName;
+                    result.ConnectedToDisplayName = isFromCaller ? call.ToDisplayName : call.FromDisplayName;
                     result.ConnectedToLocation = isFromCaller ? call.ToLocationName : call.FromLocationName;
                     result.CallStartedAt = call.Started;
                 }
@@ -91,12 +92,55 @@ namespace CCM.Web.Mappers
                 return result;
             }).ToList();
 
+            // Check if there is calling parts that are not registered
+            foreach (var uu in ongoingCalls)
+            {
+                // Check if 'from' codec is not in registered codecs
+                if (userAgentsOnline.All(x => x.Id != Guid.Parse(uu.FromId)))
+                {
+                    userAgentsOnline.Add(new CodecStatusViewModel
+                    {
+                        State = CodecState.InCall,
+                        SipAddress = uu.FromSip,
+                        Id = Guid.Parse(uu.FromId),
+                        PresentationName = uu.FromDisplayName,
+                        DisplayName = uu.FromDisplayName,
+                        InCall = true,
+                        ConnectedToSipAddress = uu.ToSip,
+                        ConnectedToPresentationName = uu.ToDisplayName,
+                        ConnectedToDisplayName = uu.ToDisplayName,
+                        ConnectedToLocation = uu.ToLocationName,
+                        IsCallingPart = true,
+                        CallStartedAt = uu.Started
+                    });
+                }
+
+                // Check if 'to' codec is not in registered codecs
+                if (userAgentsOnline.All(x => x.Id != Guid.Parse(uu.ToId)))
+                {
+                    userAgentsOnline.Add(new CodecStatusViewModel
+                    {
+                        State = CodecState.InCall,
+                        SipAddress = uu.ToSip,
+                        Id = Guid.Parse(uu.ToId),
+                        PresentationName = uu.ToDisplayName,
+                        DisplayName = uu.ToDisplayName,
+                        InCall = true,
+                        ConnectedToSipAddress = uu.FromSip,
+                        ConnectedToPresentationName = uu.FromDisplayName,
+                        ConnectedToDisplayName = uu.FromDisplayName,
+                        ConnectedToLocation = uu.FromLocationName,
+                        IsCallingPart = false,
+                        CallStartedAt = uu.Started
+                    });
+                }
+            }
+
             return userAgentsOnline;
         }
 
         public IEnumerable<CodecStatusViewModel> GetAllCodecsIncludeOffline()
         {
-            // TODO: Try to remove this one as an endpoint
             var sipDomain = _settingsManager.SipDomain;
             var registeredUserAgents = _cachedRegisteredCodecRepository.GetRegisteredUserAgents();
             var ongoingCalls = _cachedCallRepository.GetOngoingCalls(true);
@@ -121,6 +165,7 @@ namespace CCM.Web.Mappers
                     result.IsCallingPart = isFromCaller;
                     result.ConnectedToSipAddress = isFromCaller ? call.ToSip : call.FromSip;
                     result.ConnectedToPresentationName = isFromCaller ? call.ToDisplayName : call.FromDisplayName;
+                    result.ConnectedToDisplayName = isFromCaller ? call.ToDisplayName : call.FromDisplayName;
                     result.ConnectedToLocation = isFromCaller ? call.ToLocationName : call.FromLocationName;
                     result.CallStartedAt = call.Started;
                 }

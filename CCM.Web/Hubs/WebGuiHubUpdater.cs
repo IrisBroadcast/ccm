@@ -32,6 +32,7 @@ using CCM.Core.SipEvent.Models;
 using CCM.Web.Mappers;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NLog;
 
 namespace CCM.Web.Hubs
@@ -42,7 +43,7 @@ namespace CCM.Web.Hubs
     /// </summary>
     public class WebGuiHubUpdater : IWebGuiHubUpdater
     {
-        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private readonly ILogger<WebGuiHubUpdater> _logger;
 
         protected IHubContext<WebGuiHub, IWebGuiHub> _webGuiHub;
 
@@ -56,7 +57,8 @@ namespace CCM.Web.Hubs
             RegisteredUserAgentViewModelsProvider registeredUserAgentViewModelsProvider,
             ICachedCallHistoryRepository cachedCallHistoryRepository,
             ICachedCallRepository cachedCallRepository,
-            ISettingsManager settingsManager)
+            ISettingsManager settingsManager,
+            ILogger<WebGuiHubUpdater> logger)
         {
             _webGuiHub = serviceProvider.GetService<IHubContext<WebGuiHub, IWebGuiHub>>();
 
@@ -64,12 +66,13 @@ namespace CCM.Web.Hubs
             _cachedCallHistoryRepository = cachedCallHistoryRepository;
             _cachedCallRepository = cachedCallRepository;
             _settingsManager = settingsManager;
+            _logger = logger;
 
         }
 
         public void Update(SipEventHandlerResult updateResult)
         {
-            log.Debug($"WebGuiHubUpdater. Status: {updateResult.ChangeStatus}, Id: {updateResult.ChangedObjectId}, SipAddress: {updateResult.SipAddress}");
+            _logger.LogDebug($"WebGuiHubUpdater. Status: {updateResult.ChangeStatus}, Id: {updateResult.ChangedObjectId}, SipAddress: {updateResult.SipAddress}");
 
             if (updateResult.ChangeStatus == SipEventChangeStatus.CallStarted)
             {
@@ -96,7 +99,7 @@ namespace CCM.Web.Hubs
         {
             var userAgentsOnline = _registeredUserAgentViewModelsProvider.GetAll();
 
-            log.Debug($"WebGuiHubUpdater. Updating list of codecs online on web gui clients. Codecs online count: {userAgentsOnline.Count.ToString()}");
+            _logger.LogDebug($"WebGuiHubUpdater. Updating list of codecs online on web gui clients. Codecs online count: {userAgentsOnline.Count.ToString()}");
             _webGuiHub.Clients.All.CodecsOnline(userAgentsOnline);
         }
 
@@ -104,7 +107,7 @@ namespace CCM.Web.Hubs
         {
             var onGoingCalls = _cachedCallRepository.GetOngoingCalls(true);
 
-            log.Debug($"WebGuiHubUpdater. Updating list of ongoing calls on web gui clients. Ongoing calls count: {onGoingCalls.Count.ToString()}");
+            _logger.LogDebug($"WebGuiHubUpdater. Updating list of ongoing calls on web gui clients. Ongoing calls count: {onGoingCalls.Count.ToString()}");
             _webGuiHub.Clients.All.OnGoingCalls(onGoingCalls);
         }
 
@@ -113,7 +116,7 @@ namespace CCM.Web.Hubs
         {
             var oldCalls = _cachedCallHistoryRepository.GetOldCalls(_settingsManager.LatestCallCount, true);
 
-            log.Debug($"WebGuiHubUpdater. Updating list of old calls on web gui clients. Old calls count: {oldCalls.Count.ToString()}");
+            _logger.LogDebug($"WebGuiHubUpdater. Updating list of old calls on web gui clients. Old calls count: {oldCalls.Count.ToString()}");
             _webGuiHub.Clients.All.OldCalls(oldCalls);
         }
     }

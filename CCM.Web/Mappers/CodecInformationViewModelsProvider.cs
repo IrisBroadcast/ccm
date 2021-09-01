@@ -31,6 +31,9 @@ using CCM.Web.Models.ApiExternal;
 
 namespace CCM.Web.Mappers
 {
+    /// <summary>
+    /// Provides data for CodecControl
+    /// </summary>
     public class CodecInformationViewModelsProvider
     {
         private readonly ICachedRegisteredCodecRepository _cachedRegisteredCodecRepository;
@@ -38,7 +41,6 @@ namespace CCM.Web.Mappers
         public CodecInformationViewModelsProvider(ICachedRegisteredCodecRepository cachedRegisteredCodecRepository)
         {
             _cachedRegisteredCodecRepository = cachedRegisteredCodecRepository;
-            // TODO: Used by codec control, but maybe rethink the ide of ViewModelsProviders.. or expand the concept.
         }
 
         public IEnumerable<CodecInformationViewModel> GetAll()

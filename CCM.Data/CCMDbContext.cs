@@ -52,20 +52,10 @@ namespace CCM.Data
 
             modelBuilder.Entity<ProfileGroupProfileOrdersEntity>()
                 .HasKey(c => new { c.ProfileGroupId, c.ProfileId });
-            // [Key, ForeignKey("ProfileGroup"), Column("ProfileGroup_Id", Order = 0)]
-            // public Guid ProfileGroupId { get; set; }
-
-            // [Key, ForeignKey("Profile"), Column("Profile_Id", Order = 1)]
-            // public Guid ProfileId { get; set; }
 
             modelBuilder.Entity<CallHistoryEntity>().HasKey(c => new { c.Id });
 
             modelBuilder.Entity<UserAgentProfileOrderEntity>().HasKey(c => new { c.UserAgentId, c.ProfileId });
-            //[Key, ForeignKey("UserAgent"), Column("UserAgentId", Order = 0)]
-            //public Guid UserAgentId { get; set; }
-
-            //[Key, ForeignKey("Profile"), Column("ProfileId", Order = 1)]
-            //public Guid ProfileId { get; set; }
 
             // CodecType matching Users
             modelBuilder.Entity<CodecTypeEntity>(entity =>

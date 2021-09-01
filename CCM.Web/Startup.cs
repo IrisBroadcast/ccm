@@ -27,10 +27,23 @@
 using System.Globalization;
 using System.IO;
 using System.Text.Json.Serialization;
+using CCM.Core.Cache;
 using CCM.Core.Helpers;
+using CCM.Core.Helpers.PasswordGeneration;
+using CCM.Core.Interfaces;
+using CCM.Core.Interfaces.Managers;
+using CCM.Core.Interfaces.Parser;
+using CCM.Core.Interfaces.Repositories;
+using CCM.Core.Managers;
+using CCM.Core.Service;
+using CCM.Core.SipEvent;
+using CCM.Core.SipEvent.Parser;
 using CCM.Data;
+using CCM.Data.Repositories;
 using CCM.Web.Hubs;
 using CCM.Web.Infrastructure;
+using CCM.Web.Infrastructure.PasswordGeneration;
+using CCM.Web.Mappers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -106,8 +119,6 @@ namespace CCM.Web
                     options.LoginPath = new PathString("/Account/Login/");
                     options.LogoutPath = new PathString("/Account/LogOff/");
                     options.AccessDeniedPath = new PathString("/Account/Forbidden/");
-                    //    services.AddAuthentication("SipAccountBasicAuthentication") // Default
-                    //.AddScheme<AuthenticationSchemeOptions, SipAccountBasicAuthenticationAttribute>("SipAccountBasicAuthentication", null);
                 })
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
@@ -152,7 +163,6 @@ namespace CCM.Web
             // Add database server DI
             services.AddDbContext<CcmDbContext>(builder =>
             {
-                //options.UseSqlServer(Configuration.GetConnectionString("CodecCallMonitorDatabaseContext"));
                 builder.UseMySql(
                     Configuration.GetConnectionString("CodecCallMonitorDatabaseContext"),
                     options =>
@@ -190,15 +200,6 @@ namespace CCM.Web
                 // for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            //app.UseHttpsRedirection();
-
-            //// Initiate Database
-            //using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            //{
-            //    var context = serviceScope.ServiceProvider.GetRequiredService<CcmDbContext>();
-            //    context.Database.Migrate();
-            //    //context.Database.EnsureCreated();// TODO: look over these
-            //}
 
             // Static files for serving images and static files in wwwroot.
             app.UseStaticFiles();
@@ -261,6 +262,79 @@ namespace CCM.Web
                 endpoints.MapHub<CodecStatusHub>("/codecstatushub");
             });
 
+        }
+    }
+
+    public static class ServiceExtensionsDependencyInjection {
+        public static void AddGeneralDependencyInjection(this IServiceCollection services)
+        {
+            services.AddScoped<CodecStatusViewModelsProvider>();
+            services.AddScoped<CodecInformationViewModelsProvider>();
+
+            services.AddTransient<RegisteredUserAgentViewModelsProvider>();
+            services.AddTransient<IPasswordGeneratorConfigurationProvider, PasswordGeneratorConfigurationProvider>();
+            services.AddTransient<IPasswordGenerator, PasswordGenerator>();
+
+            services.AddTransient<IKamailioEventParser, KamailioEventParser>();
+            services.AddTransient<ISipEventParser, SipEventParser>();
+
+            services.AddTransient<IFilterManager, FilterManager>();
+            services.AddTransient<ILocationManager, LocationManager>();
+            services.AddTransient<IRegisteredCodecsManager, RegisteredCodecsManager>();
+            services.AddTransient<ISettingsManager, SettingsManager>();
+            services.AddTransient<IStatisticsManager, StatisticsManager>();
+
+            services.AddTransient<ISipMessageManager, SipMessageManager>();
+            services.AddTransient<IExternalStoreMessageManager, ExternalStoreMessageManager>();
+
+            services.AddTransient<ICachedCallHistoryRepository, CachedCallHistoryRepository>();
+            services.AddTransient<ICallHistoryRepository, CallHistoryRepository>();
+
+            services.AddTransient<ICachedCallRepository, CachedCallRepository>();
+            services.AddTransient<ICallRepository, CallRepository>();
+
+            services.AddTransient<ICachedLocationRepository, CachedLocationRepository>();
+            services.AddTransient<ILocationRepository, LocationRepository>();
+
+            services.AddTransient<ICachedProfileGroupRepository, CachedProfileGroupRepository>();
+            services.AddTransient<IProfileGroupRepository, ProfileGroupRepository>();
+
+            services.AddTransient<ICachedProfileRepository, CachedProfileRepository>();
+            services.AddTransient<IProfileRepository, ProfileRepository>();
+
+            services.AddTransient<ICachedRegisteredCodecRepository, CachedRegisteredCodecRepository>();
+            services.AddTransient<IRegisteredCodecRepository, RegisteredCodecRepository>();
+
+            services.AddTransient<ICachedSettingsRepository, CachedSettingsRepository>();
+            services.AddTransient<ISettingsRepository, SettingsRepository>();
+
+            services.AddTransient<ICachedSipAccountRepository, CachedSipAccountRepository>();
+            services.AddTransient<ISipAccountRepository, SipAccountRepository>();
+
+            services.AddTransient<ICachedUserAgentRepository, CachedUserAgentRepository>();
+            services.AddTransient<IUserAgentRepository, UserAgentRepository>();
+
+            services.AddTransient<ICcmUserRepository, CcmUserRepository>();
+            services.AddTransient<ICityRepository, CityRepository>();
+            services.AddTransient<ICodecTypeRepository, CodecTypeRepository>();
+            services.AddTransient<IFilterRepository, FilterRepository>();
+
+            services.AddTransient<ILogRepository, LogRepository>();
+            services.AddTransient<IMetaRepository, MetaRepository>();
+            services.AddTransient<IOwnersRepository, OwnersRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IRegionRepository, RegionRepository>();
+            services.AddTransient<IRegisteredCodecDetailsRepository, RegisteredCodecDetailsRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
+
+            services.AddTransient<IWebGuiHubUpdater, WebGuiHubUpdater>();
+            services.AddTransient<ICodecStatusHubUpdater, CodecStatusHubUpdater>();
+
+            // Discovery related
+            services.AddScoped<IDiscoveryService, DiscoveryService>();
+
+            // Background service
+            services.AddHostedService<SipAccountService>();
         }
     }
 

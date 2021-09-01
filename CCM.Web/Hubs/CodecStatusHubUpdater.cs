@@ -28,13 +28,12 @@ using System;
 using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.SipEvent;
 using CCM.Core.SipEvent.Models;
 using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
-using NLog;
+using Microsoft.Extensions.Logging;
 
 namespace CCM.Web.Hubs
 {
@@ -44,7 +43,7 @@ namespace CCM.Web.Hubs
     /// </summary>
     public class CodecStatusHubUpdater : ICodecStatusHubUpdater
     {
-        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private readonly ILogger<CodecStatusHubUpdater> _logger;
 
         private readonly ICachedCallRepository _cachedCallRepository;
         private readonly ICachedCallHistoryRepository _cachedCallHistoryRepository;
@@ -55,12 +54,14 @@ namespace CCM.Web.Hubs
             IServiceProvider serviceProvider,
             ICachedCallRepository cachedCallRepository,
             ICachedCallHistoryRepository cachedCallHistoryRepository,
-            CodecStatusViewModelsProvider codecStatusViewModelsProvider)
+            CodecStatusViewModelsProvider codecStatusViewModelsProvider,
+            ILogger<CodecStatusHubUpdater> logger)
         {
-            _codecStatusHub = serviceProvider.GetService<IHubContext<CodecStatusHub, ICodecStatusHub>>(); // TODO: Injection???
+            _codecStatusHub = serviceProvider.GetService<IHubContext<CodecStatusHub, ICodecStatusHub>>();
             _cachedCallRepository = cachedCallRepository;
             _cachedCallHistoryRepository = cachedCallHistoryRepository;
             _codecStatusViewModelsProvider = codecStatusViewModelsProvider;
+            _logger = logger;
         }
 
         public void Update(SipEventHandlerResult updateResult)
@@ -73,13 +74,13 @@ namespace CCM.Web.Hubs
 
                 if (callInfo != null)
                 {
-                    log.Debug($"CodecStatusHub. Call started. From:{callInfo.FromId}, To:{callInfo.ToId}");
+                    _logger.LogDebug($"CodecStatusHub. Call started. From:{callInfo.FromId}, To:{callInfo.ToId}");
                     UpdateCodecStatusByGuid(callInfo.FromId);
                     UpdateCodecStatusByGuid(callInfo.ToId);
                 }
                 else
                 {
-                    log.Error($"CodecStatusHub. Call started but was not found in database. Call Id:{callId}");
+                    _logger.LogError($"CodecStatusHub. Call started but was not found in database. Call Id:{callId}");
                 }
             }
 
@@ -91,13 +92,13 @@ namespace CCM.Web.Hubs
 
                 if (call != null)
                 {
-                    log.Debug($"CodecStatusHub. Call closed. From:{call.FromId}, to:{call.ToId}, call id:{callId}");
+                    _logger.LogDebug($"CodecStatusHub. Call closed. From:{call.FromId}, to:{call.ToId}, call id:{callId}");
                     UpdateCodecStatusByGuid(call.FromId);
                     UpdateCodecStatusByGuid(call.ToId);
                 }
                 else
                 {
-                    log.Error($"CodecStatusHub. Call closed but was not found in call history. Call id:{callId}");
+                    _logger.LogError($"CodecStatusHub. Call closed but was not found in call history. Call id:{callId}");
                 }
             }
 
@@ -121,12 +122,12 @@ namespace CCM.Web.Hubs
                 UpdateCodecStatusRemoved(codecStatus);
             }
 
-            log.Debug($"CodecStatusHub. Status:{updateResult.ChangeStatus}, id:{updateResult.ChangedObjectId}, sip address:{updateResult.SipAddress}");
+            _logger.LogDebug($"CodecStatusHub. Status:{updateResult.ChangeStatus}, id:{updateResult.ChangedObjectId}, sip address:{updateResult.SipAddress}");
         }
 
         private void UpdateCodecStatusRemoved(CodecStatusViewModel codecStatusViewModel)
         {
-            log.Debug($"SignalR is sending codec status to clients. SipAddress: {codecStatusViewModel.SipAddress}, State: {codecStatusViewModel.State}");
+            _logger.LogDebug($"SignalR is sending codec status to clients. SipAddress: {codecStatusViewModel.SipAddress}, State: {codecStatusViewModel.State}");
             _codecStatusHub.Clients.All.CodecStatus(codecStatusViewModel);
         }
 
@@ -137,16 +138,17 @@ namespace CCM.Web.Hubs
                 return;
             }
 
+            // Check if it's related to any registered online codecs
             var userAgentsOnline = _codecStatusViewModelsProvider.GetAll();
             var updatedCodecStatus = userAgentsOnline.FirstOrDefault(x => x.Id == id);
             if (updatedCodecStatus != null)
             {
-                log.Debug($"SignalR is sending codec status to clients. SipAddress: {updatedCodecStatus.SipAddress}, State: {updatedCodecStatus.State}");
+                _logger.LogDebug($"SignalR is sending codec status to clients. SipAddress: {updatedCodecStatus.SipAddress}, State: {updatedCodecStatus.State}");
                 _codecStatusHub.Clients.All.CodecStatus(updatedCodecStatus);
             }
             else
             {
-                log.Error($"Can't update Codec status hub. No codec online with id: {id}");
+                _logger.LogError($"Can't update Codec status hub. No codec online with id: {id}");
             }
         }
     }
