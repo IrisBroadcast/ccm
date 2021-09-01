@@ -52,6 +52,13 @@ export class Application {
         this.setupMenu();
 
         this.setupTabs();
+
+        (function() {
+            const searchbar = Tool.$dom("searchField");
+            if (searchbar) {
+                searchbar.focus();
+            }
+        })();
     }
 
     private setupStartpage() {

@@ -7040,6 +7040,9 @@ button.close {
 .mui-panel {
   padding: 0.5rem 0;
 }
+.mui-panel-block {
+  margin: 1rem auto;
+}
 .mui-panel table {
   width: auto;
   flex: 1;
@@ -7099,8 +7102,11 @@ button.close {
 .mui-panel td {
   color: #808080;
 }
+.mui-panel tr:nth-child(odd) td {
+  background: #ffffff;
+}
 .mui-panel tr:nth-child(even) td {
-  background: #f8f6ff;
+  background: #f7f7f7;
 }
 .mui-panel .codec-type {
   display: inline-block;
@@ -7248,7 +7254,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  padding-top: 6.5rem;
+  padding-top: 3.5rem;
 }
 h3 {
   line-height: 1.25rem;
@@ -7521,6 +7527,28 @@ body {
 }
 .mui-billboard .board .text {
   font-size: 1.2rem;
+}
+.mui-billboard-search {
+  display: block;
+  width: 100%;
+  max-width: unset;
+  min-height: 3rem;
+  padding: 6px 12px;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  color: #555555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.08);
+  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+.mui-billboard-search-box {
+  padding: 1rem;
 }
 .mui-call-direction svg {
   height: 2rem;

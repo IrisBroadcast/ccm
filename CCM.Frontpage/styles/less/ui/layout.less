@@ -3,6 +3,10 @@
 
     padding: 0.5rem 0;
 
+    &-block {
+        margin: 1rem auto;
+    }
+
     table {
         width: auto;
         flex: 1;
@@ -77,8 +81,12 @@
         color: #808080;
     }
 
+    tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
     tr:nth-child(even) td {
-        background: #f8f6ff;
+        background: #f7f7f7;
     }
 
     .codec-type {

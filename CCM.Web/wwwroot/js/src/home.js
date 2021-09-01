@@ -459,32 +459,40 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     };
 
     $scope.setFilterRegion = function (region) {
-        if (region == "nofilter" || region === "" || region === null) {
+        if (region == "nofilter" || region === "" || region === null  || region === undefined) {
             $scope.region = "";
             $scope.regionName = "";
             $('#regions-filter li').removeClass('active');
             $('#regions-filter li.nofilter').addClass('active');
+            $('#regions-dropdown-filter li').removeClass('active');
+            $('#regions-dropdown-filter li.nofilter').addClass('active');
         } else {
             $scope.region = region;
             $scope.regionName = region;
             $('#regions-filter li').removeClass('active');
             $('#regions-filter li:contains(' + $scope.regionName + ')').addClass('active');
+            $('#regions-dropdown-filter li').removeClass('active');
+            $('#regions-dropdown-filter li:contains(' + $scope.regionName + ')').addClass('active');
         }
 
         $sessionStorage.region = $scope.region;
     };
 
     $scope.setFilterCodecType = function (codecType) {
-        if (codecType == "nofilter" || codecType === "" || codecType === null) {
+        if (codecType == "nofilter" || codecType === "" || codecType === null || codecType === undefined) {
             $scope.codecType = "";
             $scope.codecTypeName = "";
             $('#codecTypes-filter li').removeClass('active');
             $('#codecTypes-filter li.nofilter').addClass('active');
+            $('#codecTypes-dropdown-filter li').removeClass('active');
+            $('#codecTypes-dropdown-filter li.nofilter').addClass('active');
         } else {
             $scope.codecType = codecType;
             $scope.codecTypeName = codecType;
             $('#codecTypes-filter li').removeClass('active');
             $('#codecTypes-filter li:contains(' + $scope.codecTypeName + ')').addClass('active');
+            $('#codecTypes-dropdown-filter li').removeClass('active');
+            $('#codecTypes-dropdown-filter li:contains(' + $scope.codecTypeName + ')').addClass('active');
         }
 
         // TODO: make these correct and maybe just angular fully..
@@ -493,16 +501,20 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     };
 
     $scope.setFilterCategory = function (category) {
-        if (category == "nofilter" || category === "" || category === null) {
+        if (category == "nofilter" || category === "" || category === null || category === undefined) {
             $scope.category = "";
             $scope.categoryName = "";
             $('#categories-filter li').removeClass('active');
             $('#categories-filter li.nofilter').addClass('active');
+            $('#categories-dropdown-filter li').removeClass('active');
+            $('#categories-dropdown-filter li.nofilter').addClass('active');
         } else {
             $scope.category = category;
             $scope.categoryName = category;
             $('#categories-filter li').removeClass('active');
             $('#categories-filter li:contains(' + $scope.categoryName + ')').addClass('active');
+            $('#categories-dropdown-filter li').removeClass('active');
+            $('#categories-dropdown-filter li:contains(' + $scope.categoryName + ')').addClass('active');
         }
 
         $sessionStorage.category = $scope.category;
