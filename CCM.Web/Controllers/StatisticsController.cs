@@ -163,7 +163,7 @@ namespace CCM.Web.Controllers
             {
                 EndDate = endDate,
                 LocationId = locationId,
-                Locations = _statisticsManager.GetLocationsForRegion(regionId).Select(l => new ChartLocationModel { Id = l.Id, Name = l.Name}).OrderBy(l => l.Name).ToList(),
+                Locations = _statisticsManager.GetLocationsForRegion(regionId).Select(l => new ChartLocationModel { Id = l.Id, Name = l.Name }).OrderBy(l => l.Name).ToList(),
                 RegionId = regionId,
                 StartDate = startDate
             };

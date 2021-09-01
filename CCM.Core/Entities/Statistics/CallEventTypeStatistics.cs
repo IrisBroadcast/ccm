@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,24 +24,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-
 namespace CCM.Core.Entities.Statistics
 {
-    public class CategoryCallStatistic
+    public enum CallEventTypeStatistics
     {
-        public int NumberOfCalls { get; set; } = 0;
-        public string Part1Category { get; set; } = "";
-        public string Part2Category { get; set; } = "";
-        public List<double> CallTimes { get; set; } = new List<double>();
-        public double TotalCallTime { get; set; } = 0;
-    }
-
-    public class CategoryItemStatistic
-    {
-        public int NumberOfCalls { get; set; } = 0;
-        public string Category { get; set; } = "";
-        public List<double> CallTimes { get; set; } = new List<double>();
-        public double TotalCallTime { get; set; } = 0;
+        End = 0,
+        Start = 1
     }
 }

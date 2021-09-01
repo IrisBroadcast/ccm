@@ -19,7 +19,7 @@ namespace CCM.StatisticsWeb.Services
 
         Task<IEnumerable<DateBasedStatistics>> GetCodecTypeStatistics(Guid codecTypeId, DateTime startTime, DateTime endTime);
         Task<IEnumerable<DateBasedStatistics>> GetRegionStatistics(Guid regionId, DateTime startTime, DateTime endTime);
-        Task<IEnumerable<DateBasedStatistics>> GetSipStatistics(Guid sipId, DateTime startTime, DateTime endTime);
+        Task<IEnumerable<DateBasedStatistics>> GetAccountStatistics(Guid sipId, DateTime startTime, DateTime endTime);
         Task<IEnumerable<DateBasedCategoryStatistics>> GetCategories(DateTime startTime, DateTime endTime);
     }
 }

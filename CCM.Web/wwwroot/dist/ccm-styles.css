@@ -7541,6 +7541,10 @@ body {
   padding: 0.2rem 0.5rem !important;
   background: #fff5cf;
 }
+#bar-chart {
+  width: 100%;
+  min-height: 80vh;
+}
 .mui-stats-bar .value {
   display: block;
   height: 1rem;

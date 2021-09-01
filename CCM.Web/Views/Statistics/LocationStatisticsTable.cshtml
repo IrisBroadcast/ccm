@@ -7,10 +7,11 @@
     <a href="@Url.Action("GetLocationStatisticsCsv", new { startDate = Model.StartDate, endDate = Model.EndDate, regionId = Model.RegionId, ownerId = Model.OwnerId, codecTypeId = Model.CodecTypeId})"><span class="glyphicon glyphicon-download"></span>&nbsp;@Localizer["Download_Csv"]</a>
 </div>
 <div>
+    <h3>@Localizer["Locations"] @Localizer["Stats_Number_Of_Calls"]</h3>
     <table class="table table-condensed">
         <thead>
             <tr>
-                <th>@Localizer["Location"]</th>
+                <th>@Localizer["Location Name"]</th>
                 <th>@Model.ColumnLabel</th>
             </tr>
         </thead>
@@ -19,7 +20,9 @@
             {
                 <tr>
                     <td class="col-md-3">@row.Label</td>
-                    <td><div style="color: black; background-color: lavender; width:@(row.Width)%; display:inline-block; padding:2px; text-align: right;" title="@row.ToolTip">@row.Value</div></td>
+                    <td>
+                        <div style="color: black; background-color: lavender; width: @(row.Width)%; display: inline-block; padding: 2px; text-align: right;" title="@row.ToolTip">@row.Value</div>
+                    </td>
                 </tr>
             }
         </tbody>

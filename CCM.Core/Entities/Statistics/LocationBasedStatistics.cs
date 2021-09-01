@@ -58,7 +58,7 @@ namespace CCM.Core.Entities.Statistics
 
         public void AddEvent(LocationCallEvent callEvent, DateTime reportPeriodStart, DateTime reportPeriodEnd)
         {
-            if (callEvent.EventType == CallEventType.Start)
+            if (callEvent.EventType == CallEventTypeStatistics.Start)
             {
                 OngoingCalls++;
                 if (OngoingCalls == MaxSimultaneousCalls)
@@ -96,45 +96,44 @@ namespace CCM.Core.Entities.Statistics
     public class LocationCallEvent
     {
         public DateTime EventTime { get; set; }
-        public CallEventType EventType { get; set; }
+        public CallEventTypeStatistics EventType { get; set; }
         public Guid LocationId { get; set; }
         public string LocationName { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
-        public static IEnumerable<LocationCallEvent> GetOrderedEvents(IList<CallHistory> callHistories,
-            CallHistoryFilter filter)
+        public static IEnumerable<LocationCallEvent> GetOrderedEvents(IList<CallHistory> callHistories, CallHistoryFilter filter)
         {
             return GetEvents(callHistories, filter).OrderBy(e => e.EventTime).ThenBy(e => (int)e.EventType);
         }
 
-        public static IEnumerable<LocationCallEvent> GetEvents(IList<CallHistory> callHistories, CallHistoryFilter filter)
+        private static IEnumerable<LocationCallEvent> GetEvents(IList<CallHistory> callHistories, CallHistoryFilter filter)
         {
             foreach (var call in callHistories)
             {
                 if ((call.FromLocationId == call.ToLocationId && filter.IsMatch(call)) || filter.IsFromMatch(call))
                 {
                     yield return
-                        Create(CallEventType.Start, call, c => Tuple.Create(c.FromLocationId, c.FromLocationName));
+                        Create(CallEventTypeStatistics.Start, call, c => Tuple.Create(c.FromLocationId, c.FromLocationName));
                     yield return
-                        Create(CallEventType.End, call, c => Tuple.Create(c.FromLocationId, c.FromLocationName));
+                        Create(CallEventTypeStatistics.End, call, c => Tuple.Create(c.FromLocationId, c.FromLocationName));
                 }
                 if (call.FromLocationId != call.ToLocationId && filter.IsToMatch(call))
                 {
                     yield return
-                        Create(CallEventType.Start, call, c => Tuple.Create(c.ToLocationId, c.ToLocationName));
+                        Create(CallEventTypeStatistics.Start, call, c => Tuple.Create(c.ToLocationId, c.ToLocationName));
                     yield return
-                        Create(CallEventType.End, call, c => Tuple.Create(c.ToLocationId, c.ToLocationName));
+                        Create(CallEventTypeStatistics.End, call, c => Tuple.Create(c.ToLocationId, c.ToLocationName));
                 }
             }
         }
 
-        public static LocationCallEvent Create(CallEventType eventType, CallHistory call, Func<CallHistory, Tuple<Guid, string>> locationSelector)
+        private static LocationCallEvent Create(CallEventTypeStatistics eventType, CallHistory call, Func<CallHistory, Tuple<Guid, string>> locationSelector)
         {
             var location = locationSelector(call);
             return new LocationCallEvent
             {
-                EventTime = eventType == CallEventType.Start ? call.Started : call.Ended,
+                EventTime = eventType == CallEventTypeStatistics.Start ? call.Started : call.Ended,
                 EventType = eventType,
                 EndTime = call.Ended,
                 LocationId = location.Item1,
@@ -142,13 +141,6 @@ namespace CCM.Core.Entities.Statistics
                 StartTime = call.Started
             };
         }
-
-    }
-
-    public enum CallEventType
-    {
-        End = 0,
-        Start = 1
     }
 
     public class CallHistoryFilter

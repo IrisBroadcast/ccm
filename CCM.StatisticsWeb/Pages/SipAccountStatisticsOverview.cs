@@ -22,9 +22,9 @@ namespace CCM.StatisticsWeb.Pages
         {
             SipAccounts = (await StatisticsDataService.GetSipAccounts()).ToList();
         }
-        public async Task<IEnumerable<DateBasedStatistics>> GetSipStatistics(Guid sipId, DateTime startTime, DateTime endTime)
+        public async Task<IEnumerable<DateBasedStatistics>> GetAccountStatistics(Guid sipId, DateTime startTime, DateTime endTime)
         {
-            sipAccountStatisticsOverview = (await StatisticsDataService.GetSipStatistics(sipId, startTime, endTime));
+            sipAccountStatisticsOverview = (await StatisticsDataService.GetAccountStatistics(sipId, startTime, endTime));
             visible = true;
             return sipAccountStatisticsOverview;
         }

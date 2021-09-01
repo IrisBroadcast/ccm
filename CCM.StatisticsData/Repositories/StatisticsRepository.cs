@@ -99,7 +99,7 @@ namespace CCM.StatisticsData.Repositories
             return regionStatistics.OrderBy(r => r.Date).ToList();
         }
 
-        public IEnumerable<DateBasedStatistics> GetSipStatistics(DateTime startTime, DateTime endTime, Guid sipId)
+        public IEnumerable<DateBasedStatistics> GetAccountStatistics(DateTime startTime, DateTime endTime, Guid sipId)
         {
             var user = _sipAccountRepository.GetSipById(sipId);
             var callHistories = user != null ? _callHistoryRepository.GetCallHistoriesForRegisteredSip(startTime, endTime, user.UserName) : new List<CallHistoryEntity>();

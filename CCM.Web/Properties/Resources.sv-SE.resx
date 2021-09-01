@@ -1058,6 +1058,9 @@
   <data name="Reset filters" xml:space="preserve">
     <value>Återställ filter</value>
   </data>
+  <data name="Hours" xml:space="preserve">
+    <value>timmar</value>
+  </data>
   <data name="Minutes" xml:space="preserve">
     <value>minuter</value>
   </data>

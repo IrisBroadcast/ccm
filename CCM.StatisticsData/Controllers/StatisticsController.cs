@@ -123,10 +123,10 @@ namespace CCM.StatisticsData.Controllers
             return Ok(statistics);
         }
 
-        [Route("Api/Statistics/GetSipStatistics")]
-        public IActionResult GetSipStatistics(Guid sipId, DateTime startTime, DateTime endTime)
+        [Route("Api/Statistics/GetAccountStatistics")]
+        public IActionResult GetAccountStatistics(Guid sipId, DateTime startTime, DateTime endTime)
         {
-            var statistics = _statisticsRepository.GetSipStatistics(startTime.ToUniversalTime(), endTime.ToUniversalTime(), sipId);
+            var statistics = _statisticsRepository.GetAccountStatistics(startTime.ToUniversalTime(), endTime.ToUniversalTime(), sipId);
             return Ok(statistics);
         }
 

@@ -210,8 +210,9 @@ export class StatisticsView {
                 });
                 const messenger = await data.json();
                 console.log(messenger);
-                // this.CreateBarChart(messenger);
-                this.CreatePieChart(messenger);
+                this.CreateBarChart(messenger);
+                //this.CreatePieChart(messenger);
+                //this.CreateTreeMap(messenger);
             } catch(err) {
                 console.error(err);
             }
@@ -249,14 +250,10 @@ export class StatisticsView {
 
     }
 
-
-    CreatePieChart(message) {
-
+    CreatePieChart(data) {
         var svg = d3.select("#bar-chart");
-        svg.selectAll("*").remove();
+            svg.selectAll("*").remove();
         document.getElementById('errormessage').innerHTML = "";
-
-        var data = message; //JSON.parse(message);
 
         if (data.length === 0) {
             return document.getElementById('errormessage').innerHTML = '<p>' + "No data" + '</p>';
@@ -285,15 +282,16 @@ export class StatisticsView {
             .outerRadius(radius - 60)
             .innerRadius(radius);
 
-
         var arc = g.selectAll(".arc")
             .data(pie(data))
-            .enter().append("g")
+            .enter()
+            .append("g")
             .attr("class", "arc");
 
         arc.append("path")
             .attr("d", path)
             .attr("fill", function (d) {
+                console.log(d)
                 const first = Object.values(d.data);
                 const amount = Object.values(d.data);
                 return color(Object.values(first[0]) + " " + amount[1])
@@ -317,27 +315,83 @@ export class StatisticsView {
             .attr("class", "title")
             .style("fill", "green")
             .style("font-size", "23");
+    }
+
+    CreateTreeMap(data) {
+
+        // set the dimensions and margins of the graph
+        var margin = {top: 10, right: 10, bottom: 10, left: 10},
+        width = 445 - margin.left - margin.right,
+        height = 445 - margin.top - margin.bottom;
+
+        // append the svg object to the body of the page
+        var svg = d3.select("#bar-chart")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+        // Give the data to this cluster layout:
+        var root = d3.hierarchy(data).sum(function(d){ return d.numberOfCalls });
+        // Here the size of each leave is given in the 'value' field in input data
+
+        // Then d3.treemap computes the position of each element of the hierarchy
+        d3.treemap()
+            .size([width, height])
+            .padding(2)
+            (root)
+
+        // use this information to add rectangles:
+        svg
+            .selectAll("rect")
+            .data(root.leaves())
+            .enter()
+            .append("rect")
+            .attr('x', function (d) { return d.x0; })
+            .attr('y', function (d) { return d.y0; })
+            .attr('width', function (d) { return d.x1 - d.x0; })
+            .attr('height', function (d) { return d.y1 - d.y0; })
+            .style("stroke", "black")
+            .style("fill", "slateblue")
+
+        // and to add the text labels
+        svg
+            .selectAll("text")
+            .data(root.leaves())
+            .enter()
+            .append("text")
+            .attr("x", function(d){ return d.x0+5})    // +10 to adjust position (more right)
+            .attr("y", function(d){ return d.y0+20})    // +20 to adjust position (lower)
+            .text(function(d){ return d.data.name })
+            .attr("font-size", "15px")
+            .attr("fill", "white")
 
     }
 
+    CreateBarChart(dataset) {
 
-    CreateBarChart(message) {
         var svg = d3.select("#bar-chart");
-        svg.selectAll("*").remove();
-        var dataset = message, //JSON.parse(message),
 
-        svg = d3.select("#bar-chart"),
-            margin = {
+        const margin = {
                 top: 20,
-                right: 20,
-                bottom: 30,
+                right: 50,
+                bottom: 80,
                 left: 50
-            },
-            width = +svg.attr("width") - margin.left - margin.right,
-            height = +svg.attr("height") - margin.top - margin.bottom,
-            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            };
 
-        console.log(dataset)
+        let width = +svg.attr("width") - margin.left - margin.right;
+        let height = +svg.attr("height") - margin.top - margin.bottom;
+
+        svg.attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 600 400")
+            .classed("svg-content-responsive", true)
+
+        var g = svg
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
         var x = d3.scaleBand()
             .rangeRound([0, width])
             .padding(0.1);
@@ -346,13 +400,13 @@ export class StatisticsView {
             .rangeRound([height, 0]);
 
         x.domain(dataset.map(function (d) {
-            console.log(d);
-            return d.Date;
+            console.log("x",d);
+            return d.category;
         }))
 
         y.domain([0, d3.max(dataset, function (d) {
             console.log("Num", d);
-            return Number(d.NumberOfCalls);
+            return Number(d.numberOfCalls);
         })]);
 
         g.append("g")
@@ -377,17 +431,19 @@ export class StatisticsView {
 
         g.selectAll(".bar")
             .data(dataset)
-            .enter().append("rect")
+            .enter()
+            .append("rect")
             .attr("class", "bar")
             .attr("x", function (d) {
-                return x(d.Date);
+                return x(d.category);
             })
             .attr("y", function (d) {
-                return y(Number(d.NumberOfCalls));
+                return y(Number(d.numberOfCalls));
             })
             .attr("width", x.bandwidth())
             .attr("height", function (d) {
-                return height - y(Number(d.NumberOfCalls));
+                console.log("ddddddd", height, "#", d, "¤", y(Number(d.numberOfCalls)) )
+                return height - y(Number(d.numberOfCalls));
             });
     }
 }

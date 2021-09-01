@@ -74,10 +74,10 @@ namespace CCM.StatisticsWeb.Services
                 (await _httpClient.GetStreamAsync($"api/statistics/getregionstatistics?regionId={regionId}&startTime={startTime}&endTime={endTime}"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
 
-        public async Task<IEnumerable<DateBasedStatistics>> GetSipStatistics(Guid sipId, DateTime startTime, DateTime endTime)
+        public async Task<IEnumerable<DateBasedStatistics>> GetAccountStatistics(Guid sipId, DateTime startTime, DateTime endTime)
         {
             return await JsonSerializer.DeserializeAsync<IEnumerable<DateBasedStatistics>>
-                (await _httpClient.GetStreamAsync($"api/statistics/getsipstatistics?sipId={sipId}&startTime={startTime}&endTime={endTime}"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                (await _httpClient.GetStreamAsync($"api/statistics/GetAccountStatistics?sipId={sipId}&startTime={startTime}&endTime={endTime}"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
 
         public async Task<IEnumerable<DateBasedCategoryStatistics>> GetCategories(DateTime startTime, DateTime endTime)

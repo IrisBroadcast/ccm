@@ -7,7 +7,7 @@
     <a href="@Url.Action("GetDateBasedCsv", new { filterType = Model.FilterType, startDate = Model.StartDate, endDate = Model.EndDate, filterId = Model.FilterId })"><span class="glyphicon glyphicon-download"></span>&nbsp;@Localizer["Download_Csv"]</a>
 </div>
 <div>
-    <h3>@Localizer["Stats_Number_Of_Calls"]</h3>
+    <h3>@Localizer["Accounts"] @Localizer["Stats_Number_Of_Calls"]</h3>
     <table class="table table-condensed">
         <thead>
             <tr>
@@ -20,56 +20,56 @@
             </tr>
         </thead>
         <tbody>
-        @{
-            var zeroCallsStartDate = @Model.StartDate;
-            var previousDate = @Model.StartDate;
-            var printedDate = false;
-        }
-        @foreach (var row in Model.Stats)
-        {
-            if (row.NumberOfCalls == 0)
+            @{
+                var zeroCallsStartDate = @Model.StartDate;
+                var previousDate = @Model.StartDate;
+                var printedDate = false;
+            }
+            @foreach (var row in Model.Stats)
             {
-                if (printedDate == false)
+                if (row.NumberOfCalls == 0)
                 {
-                    printedDate = true;
-                    zeroCallsStartDate = row.Date;
+                    if (printedDate == false)
+                    {
+                        printedDate = true;
+                        zeroCallsStartDate = row.Date;
+                    }
+                }
+                else if (printedDate)
+                {
+                    <tr>
+                        <td colspan="6">@zeroCallsStartDate</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            &#65076;
+                            &#xFE34;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">@previousDate</td>
+                    </tr>
+                    printedDate = false;
+                }
+                else
+                {
+                    printedDate = false;
+
+                }
+                previousDate = row.Date;
+
+                if (row.NumberOfCalls != 0)
+                {
+                    <tr>
+                        <td class="col-md-3">@row.Date</td>
+                        <td>@row.NumberOfCalls</td>
+                        <td>@row.AverageTimeView</td>
+                        <td>@row.MinCallTimeView</td>
+                        <td>@row.MaxCallTimeView</td>
+                        <td>@row.TotalTimeForCallsView</td>
+                    </tr>
                 }
             }
-            else if (printedDate)
-            {
-                <tr>
-                    <td colspan="6">@zeroCallsStartDate</td>
-                </tr>
-                <tr>
-                    <td colspan="6">
-                        &#65076;
-                        &#xFE34;
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="6">@previousDate</td>
-                </tr>
-                printedDate = false;
-            }
-            else
-            {
-                printedDate = false;
-
-            }
-            previousDate = row.Date;
-
-            if (row.NumberOfCalls != 0)
-            {
-                <tr>
-                    <td class="col-md-3">@row.Date</td>
-                    <td>@row.NumberOfCalls</td>
-                    <td>@row.AverageTimeView</td>
-                    <td>@row.MinCallTimeView</td>
-                    <td>@row.MaxCallTimeView</td>
-                    <td>@row.TotalTimeForCallsView</td>
-                </tr>
-            }
-        }
         </tbody>
     </table>
 </div>

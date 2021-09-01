@@ -14,9 +14,7 @@
     </select>
 </div>
 
-@if (Model.LoadChartImage)
-{
-    <div class="tab-pane--topbanner">
-        <a href="@Url.Action("GetLocationSim24HourCsv", new { startDate = Model.StartDate, endDate = Model.EndDate, locationId = Model.LocationId })"><span class="glyphicon glyphicon-download"></span>&nbsp;@Localizer["Download_Csv"]</a>
-    </div>
-}
+<div class="tab-pane--topbanner">
+    <a href="@Url.Action("GetLocationSim24HourCsv", new { startDate = Model.StartDate, endDate = Model.EndDate, locationId = Model.LocationId })"><span class="glyphicon glyphicon-download"></span>&nbsp;@Localizer["Download_Csv"]</a>
+</div>
+

@@ -1231,6 +1231,15 @@ namespace CCM.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to timmar.
+        /// </summary>
+        public static string Hours {
+            get {
+                return ResourceManager.GetString("Hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Identifierare.
         /// </summary>
         public static string Identifier {

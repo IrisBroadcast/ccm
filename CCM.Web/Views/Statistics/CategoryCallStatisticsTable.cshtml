@@ -3,11 +3,11 @@
 @inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
 @model CCM.Web.Models.Statistics.DateBasedChartCallCategoriesViewModel
 
-@*<div class="tab-pane--topbanner">
-    <a href="@Url.Action("GetDateBasedCsv", new { filterType = Model.FilterType, startDate = Model.StartDate, endDate = Model.EndDate, filterId = Model.FilterId })"><span class="glyphicon glyphicon-download"></span>&nbsp;@Localizer["Download_Csv"]</a>
-</div>*@
+<div class="tab-pane--topbanner">
+    <a href="@Url.Action("GetDateBasedCsv", new { filterType = Model.FilterType, startDate = Model.StartDate, endDate = Model.EndDate })"><span class="glyphicon glyphicon-download"></span>&nbsp;@Localizer["Download_Csv"]</a>
+</div>
 <div>
-    <h3>@Localizer["Stats_Number_Of_Calls"]</h3>
+    <h3>@Localizer["Categories"] @Localizer["Stats_Number_Of_Calls"]</h3>
     <table class="table table-condensed">
         <thead>
             <tr>
@@ -54,7 +54,5 @@
 
 <div id="errormessage"></div>
 <div>
-    <svg id="display"></svg>
-
     <svg id="bar-chart" width="650" height="400"></svg>
 </div>
