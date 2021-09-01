@@ -371,7 +371,6 @@ export class StatisticsView {
     }
 
     CreateBarChart(dataset) {
-
         var svg = d3.select("#bar-chart");
 
         const margin = {
@@ -400,7 +399,7 @@ export class StatisticsView {
             .rangeRound([height, 0]);
 
         x.domain(dataset.map(function (d) {
-            console.log("x",d);
+            console.log("x", d);
             return d.category;
         }))
 
@@ -417,7 +416,6 @@ export class StatisticsView {
             .attr("dx", "-.8em")
             .attr("dy", "-.55em")
             .attr("transform", "rotate(-90)");
-
 
         g.append("g")
             .call(d3.axisLeft(y))
