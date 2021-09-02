@@ -2475,6 +2475,15 @@ namespace CCM.Web.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Registrerade enheter.
         /// </summary>
+        public static string Registered_Codecs {
+            get {
+                return ResourceManager.GetString("Registered Codecs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registrerade enheter.
+        /// </summary>
         public static string Registered_Sips {
             get {
                 return ResourceManager.GetString("Registered_Sips", resourceCulture);
@@ -2838,6 +2847,15 @@ namespace CCM.Web.Properties {
         public static string Unlock_Account {
             get {
                 return ResourceManager.GetString("Unlock_Account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resursutnyttjande.
+        /// </summary>
+        public static string Use_of_resource {
+            get {
+                return ResourceManager.GetString("Use of resource", resourceCulture);
             }
         }
         

@@ -7128,7 +7128,12 @@ button.close {
   border-width: 0px 0px 1px 0px;
   border-color: #dddddd;
   border-style: solid;
-  padding: 0.1rem;
+  padding: 0.1rem 0.25rem;
+}
+.mui-panel .mui-row.header {
+  background-color: unset !important;
+  border-width: 0 !important;
+  color: black !important;
 }
 .mui-panel .mui-row.codecs {
   padding: 0.25rem;
@@ -7138,6 +7143,12 @@ button.close {
 }
 .mui-panel .mui-row:nth-child(even) {
   background-color: #f7f7f7;
+}
+.mui-panel .mui-row.call:nth-child(odd) {
+  background-color: #e4ffe3;
+}
+.mui-panel .mui-row.call:nth-child(even) {
+  background-color: #c3efc2;
 }
 .mui-panel .mui-row--feedback {
   background-color: #f8f8f8;
@@ -7204,7 +7215,6 @@ button.close {
 }
 .mui-panel .mui-col.mui-col--duration {
   flex: 1 1 6rem;
-  color: #bfbfbf;
   text-align: right;
 }
 .mui-content-heading {

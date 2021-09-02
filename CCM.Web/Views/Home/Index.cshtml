@@ -187,14 +187,15 @@
         <!-- Ongoing calls -->
         <div class="mui-panel-block">
             <div class="mui-content-heading">
-                <div class="row">
-                    <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'FromDisplayName'}">@Localizer["Caller"]</div>
-                    <div class="col-md-5 list-ccm-thead-headline" ng-click="changeOngoingCallSorting('ToDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'ToDisplayName'}">@Localizer["Callee"]</div>
-                    <div class="col-md-2 list-ccm-thead-headline text-right" ng-click="changeOngoingCallSorting('DurationSeconds')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'DurationSeconds'}">@Localizer["Call_Duration"]</div>
+                <div class="mui-row header">
+                    <div class="mui-col mui-col--source" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'FromDisplayName'}">@Localizer["Caller"]</div>
+                    <div class="mui-col mui-col--direction"> </div>
+                    <div class="mui-col mui-col--destination" ng-click="changeOngoingCallSorting('ToDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'ToDisplayName'}">@Localizer["Callee"]</div>
+                    <div class="mui-col mui-col--duration text-right" ng-click="changeOngoingCallSorting('DurationSeconds')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'DurationSeconds'}">@Localizer["Call_Duration"]</div>
                 </div>
             </div>
             <div class="mui-content ongoing-calls">
-                <div class="mui-row list-ccm--bg codecs" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
+                <div class="mui-row call" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
                     <div class="mui-col mui-col--source">
                         <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
                         <a class="list-ccm--sip-name" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
@@ -251,7 +252,7 @@
                 </a>
             </div>
             <div class="mui-content calls-history collapse" id="toggle-calls-history">
-                <div class="mui-row list-ccm--bg codecs" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
+                <div class="mui-row" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
                     <div class="mui-col mui-col--source">
                         <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
                         <a class="list-ccm--sip-name--history" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
@@ -295,7 +296,7 @@
                 <a data-toggle="collapse" data-parent="#accordion" href="#toggle-registered-codecs">
                     <div class="row">
                         <div class="col-md-12 col-title list-ccm-thead-headline">
-                            @Localizer["Registered_Codecs"]
+                            @Localizer["Registered Codecs"]
                         </div>
                     </div>
                 </a>

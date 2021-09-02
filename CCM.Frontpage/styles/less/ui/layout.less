@@ -113,7 +113,13 @@
         border-color: #dddddd;
         border-style: solid;
 
-        padding: 0.1rem;
+        padding: 0.1rem 0.25rem;
+
+        &.header {
+            background-color: unset !important;
+            border-width: 0 !important;
+            color: black !important;
+        }
 
         &.codecs {
             padding: 0.25rem;
@@ -125,6 +131,14 @@
 
         &:nth-child(even) {
             background-color: @list-row-even;
+        }
+
+        &.call:nth-child(odd) {
+            background-color: #e4ffe3;
+        }
+
+        &.call:nth-child(even) {
+            background-color: #c3efc2;
         }
 
         &--feedback {
@@ -211,7 +225,6 @@
 
     .mui-col.mui-col--duration {
         flex: 1 1 6rem;
-        color: #bfbfbf;
         text-align: right;
     }
 }

@@ -1067,4 +1067,10 @@
   <data name="Unknown Category" xml:space="preserve">
     <value>Okänd kategori</value>
   </data>
+  <data name="Registered Codecs" xml:space="preserve">
+    <value>Registrerade enheter</value>
+  </data>
+  <data name="Use of resource" xml:space="preserve">
+    <value>Resursutnyttjande</value>
+  </data>
 </root>
