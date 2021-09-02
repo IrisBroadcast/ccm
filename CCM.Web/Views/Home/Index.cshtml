@@ -12,12 +12,7 @@
 
 @section search
 {
-    @* <div class="navbar-form navbar-right ccm-navbar-search" role="search">
-        <div class="form-group">
-            <input type="text" id="searchField" autofocus="autofocus" ng-model="searchString" ng-keydown="searchKeyUp($event.keyCode)" ng-model-options="{ debounce:250 }" class="form-control ccm-navbar-search--field" placeholder="@Localizer["Search"]">
-            <button class="btn btn-default ccm-navbar-search--btn" ng-click="setSearch()">@Localizer["Search"]</button> <!-- TODO: This button is not ngclick in use here... -->
-        </div>
-    </div> *@
+
 }
 
 <div>
@@ -184,7 +179,7 @@
             </div>
             <!-- Used resources -->
             <div class="board">
-                <div class="count">{{filteredOnGoingCalls.length / filteredRegisteredSips.length * 100}}%</div>
+                <div class="count">{{filteredRegisteredSips | ResourceUse}}%</div>
                 <div class="text">@Localizer["Use of resource"]</div>
             </div>
         </div>

@@ -35,6 +35,19 @@ ccmApp.filter('timeAgo', function () {
     };
 });
 
+ccmApp.filter('ResourceUse', function () {
+    return function (registered) {
+        if (!registered) {
+            return 0;
+        }
+        const total = registered.length;
+        const inCall = registered.filter(codec => codec.inCall).length;
+
+        return Math.round((inCall / total)*100);
+    };
+});
+
+
 ccmApp.filter('max', function () {
     return function (value, max) {
         if (max < 0) {
@@ -60,25 +73,9 @@ ccmApp.filter('callTimeWarning', function () {
     };
 });
 
-ccmApp.directive('shortcut', function () {
-    return {
-        restrict: 'E',
-        replace: true,
-        scope: true,
-        link: function postLink(scope, iElement, iAttrs) {
-            jQuery(document).on('keypress', function (e) {
-                scope.$apply(scope.keyPressed(e));
-            });
-        }
-    };
-});
-
 ccmApp.factory('backendHubProxy', ['$rootScope', function ($rootScope) {
 
     function backendFactory(serverUrl, hubName) {
-
-        //var connection = $.hubConnection(serverUrl);
-
         const connection = new signalR.HubConnectionBuilder()
             .withUrl('/' + hubName)
             .withAutomaticReconnect()
@@ -647,15 +644,6 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         $scope.isFiltered = viewIsFiltered();
     }
     checkIfFiltered();
-
-    // Night-mode, full-overview , shift + i = 73, ctrl + i = 9
-    // $scope.uiStateNightmode = false;
-    // $scope.keyPressed = function (e) {
-    //     if (e.which === 9) {
-    //         console.log("Triggered nightmode");
-    //         $scope.uiStateNightmode = !$scope.uiStateNightmode;
-    //     }
-    // };
 });
 
 var makeUrlAbsolute = function (url) {
@@ -664,24 +652,3 @@ var makeUrlAbsolute = function (url) {
     }
     return url.match(/^[a-zA-Z]+:\/\//) ? url : 'http://' + url;
 }
-
-// var convertRange = function (value, returnPercent, limitMin, limitMax) {
-//     if (value === null && value === undefined) {
-//         return 0;
-//     }
-//     var yMin = limitMin || -128, // -128 actual limit
-//         yMax = limitMax || 0;
-
-//     if (value <= yMin) {
-//         value = yMin;
-//     }
-
-//     var percent = (value - yMin) / (yMax - yMin);
-
-//     if (returnPercent === undefined || returnPercent) {
-//         return percent * 100;//((xMax - xMin) + xMin); var xMax = 100; var xMin = 1;
-//     }
-//     else {
-//         return percent.toFixed(2);
-//     }
-// }
