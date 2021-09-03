@@ -207,7 +207,7 @@
                         <span class="list-ccm--sip-location" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
                         <div class="comment-from">{{call.fromComment}}</div>
                     </div>
-                    <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)">
+                    <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)" data-toggle="collapse" data-parent="#accordion" href="#toggle-call-{{call.callId}}">
                         <?xml version="1.0" encoding="utf-8"?>
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
                             <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25"/>
@@ -229,6 +229,9 @@
                         {
                             <span class="list-ccm--ongoing-time">{{call.startedLocal | timeAgo:currentTime}}</span>
                         }
+                    </div>
+                    <div class="mui-col mui-col--call-info collapse" id="toggle-call-{{call.callId}}">
+<pre>{{call.sdp}}</pre>
                     </div>
                 </div>
 
