@@ -205,7 +205,7 @@
                         <a class="list-ccm--sip-name" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
                         <span class="list-ccm--sip-name" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{call.fromDisplayName}}</span>
                         <span class="list-ccm--sip-location" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
-                        <div class="list-ccm--sip-comment">{{call.fromComment}}</div>
+                        <div class="comment-from">{{call.fromComment}}</div>
                     </div>
                     <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)">
                         <?xml version="1.0" encoding="utf-8"?>
@@ -218,7 +218,7 @@
                         <a class="list-ccm--sip-name-to" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
                         <span class="list-ccm--sip-name-to" ng-if="!call.toId.length" title="{{call.toSip}}">{{call.toDisplayName}}</span>
                         <span class="list-ccm--sip-location" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
-                        <div class="list-ccm--sip-comment-to">{{call.toComment}}</div>
+                        <div class="comment-to">{{call.toComment}}</div>
                     </div>
                     <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
                         @if (User.IsInRole(Roles.Admin))

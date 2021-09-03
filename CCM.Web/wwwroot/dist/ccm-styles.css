@@ -7210,6 +7210,12 @@ h6 {
   border-radius: 1rem;
   align-items: center;
 }
+.mui-panel .comment-to,
+.mui-panel .comment-from {
+  color: #757575;
+  margin-left: 1.5rem;
+  font-size: 0.8rem;
+}
 .mui-panel .mui-grid {
   display: grid;
   grid-template-columns: 2fr 2fr 1fr;
@@ -8101,11 +8107,6 @@ input[type="checkbox"].input-validation-error {
   font-weight: bold;
   font-size: 12px;
   margin-left: 9px;
-}
-.panel-body-lp .panel-body-item .list-ccm--sip-comment-to {
-  font-weight: bold;
-  font-size: 12px;
-  margin-left: 8px;
 }
 .panel-body-lp .panel-body-item .list-ccm--warning-calltime {
   color: red;
