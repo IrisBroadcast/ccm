@@ -1,0 +1,95 @@
+
+
+:root {
+    --white: #ffffff;
+    --gray-dark: #999999;
+    --gray-darker: #666666;
+
+    --text-color: #272727;
+    --text-color-discrete: var(--gray-dark);
+    --background-color: #F9F9F9;
+
+    --error: #e01a00;
+    --button-primary: #8ab7f5;
+    --button-primary-hover: #3f7ed6;
+    --button-secondary: #ffffff;
+    --button-secondary-hover: #3F7ED6;
+
+    --outline: var(--gray-dark);
+    --outline-focus: var(--gray-darker);
+    --border-radius: 2px;
+}
+
+html, body, button, input {
+    font-size: 1rem;
+    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', Helvetica, Arial, sans-serif;
+    color: var(--text-color);
+    background: var(--background-color);
+}
+
+body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    padding-top: 3.5rem;
+}
+
+h3 {
+    line-height: 1.25rem;
+}
+
+h4 {
+    line-height: 1.25rem;
+}
+
+h5 {
+    line-height: 1.5rem;
+    font-weight: normal;
+}
+
+h1 { font-size: 3.5rem; } /* 16px x 3.5 = 56px */
+h2 { font-size: 3rem; }   /* 16px x 3   = 48px */
+h3 { font-size: 2.5rem; } /* 16px x 2.5 = 40px */
+h4 { font-size: 2rem; }   /* 16px x 2   = 32px */
+h5 { font-size: 1.5rem; } /* 16px x 1.5 = 24px */
+h6 { font-size: 1rem; }   /* 16px x 1   = 16px */
+
+
+.mui-a {
+    text-decoration: underline;
+    padding: 0.25rem 0.5rem;
+    margin: 0 0.25rem;
+    background: #ececec;
+    border-radius: 0.1rem;
+
+    &.disabled {
+        color: #e1e1e1;
+    }
+
+    .mui-caret {
+        display: inline-flex;
+        width: 1rem;
+        height: 1rem;
+        padding-top: 0.25rem;
+        margin-right: 0.25rem;
+        align-items: center;
+
+        .up {
+            display:none;
+        }
+        .down {
+            display:block;
+        }
+    }
+
+    &.open {
+        .up {
+            display:block;
+        }
+        .down {
+            display:none;
+        }
+    }
+}

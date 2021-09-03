@@ -2590,6 +2590,15 @@ namespace CCM.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Visa fler filterval.
+        /// </summary>
+        public static string Show_more_filters {
+            get {
+                return ResourceManager.GetString("Show more filters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Visa användartyp.
         /// </summary>
         public static string Show_User_Type {
@@ -2784,6 +2793,15 @@ namespace CCM.Web.Properties {
         public static string Stream_Status {
             get {
                 return ResourceManager.GetString("Stream_Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tips! Tryck Escape för att tömma sökbaren.
+        /// </summary>
+        public static string Tip__Press_ESC_to_clear_the_searchbar {
+            get {
+                return ResourceManager.GetString("Tip! Press ESC to clear the searchbar", resourceCulture);
             }
         }
         

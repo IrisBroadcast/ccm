@@ -7034,9 +7034,102 @@ button.close {
  * Variables */
 /* Modal */
 /* Color */
-/* Fonts */
-/* *******************************************************
- * Defaults and resets */
+:root {
+  --white: #ffffff;
+  --gray-dark: #999999;
+  --gray-darker: #666666;
+  --text-color: #272727;
+  --text-color-discrete: var(--gray-dark);
+  --background-color: #F9F9F9;
+  --error: #e01a00;
+  --button-primary: #8ab7f5;
+  --button-primary-hover: #3f7ed6;
+  --button-secondary: #ffffff;
+  --button-secondary-hover: #3F7ED6;
+  --outline: var(--gray-dark);
+  --outline-focus: var(--gray-darker);
+  --border-radius: 2px;
+}
+html,
+body,
+button,
+input {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', Helvetica, Arial, sans-serif;
+  color: var(--text-color);
+  background: var(--background-color);
+}
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: 3.5rem;
+}
+h3 {
+  line-height: 1.25rem;
+}
+h4 {
+  line-height: 1.25rem;
+}
+h5 {
+  line-height: 1.5rem;
+  font-weight: normal;
+}
+h1 {
+  font-size: 3.5rem;
+}
+/* 16px x 3.5 = 56px */
+h2 {
+  font-size: 3rem;
+}
+/* 16px x 3   = 48px */
+h3 {
+  font-size: 2.5rem;
+}
+/* 16px x 2.5 = 40px */
+h4 {
+  font-size: 2rem;
+}
+/* 16px x 2   = 32px */
+h5 {
+  font-size: 1.5rem;
+}
+/* 16px x 1.5 = 24px */
+h6 {
+  font-size: 1rem;
+}
+/* 16px x 1   = 16px */
+.mui-a {
+  text-decoration: underline;
+  padding: 0.25rem 0.5rem;
+  margin: 0 0.25rem;
+  background: #ececec;
+  border-radius: 0.1rem;
+}
+.mui-a.disabled {
+  color: #e1e1e1;
+}
+.mui-a .mui-caret {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  padding-top: 0.25rem;
+  margin-right: 0.25rem;
+  align-items: center;
+}
+.mui-a .mui-caret .up {
+  display: none;
+}
+.mui-a .mui-caret .down {
+  display: block;
+}
+.mui-a.open .up {
+  display: block;
+}
+.mui-a.open .down {
+  display: none;
+}
 .mui-panel {
   padding: 0.5rem 0;
 }
@@ -7109,12 +7202,13 @@ button.close {
   background: #f7f7f7;
 }
 .mui-panel .codec-type {
-  display: inline-block;
-  width: 1rem;
-  height: 0.5rem;
+  display: inline-flex;
+  width: 0.5rem;
+  height: 1rem;
   margin-right: 0.5rem;
   align-content: center;
   border-radius: 1rem;
+  align-items: center;
 }
 .mui-panel .mui-grid {
   display: grid;
@@ -7191,10 +7285,9 @@ button.close {
   font-weight: 600;
 }
 .mui-panel .mui-col .mui-registered-incall-dir {
-  max-width: 2rem;
-  width: 2rem;
+  width: 1rem;
   flex: 0 0 2rem;
-  display: inline-block;
+  display: inline-flex;
 }
 .mui-panel .mui-col.mui-col--source {
   flex: 0 0 34%;
@@ -7207,11 +7300,8 @@ button.close {
   height: 100%;
   display: block;
 }
-.mui-panel .mui-col.mui-col--direction rect {
-  display: none;
-}
 .mui-panel .mui-col.mui-col--direction polygon {
-  fill: #f3f3f3;
+  fill: #97dea4;
 }
 .mui-panel .mui-col.mui-col--duration {
   flex: 1 1 6rem;
@@ -7234,72 +7324,6 @@ button.close {
   background-size: contain;
   min-height: 4rem;
 }
-:root {
-  --white: #ffffff;
-  --gray-dark: #999999;
-  --gray-darker: #666666;
-  --text-color: #272727;
-  --text-color-discrete: var(--gray-dark);
-  --background-color: #F9F9F9;
-  --error: #e01a00;
-  --button-primary: #8ab7f5;
-  --button-primary-hover: #3f7ed6;
-  --button-secondary: #ffffff;
-  --button-secondary-hover: #3F7ED6;
-  --outline: var(--gray-dark);
-  --outline-focus: var(--gray-darker);
-  --border-radius: 2px;
-}
-html,
-body,
-button,
-input {
-  font-size: 1rem;
-  line-height: 1.5;
-  font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', Helvetica, Arial, sans-serif;
-  color: var(--text-color);
-  background: var(--background-color);
-}
-body {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  padding-top: 3.5rem;
-}
-h3 {
-  line-height: 1.25rem;
-}
-h4 {
-  line-height: 1.25rem;
-}
-h5 {
-  line-height: 1.5rem;
-  font-weight: normal;
-}
-h1 {
-  font-size: 3.5rem;
-}
-/* 16px x 3.5 = 56px */
-h2 {
-  font-size: 3rem;
-}
-/* 16px x 3   = 48px */
-h3 {
-  font-size: 2.5rem;
-}
-/* 16px x 2.5 = 40px */
-h4 {
-  font-size: 2rem;
-}
-/* 16px x 2   = 32px */
-h5 {
-  font-size: 1.5rem;
-}
-/* 16px x 1.5 = 24px */
-h6 {
-  font-size: 1rem;
-}
-/* 16px x 1   = 16px */
 header.mui-header {
   position: sticky;
   position: fixed;
@@ -7538,7 +7562,10 @@ body {
 .mui-billboard .board .text {
   font-size: 1.2rem;
 }
-.mui-billboard-search {
+.mui-filter-box {
+  padding: 1rem;
+}
+.mui-filter-search {
   display: block;
   width: 100%;
   max-width: unset;
@@ -7556,9 +7583,6 @@ body {
   -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-}
-.mui-billboard-search-box {
-  padding: 1rem;
 }
 .mui-call-direction svg {
   height: 2rem;

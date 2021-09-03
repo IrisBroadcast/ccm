@@ -38,6 +38,7 @@ export class Application {
                             const idd = col.substr(col.indexOf("#") + 1, col.lenght);
                             if (idd) {
                                 Tool.$dom(idd).classList.toggle("open");
+                                eve.target.classList.toggle("open");
                             }
                         }
                     });

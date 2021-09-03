@@ -17,27 +17,31 @@
 
 <div>
 
-    <div class="mui-header-filterinfo" ng-class="{'active': isFiltered}">
+    <div class="mui-header-filterinfo" ng-class="{ 'active': isFiltered }">
 
     </div>
 
     <!-- Filter headlines -->
     <div class="mui-panel">
-        <div class="mui-content">
-            <div class="mui-billboard-search-box">
-                <input type="text" id="searchField" autofocus="autofocus" ng-model="searchString" ng-keydown="searchKeyUp($event.keyCode)" ng-model-options="{ debounce:250 }" class="mui-billboard-search" placeholder="@Localizer["Search"]">
-            </div>
-
-            <button class="btn btn-default" type="button" ng-click="resetViewFilters()">@Localizer["Reset filters"]</button>
+        <div class="mui-content mui-filter-box">
+            <input type="text" id="searchField" autofocus="autofocus" ng-model="searchString" ng-keydown="searchKeyUp($event.keyCode)" ng-model-options="{ debounce:250 }" class="mui-filter-search" placeholder="@Localizer["Search"] (@Localizer["Tip! Press ESC to clear the searchbar"])">
         </div>
 
-        <div class="mui-content">
-            <a data-toggle="collapse" data-parent="#accordion" href="#toggle-filters">
-                @Localizer["Filters"]
+        <div class="mui-content mui-filter-box">
+            <a class="mui-a" data-toggle="collapse" data-parent="#accordion" href="#toggle-filters">
+                <?xml version="1.0" encoding="utf-8"?>
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                    <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4"/>
+                    <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6"/>
+                </svg>
+                @Localizer["Show more filters"]
+            </a>
+            <a class="mui-a" href="#reset-filters" type="button" ng-click="resetViewFilters()" ng-class="{ 'disabled': !isFiltered }">
+                @Localizer["Reset filters"]
             </a>
         </div>
 
-        <div class="mui-content collapse" id="toggle-filters">
+        <div class="mui-content mui-filter-box collapse" id="toggle-filters">
             <!-- Grouping Filter 1 -->
             <div class="ccm-tabpane-filters hidden-sm hidden-xs">
                 <h5>
@@ -206,8 +210,7 @@
                     <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)">
                         <?xml version="1.0" encoding="utf-8"?>
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-                            <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
-                            <rect x="6.5" y="21" fill="#A0A09F" width="9" height="8"/>
+                            <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25"/>
                         </svg>
                     </div>
                     <div class="mui-col mui-col--destination">
@@ -243,12 +246,12 @@
         <!-- Old calls / History -->
         <div class="mui-panel-block">
             <div class="mui-content-heading">
-                <a data-toggle="collapse" data-parent="#accordion" href="#toggle-calls-history">
-                    <div class="row">
-                        <div class="col-md-12 col-title list-ccm-thead-headline">
-                            @Localizer["Latest_Closed_Calls"]
-                        </div>
-                    </div>
+                <a class="mui-a" data-toggle="collapse" data-parent="#accordion" href="#toggle-calls-history">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                        <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4"/>
+                        <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6"/>
+                    </svg>
+                    @Localizer["Latest_Closed_Calls"]
                 </a>
             </div>
             <div class="mui-content calls-history collapse" id="toggle-calls-history">
@@ -262,8 +265,7 @@
                     <div class="mui-col mui-col--direction">
                         <?xml version="1.0" encoding="utf-8"?>
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-                            <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
-                            <rect x="6.5" y="21" fill="#A0A09F" width="9" height="8"/>
+                            <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25"/>
                         </svg>
                     </div>
                     <div class="mui-col mui-col--destination">
@@ -293,12 +295,12 @@
         <!-- Registered User Agents -->
         <div class="mui-panel-block">
             <div class="mui-content-heading">
-                <a data-toggle="collapse" data-parent="#accordion" href="#toggle-registered-codecs">
-                    <div class="row">
-                        <div class="col-md-12 col-title list-ccm-thead-headline">
-                            @Localizer["Registered Codecs"]
-                        </div>
-                    </div>
+                <a class="mui-a" data-toggle="collapse" data-parent="#accordion" href="#toggle-registered-codecs">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                        <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4"/>
+                        <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6"/>
+                    </svg>
+                    @Localizer["Registered Codecs"]
                 </a>
             </div>
             <div class="mui-content registered-codecs collapse" id="toggle-registered-codecs">
@@ -321,8 +323,7 @@
                                     <span class="mui-registered-incall-dir">
                                         <?xml version="1.0" encoding="utf-8"?>
                                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-                                            <polygon fill="#A0A09F" points="20.4,40.5 16,33.9 29.3,25 16,16.1 20.4,9.5 43.7,25"/>
-                                            <rect x="6.5" y="21" fill="#A0A09F" width="9" height="8"/>
+                                            <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25"/>
                                         </svg>
                                     </span>
                                     <a ng-if="sip.inCallWithId.length" ng-click="showSipInfo(sip.inCallWithId, sip.inCallWithSip, $event)" href="#"

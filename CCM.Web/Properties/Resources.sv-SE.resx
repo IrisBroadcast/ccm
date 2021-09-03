@@ -1070,6 +1070,12 @@
   <data name="Registered Codecs" xml:space="preserve">
     <value>Registrerade enheter</value>
   </data>
+  <data name="Show more filters" xml:space="preserve">
+    <value>Visa fler filterval</value>
+  </data>
+  <data name="Tip! Press ESC to clear the searchbar" xml:space="preserve">
+    <value>Tips! Tryck Escape för att tömma sökbaren</value>
+  </data>
   <data name="Use of resource" xml:space="preserve">
     <value>Resursutnyttjande</value>
   </data>

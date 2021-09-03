@@ -42,8 +42,8 @@ ccmApp.filter('ResourceUse', function () {
         }
         const total = registered.length;
         const inCall = registered.filter(codec => codec.inCall).length;
-
-        return Math.round((inCall / total)*100);
+        const calc = Math.round((inCall / total)*100);
+        return Number.isNaN(calc) ? 100 : calc;
     };
 });
 
