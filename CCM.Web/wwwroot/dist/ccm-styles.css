@@ -7225,6 +7225,7 @@ h6 {
   flex-direction: row;
   align-content: center;
   width: 100%;
+  flex-wrap: wrap;
   border-width: 0px 0px 1px 0px;
   border-color: #dddddd;
   border-style: solid;
@@ -7312,6 +7313,9 @@ h6 {
 .mui-panel .mui-col.mui-col--duration {
   flex: 1 1 6rem;
   text-align: right;
+}
+.mui-panel .mui-col.mui-col--call-info {
+  flex: 1 1 100%;
 }
 .mui-content-heading {
   padding: 0.5rem;
