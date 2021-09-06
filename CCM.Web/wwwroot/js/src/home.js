@@ -456,7 +456,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     };
 
     $scope.closeFilterView = function () {
-        $('#toggle-filters').removeClass('collapse');
+        $('#toggle-filters').removeClass('open');
     };
 
     $scope.setFilterRegion = function (region) {
