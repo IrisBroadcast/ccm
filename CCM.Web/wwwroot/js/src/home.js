@@ -455,6 +455,10 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         $scope.searchString = "";
     };
 
+    $scope.closeFilterView = function () {
+        $('#toggle-filters').removeClass('collapse');
+    };
+
     $scope.setFilterRegion = function (region) {
         if (region == "nofilter" || region === "" || region === null  || region === undefined) {
             $scope.region = "";
@@ -473,6 +477,8 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         }
 
         $sessionStorage.region = $scope.region;
+
+        $scope.closeFilterView();
     };
 
     $scope.setFilterCodecType = function (codecType) {
@@ -495,6 +501,8 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         // TODO: make these correct and maybe just angular fully..
 
         $sessionStorage.codecType = $scope.codecType;
+
+        $scope.closeFilterView();
     };
 
     $scope.setFilterCategory = function (category) {
@@ -515,6 +523,8 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         }
 
         $sessionStorage.category = $scope.category;
+
+        $scope.closeFilterView();
     };
 
     $scope.showSipInfo = function (id, sipAddress, $event) {
