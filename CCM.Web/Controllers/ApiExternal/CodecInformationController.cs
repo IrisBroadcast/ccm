@@ -46,18 +46,11 @@ namespace CCM.Web.Controllers.ApiExternal
             _serviceProvider = serviceProvider;
         }
 
-        [HttpGet]
-        public IEnumerable<CodecInformationViewModel> GetAll()
-        {
-            var codecInformationViewModelsProvider = _serviceProvider.GetService<CodecInformationViewModelsProvider>();
-            return codecInformationViewModelsProvider.GetAll();
-        }
-
         /// <summary>
         /// Get codec information related to a specific SIP-address.
         /// </summary>
         [HttpGet]
-        public CodecInformationViewModel Get(string sipAddress)
+        public CodecInformationViewModel Index(string sipAddress)
         {
             sipAddress = (sipAddress ?? string.Empty).ToLower().Trim();
 
@@ -76,6 +69,13 @@ namespace CCM.Web.Controllers.ApiExternal
             }
 
             return codecInformation;
+        }
+
+        [HttpGet]
+        public IEnumerable<CodecInformationViewModel> GetAll()
+        {
+            var codecInformationViewModelsProvider = _serviceProvider.GetService<CodecInformationViewModelsProvider>();
+            return codecInformationViewModelsProvider.GetAll();
         }
     }
 }
