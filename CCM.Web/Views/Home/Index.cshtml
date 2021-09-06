@@ -29,32 +29,31 @@
 
         <div class="mui-content mui-filter-box">
             <a class="mui-a" data-toggle="collapse" data-parent="#accordion" href="#toggle-filters">
-                <?xml version="1.0" encoding="utf-8" ?>
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
-                <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4" />
-                <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6" />
+                    <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4" />
+                    <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6" />
                 </svg>
                 @Localizer["Show more filters"]
             </a>
-            <a href="#" class="mui-a" ng-show="regionName" ng-click="setFilterRegion('nofilter')">
+            <a href="#" class="mui-a blob" ng-show="regionName" ng-click="setFilterRegion('nofilter')">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
                     <polygon fill="#A0A09F" points="39.8,15.8 34.2,10.2 25,19.3 15.8,10.2 10.2,15.8 19.3,25 10.2,34.2 15.8,39.8 25,30.7 34.2,39.8 39.8,34.2 30.7,25"/>
                 </svg>
                 {{regionName}}
             </a>
-            <a href="#" class="mui-a" ng-show="codecTypeName" ng-click="setFilterCodecType('nofilter')">
+            <a href="#" class="mui-a blob" ng-show="codecTypeName" ng-click="setFilterCodecType('nofilter')">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
                     <polygon fill="#A0A09F" points="39.8,15.8 34.2,10.2 25,19.3 15.8,10.2 10.2,15.8 19.3,25 10.2,34.2 15.8,39.8 25,30.7 34.2,39.8 39.8,34.2 30.7,25"/>
                 </svg>
                 {{codecTypeName}}
             </a>
-            <a href="#" class="mui-a" ng-show="categoryName" ng-click="setFilterCategory('nofilter')">
+            <a href="#" class="mui-a blob" ng-show="categoryName" ng-click="setFilterCategory('nofilter')">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
                     <polygon fill="#A0A09F" points="39.8,15.8 34.2,10.2 25,19.3 15.8,10.2 10.2,15.8 19.3,25 10.2,34.2 15.8,39.8 25,30.7 34.2,39.8 39.8,34.2 30.7,25"/>
                 </svg>
                 {{categoryName}}
             </a>
-            <a class="mui-a" href="#reset-filters" type="button" ng-click="resetViewFilters()" ng-class="{ 'disabled': !isFiltered }">
+            <a class="mui-a blob" href="#reset-filters" type="button" ng-click="resetViewFilters()" ng-class="{ 'disabled': !isFiltered }">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
                     <polygon fill="#A0A09F" points="39.8,15.8 34.2,10.2 25,19.3 15.8,10.2 10.2,15.8 19.3,25 10.2,34.2 15.8,39.8 25,30.7 34.2,39.8 39.8,34.2 30.7,25"/>
                 </svg>

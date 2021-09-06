@@ -7104,8 +7104,10 @@ h6 {
   text-decoration: underline;
   padding: 0.25rem 0.5rem;
   margin: 0 0.25rem;
-  background: #ececec;
   border-radius: 0.1rem;
+}
+.mui-a.blob {
+  background: #ececec;
 }
 .mui-a.disabled {
   color: #e1e1e1;
