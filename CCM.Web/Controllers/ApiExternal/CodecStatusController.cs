@@ -47,20 +47,7 @@ namespace CCM.Web.Controllers.ApiExternal
         }
 
         [HttpGet]
-        public IEnumerable<CodecStatusViewModel> GetAll(bool includeCodecsOffline = false)
-        {
-            var codecStatusViewModelsProvider = _serviceProvider.GetService<CodecStatusViewModelsProvider>();
-
-            if (includeCodecsOffline)
-            {
-                return codecStatusViewModelsProvider.GetAllCodecsIncludeOffline();
-            }
-
-            return codecStatusViewModelsProvider.GetAll();
-        }
-
-        [HttpGet]
-        public CodecStatusViewModel Get(string sipId)
+        public CodecStatusViewModel Index(string sipId)
         {
             var codecStatusViewModelsProvider = _serviceProvider.GetService<CodecStatusViewModelsProvider>();
             var userAgentsOnline = codecStatusViewModelsProvider.GetAll();
@@ -77,6 +64,19 @@ namespace CCM.Web.Controllers.ApiExternal
             }
 
             return codecStatus;
+        }
+
+        [HttpGet]
+        public IEnumerable<CodecStatusViewModel> GetAll(bool includeCodecsOffline = false)
+        {
+            var codecStatusViewModelsProvider = _serviceProvider.GetService<CodecStatusViewModelsProvider>();
+
+            if (includeCodecsOffline)
+            {
+                return codecStatusViewModelsProvider.GetAllCodecsIncludeOffline();
+            }
+
+            return codecStatusViewModelsProvider.GetAll();
         }
     }
 }
