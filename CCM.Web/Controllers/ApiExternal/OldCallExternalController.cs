@@ -46,7 +46,6 @@ namespace CCM.Web.Controllers.ApiExternal
         [Route("api/external/oldcall")]
         public IList<OldCall> Get(string region = "", string codecType = "", string sipAddress = "", string search = "", bool onlyPhoneCalls = false, int callCount = 20)
         {
-            // TODO: Remove when world domination is achievied in the NG project
             var oldCalls = _cachedCallHistoryRepository.GetOldCallsFiltered(region, codecType, sipAddress, search, false, onlyPhoneCalls, callCount, true);
             return oldCalls;
         }

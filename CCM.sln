@@ -20,10 +20,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCM.Tests", "CCM.Tests\CCM.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCM.UnitTests", "CCM.UnitTests\CCM.UnitTests.csproj", "{84B3C36E-B807-4E90-8EBF-25B2706988B3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCM.StatisticsData", "CCM.StatisticsData\CCM.StatisticsData.csproj", "{DA8FDE0B-70FB-48C7-85B7-E56587EA3A3B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCM.StatisticsWeb", "CCM.StatisticsWeb\CCM.StatisticsWeb.csproj", "{89E3F1E5-5A97-443E-A903-B0FA7188A96E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,14 +46,6 @@ Global
 		{37FE2CCA-A481-47F6-BB91-7DEE3D1EE282}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84B3C36E-B807-4E90-8EBF-25B2706988B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{84B3C36E-B807-4E90-8EBF-25B2706988B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA8FDE0B-70FB-48C7-85B7-E56587EA3A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA8FDE0B-70FB-48C7-85B7-E56587EA3A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA8FDE0B-70FB-48C7-85B7-E56587EA3A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA8FDE0B-70FB-48C7-85B7-E56587EA3A3B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89E3F1E5-5A97-443E-A903-B0FA7188A96E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89E3F1E5-5A97-443E-A903-B0FA7188A96E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89E3F1E5-5A97-443E-A903-B0FA7188A96E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{89E3F1E5-5A97-443E-A903-B0FA7188A96E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
