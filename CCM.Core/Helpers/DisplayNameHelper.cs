@@ -142,9 +142,9 @@ namespace CCM.Core.Helpers
 
             s = s.Trim();
             var username = s.LeftOf("@");
+            // Phone number
             if (username.IsNumeric())
             {
-                // Phone number
                 if (username.Length <= 6)
                 {
                     // Internal short phone number
@@ -165,9 +165,9 @@ namespace CCM.Core.Helpers
 
             s = s.Trim();
             var username = s.LeftOf("@");
+            // Phone number
             if (username.IsNumeric())
             {
-                // Phone number
                 if (username.Length <= 6)
                 {
                     // Internal short phone number

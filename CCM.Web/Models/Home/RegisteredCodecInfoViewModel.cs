@@ -32,13 +32,16 @@ using CCM.Web.Properties;
 
 namespace CCM.Web.Models.Home
 {
-    public class RegisteredSipInfoViewModel
+    public class RegisteredCodecInfoViewModel
     {
         public Guid Id { get; set; }
         public bool IsAuthenticated { get; set; }
         public bool CodecControl { get; set; } // Have Codec Control
 
         public string ApiDefinition { get; set; }
+
+        [Display(ResourceType = typeof(Resources), Name = "SIP")]
+        public string Sip { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "Name")]
         public string DisplayName { get; set; }
@@ -73,9 +76,6 @@ namespace CCM.Web.Models.Home
 
         [Display(ResourceType = typeof(Resources), Name = "Sip_Registrar_Server")]
         public string Registrar { get; set; }
-
-        [Display(ResourceType = typeof(Resources), Name = "SIP")]
-        public string Sip { get; set; }
 
         public string Image { get; set; }
 

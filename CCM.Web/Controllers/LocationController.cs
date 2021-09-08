@@ -300,14 +300,14 @@ namespace CCM.Web.Controllers
 
         private List<ListItemViewModel> PopulateCategories(Location location = null)
         {
-            var groups = _categoryRepository.GetAll().Select(g => new ListItemViewModel
+            var categories = _categoryRepository.GetAll().Select(g => new ListItemViewModel
             {
                 Id = g.Id,
                 Name = g.Name,
                 Selected = location?.Category != null && location.Category.Id == g.Id
             }).ToList();
 
-            return groups;
+            return categories;
         }
     }
 }

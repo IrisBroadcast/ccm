@@ -40,7 +40,6 @@ namespace CCM.Core.Entities.Specific
         public string Registrar { get; set; }
         public string DisplayName { get; set; }
         public string Comment { get; set; }
-
         public string UserAgentName { get; set; }
 
         public string LocationName { get; set; }

@@ -39,7 +39,6 @@ namespace CCM.Web.Controllers.Api
 {
     /// <summary>
     /// Used by CCM frontpage
-    /// TODO: This one should be used and not RegisteredSipsOverviewController.
     /// </summary>
     public class RegisteredCodecController : ControllerBase
     {
@@ -80,7 +79,7 @@ namespace CCM.Web.Controllers.Api
 
             var call = _cachedCallRepository.GetCallBySipAddress(regSipDetails.Sip);
 
-            var model = new RegisteredSipInfoViewModel
+            var model = new RegisteredCodecInfoViewModel
             {
                 IsAuthenticated = User.Identity.IsAuthenticated,
 

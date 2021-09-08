@@ -26,15 +26,11 @@
 
 using System;
 
-namespace CCM.Web.Models.Common
+namespace CCM.Web.Models.Home
 {
-    public class DeleteViewModel
+    public class SipAccountCommentViewModel
     {
-        public Guid Id { get; set; }
-
-        public string Name { get; set; }
-
-        public string Title { get; set; }
-        public string WarningText { get; set; }
+        public Guid SipAccountId { get; set; }
+        public string Comment { get; set; }
     }
 }

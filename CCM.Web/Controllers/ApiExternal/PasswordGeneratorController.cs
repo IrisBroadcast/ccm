@@ -31,7 +31,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
-    //[CcmUserBasicAuthentication] //todo needs to work
+    //[CcmUserBasicAuthentication] // TODO: needs to work
     [CcmAuthorize(Roles = "Admin,AccountManager")]
     public class PasswordGeneratorController : ControllerBase
     {

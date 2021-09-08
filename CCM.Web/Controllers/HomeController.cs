@@ -91,13 +91,13 @@ namespace CCM.Web.Controllers
                 return BadRequest();
             }
 
-            return PartialView("_SipCommentForm", new SipAccountComment { Comment = sipAccount.Comment, SipAccountId = sipAccount.Id });
+            return PartialView("_SipCommentForm", new SipAccountCommentViewModel { Comment = sipAccount.Comment, SipAccountId = sipAccount.Id });
         }
 
         [ValidateAntiForgeryToken]
         [CcmAuthorize(Roles = "Admin, Remote")]
         [HttpPost]
-        public ActionResult EditRegisteredSipComment(SipAccountComment model)
+        public ActionResult EditRegisteredSipComment(SipAccountCommentViewModel model)
         {
             if (model.SipAccountId != Guid.Empty)
             {
