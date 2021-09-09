@@ -475,6 +475,10 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
             $('#regions-filter li:contains(' + $scope.regionName + ')').addClass('active');
             $('#regions-dropdown-filter li').removeClass('active');
             $('#regions-dropdown-filter li:contains(' + $scope.regionName + ')').addClass('active');
+
+            // Unfold registered codecs view on filtering
+            $('#toggle-registered-codecs-btn').addClass('open');
+            $('#toggle-registered-codecs').addClass('open');
         }
 
         $sessionStorage.region = $scope.region;
@@ -497,6 +501,10 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
             $('#codecTypes-filter li:contains(' + $scope.codecTypeName + ')').addClass('active');
             $('#codecTypes-dropdown-filter li').removeClass('active');
             $('#codecTypes-dropdown-filter li:contains(' + $scope.codecTypeName + ')').addClass('active');
+
+            // Unfold registered codecs view on filtering
+            $('#toggle-registered-codecs-btn').addClass('open');
+            $('#toggle-registered-codecs').addClass('open');
         }
 
         // TODO: make these correct and maybe just angular fully..
@@ -521,6 +529,10 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
             $('#categories-filter li:contains(' + $scope.categoryName + ')').addClass('active');
             $('#categories-dropdown-filter li').removeClass('active');
             $('#categories-dropdown-filter li:contains(' + $scope.categoryName + ')').addClass('active');
+
+            // Unfold registered codecs view on filtering
+            $('#toggle-registered-codecs-btn').addClass('open');
+            $('#toggle-registered-codecs').addClass('open');
         }
 
         $sessionStorage.category = $scope.category;
