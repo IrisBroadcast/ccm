@@ -558,17 +558,6 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         });
     };
 
-    $scope.unfoldCallInfo = function($event, team) {
-        console.log("ITEM", $event, "--", $event.target, "00", angular.element($event.target), ", parent:", angular.element($event.target).parent());
-        // var el = (function(){
-        //     if ($event.target.nodeName === 'IMG') {
-        //         return angular.element($event.target).parent(); // get li
-        //     } else {
-        //         return angular.element($event.target);          // is li
-        //     }
-        // })();
-    }
-
     $scope.editComment = function (id) {
         let url = '/home/EditRegisteredSipComment/' + id;
         $('#registeredSipModal').modal({ remote: url });
@@ -653,11 +642,19 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
             checkIfFiltered();
         });
 
+    var searchStringInitiated = true;
+
     $scope.$watch('searchString',
         function (newValue, oldValue) {
             if (newValue === oldValue) {
                 return;
             }
+            if (searchStringInitiated) {
+                // Unfold registered codecs view on filtering
+                $('#toggle-registered-codecs-btn').addClass('open');
+                $('#toggle-registered-codecs').addClass('open');
+            }
+            searchStringInitiated = false;
             console.log('Search string changed', $scope.searchString);
             refreshOldFilteredDebounce();
             checkIfFiltered();
