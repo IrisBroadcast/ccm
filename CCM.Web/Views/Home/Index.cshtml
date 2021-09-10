@@ -221,11 +221,11 @@
             <div class="mui-content ongoing-calls">
                 <div class="mui-row call" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
                     <div class="mui-col mui-col--source">
-                        <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
                         <a class="list-ccm--sip-name" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
                         <span class="list-ccm--sip-name" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{call.fromDisplayName}}</span>
                         <span class="list-ccm--sip-location" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
-                        <div class="comment-from">{{call.fromComment}}</div>
+                        <span class="codec-type" title="{{call.fromCodecTypeName}}">{{call.fromCodecTypeName}}</span>
+                        <div class="comment-from">{{call.fromComment}}&nbsp;</div>
                     </div>
                     <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)" data-toggle="collapse" data-parent="#accordion" href="#toggle-call-{{call.callId}}">
                         <?xml version="1.0" encoding="utf-8"?>
@@ -234,11 +234,11 @@
                         </svg>
                     </div>
                     <div class="mui-col mui-col--destination">
-                        <span class="codec-type" ng-style="{'background-color': call.toCodecTypeColor}" title="{{call.toCodecTypeName}}">&nbsp;</span>
                         <a class="list-ccm--sip-name-to" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
                         <span class="list-ccm--sip-name-to" ng-if="!call.toId.length" title="{{call.toSip}}">{{call.toDisplayName}}</span>
                         <span class="list-ccm--sip-location" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
-                        <div class="comment-to">{{call.toComment}}</div>
+                        <span class="codec-type" title="{{call.toCodecTypeName}}">{{call.toCodecTypeName}}</span>
+                        <div class="comment-to">{{call.toComment}}&nbsp;</div>
                     </div>
                     <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
                         @if (User.IsInRole(Roles.Admin))
@@ -659,26 +659,22 @@
                                 <h5>@Localizer["Status_Jitter_Buffer"]</h5>
                             </div>
                         </div>
-                        <svg
-                            id="jitterbuffer-graph-svg"
-                            height="100%"
-                            width="100%"
-                            viewBox="0 -200 400 200"
-                            xmlns="http://ww.s3.org/2000/svg">
-                                <g
-                                    fill="none"
-                                    fill-rule="evenodd">
-                                    <g transform="translate(0 0)">
-                                        <polyline
-                                            fill="none"
-                                            stroke="#f1d612"
-                                            stroke-width="6"
-                                            stroke-linejoin="round"
-                                            id="diagram-poly"
-                                            points="0, -77 20,-45"
-                                        />
-                                    </g>
+                        <svg id="jitterbuffer-graph-svg"
+                             height="100%"
+                             width="100%"
+                             viewBox="0 -200 400 200"
+                             xmlns="http://ww.s3.org/2000/svg">
+                            <g fill="none"
+                               fill-rule="evenodd">
+                                <g transform="translate(0 0)">
+                                    <polyline fill="none"
+                                              stroke="#f1d612"
+                                              stroke-width="6"
+                                              stroke-linejoin="round"
+                                              id="diagram-poly"
+                                              points="0, -77 20,-45" />
                                 </g>
+                            </g>
                         </svg>
 
                         <div class="row">
@@ -721,7 +717,7 @@
                                 <label class="col-md-3 control-label">@Localizer["Profile"]</label>
                                 <div class="col-md-9">
                                     <select id="prof" ng-model="selectedProfile" ng-hide="callProfiles == 0"
-                                        ng-options="prof.name for prof in callProfiles track by prof.name" class="form-control--horizontal"></select>
+                                            ng-options="prof.name for prof in callProfiles track by prof.name" class="form-control--horizontal"></select>
                                     <button class="btn btn-default" ng-click="getCallProfiles()">@Localizer["Get"]</button>
                                 </div>
                             </div>
@@ -741,13 +737,3 @@
     </div>
 
 </script>
-
-@section scripts
-    {
-    <script>
-        @* $(document).on('hidden.bs.modal', function (e) {
-            $(e.target).removeData('bs.modal');
-        });
-        *@
-    </script>
-}

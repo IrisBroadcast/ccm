@@ -7205,17 +7205,19 @@ h6 {
 }
 .mui-panel .codec-type {
   display: inline-flex;
-  width: 0.5rem;
-  height: 1rem;
-  margin-right: 0.5rem;
+  padding: 0 0.25rem;
+  background-color: #d2f5d0 !important;
+  margin: 0 0.25rem;
   align-content: center;
-  border-radius: 1rem;
+  border-radius: 0.25rem;
   align-items: center;
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 .mui-panel .comment-to,
 .mui-panel .comment-from {
   color: #757575;
-  margin-left: 1.5rem;
+  margin-left: 0.25rem;
   font-size: 0.8rem;
 }
 .mui-panel .mui-grid {
@@ -7633,30 +7635,6 @@ body {
 .body-content {
   padding-left: 15px;
   padding-right: 15px;
-}
-.logo {
-  display: block;
-  width: 205px;
-  height: 60px;
-  background: url(static/ccm_logo.svg) no-repeat;
-  background-size: 100%;
-  background-position: center center;
-}
-.logo-test {
-  display: block;
-  width: 205px;
-  height: 60px;
-  background: url(static/ccm_logo_test.svg) no-repeat;
-  background-size: 100%;
-  background-position: center center;
-}
-.logo-dev {
-  display: block;
-  width: 205px;
-  height: 60px;
-  background: url(static/ccm_logo_dev.svg) no-repeat;
-  background-size: 100%;
-  background-position: center center;
 }
 img {
   -ms-interpolation-mode: bicubic;
