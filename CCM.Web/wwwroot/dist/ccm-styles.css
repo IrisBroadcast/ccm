@@ -7217,8 +7217,7 @@ h6 {
 .mui-panel .comment-to,
 .mui-panel .comment-from {
   color: #757575;
-  margin-left: 0.25rem;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 .mui-panel .mui-grid {
   display: grid;
@@ -7306,6 +7305,7 @@ h6 {
 .mui-panel .mui-col.mui-col--direction {
   max-width: 2rem;
   flex: 0 0 2rem;
+  padding: 0 0.5rem 0 0;
 }
 .mui-panel .mui-col.mui-col--direction svg {
   height: 100%;
