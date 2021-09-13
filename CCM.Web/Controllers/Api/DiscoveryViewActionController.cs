@@ -31,6 +31,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers.Api
 {
+    /// <summary>
+    /// Used by the codec control on CCM frontpage, should be used for showing profile information
+    /// </summary>
     public class DiscoveryViewActionController : ControllerBase
     {
         private readonly ICachedProfileRepository _cachedProfileRepository;

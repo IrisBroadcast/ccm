@@ -74,8 +74,8 @@
                     </li>
                     @foreach (var region in Model.Regions)
                     {
-                        <li ng-click="setFilterRegion('@region')" class="ccm-tabpane-filter--link">
-                            <a href="#">@region</a>
+                        <li ng-click="setFilterRegion('@region.Name')" class="ccm-tabpane-filter--link">
+                            <a href="#">@region.Name</a>
                         </li>
                     }
                 </ul>
@@ -93,7 +93,7 @@
                         </li>
                         @foreach (var region in Model.Regions)
                         {
-                            <li ng-click="setFilterRegion('@region')"><a href="#">@region</a></li>
+                            <li ng-click="setFilterRegion('@region.Name')"><a href="#">@region.Name</a></li>
                         }
                     </ul>
                 </div>

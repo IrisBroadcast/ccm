@@ -24,46 +24,37 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Linq;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.SipEvent;
-using CCM.Core.SipEvent.Models;
-using CCM.Web.Hubs;
-using CCM.Web.Infrastructure;
+using CCM.Web.Models.Api;
 using CCM.Web.Models.Home;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CCM.Web.Controllers
+namespace CCM.Web.Controllers.Api
 {
-    public class HomeController : Controller
+    /// <summary>
+    /// Used by the CCM Frontpage and some external services to get available filtering types
+    /// </summary>
+    public class FilterTypeController : ControllerBase
     {
         private readonly ICodecTypeRepository _codecTypeRepository;
         private readonly IRegionRepository _regionRepository;
-        private readonly ICachedSipAccountRepository _cachedSipAccountRepository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IWebGuiHubUpdater _webGuiHubUpdater;
-        private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
 
-        public HomeController(
+        public FilterTypeController(
             IRegionRepository regionRepository,
             ICodecTypeRepository codecTypeRepository,
-            ICachedSipAccountRepository cachedSipAccountRepository,
-            ICategoryRepository categoryRepository,
-            IWebGuiHubUpdater webGuiHubUpdater,
-            ICodecStatusHubUpdater codecStatusHubUpdater)
+            ICategoryRepository categoryRepository)
         {
             _regionRepository = regionRepository;
             _codecTypeRepository = codecTypeRepository;
-            _cachedSipAccountRepository = cachedSipAccountRepository;
             _categoryRepository = categoryRepository;
-            _webGuiHubUpdater = webGuiHubUpdater;
-            _codecStatusHubUpdater = codecStatusHubUpdater;
         }
 
-        public ActionResult Index()
+        [HttpGet]
+        public FilterTypesViewModel GetAll()
         {
-            var vm = new HomeViewModel
+            var vm = new FilterTypesViewModel
             {
                 CodecTypes = _codecTypeRepository.GetAll(false).Select(ct => new CodecTypeViewModel
                 {
@@ -81,42 +72,7 @@ namespace CCM.Web.Controllers
                 })
             };
 
-            return View(vm);
-        }
-
-        [CcmAuthorize(Roles = "Admin, Remote")]
-        [HttpGet]
-        public ActionResult EditRegisteredSipComment(Guid id)
-        {
-            var sipAccount = _cachedSipAccountRepository.GetByRegisteredSipId(id);
-            if (sipAccount == null)
-            {
-                return BadRequest();
-            }
-
-            return PartialView("_SipCommentForm", new SipAccountCommentViewModel { Comment = sipAccount.Comment, SipAccountId = sipAccount.Id });
-        }
-
-        [ValidateAntiForgeryToken]
-        [CcmAuthorize(Roles = "Admin, Remote")]
-        [HttpPost]
-        public ActionResult EditRegisteredSipComment(SipAccountCommentViewModel model)
-        {
-            if (model.SipAccountId != Guid.Empty)
-            {
-                _cachedSipAccountRepository.UpdateComment(model.SipAccountId, model.Comment);
-                
-                var updateResult = new SipEventHandlerResult()
-                {
-                    ChangeStatus = SipEventChangeStatus.CodecUpdated,
-                    ChangedObjectId = model.SipAccountId
-                };
-
-                _webGuiHubUpdater.Update(updateResult); // First web gui
-                _codecStatusHubUpdater.Update(updateResult); // Then codec status to external clients
-                return Ok();
-            }
-            return BadRequest();
+            return vm;
         }
     }
 }

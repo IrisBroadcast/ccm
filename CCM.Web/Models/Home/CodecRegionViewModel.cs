@@ -24,14 +24,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-
 namespace CCM.Web.Models.Home
 {
-    public class HomeViewModel
+    public class CodecRegionViewModel
     {
-        public IEnumerable<CodecTypeViewModel> CodecTypes { get; set; }
-        public IEnumerable<CodecRegionViewModel> Regions { get; set; }
-        public IEnumerable<CodecCategoryViewModel> Categories { get; set; }
+        public string Name { get; set; }
     }
 }

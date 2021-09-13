@@ -25,10 +25,11 @@
  */
 
 using System.Collections.Generic;
+using CCM.Web.Models.Home;
 
-namespace CCM.Web.Models.Home
+namespace CCM.Web.Models.Api
 {
-    public class HomeViewModel
+    public class FilterTypesViewModel
     {
         public IEnumerable<CodecTypeViewModel> CodecTypes { get; set; }
         public IEnumerable<CodecRegionViewModel> Regions { get; set; }
