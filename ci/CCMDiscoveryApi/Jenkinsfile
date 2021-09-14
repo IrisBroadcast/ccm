@@ -10,7 +10,7 @@ def dockerFile = "ci/CCMDiscoveryApi/Dockerfile"
 def dockerImageEnvName = "IMAGE_NAME"
 
 def config = [
-    dockerHost: "stoipk-stage01.sr.se",
+    dockerHost: "stoipk-stage01",
     dockerHostCredentialsId: "ipkServerUser",
     tempFilesPath: "/tmp/jenkins",
     dockerComposeFrom: "./ci/CCMDiscoveryApi/stage/docker-compose.yml",
@@ -29,7 +29,7 @@ node(jenkinsWorkerConstraint) {
         buildVersion = env.TAG_NAME
         buildEnvironment = "Prod"
         application.stackname = "ipk"
-        config.dockerHost = "stoipk01.sr.se"
+        config.dockerHost = "stoipk01"
         config.dockerComposeFrom = "./ci/CCMDiscoveryApi/production/docker-compose.yml"
     }
 
