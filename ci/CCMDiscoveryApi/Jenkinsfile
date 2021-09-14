@@ -29,8 +29,8 @@ node(jenkinsWorkerConstraint) {
         buildVersion = env.TAG_NAME
         buildEnvironment = "Prod"
         application.stackname = "ipk"
-        config.dockerHost: "stoipk01.sr.se",
-        config.dockerComposeFrom: "./ci/CCMDiscoveryApi/production/docker-compose.yml",
+        config.dockerHost: "stoipk01.sr.se"
+        config.dockerComposeFrom: "./ci/CCMDiscoveryApi/production/docker-compose.yml"
     }
 
     // Modify the buildinformation.json file in the repository
