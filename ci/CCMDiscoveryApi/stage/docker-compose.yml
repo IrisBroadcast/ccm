@@ -11,7 +11,7 @@ services:
       placement:
           constraints: [node.role == manager]
     ports:
-      - "80:80"
+      - "50001:80"
     configs:
       - source: discovery_appsettings
         target: /app/appsettings.json
