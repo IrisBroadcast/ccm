@@ -2,9 +2,16 @@ version: "3.7"
 services:
   discovery:
     image: ${IMAGE_NAME}
-    networks:
-      - proxynet
-      - default
+    logging:
+      driver: json-file
+      options:
+        max-file: "5"
+        max-size: 20m
+    deploy:
+      placement:
+          constraints: [node.role == manager]
+    ports:
+      - "80:80"
     configs:
       - source: discovery_appsettings
         target: /app/appsettings.json
@@ -13,6 +20,3 @@ configs:
   discovery_appsettings:
     external: true
 
-networks:
-  proxynet:
-    external: true
