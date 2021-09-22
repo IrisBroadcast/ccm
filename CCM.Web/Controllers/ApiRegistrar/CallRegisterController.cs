@@ -82,7 +82,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
             var sipMessage = new ExternalDialogMessage
             {
                 CallId = callEvent.CallId,
-                Status = ExternalDialogStatus.Start,
+                Status = callEvent?.Ended == null ? ExternalDialogStatus.Start : ExternalDialogStatus.End,
                 Started = callEvent.Started,
                 Ended = callEvent.Ended,
                 IsPhoneCall = callEvent.IsPhoneCall,

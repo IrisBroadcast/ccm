@@ -70,10 +70,16 @@ namespace CCM.Core.SipEvent
         {
             _logger.LogDebug($"Register call from:{message.FromUsername} to:{message.ToUsername}, call id:{message.CallId}");
 
-            if (_cachedCallRepository.CallExists(message.CallId, "", "") || (message.Ended != null))
+            if (_cachedCallRepository.CallExists(message.CallId, "", "") && message.Ended != null)
             {
-                _logger.LogDebug($"Call with id:{message.CallId} already exists or Ended received={(message.Ended != null)}, closing it instead");
+                _logger.LogDebug($"Call with id:{message.CallId} should be Ended closing it instead of registering it");
                 return CloseCall(message);
+            }
+
+            if (_cachedCallRepository.CallExists(message.CallId, "", ""))
+            {
+                _logger.LogDebug($"Call with id:{message.CallId} already exists");
+                return NothingChangedResult;
             }
 
             var call = new Call
