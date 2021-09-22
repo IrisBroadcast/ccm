@@ -247,71 +247,71 @@ namespace CCM.Data.Repositories
             var callHistories = _ccmDbContext.CallHistories
                 .AsNoTracking()
                 .OrderByDescending(callHistory => callHistory.Ended)
-                .Where(c => c.Started < nowTime && c.Ended >= startTime)
+                .Where(c => c.Started <= nowTime && c.Ended >= startTime)
                 .ToList();
             return callHistories.Select(MapCallHistory).ToList();
         }
 
         public IList<CallHistory> GetCallHistoriesByDate(DateTime startTime, DateTime endTime)
         {
-            return GetFiltered(c => c.Started < endTime && c.Ended >= startTime);
+            return GetFiltered(c => c.Started <= endTime && c.Ended >= startTime);
         }
 
         public IList<CallHistory> GetCallHistoriesByDate(IReadOnlyList<CallHistory> callHistories, DateTime startTime, DateTime endTime)
         {
-            return callHistories.Where(c => c.Started < endTime && c.Ended >= startTime).ToList();
+            return callHistories.Where(c => c.Started <= endTime && c.Ended >= startTime).ToList();
         }
 
         public IList<CallHistory> GetCallHistoriesForRegion(DateTime startDate, DateTime endDate, Guid regionId)
         {
             return regionId == Guid.Empty
-                ? GetFiltered(c => c.Started < endDate && c.Ended >= startDate)
-                : GetFiltered(c => c.Started < endDate && c.Ended >= startDate && (c.FromRegionId == regionId || c.ToRegionId == regionId));
+                ? GetFiltered(c => c.Started <= endDate && c.Ended >= startDate)
+                : GetFiltered(c => c.Started <= endDate && c.Ended >= startDate && (c.FromRegionId == regionId || c.ToRegionId == regionId));
         }
 
         public IList<CallHistory> GetCallHistoriesForRegion(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, Guid regionId)
         {
             return regionId == Guid.Empty
-                ? callHistories.Where(c => c.Started < endDate && c.Ended >= startDate).ToList()
-                : callHistories.Where(c => c.Started < endDate && c.Ended >= startDate && (c.FromRegionId == regionId || c.ToRegionId == regionId)).ToList();
+                ? callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate).ToList()
+                : callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate && (c.FromRegionId == regionId || c.ToRegionId == regionId)).ToList();
         }
 
         public IList<CallHistory> GetCallHistoriesForRegisteredSip(DateTime startDate, DateTime endDate, string sipId)
         {
-            return GetFiltered(c => c.Started < endDate && c.Ended >= startDate && (c.FromSip == sipId || c.ToSip == sipId));
+            return GetFiltered(c => c.Started <= endDate && c.Ended >= startDate && (c.FromSip == sipId || c.ToSip == sipId));
         }
 
         public IList<CallHistory> GetCallHistoriesForRegisteredSip(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, string sipId)
         {
-            return callHistories.Where(c => c.Started < endDate && c.Ended >= startDate && (c.FromSip == sipId || c.ToSip == sipId)).ToList();
+            return callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate && (c.FromSip == sipId || c.ToSip == sipId)).ToList();
         }
 
         public IList<CallHistory> GetCallHistoriesForCodecType(DateTime startDate, DateTime endDate, Guid codecTypeId)
         {
             return codecTypeId == Guid.Empty
-                ? GetFiltered(c => c.Started < endDate && c.Ended >= startDate)
-                : GetFiltered(c => c.Started < endDate && c.Ended >= startDate && (c.FromCodecTypeId == codecTypeId || c.ToCodecTypeId == codecTypeId));
+                ? GetFiltered(c => c.Started <= endDate && c.Ended >= startDate)
+                : GetFiltered(c => c.Started <= endDate && c.Ended >= startDate && (c.FromCodecTypeId == codecTypeId || c.ToCodecTypeId == codecTypeId));
         }
 
         public IList<CallHistory> GetCallHistoriesForCodecType(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, Guid codecTypeId)
         {
             return codecTypeId == Guid.Empty
-                ? callHistories.Where(c => c.Started < endDate && c.Ended >= startDate).ToList()
-                : callHistories.Where(c => c.Started < endDate && c.Ended >= startDate && (c.FromCodecTypeId == codecTypeId || c.ToCodecTypeId == codecTypeId)).ToList();
+                ? callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate).ToList()
+                : callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate && (c.FromCodecTypeId == codecTypeId || c.ToCodecTypeId == codecTypeId)).ToList();
         }
 
         public IList<CallHistory> GetCallHistoriesForLocation(DateTime startDate, DateTime endDate, Guid locationId)
         {
             return locationId == Guid.Empty
                 ? new List<CallHistory>()
-                : GetFiltered(c => c.Started < endDate && c.Ended >= startDate && (c.FromLocationId == locationId || c.ToLocationId == locationId));
+                : GetFiltered(c => c.Started <= endDate && c.Ended >= startDate && (c.FromLocationId == locationId || c.ToLocationId == locationId));
         }
 
         public IList<CallHistory> GetCallHistoriesForLocation(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, Guid locationId)
         {
             return locationId == Guid.Empty
                 ? new List<CallHistory>()
-                : callHistories.Where(c => c.Started < endDate && c.Ended >= startDate && (c.FromLocationId == locationId || c.ToLocationId == locationId)).ToList();
+                : callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate && (c.FromLocationId == locationId || c.ToLocationId == locationId)).ToList();
         }
 
         private IList<CallHistory> GetFiltered(Expression<Func<CallHistoryEntity, bool>> filterExpression)

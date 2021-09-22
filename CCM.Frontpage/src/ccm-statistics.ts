@@ -33,8 +33,10 @@ export class StatisticsView {
         let startDate = new Date(endDate.toISOString());
         startDate.setDate(startDate.getDate() - 30);
 
+        let adjustedEndDate = endDate.toString().split(/\+|-/)[0];
+
         Tool.$dom("startDate").value = startDate.toISOString().split('T')[0];
-        Tool.$dom("endDate").value = endDate.toISOString().split('T')[0];
+        Tool.$dom("endDate").value = new Date(adjustedEndDate).toISOString().split('T')[0];
 
         Tool.$event("startDate", "change", (event) => {
             console.log({event})

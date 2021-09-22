@@ -119,7 +119,7 @@ namespace CCM.Web.Controllers
                 RegionId = regionId,
                 OwnerId = ownerId,
                 CodecTypeId = codecTypeId,
-                Statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), regionId, ownerId, codecTypeId)
+                Statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), regionId, ownerId, codecTypeId)
             };
             return PartialView("LocationStatisticsTable", model);
         }
@@ -135,7 +135,7 @@ namespace CCM.Web.Controllers
                 RegionId = regionId,
                 OwnerId = ownerId,
                 CodecTypeId = codecTypeId,
-                Statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), regionId, ownerId, codecTypeId)
+                Statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), regionId, ownerId, codecTypeId)
             };
             return PartialView("LocationStatisticsTable", model);
         }
@@ -151,7 +151,7 @@ namespace CCM.Web.Controllers
                 RegionId = regionId,
                 OwnerId = ownerId,
                 CodecTypeId = codecTypeId,
-                Statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), regionId, ownerId, codecTypeId)
+                Statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), regionId, ownerId, codecTypeId)
             };
             return PartialView("LocationStatisticsTable", model);
         }
@@ -173,15 +173,13 @@ namespace CCM.Web.Controllers
         [HttpPost]
         public ActionResult LocationSim24HourViewData(DateTime startDate, DateTime endDate, Guid regionId, Guid locationId)
         {
-            var model = _statisticsManager.GetHourStatisticsForLocation(startDate.ToUniversalTime(),
-                endDate.ToUniversalTime().AddDays(1.0), locationId, false);
+            var model = _statisticsManager.GetHourStatisticsForLocation(startDate.ToUniversalTime(), endDate.ToUniversalTime(), locationId, false);
             return PartialView(model);
         }
 
         public ActionResult GetLocationSim24HourCsv(DateTime startDate, DateTime endDate, Guid locationId)
         {
-            var stats = _statisticsManager.GetHourStatisticsForLocation(startDate.ToUniversalTime(),
-                endDate.ToUniversalTime().AddDays(1.0), locationId, true);
+            var stats = _statisticsManager.GetHourStatisticsForLocation(startDate.ToUniversalTime(), endDate.ToUniversalTime(), locationId, true);
 
             var csv = new StringBuilder();
             csv.AddCsvValue(_localizer["Statistics"]).AddCsvSeparator().AddCsvValue(_localizer["Call_Sim24Hour"]).AppendLine();
@@ -208,8 +206,7 @@ namespace CCM.Web.Controllers
 
         public ActionResult GetLocationStatisticsCsv(DateTime startDate, DateTime endDate, Guid regionId, Guid ownerId, Guid codecTypeId)
         {
-            var statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(),
-                endDate.ToUniversalTime().AddDays(1.0), regionId, ownerId, codecTypeId);
+            var statistics = _statisticsManager.GetLocationStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), regionId, ownerId, codecTypeId);
             var csv = new StringBuilder();
             csv.AddCsvValue(Resources.Location)
                 .AddCsvSeparator()
@@ -253,7 +250,7 @@ namespace CCM.Web.Controllers
                 EndDate = endDate,
                 FilterId = filterId,
                 StartDate = startDate,
-                Stats = _statisticsManager.GetRegionStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId)
+                Stats = _statisticsManager.GetRegionStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), filterId)
             };
 
             return PartialView("RegionStatisticsTable", model);
@@ -275,7 +272,7 @@ namespace CCM.Web.Controllers
                 EndDate = endDate,
                 FilterId = filterId,
                 StartDate = startDate,
-                Stats = _statisticsManager.GetSipAccountStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId)
+                Stats = _statisticsManager.GetSipAccountStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), filterId)
             };
 
             return PartialView("SipAccountStatisticsTable", model);
@@ -297,7 +294,7 @@ namespace CCM.Web.Controllers
                 EndDate = endDate,
                 FilterId = filterId,
                 StartDate = startDate,
-                Stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId)
+                Stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), filterId)
             };
 
             return PartialView("CodecTypeStatisticsTable", model);
@@ -315,7 +312,7 @@ namespace CCM.Web.Controllers
                 ChartType = DateBasedChartType.NumberOfCalls,
                 EndDate = endDate,
                 StartDate = startDate,
-                Stats = _statisticsManager.GetCategoryCallStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0))
+                Stats = _statisticsManager.GetCategoryCallStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime())
             };
 
             return PartialView("CategoryCallStatisticsTable", model);
@@ -331,7 +328,7 @@ namespace CCM.Web.Controllers
                 ChartType = DateBasedChartType.NumberOfCalls,
                 EndDate = endDate,
                 StartDate = startDate,
-                Stats = _statisticsManager.GetCategoryStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0))
+                Stats = _statisticsManager.GetCategoryStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime())
             };
 
             return PartialView("CategoryStatisticsTable", model);
@@ -347,7 +344,7 @@ namespace CCM.Web.Controllers
                 ChartType = DateBasedChartType.NumberOfCalls,
                 EndDate = endDate,
                 StartDate = startDate,
-                Stats = _statisticsManager.GetCategoryStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0))
+                Stats = _statisticsManager.GetCategoryStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime())
             };
 
             return PartialView("CategoryStatisticsTable", model);
@@ -361,15 +358,15 @@ namespace CCM.Web.Controllers
             switch (filterType)
             {
                 case DateBasedFilterType.Regions:
-                    stats = _statisticsManager.GetRegionStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
+                    stats = _statisticsManager.GetRegionStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), filterId);
                     prefix = _localizer["Region"];
                     break;
                 case DateBasedFilterType.SipAccounts:
-                    stats = _statisticsManager.GetSipAccountStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
+                    stats = _statisticsManager.GetSipAccountStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), filterId);
                     prefix = _localizer["Sip_Accounts"];
                     break;
                 case DateBasedFilterType.CodecTypes:
-                    stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime().AddDays(1.0), filterId);
+                    stats = _statisticsManager.GetCodecTypeStatistics(startDate.ToUniversalTime(), endDate.ToUniversalTime(), filterId);
                     prefix = _localizer["Codec_Type"];
                     break;
                 // TODO: add category here
