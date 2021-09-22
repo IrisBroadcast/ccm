@@ -80,26 +80,28 @@ namespace CCM.Core.Managers
             return _cachedSipAccountRepository.GetAll();
         }
 
-        public IList<CategoryCallStatistic> GetCategoryCallStatistics(DateTime startTime, DateTime endTime)
+        public IList<CategoryCallStatistic> GetCategoryCallStatistics(DateTime startDate, DateTime endDate)
         {
+            endDate = endDate.AddDays(1.0); // Correction for ToUniversalTime()
             var categoryStatistics = new List<CategoryCallStatistic>();
-            var callHistory = _cachedCallHistoryRepository.GetCallHistoriesByDate(startTime, endTime);
+            var callHistory = _cachedCallHistoryRepository.GetCallHistoriesByDate(startDate, endDate);
             if (callHistory == null)
             {
                 return categoryStatistics;
             }
-            return GenerateDateBasedCategoryStatistics(callHistory, startTime, endTime) ?? new List<CategoryCallStatistic>();
+            return GenerateDateBasedCategoryStatistics(callHistory, startDate, endDate) ?? new List<CategoryCallStatistic>();
         }
 
-        public IList<CategoryItemStatistic> GetCategoryStatistics(DateTime startTime, DateTime endTime)
+        public IList<CategoryItemStatistic> GetCategoryStatistics(DateTime startDate, DateTime endDate)
         {
+            endDate = endDate.AddDays(1.0); // Correction for ToUniversalTime()
             var categoryStatistics = new List<CategoryItemStatistic>();
-            var callHistory = _cachedCallHistoryRepository.GetCallHistoriesByDate(startTime, endTime);
+            var callHistory = _cachedCallHistoryRepository.GetCallHistoriesByDate(startDate, endDate);
             if (callHistory == null)
             {
                 return categoryStatistics;
             }
-            return GenerateCategoryStatistics(callHistory, startTime, endTime) ?? new List<CategoryItemStatistic>();
+            return GenerateCategoryStatistics(callHistory, startDate, endDate) ?? new List<CategoryItemStatistic>();
         }
 
         private List<CategoryCallStatistic> GenerateDateBasedCategoryStatistics(IList<CallHistory> callHistories, DateTime reportPeriodStart, DateTime reportPeriodEnd)
@@ -207,6 +209,7 @@ namespace CCM.Core.Managers
 
         public IList<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId)
         {
+            endDate = endDate.AddDays(1.0); // Correction for ToUniversalTime()
             var callHistories = _cachedCallHistoryRepository.GetCallHistoriesForRegion(startDate, endDate, regionId);
 
             if (callHistories == null)
@@ -220,6 +223,7 @@ namespace CCM.Core.Managers
 
         public IList<DateBasedStatistics> GetSipAccountStatistics(DateTime startDate, DateTime endDate, Guid userId)
         {
+            endDate = endDate.AddDays(1.0); // Correction for ToUniversalTime()
             var user = _cachedSipAccountRepository.GetById(userId);
             var callHistories = user != null ? _cachedCallHistoryRepository.GetCallHistoriesForRegisteredSip(startDate, endDate, user.UserName) : new List<CallHistory>();
 
@@ -232,6 +236,7 @@ namespace CCM.Core.Managers
 
         public IList<DateBasedStatistics> GetCodecTypeStatistics(DateTime startDate, DateTime endDate, Guid codecTypeId)
         {
+            endDate = endDate.AddDays(1.0); // Correction for ToUniversalTime()
             var codecTypeStatistics = new List<DateBasedStatistics>();
 
             var callHistories = _cachedCallHistoryRepository.GetCallHistoriesForCodecType(startDate, endDate, codecTypeId);
@@ -254,9 +259,10 @@ namespace CCM.Core.Managers
                     .ToList();
         }
 
-        public List<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId)
+        public List<LocationBasedStatistics> GetLocationStatistics(DateTime startDate, DateTime endDate, Guid regionId, Guid ownerId, Guid codecTypeId)
         {
-            var callHistories = _cachedCallHistoryRepository.GetCallHistoriesByDate(startTime, endTime);
+            endDate = endDate.AddDays(1.0); // Correction for ToUniversalTime()
+            var callHistories = _cachedCallHistoryRepository.GetCallHistoriesByDate(startDate, endDate);
 
             if (callHistories == null)
             {
@@ -269,7 +275,7 @@ namespace CCM.Core.Managers
             {
                 if (!locations.ContainsKey(callEvent.LocationId))
                     locations.Add(callEvent.LocationId, new LocationBasedStatistics { LocationId = callEvent.LocationId, LocationName = callEvent.LocationName });
-                locations[callEvent.LocationId].AddEvent(callEvent, startTime, endTime);
+                locations[callEvent.LocationId].AddEvent(callEvent, startDate, endDate);
             }
 
             var locationStatisticses = locations.Values.ToList();
@@ -278,8 +284,9 @@ namespace CCM.Core.Managers
             return locationStatisticses.OrderBy(l => l.LocationName).ToList();
         }
 
-        public HourBasedStatisticsForLocation GetHourStatisticsForLocation(DateTime startTime, DateTime endTime, Guid locationId, bool noAggregation)
+        public HourBasedStatisticsForLocation GetHourStatisticsForLocation(DateTime startDate, DateTime endDate, Guid locationId, bool noAggregation)
         {
+            endDate = endDate.AddDays(1.0); // Correction for ToUniversalTime()
             var location = _cachedLocationRepository.GetById(locationId);
             if (location == null)
             {
@@ -291,10 +298,11 @@ namespace CCM.Core.Managers
                 };
             }
             var allStats = new List<HourBasedStatistics>();
-            var callHistories = _cachedCallHistoryRepository.GetCallHistoriesForLocation(startTime, endTime, locationId);
-            var current = HourBasedStatistics.Create(startTime);
+            var callHistories = _cachedCallHistoryRepository.GetCallHistoriesForLocation(startDate, endDate, locationId);
+            var current = HourBasedStatistics.Create(startDate);
             allStats.Add(current);
-            foreach (var callEvent in HourBasedCallEvent.GetOrderedEvents(callHistories, locationId).Where(e => e.EventTime < endTime))
+            // TODO: check eventtime z endtime
+            foreach (var callEvent in HourBasedCallEvent.GetOrderedEvents(callHistories, locationId).Where(e => e.EventTime < endDate))
             {
                 while (!current.AddEvent(callEvent))
                 {
@@ -330,7 +338,7 @@ namespace CCM.Core.Managers
         private IEnumerable<DateBasedStatistics> GenerateDateBasedStatisticses(IList<CallHistory> callHistories, DateTime reportPeriodStart, DateTime reportPeriodEnd)
         {
             if (!callHistories.Any()) return Enumerable.Empty<DateBasedStatistics>();
-
+            // TODO: check what ToLocalTime does no compensation is done here yet for endDate = endDate.AddDays(1.0); // Correction for ToUniversalTime()
             var minDate = reportPeriodStart.ToLocalTime().Date; // callHistories.Min(c => c.Started);
             var endLocal = reportPeriodEnd.ToLocalTime();
             var maxDate = endLocal.Date == endLocal ? endLocal.Date.AddDays(-1) : endLocal.Date; // callHistories.Max(c => c.Started.ToLocalTime().Date);

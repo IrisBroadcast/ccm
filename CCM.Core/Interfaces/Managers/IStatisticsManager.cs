@@ -39,14 +39,14 @@ namespace CCM.Core.Interfaces.Managers
         List<SipAccount> GetSipAccounts();
         IList<Location> GetLocationsForRegion(Guid regionId);
 
-        List<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId);
-        HourBasedStatisticsForLocation GetHourStatisticsForLocation(DateTime startTime, DateTime endTime, Guid locationId, bool noAggregation);
+        List<LocationBasedStatistics> GetLocationStatistics(DateTime startDate, DateTime endDate, Guid regionId, Guid ownerId, Guid codecTypeId);
+        HourBasedStatisticsForLocation GetHourStatisticsForLocation(DateTime startDate, DateTime endDate, Guid locationId, bool noAggregation);
 
         IList<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId);
         IList<DateBasedStatistics> GetSipAccountStatistics(DateTime startDate, DateTime endDate, Guid userId);
         IList<DateBasedStatistics> GetCodecTypeStatistics(DateTime startDate, DateTime endDate, Guid codecTypeId);
 
-        IList<CategoryCallStatistic> GetCategoryCallStatistics(DateTime startTime, DateTime endTime);
-        IList<CategoryItemStatistic> GetCategoryStatistics(DateTime startTime, DateTime endTime);
+        IList<CategoryCallStatistic> GetCategoryCallStatistics(DateTime startDate, DateTime endDate);
+        IList<CategoryItemStatistic> GetCategoryStatistics(DateTime startDate, DateTime endDate);
     }
 }
