@@ -10,10 +10,10 @@ def dockerFile = "ci/CCMDiscoveryApi/Dockerfile"
 def dockerImageEnvName = "IMAGE_NAME"
 
 def config = [
-    dockerHost: "msc.sr.se",
-    dockerHostCredentialsId: "dockerHostUser",
-    tempFilesPath: "/mnt/nfs/msc-nfs/stacks",
-    dockerComposeFrom: "./ci/CCMDiscoveryApi/docker-compose.yml",
+    dockerHost: "stoipk-stage01",
+    dockerHostCredentialsId: "ipkServerUser",
+    tempFilesPath: "/tmp/jenkins",
+    dockerComposeFrom: "./ci/CCMDiscoveryApi/stage/docker-compose.yml",
 ]
 
 node(jenkinsWorkerConstraint) {
@@ -29,6 +29,8 @@ node(jenkinsWorkerConstraint) {
         buildVersion = env.TAG_NAME
         buildEnvironment = "Prod"
         application.stackname = "ipk"
+        config.dockerHost = "stoipk01"
+        config.dockerComposeFrom = "./ci/CCMDiscoveryApi/production/docker-compose.yml"
     }
 
     // Modify the buildinformation.json file in the repository
