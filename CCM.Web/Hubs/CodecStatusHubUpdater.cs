@@ -66,60 +66,51 @@ namespace CCM.Web.Hubs
 
         public void Update(SipEventHandlerResult updateResult)
         {
-            if (updateResult.ChangeStatus == SipEventChangeStatus.CallStarted)
+            switch (updateResult.ChangeStatus)
             {
-                // Load call and update to and from codecs
-                var callId = updateResult.ChangedObjectId;
-                var callInfo = _cachedCallRepository.GetCallInfoById(callId);
-
-                if (callInfo != null)
+                case (SipEventChangeStatus.CallStarted):
                 {
-                    _logger.LogDebug($"CodecStatusHub. Call started. From:{callInfo.FromId}, To:{callInfo.ToId}");
-                    UpdateCodecStatusByGuid(callInfo.FromId);
-                    UpdateCodecStatusByGuid(callInfo.ToId);
+                    // Load call and update to and from codecs
+                    var callId = updateResult.ChangedObjectId;
+                    CallInfo callInfo = _cachedCallRepository.GetCallInfoById(callId);
+
+                    if (callInfo != null)
+                    {
+                        _logger.LogDebug($"CodecStatusHub. Call started. From:{callInfo.FromId}, To:{callInfo.ToId}");
+                        UpdateCodecStatusByGuid(callInfo.FromId);
+                        UpdateCodecStatusByGuid(callInfo.ToId);
+                    }
+                    else
+                    {
+                        _logger.LogError($"CodecStatusHub. Call started but was not found in database. Call Id:{callId}");
+                    }
+                    break;
                 }
-                else
+                case (SipEventChangeStatus.CallClosed):
                 {
-                    _logger.LogError($"CodecStatusHub. Call started but was not found in database. Call Id:{callId}");
+                    UpdateCodecStatusCallClosed(updateResult.ChangedObjectId);
+                    break;
                 }
-            }
-
-            if (updateResult.ChangeStatus == SipEventChangeStatus.CallClosed)
-            {
-                // Load call and update to and from codecs
-                var callId = updateResult.ChangedObjectId;
-                CallHistory call = _cachedCallHistoryRepository.GetCallHistoryByCallId(callId);
-
-                if (call != null)
+                case (SipEventChangeStatus.CodecAdded):
                 {
-                    _logger.LogDebug($"CodecStatusHub. Call closed. From:{call.FromId}, to:{call.ToId}, call id:{callId}");
-                    UpdateCodecStatusByGuid(call.FromId);
-                    UpdateCodecStatusByGuid(call.ToId);
+                    UpdateCodecStatusByGuid(updateResult.ChangedObjectId);
+                    break;
                 }
-                else
+                case (SipEventChangeStatus.CodecUpdated):
                 {
-                    _logger.LogError($"CodecStatusHub. Call closed but was not found in call history. Call id:{callId}");
+                    UpdateCodecStatusByGuid(updateResult.ChangedObjectId);
+                    break;
                 }
-            }
-
-            if (updateResult.ChangeStatus == SipEventChangeStatus.CodecAdded)
-            {
-                UpdateCodecStatusByGuid(updateResult.ChangedObjectId);
-            }
-
-            if (updateResult.ChangeStatus == SipEventChangeStatus.CodecUpdated)
-            {
-                UpdateCodecStatusByGuid(updateResult.ChangedObjectId);
-            }
-
-            if (updateResult.ChangeStatus == SipEventChangeStatus.CodecRemoved)
-            {
-                var codecStatus = new CodecStatusViewModel
+                case (SipEventChangeStatus.CodecRemoved):
                 {
-                    State = CodecState.NotRegistered,
-                    SipAddress = updateResult.SipAddress
-                };
-                UpdateCodecStatusRemoved(codecStatus);
+                    var codecStatus = new CodecStatusViewModel
+                    {
+                        State = CodecState.NotRegistered,
+                        SipAddress = updateResult.SipAddress
+                    };
+                    UpdateCodecStatusRemoved(codecStatus);
+                    break;
+                }
             }
 
             _logger.LogDebug($"CodecStatusHub. Status:{updateResult.ChangeStatus}, id:{updateResult.ChangedObjectId}, sip address:{updateResult.SipAddress}");
@@ -140,7 +131,7 @@ namespace CCM.Web.Hubs
 
             // Check if it's related to any registered online codecs
             var userAgentsOnline = _codecStatusViewModelsProvider.GetAll();
-            var updatedCodecStatus = userAgentsOnline.FirstOrDefault(x => x.Id == id);
+            CodecStatusViewModel updatedCodecStatus = userAgentsOnline.FirstOrDefault(x => x.Id == id);
             if (updatedCodecStatus != null)
             {
                 _logger.LogDebug($"SignalR is sending codec status to clients. SipAddress: {updatedCodecStatus.SipAddress}, State: {updatedCodecStatus.State}");
@@ -150,6 +141,50 @@ namespace CCM.Web.Hubs
             {
                 _logger.LogError($"Can't update Codec status hub. No codec online with id: {id}");
             }
+        }
+
+        private void UpdateCodecStatusCallClosed(Guid callId)
+        {
+            if (callId == Guid.Empty)
+            {
+                _logger.LogError($"CodecStatusHub. Call id is empty, can't close call:{callId}");
+                return;
+            }
+
+            CallHistory call = _cachedCallHistoryRepository.GetCallHistoryByCallId(callId);
+            if (call == null)
+            {
+                _logger.LogError($"CodecStatusHub. Call closed but was not found in call history. Call id:{callId}");
+                return;
+            }
+
+            _logger.LogDebug($"CodecStatusHub. Call closed. From:{call.FromId}, to:{call.ToId}, call id:{callId}");
+
+            // From
+            var updatedCodecFrom = new CodecStatusViewModel
+            {
+                State = CodecState.Available,
+                SipAddress = String.IsNullOrEmpty(call.FromSip) ? call.FromUsername : call.FromSip,
+                Id = call.FromId,
+                PresentationName = call.FromDisplayName,
+                DisplayName = call.FromDisplayName,
+                InCall = false
+            };
+            _logger.LogDebug($"CodecStatusHub. Sending codec status to clients. SipAddress: {updatedCodecFrom.SipAddress}, State: {updatedCodecFrom.State}");
+            _codecStatusHub.Clients.All.CodecStatus(updatedCodecFrom);
+
+            // To
+            var updatedCodecTo = new CodecStatusViewModel
+            {
+                State = CodecState.Available,
+                SipAddress = String.IsNullOrEmpty(call.ToSip) ? call.ToUsername : call.ToSip,
+                Id = call.ToId,
+                PresentationName = call.ToDisplayName,
+                DisplayName = call.ToDisplayName,
+                InCall = false
+            };
+            _logger.LogDebug($"CodecStatusHub. Sending codec status to clients. SipAddress: {updatedCodecTo.SipAddress}, State: {updatedCodecTo.State}");
+            _codecStatusHub.Clients.All.CodecStatus(updatedCodecTo);
         }
     }
 }
