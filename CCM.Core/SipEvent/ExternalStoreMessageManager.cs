@@ -104,7 +104,7 @@ namespace CCM.Core.SipEvent
 
             _cachedCallRepository.UpdateCall(call);
 
-            return SipMessageResult(SipEventChangeStatus.CallClosed, call.Id, call.FromSip);
+            return SipMessageResult(SipEventChangeStatus.CallStarted, call.Id, call.FromSip);
         }
 
         public SipEventHandlerResult CloseCall(ExternalDialogMessage message)

@@ -53,8 +53,6 @@ namespace CCM.Core.SipEvent.Parser
 
         public SipMessageBase Parse(KamailioSipEventData sipEventData)
         {
-            _logger.LogInformation($"{sipEventData.FromUri.Replace("sip:", "")} Now: {DateTime.UtcNow} XXXXX {sipEventData.Event}");
-
             switch (sipEventData.Event)
             {
                 case SipEventType.Register:
