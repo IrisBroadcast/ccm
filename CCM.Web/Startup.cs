@@ -154,7 +154,7 @@ namespace CCM.Web
             // SignalR / WebSockets for Hubs
             services.AddSignalR().AddJsonProtocol(options =>
             {
-                //options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
             // Add Cross Origin support
@@ -180,7 +180,7 @@ namespace CCM.Web
             // validation messages through IStringLocalizer abstractions.
             services.AddControllersWithViews().AddDataAnnotationsLocalization().AddViewLocalization().AddJsonOptions(options =>
             {
-                //options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 options.JsonSerializerOptions.IgnoreNullValues = true;
             });
         }
