@@ -152,7 +152,10 @@ namespace CCM.Web
             });
 
             // SignalR / WebSockets for Hubs
-            services.AddSignalR().AddJsonProtocol(opt => { });
+            services.AddSignalR().AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             // Add Cross Origin support
             services.AddCors();

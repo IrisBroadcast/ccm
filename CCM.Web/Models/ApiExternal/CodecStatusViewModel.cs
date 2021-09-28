@@ -31,9 +31,9 @@ namespace CCM.Web.Models.ApiExternal
     public class CodecStatusViewModel
     {
         #region Registration
+        public Guid Id { get; set; } // TODO: Not in use ... yet
         public CodecState State { get; set; }
         public string SipAddress { get; set; }
-        public Guid Id { get; set; } // TODO: Not in use ... yet
         public string PresentationName { get; set; }
         public string DisplayName { get; set; } //TODO:  Not in use ... yet
         #endregion
