@@ -111,7 +111,6 @@ namespace CCM.Web.Hubs
             _webGuiHub.Clients.All.OnGoingCalls(onGoingCalls);
         }
 
-
         private void UpdateOldCalls()
         {
             var oldCalls = _cachedCallHistoryRepository.GetOldCalls(_settingsManager.LatestCallCount, true);

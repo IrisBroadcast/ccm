@@ -28,26 +28,33 @@ using CCM.Web.Models.ApiExternal;
 using Microsoft.AspNetCore.SignalR;
 using NLog;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using CCM.Web.Mappers;
 
 namespace CCM.Web.Hubs
 {
     public interface ICodecStatusHub
     {
         Task CodecStatus(CodecStatusViewModel codecStatusViewModel);
+        Task CodecStatusList(List<CodecStatusViewModel> codecStatusViewModel);
+        Task CodecStatusExtended(CodecStatusExtendedViewModel codecStatusViewModel);
+        Task CodecStatusExtendedList(List<CodecStatusExtendedViewModel> codecStatusViewModel);
     }
 
     public class CodecStatusHub : Hub<ICodecStatusHub>
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private readonly CodecStatusViewModelsProvider _codecStatusViewModelsProvider;
 
-        public CodecStatusHub()
+        public CodecStatusHub(CodecStatusViewModelsProvider codecStatusViewModelsProvider)
         {
+            _codecStatusViewModelsProvider = codecStatusViewModelsProvider;
         }
 
         public override async Task OnConnectedAsync()
         {
-
             if (log.IsDebugEnabled)
             {
                 log.Debug($"SignalR client connected to {GetType().Name}, connection id={Context.ConnectionId}");
@@ -66,6 +73,62 @@ namespace CCM.Web.Hubs
                 log.Debug($"SignalR client disconnected ungracefully from {GetType().Name}, connection id={Context.ConnectionId}");
             }
             await base.OnDisconnectedAsync(exception);
+        }
+
+        public Task JoinExtended()
+        {
+            return Groups.AddToGroupAsync(Context.ConnectionId, "extended");
+        }
+
+        public Task LeaveExtended()
+        {
+            return Groups.RemoveFromGroupAsync(Context.ConnectionId, "extended");
+        }
+
+        public Task Registered()
+        {
+            var registered = _codecStatusViewModelsProvider.GetAll().ToList();
+            return Clients.Caller.CodecStatusList(registered);
+        }
+
+        public Task RegisteredExtended()
+        {
+            var registered = _codecStatusViewModelsProvider.GetAllExtended().ToList();
+            return Clients.Caller.CodecStatusExtendedList(registered);
+        }
+
+        public Task RegisteredByAddress(string sipAddress)
+        {
+            var registered = _codecStatusViewModelsProvider.GetAll();
+            var codecStatus = registered.FirstOrDefault(x => x.SipAddress == sipAddress) ?? new CodecStatusViewModel
+            {
+                SipAddress = sipAddress,
+                State = CodecState.NotRegistered
+            };
+
+            return Clients.Caller.CodecStatus(codecStatus);
+        }
+
+        public Task RegisteredById(string id)
+        {
+            if (String.IsNullOrEmpty(id) || String.IsNullOrWhiteSpace(id))
+            {
+                return Clients.Caller.CodecStatus(new CodecStatusViewModel
+                {
+                    Id = Guid.Empty,
+                    SipAddress = "",
+                    State = CodecState.NotRegistered
+                });
+            }
+            var registered = _codecStatusViewModelsProvider.GetAll();
+            var codecStatus = registered.FirstOrDefault(x => x.Id == Guid.Parse(id)) ?? new CodecStatusViewModel
+            {
+                Id = Guid.Empty,
+                SipAddress = "",
+                State = CodecState.NotRegistered
+            };
+
+            return Clients.Caller.CodecStatus(codecStatus);
         }
     }
 }

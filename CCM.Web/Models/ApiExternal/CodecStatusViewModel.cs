@@ -48,4 +48,17 @@ namespace CCM.Web.Models.ApiExternal
         public DateTime CallStartedAt { get; set; }
         #endregion
     }
+
+    public class CodecStatusExtendedViewModel : CodecStatusViewModel
+    {
+        #region MetaData
+        public string LocationName { get; set; }
+        public string LocationCategory { get; set; }
+        public string CodecTypeName { get; set; }
+        public string CodecTypeColor { get; set; }
+        public string CodecTypeCategory { get; set; }
+        public string RegionName { get; set; }
+        public string UserComment { get; set; }
+        #endregion
+    }
 }

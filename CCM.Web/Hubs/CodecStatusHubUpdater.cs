@@ -120,6 +120,7 @@ namespace CCM.Web.Hubs
         {
             _logger.LogDebug($"SignalR is sending codec status to clients. SipAddress: {codecStatusViewModel.SipAddress}, State: {codecStatusViewModel.State}");
             _codecStatusHub.Clients.All.CodecStatus(codecStatusViewModel);
+            _codecStatusHub.Clients.Group("extended").CodecStatusExtended(codecStatusViewModel as CodecStatusExtendedViewModel);
         }
 
         private void UpdateCodecStatusByGuid(Guid id)
@@ -140,6 +141,15 @@ namespace CCM.Web.Hubs
             else
             {
                 _logger.LogError($"Can't update Codec status hub. No codec online with id: {id}");
+            }
+
+            // Extended user agent
+            var uasOnline = _codecStatusViewModelsProvider.GetAllExtended();
+            CodecStatusExtendedViewModel updatedStatus = uasOnline.FirstOrDefault(x => x.Id == id);
+            if (updatedStatus != null)
+            {
+                _logger.LogDebug($"SignalR is sending codec status to clients. SipAddress: {updatedStatus.SipAddress}, State: {updatedStatus.State}");
+                _codecStatusHub.Clients.Group("extended").CodecStatusExtended(updatedStatus);
             }
         }
 
@@ -172,6 +182,7 @@ namespace CCM.Web.Hubs
             };
             _logger.LogDebug($"CodecStatusHub. Sending codec status to clients. SipAddress: {updatedCodecFrom.SipAddress}, State: {updatedCodecFrom.State}");
             _codecStatusHub.Clients.All.CodecStatus(updatedCodecFrom);
+            _codecStatusHub.Clients.Group("extended").CodecStatusExtended(updatedCodecFrom as CodecStatusExtendedViewModel);
 
             // To
             var updatedCodecTo = new CodecStatusViewModel
@@ -185,6 +196,7 @@ namespace CCM.Web.Hubs
             };
             _logger.LogDebug($"CodecStatusHub. Sending codec status to clients. SipAddress: {updatedCodecTo.SipAddress}, State: {updatedCodecTo.State}");
             _codecStatusHub.Clients.All.CodecStatus(updatedCodecTo);
+            _codecStatusHub.Clients.Group("extended").CodecStatusExtended(updatedCodecTo as CodecStatusExtendedViewModel);
         }
     }
 }
