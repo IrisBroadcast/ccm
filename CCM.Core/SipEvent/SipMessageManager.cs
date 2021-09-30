@@ -165,9 +165,12 @@ namespace CCM.Core.SipEvent
             var from = _cachedRegisteredCodecRepository
                 .GetRegisteredUserAgents()
                 .FirstOrDefault(x => (x.SipUri == sipMessage.FromSipUri.User || x.SipUri == sipMessage.FromSipUri.UserAtHost));
+
+            call.FromDisplayName = sipMessage.FromDisplayName + "keso";
             if (from != null)
             {
                 call.FromSip = from.SipUri;
+                call.FromDisplayName = from.DisplayName;
             }
             else if (sipMessage.FromSipUri.User.IsNumeric())
             {
@@ -178,15 +181,18 @@ namespace CCM.Core.SipEvent
             {
                 call.FromSip = sipMessage.FromSipUri.UserAtHost;
             }
-            call.FromDisplayName = sipMessage.FromDisplayName;
+            
             call.FromId = from?.Id ?? Guid.Empty;
 
             var to = _cachedRegisteredCodecRepository
                 .GetRegisteredUserAgents()
                 .FirstOrDefault(x => (x.SipUri == sipMessage.ToSipUri.User || x.SipUri == sipMessage.ToSipUri.UserAtHost));
+
+            call.ToDisplayName = sipMessage.ToDisplayName + "keso";
             if (to != null)
             {
                 call.ToSip = to.SipUri;
+                call.ToDisplayName = to.DisplayName;
             }
             else if (sipMessage.ToSipUri.User.IsNumeric())
             {
@@ -197,7 +203,7 @@ namespace CCM.Core.SipEvent
             {
                 call.ToSip = sipMessage.ToSipUri.UserAtHost;
             }
-            call.ToDisplayName = sipMessage.ToDisplayName;
+            
             call.ToId = to?.Id ?? Guid.Empty;
 
             call.Started = DateTime.UtcNow;
