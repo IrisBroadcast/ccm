@@ -99,7 +99,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
             SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
             var expireTime = DateTime.UtcNow;
             
-            _logger.LogInformation($"REGISTE: SIP: {sipEventData.FromUri.Replace("sip:", "")} {sipEventData.Expires} -- # Now____:{expireTime} Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
+            _logger.LogInformation($"REGISTE: SIP: {sipEventData.FromUri.Replace("sip:", "")} '{sipEventData.FromDisplayName ?? ""}' {sipEventData.Expires} -- # Now____:{expireTime} Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
             //_logger.LogDebug("SIP message, Handled: {0}, Parsed: {1}, Result: {2}", sipEventData.ToLogString(), sipMessage.ToDebugString(), result?.ChangeStatus);
 
             if (result == null)
