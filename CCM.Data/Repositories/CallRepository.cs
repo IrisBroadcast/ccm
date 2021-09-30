@@ -275,7 +275,7 @@ namespace CCM.Data.Repositories
 
                 FromId = GuidHelper.GuidString(dbCall.FromId),
                 FromSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.FromUsername) : dbCall.FromUsername,
-                FromDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(fromDisplayName) : fromDisplayName,
+                FromDisplayName = fromDisplayName,//anonymize ? DisplayNameHelper.AnonymizeDisplayName(fromDisplayName) : fromDisplayName,
                 FromCodecTypeColor = dbCall.FromCodec?.User?.CodecType?.Color ?? string.Empty,
                 FromCodecTypeName = dbCall.FromCodec?.User?.CodecType?.Name ?? string.Empty,
                 FromCodecTypeCategory = dbCall.FromCodec?.UserAgent?.Category?.Name ?? string.Empty,
@@ -288,7 +288,7 @@ namespace CCM.Data.Repositories
 
                 ToId = GuidHelper.GuidString(dbCall.ToId),
                 ToSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.ToUsername) : dbCall.ToUsername,
-                ToDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(toDisplayName) : toDisplayName,
+                ToDisplayName = toDisplayName, //anonymize ? DisplayNameHelper.AnonymizeDisplayName(toDisplayName) : toDisplayName,
                 ToCodecTypeColor = dbCall.ToCodec?.User?.CodecType?.Color ?? string.Empty,
                 ToCodecTypeName = dbCall.ToCodec?.User?.CodecType?.Name ?? string.Empty,
                 ToCodecTypeCategory = dbCall.ToCodec?.UserAgent?.Category?.Name ?? string.Empty,
