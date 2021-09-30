@@ -105,6 +105,7 @@ namespace CCM.Web.Hubs
                 {
                     var codecStatus = new CodecStatusViewModel
                     {
+                        Id = updateResult.ChangedObjectId,
                         State = CodecState.NotRegistered,
                         SipAddress = updateResult.SipAddress
                     };
