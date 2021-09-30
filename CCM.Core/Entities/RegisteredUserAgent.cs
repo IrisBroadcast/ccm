@@ -41,7 +41,6 @@ namespace CCM.Core.Entities
             string codecTypeName,
             string codecTypeColor,
             string codecTypeCategory,
-            string username,
             string userDisplayName,
             string userComment,
             string regionName)
@@ -56,7 +55,6 @@ namespace CCM.Core.Entities
             CodecTypeName = codecTypeName;
             CodecTypeColor = codecTypeColor;
             CodecTypeCategory = codecTypeCategory;
-            Username = username;
             UserDisplayName = userDisplayName;
             UserComment = userComment;
             RegionName = regionName;
@@ -72,7 +70,7 @@ namespace CCM.Core.Entities
         public string CodecTypeName { get; }
         public string CodecTypeColor { get; }
         public string CodecTypeCategory { get; }
-        public string Username { get; }
+        //public string Username { get; } // TODO: username should be not used, it should match sip-address
         public string UserDisplayName { get; }
         public string UserComment { get; }
         public string RegionName { get; }

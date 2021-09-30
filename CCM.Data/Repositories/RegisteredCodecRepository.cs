@@ -110,11 +110,6 @@ namespace CCM.Data.Repositories
                         Id = Guid.NewGuid()
                     };
                     db.RegisteredCodecs.Add(dbSip);
-                    _logger.LogWarning($"UPDATE_: SIP: {registration.SipUri} {registration.ExpirationTimeSeconds} (SAVING NEW_)");
-                }
-                else
-                {
-                    _logger.LogWarning($"UPDATE_: SIP: {registration.SipUri} {registration.ExpirationTimeSeconds} -- Updated:{dbSip.Updated} (SAVING OLD_)");
                 }
 
                 // Match and map
@@ -138,9 +133,8 @@ namespace CCM.Data.Repositories
                 dbSip.Expires = registration.ExpirationTimeSeconds;
                 dbSip.Registrar = registration.Registrar;
                 dbSip.Updated = DateTime.UtcNow;
-                _logger.LogWarning($"UPDATE_: SIP: {registration.SipUri} PRESTATUS (SAVING_)");
+
                 var changeStatus = GetChangeStatus(db, dbSip);
-                _logger.LogWarning($"SAVING_: SIP: {registration.SipUri} {registration.ExpirationTimeSeconds} -- Updated:{dbSip.Updated} // Change status:{changeStatus}");
 
                 // Log to SIP account that it has been used
                 dbSip.User.LastUsed = DateTime.UtcNow;
@@ -216,7 +210,7 @@ namespace CCM.Data.Repositories
         {
             var entry = cxt.Entry(dbCodec);
 
-            _logger.LogWarning($"UPDATE_: SIP: {dbCodec.SIP} STATE {entry.State} {dbCodec.Id} (SAVING_)");
+            _logger.LogDebug($"UPDATE_: SIP: {dbCodec.SIP} STATE {entry.State} {dbCodec.Id} (SAVING_)");
 
             if (entry.State == EntityState.Added)
             {
@@ -245,18 +239,6 @@ namespace CCM.Data.Repositories
             _logger.LogDebug($"User-agent nothing changed '{dbCodec.SIP}'");
             return SipEventChangeStatus.NothingChanged;
         }
-
-        /// <summary>
-        /// Returns true if registration time expired
-        /// </summary>
-        //private bool CodecWasExpired(EntityEntry<RegisteredCodecEntity> entry) // TODO: check new implementation of DbEntityEntry not same as EntityEntry
-        //{
-        //    var maxRegistrationAge = _settingsManager.MaxRegistrationAge;
-        //    var expireTime = DateTime.UtcNow.AddSeconds(-maxRegistrationAge);
-        //    _logger.LogWarning($"User-agent expired or deleted check === OrignalValue:{entry.OriginalValues.GetValue<DateTime>(nameof(entry.Entity.Updated))}, new?:{entry.Entity.Updated}, (EXPTIME:{expireTime})");
-
-        //    return entry.OriginalValues.GetValue<DateTime>(nameof(entry.Entity.Updated)) < expireTime;
-        //}
 
         /// <summary>
         /// Checks if the updating data, should be used to also trigger cache reload.
@@ -324,7 +306,6 @@ namespace CCM.Data.Repositories
                     updated: x.Updated,
                     sipUri: x.SIP,
                     displayName: x.DisplayName,
-                    username: x.Username,
                     ipAddress: x.IP,
                     userAgentHeader: x.UserAgentHeader,
                     userAgentId: x.UserAgentId,
@@ -367,7 +348,6 @@ namespace CCM.Data.Repositories
                         CodecTypeName = x.User.CodecType.Name,
                         CodecTypeColor = x.User.CodecType.Color,
                         CodecTypeCategory = x.UserAgent.Category.Name,
-                        Username = x.Username,
                         UserDisplayName = x.User.DisplayName,
                         UserComment = x.User.Comment,
                         RegionName = x.Location.Region.Name
@@ -385,7 +365,6 @@ namespace CCM.Data.Repositories
                     codecTypeName: x.CodecTypeName,
                     codecTypeColor: x.CodecTypeColor,
                     codecTypeCategory: x.CodecTypeCategory,
-                    username: x.Username,
                     userDisplayName: x.UserDisplayName,
                     userComment: x.UserComment,
                     regionName: x.RegionName))

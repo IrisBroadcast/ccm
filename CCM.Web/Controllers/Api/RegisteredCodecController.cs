@@ -125,11 +125,11 @@ namespace CCM.Web.Controllers.Api
             string inCallWith;
             if (call.FromSip == registeredUserAgent.Sip)
             {
-                inCallWith = call.To != null ? DisplayNameHelper.GetDisplayName(call.To, _settingsManager.SipDomain) : call.ToSip;
+                inCallWith = DisplayNameHelper.GetDisplayName(call.To, call.ToDisplayName, call.ToSip, _settingsManager.SipDomain);
             }
             else
             {
-                inCallWith = call.From != null ? DisplayNameHelper.GetDisplayName(call.From, _settingsManager.SipDomain) : call.FromSip;
+                inCallWith = DisplayNameHelper.GetDisplayName(call.From, call.FromDisplayName, call.FromSip, _settingsManager.SipDomain);
             }
 
             return DisplayNameHelper.AnonymizeDisplayName(inCallWith);

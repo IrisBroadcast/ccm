@@ -70,7 +70,6 @@ namespace CCM.Web.Mappers
                     CodecTypeName = regSip.CodecTypeName,
                     CodecTypeColor = regSip.CodecTypeColor,
                     CodecTypeCategory = regSip.CodecTypeCategory,
-                    UserName = regSip.Username,
                     UserComment = regSip.UserComment,
                     RegionName = regSip.RegionName
                 };

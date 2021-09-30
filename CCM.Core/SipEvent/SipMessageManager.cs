@@ -166,11 +166,11 @@ namespace CCM.Core.SipEvent
                 .GetRegisteredUserAgents()
                 .FirstOrDefault(x => (x.SipUri == sipMessage.FromSipUri.User || x.SipUri == sipMessage.FromSipUri.UserAtHost));
 
-            call.FromDisplayName = sipMessage.FromDisplayName + "keso";
+            call.FromDisplayName = sipMessage.FromDisplayName;
             if (from != null)
             {
                 call.FromSip = from.SipUri;
-                call.FromDisplayName = from.DisplayName;
+                call.FromDisplayName = string.IsNullOrEmpty(from.UserDisplayName) ? from.DisplayName : from.UserDisplayName; // TODO: maybe displayname helper should exist here.. check this
             }
             else if (sipMessage.FromSipUri.User.IsNumeric())
             {
@@ -188,11 +188,11 @@ namespace CCM.Core.SipEvent
                 .GetRegisteredUserAgents()
                 .FirstOrDefault(x => (x.SipUri == sipMessage.ToSipUri.User || x.SipUri == sipMessage.ToSipUri.UserAtHost));
 
-            call.ToDisplayName = sipMessage.ToDisplayName + "keso";
+            call.ToDisplayName = sipMessage.ToDisplayName;
             if (to != null)
             {
                 call.ToSip = to.SipUri;
-                call.ToDisplayName = to.DisplayName;
+                call.ToDisplayName = string.IsNullOrEmpty(to.UserDisplayName) ? to.DisplayName : to.UserDisplayName; // TODO: maybe displayname helper should exist here.. check this
             }
             else if (sipMessage.ToSipUri.User.IsNumeric())
             {

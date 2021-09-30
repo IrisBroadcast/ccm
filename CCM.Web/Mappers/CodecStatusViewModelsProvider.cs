@@ -66,7 +66,7 @@ namespace CCM.Web.Mappers
                     SipAddress = regSip.SipUri,
                     Id = regSip.Id,
                     PresentationName = DisplayNameHelper.GetDisplayName(regSip, sipDomain),
-                    DisplayName = regSip.DisplayName
+                    DisplayName = DisplayNameHelper.GetDisplayName(regSip, sipDomain)
                 };
 
                 var call = ongoingCalls.FirstOrDefault(c => c.FromSip == regSip.SipUri || c.ToSip == regSip.SipUri);
@@ -151,7 +151,7 @@ namespace CCM.Web.Mappers
                     SipAddress = regSip.SipUri,
                     Id = regSip.Id,
                     PresentationName = DisplayNameHelper.GetDisplayName(regSip, sipDomain),
-                    DisplayName = regSip.DisplayName,
+                    DisplayName = DisplayNameHelper.GetDisplayName(regSip, sipDomain),
                     CodecTypeName = regSip.CodecTypeName,
                     CodecTypeCategory = regSip.CodecTypeCategory,
                     CodecTypeColor = regSip.CodecTypeColor,
@@ -257,7 +257,7 @@ namespace CCM.Web.Mappers
                     SipAddress = regSip.SipUri,
                     Id = regSip.Id,
                     PresentationName = DisplayNameHelper.GetDisplayName(regSip, sipDomain),
-                    DisplayName = regSip.DisplayName
+                    DisplayName = DisplayNameHelper.GetDisplayName(regSip, sipDomain)
                 };
 
                 var call = ongoingCalls.FirstOrDefault(c => c.FromSip == regSip.SipUri || c.ToSip == regSip.SipUri);
@@ -292,6 +292,7 @@ namespace CCM.Web.Mappers
                 Id = Guid.Empty,
                 SipAddress = a.UserName,
                 DisplayName = DisplayNameHelper.GetDisplayName(a, sipDomain),
+                PresentationName = DisplayNameHelper.GetDisplayName(a, sipDomain),
                 State = CodecState.NotRegistered
             });
 

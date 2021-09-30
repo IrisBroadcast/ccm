@@ -32,23 +32,24 @@ using CCM.Core.Extensions;
 namespace CCM.Core.Helpers
 {
     /// <summary>
-    /// TODO: important, all displaynames that is created with this process should be called presentationName instead... 
+    /// TODO: important, all displaynames that is created with this process should be called presentationName instead...
+    /// Presentationname should be in this order:
+    ///  - Saved user DisplayName
+    ///  - Displayname from the codec/user-agent
+    ///  - Call Displayname from the service because the codec is not registered
+    ///  - Username/SIP-Address as told by the registrar (with our domain removed if there is one)
+    ///  - Call Username from the service because the codec is not registered
     /// </summary>
     public class DisplayNameHelper
     {
-        // - Visningsnamn
-        // - Displayname fr�n kodaren
-        // - SIP-addressen(minus dom�n om det �r samma som v�r)
-        // - Hela SIP-addressen
-
-        public static string GetDisplayName(CallRegisteredCodec registeredCodec, string sipDomain)
+        public static string GetDisplayName(CallRegisteredCodec registeredCodec, string callDisplayName, string callUserName, string sipDomain)
         {
             return GetDisplayName(
                 registeredCodec?.User?.DisplayName ?? string.Empty,
                 registeredCodec?.DisplayName ?? string.Empty,
-                string.Empty,
-                registeredCodec?.UserName ?? string.Empty,
+                callDisplayName,
                 registeredCodec?.SIP ?? string.Empty,
+                callUserName,
                 string.Empty,
                 sipDomain);
         }
@@ -71,8 +72,8 @@ namespace CCM.Core.Helpers
                 registeredUserAgent.UserDisplayName,
                 registeredUserAgent.DisplayName,
                 string.Empty,
-                registeredUserAgent.Username,
                 registeredUserAgent.SipUri,
+                string.Empty,
                 string.Empty,
                 sipDomain);
         }
@@ -95,8 +96,8 @@ namespace CCM.Core.Helpers
                 registeredUserAgentDiscovery.UserDisplayName,
                 registeredUserAgentDiscovery.DisplayName,
                 string.Empty,
-                registeredUserAgentDiscovery.Username,
                 registeredUserAgentDiscovery.SipUri,
+                string.Empty,
                 string.Empty,
                 sipDomain);
         }

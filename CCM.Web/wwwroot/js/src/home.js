@@ -303,9 +303,6 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
             if ($scope.containsString(item.sip, search)) {
                 return true;
             }
-            if ($scope.containsString(item.userName, search)) {
-                return true;
-            }
             if ($scope.containsString(item.userComment, search)) {
                 return true;
             }

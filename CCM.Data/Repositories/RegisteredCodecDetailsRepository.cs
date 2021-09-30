@@ -34,8 +34,6 @@ using LazyCache;
 
 namespace CCM.Data.Repositories
 {
-    // TODO: This one seems to not be in use.. or am I wrong?
-    // TODO: make it efficient if in use
     /// <summary>
     /// Used by SIP info details for frontpage
     /// </summary>

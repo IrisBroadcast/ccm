@@ -42,7 +42,6 @@ namespace CCM.Core.Entities
             DateTime updated,
             string sipUri,
             string displayName,
-            string username,
             string ipAddress,
             string userAgentHeader,
             Guid? userAgentId,
@@ -62,7 +61,6 @@ namespace CCM.Core.Entities
             Updated = updated;
             SipUri = sipUri;
             DisplayName = displayName;
-            Username = username;
             IpAddress = ipAddress;
             UserAgentHeader = userAgentHeader;
             UserAgentId = userAgentId;
@@ -82,7 +80,6 @@ namespace CCM.Core.Entities
         public DateTime Updated { get; }
         public string SipUri { get; }
         public string DisplayName { get; }
-        public string Username { get; }
         public string IpAddress { get; }
         public string UserAgentHeader { get; }
         public Guid? UserAgentId { get; }

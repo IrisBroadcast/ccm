@@ -146,7 +146,6 @@ namespace CCM.Core.Managers
                     id: regSip.Id,
                     sipUri: regSip.SipUri,
                     displayName: presentationName,
-                    username: regSip.Username,
                     ipAddress: regSip.IpAddress,
                     userAgentHeader: regSip.UserAgentHeader,
                     userAgentName: regSip.UserAgentName,

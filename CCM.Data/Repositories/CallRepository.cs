@@ -60,7 +60,7 @@ namespace CCM.Data.Repositories
         }
 
         /// <summary>
-        /// Update or add information about a call. Can be used to close calls aswell
+        /// Update or add information about a call. Can be used to close calls as well
         /// </summary>
         /// <param name="call"></param>
         public void UpdateCall(Call call)
