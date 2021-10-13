@@ -12,7 +12,7 @@ services:
           constraints: [node.role == manager]
     ports:
       - "82:80"
-    network_mode: host
+    network_mode: "host"
     configs:
       - source: discovery_appsettings
         target: /app/appsettings.json
