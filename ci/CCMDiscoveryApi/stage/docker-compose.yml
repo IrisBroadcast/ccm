@@ -14,6 +14,8 @@ services:
       - "82:80"
     networks:
       - default
+    extra_hosts:
+      - "stage-ccm.sr.se:134.25.10.16"
     configs:
       - source: discovery_appsettings
         target: /app/appsettings.json
