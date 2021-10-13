@@ -11,6 +11,7 @@ services:
       placement:
           constraints: [node.role == manager]
     ports:
+      - "82:80"
     networks:
       - default
     configs:
