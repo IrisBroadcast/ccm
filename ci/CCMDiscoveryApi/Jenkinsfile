@@ -22,12 +22,12 @@ node(jenkinsWorkerConstraint) {
     }
 
     def buildVersion = "0.0.0"
-    def buildEnvironment = "Dev"
+    def buildEnvironment = "Stage"
 
     // Use tag name as build version if existing (used in the bottom footer of main page in the application)
     if(env.TAG_NAME) {
         buildVersion = env.TAG_NAME
-        buildEnvironment = "Prod"
+        buildEnvironment = "Production"
         application.stackname = "ipk"
         config.dockerHost = "stoipk01"
         config.dockerComposeFrom = "./ci/CCMDiscoveryApi/production/docker-compose.yml"
