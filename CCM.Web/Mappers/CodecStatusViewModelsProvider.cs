@@ -95,13 +95,13 @@ namespace CCM.Web.Mappers
             foreach (var uu in ongoingCalls)
             {
                 // Check if 'from' codec is not in registered codecs
-                if (userAgentsOnline.All(x => x.Id != Guid.Parse(uu.FromId)))
+                if (String.IsNullOrEmpty(uu.FromId) || userAgentsOnline.All(x => x.Id != Guid.Parse(uu.FromId)))
                 {
                     userAgentsOnline.Add(new CodecStatusViewModel
                     {
                         State = CodecState.InCall,
                         SipAddress = uu.FromSip,
-                        Id = Guid.Parse(uu.FromId),
+                        Id = string.IsNullOrEmpty(uu.FromId) ? Guid.Empty : Guid.Parse(uu.FromId),
                         PresentationName = uu.FromDisplayName,
                         DisplayName = uu.FromDisplayName,
                         InCall = true,
@@ -115,13 +115,13 @@ namespace CCM.Web.Mappers
                 }
 
                 // Check if 'to' codec is not in registered codecs
-                if (userAgentsOnline.All(x => x.Id != Guid.Parse(uu.ToId)))
+                if (String.IsNullOrEmpty(uu.ToId) || userAgentsOnline.All(x => x.Id != Guid.Parse(uu.ToId)))
                 {
                     userAgentsOnline.Add(new CodecStatusViewModel
                     {
                         State = CodecState.InCall,
                         SipAddress = uu.ToSip,
-                        Id = Guid.Parse(uu.ToId),
+                        Id = string.IsNullOrEmpty(uu.ToId) ? Guid.Empty : Guid.Parse(uu.ToId),
                         PresentationName = uu.ToDisplayName,
                         DisplayName = uu.ToDisplayName,
                         InCall = true,
