@@ -21,6 +21,10 @@ RUN dotnet publish --configuration Release --output ./out ./CCM.DiscoveryApi/CCM
 # Switch to runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:3.1
 
+RUN apt-get update
+RUN apt-get install iputils-ping -y
+RUN apt-get install nano -y
+
 # Copy buildfolder to runtime image
 WORKDIR /app
 COPY --from=builder /source/out .
