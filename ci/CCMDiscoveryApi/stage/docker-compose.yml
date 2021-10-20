@@ -18,6 +18,9 @@ services:
       - source: discovery_appsettings_stage
         target: /app/appsettings.json
 
+networks:
+  proxynet:
+    external: true
 configs:
   discovery_appsettings_stage:
     external: true
