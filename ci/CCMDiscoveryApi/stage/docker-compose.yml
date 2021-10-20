@@ -10,16 +10,17 @@ services:
     deploy:
       placement:
           constraints: [node.role == manager]
-    ports:
-      - "82:80"
     networks:
-      - default
+      - proxynet
     extra_hosts:
       - "stage-ccm.sr.se:134.25.10.16"
     configs:
-      - source: discovery_appsettings
+      - source: discovery_appsettings_stage
         target: /app/appsettings.json
 
+networks:
+  proxynet:
+    external: true
 configs:
-  discovery_appsettings:
+  discovery_appsettings_stage:
     external: true
