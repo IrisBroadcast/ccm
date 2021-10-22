@@ -53,6 +53,7 @@ namespace CCM.DiscoveryApi.Controllers
         }
 
         [Route("~/filters")]
+        [Produces("application/xml")]
         [HttpPost]
         public async Task<SrDiscovery> Filters()
         {
