@@ -62,13 +62,6 @@ namespace CCM.DiscoveryApi.Infrastructure
             AuthenticationHeaderValue header;
             try
             {
-                foreach (var hh in Request.Headers)
-                {
-                    log.Info($"REQ: {hh.Key}:{hh.Value}");
-                    Console.WriteLine($"REQ: {hh.Key}:{hh.Value}");
-                }
-
-
                 header = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
             }
             catch(Exception e)

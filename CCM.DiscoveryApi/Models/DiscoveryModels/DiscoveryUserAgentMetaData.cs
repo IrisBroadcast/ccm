@@ -28,9 +28,15 @@ using System.Xml.Serialization;
 
 namespace CCM.DiscoveryApi.Models.DiscoveryModels
 {
-    public class UserAgentProfileRef
+    public class DiscoveryUserAgentMetaData
     {
-        [XmlAttribute("name")]
-        public string Name { get; set; }
+        [XmlElement("localised-value")]
+        public DiscoveryLocalisedName LocalisedName { get; set; }
+
+        [XmlAttribute("key")]
+        public string Key { get; set; }
+
+        [XmlAttribute("value")]
+        public string Value { get; set; }
     }
 }

@@ -29,15 +29,22 @@ using System.Xml.Serialization;
 
 namespace CCM.DiscoveryApi.Models.DiscoveryModels
 {
-    public class Filter
+    /// <summary>
+    /// SR Discovery entity
+    /// </summary>
+    [XmlRoot("sr-discovery", Namespace = "", IsNullable = false)]
+    public class DiscoveryResponse
     {
-        [XmlAttribute("name")]
-        public string Name { get; set; }
+        [XmlArray("profiles")]
+        [XmlArrayItem("profile", IsNullable = false)]
+        public List<DiscoveryProfile> Profiles { get; set; }
 
-        [XmlElement("localised-name")]
-        public LocalisedName LocalisedName { get; set; }
+        [XmlArray("filters")]
+        [XmlArrayItem("filter", IsNullable = false)]
+        public List<DiscoveryFilter> Filters { get; set; }
 
-        [XmlElement("option")]
-        public List<FilterOption> FilterOptions { get; set; }
+        [XmlArray("user-agents")]
+        [XmlArrayItem("user-agent")]
+        public List<DiscoveryUserAgent> UserAgents { get; set; }
     }
 }

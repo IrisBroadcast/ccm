@@ -24,27 +24,22 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace CCM.DiscoveryApi.Models.DiscoveryModels
 {
     /// <summary>
-    /// SR Discovery entity
+    /// Profile entity
     /// </summary>
-    [XmlRoot("sr-discovery", Namespace = "", IsNullable = false)]
-    public class SrDiscovery
+    public class DiscoveryProfile
     {
-        [XmlArray("profiles")]
-        [XmlArrayItem("profile", IsNullable = false)]
-        public List<Profile> Profiles { get; set; }
+        [XmlAttribute("name")]
+        public string Name { get; set; }
 
-        [XmlArray("filters")]
-        [XmlArrayItem("filter", IsNullable = false)]
-        public List<Filter> Filters { get; set; }
+        [XmlElement("sdp")]
+        public string Sdp { get; set; }
 
-        [XmlArray("user-agents")]
-        [XmlArrayItem("user-agent")]
-        public List<UserAgent> UserAgents { get; set; }
+        [XmlElement("localised-name")]
+        public DiscoveryLocalisedName LocalisedName { get; set; }
     }
 }

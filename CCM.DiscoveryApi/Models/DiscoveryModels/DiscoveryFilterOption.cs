@@ -28,15 +28,12 @@ using System.Xml.Serialization;
 
 namespace CCM.DiscoveryApi.Models.DiscoveryModels
 {
-    public class UserAgentMetaData
+    public class DiscoveryFilterOption
     {
-        [XmlElement("localised-value")]
-        public LocalisedName LocalisedName { get; set; }
+        [XmlAttribute("name")]
+        public string Name { get; set; }
 
-        [XmlAttribute("key")]
-        public string Key { get; set; }
-
-        [XmlAttribute("value")]
-        public string Value { get; set; }
+        [XmlElement("localised-name")]
+        public DiscoveryLocalisedName LocalisedName { get; set; }
     }
 }

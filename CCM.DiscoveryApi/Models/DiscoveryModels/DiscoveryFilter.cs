@@ -24,16 +24,20 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace CCM.DiscoveryApi.Models.DiscoveryModels
 {
-    public class FilterOption
+    public class DiscoveryFilter
     {
         [XmlAttribute("name")]
         public string Name { get; set; }
 
         [XmlElement("localised-name")]
-        public LocalisedName LocalisedName { get; set; }
+        public DiscoveryLocalisedName LocalisedName { get; set; }
+
+        [XmlElement("option")]
+        public List<DiscoveryFilterOption> FilterOptions { get; set; }
     }
 }

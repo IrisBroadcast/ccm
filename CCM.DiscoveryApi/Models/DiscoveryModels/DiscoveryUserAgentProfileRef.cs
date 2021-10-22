@@ -28,18 +28,9 @@ using System.Xml.Serialization;
 
 namespace CCM.DiscoveryApi.Models.DiscoveryModels
 {
-    /// <summary>
-    /// Profile entity
-    /// </summary>
-    public class Profile
+    public class DiscoveryUserAgentProfileRef
     {
         [XmlAttribute("name")]
         public string Name { get; set; }
-
-        [XmlElement("sdp")]
-        public string Sdp { get; set; }
-
-        [XmlElement("localised-name")]
-        public LocalisedName LocalisedName { get; set; }
     }
 }

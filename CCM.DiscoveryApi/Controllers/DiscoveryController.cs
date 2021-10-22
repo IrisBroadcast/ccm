@@ -52,38 +52,38 @@ namespace CCM.DiscoveryApi.Controllers
 
         [Route("~/filters")]
         [HttpPost]
-        public async Task<SrDiscovery> Filters()
+        public async Task<DiscoveryResponse> Filters()
         {
             log.Trace("Discovery API - requesting 'filters'");
 
             var filterDtos = await _discoveryService.GetFiltersAsync(Request);
 
-            var filters = filterDtos.Select(f => new Filter
+            var filters = filterDtos.Select(f => new DiscoveryFilter
             {
                 Name = f.Name,
-                FilterOptions = f.Options.Select(o => new FilterOption { Name = o }).ToList()
+                FilterOptions = f.Options.Select(o => new DiscoveryFilterOption { Name = o }).ToList()
             }).ToList();
 
-            return new SrDiscovery { Filters = filters };
+            return new DiscoveryResponse { Filters = filters };
         }
 
         [Route("~/profiles")]
         [HttpPost]
-        public async Task<SrDiscovery> Profiles()
+        public async Task<DiscoveryResponse> Profiles()
         {
             log.Trace("Discovery API - requesting 'profiles'");
 
             var profileDtos = await _discoveryService.GetProfilesAsync(Request);
 
             var profiles = profileDtos
-                .Select(p => new Profile { Name = p.Name, Sdp = p.Sdp })
+                .Select(p => new DiscoveryProfile { Name = p.Name, Sdp = p.Sdp })
                 .ToList();
-            return new SrDiscovery { Profiles = profiles };
+            return new DiscoveryResponse { Profiles = profiles };
         }
 
         [Route("~/useragents")]
         [HttpPost]
-        public async Task<SrDiscovery> UserAgents([FromForm]SrDiscoveryParameters srDiscoveryParameters)
+        public async Task<DiscoveryResponse> UserAgents([FromForm]SrDiscoveryParameters srDiscoveryParameters)
         {
             if (Request.ContentType != "application/x-www-form-urlencoded")
             {
@@ -105,22 +105,22 @@ namespace CCM.DiscoveryApi.Controllers
             if (uaResult == null)
             {
                 log.Info("No user agents returned for DiscoveryV1");
-                return new SrDiscovery();
+                return new DiscoveryResponse();
             }
 
-            var profiles = uaResult.Profiles?.Select(p => new Profile() { Name = p.Name, Sdp = p.Sdp }).ToList() ?? new List<Profile>();
+            var profiles = uaResult.Profiles?.Select(p => new DiscoveryProfile() { Name = p.Name, Sdp = p.Sdp }).ToList() ?? new List<DiscoveryProfile>();
 
-            var userAgents = uaResult.UserAgents?.Select(ua => new UserAgent()
+            var userAgents = uaResult.UserAgents?.Select(ua => new DiscoveryUserAgent()
             {
                 SipId = ua.SipId,
                 ConnectedTo = ua.ConnectedTo,
-                ProfileRec = ua.Profiles.Select(p => new UserAgentProfileRef { Name = p }).ToList(),
-                MetaData = ua.MetaData.Select(m => new UserAgentMetaData() { Key = m.Key, Value = m.Value }).ToList()
-            }).ToList() ?? new List<UserAgent>();
+                ProfileRec = ua.Profiles.Select(p => new DiscoveryUserAgentProfileRef { Name = p }).ToList(),
+                MetaData = ua.MetaData.Select(m => new DiscoveryUserAgentMetaData() { Key = m.Key, Value = m.Value }).ToList()
+            }).ToList() ?? new List<DiscoveryUserAgent>();
 
             log.Debug("Discovery V1 Returning {0} useragents and {1} profiles", uaResult.UserAgents?.Count ?? 0, uaResult.Profiles?.Count ?? 0);
 
-            return new SrDiscovery { UserAgents = userAgents, Profiles = profiles };
+            return new DiscoveryResponse { UserAgents = userAgents, Profiles = profiles };
         }
 
     }

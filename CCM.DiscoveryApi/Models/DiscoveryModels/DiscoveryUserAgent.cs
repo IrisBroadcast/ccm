@@ -24,16 +24,25 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace CCM.DiscoveryApi.Models.DiscoveryModels
 {
-    public class LocalisedName
+    public class DiscoveryUserAgent
     {
-        [XmlText]
-        public string Value { get; set; }
+        [XmlAttribute("sip-id")]
+        public string SipId { get; set; }
 
-        [XmlAttribute("lang")]
-        public string Lang { get; set; }
+        [XmlAttribute("connected-to")]
+        public string ConnectedTo { get; set; }
+
+        [XmlArray("profile-rec")]
+        [XmlArrayItem("profile-ref")]
+        public List<DiscoveryUserAgentProfileRef> ProfileRec { get; set; }
+
+        [XmlArray("meta-data")]
+        [XmlArrayItem("data")]
+        public List<DiscoveryUserAgentMetaData> MetaData { get; set; }
     }
 }
