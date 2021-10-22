@@ -8,7 +8,11 @@ def httpProxy = env.HTTP_PROXY
 def dockerRegistry = env.DOCKER_REGISTRY
 def dockerFile = "./ci/CCMWeb/Dockerfile"
 def dockerImageEnvName = "IMAGE_NAME"
-def dockerComposeFile = "./ci/CCMWeb/docker-compose.yml"
+def dockerComposeFile = "./ci/CCMWeb/stage/docker-compose.yml"
+def buildVersion = "0.0.0"
+def buildEnvironment = "Dev"
+def configFile = "ccm_appsettings_stage"
+
 
 def config = [
     dockerHost: "msc.sr.se",
@@ -21,16 +25,15 @@ node(jenkinsWorkerConstraint) {
        checkout scm
     }
 
-    def buildVersion = "0.0.0"
-    def buildEnvironment = "Dev"
-    def stageConfigFile = "ccm_stage_appsettings_2"
-
+    
     // Use tag name as build version on production build (a build from a tag) - used in the bottom footer of main page in the application
     // Use specific configuration file on stage version (a build from a branch)
     if(env.TAG_NAME) {
         buildVersion = env.TAG_NAME
         buildEnvironment = "Prod"
         application.stackname = "ipk"
+        configFile = "ccm_appsettings_prod"
+        dockerComposeFile = "./ci/CCMWeb/production/docker-compose.yml"
     }
 
     // Modify the buildinformation.json file in the repository
