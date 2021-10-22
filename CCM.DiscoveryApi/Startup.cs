@@ -80,7 +80,10 @@ namespace CCM.DiscoveryApi
                 });
             });
 
-            services.AddControllers()
+            services.AddControllers(options =>
+                {
+                    options.RespectBrowserAcceptHeader = true; // false by default
+                })
                 .AddNewtonsoftJson(options => {
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 })
