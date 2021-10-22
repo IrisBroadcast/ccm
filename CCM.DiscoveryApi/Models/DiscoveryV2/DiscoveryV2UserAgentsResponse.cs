@@ -24,16 +24,17 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Xml.Serialization;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace CCM.DiscoveryApi.Models.DiscoveryModels
+namespace CCM.DiscoveryApi.Models.DiscoveryV2
 {
-    public class DiscoveryLocalisedName
+    public class DiscoveryV2UserAgentsResponse
     {
-        [XmlText]
-        public string Value { get; set; }
+        [JsonProperty("profiles")]
+        public List<DiscoveryV2Profile> Profiles { get; set; }
 
-        [XmlAttribute("lang")]
-        public string Lang { get; set; }
+        [JsonProperty("userAgents")]
+        public List<DiscoveryV2UserAgent> UserAgents { get; set; }
     }
 }

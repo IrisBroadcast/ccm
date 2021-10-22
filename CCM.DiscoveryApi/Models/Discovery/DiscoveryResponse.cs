@@ -25,16 +25,26 @@
  */
 
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Xml.Serialization;
 
-namespace CCM.DiscoveryApi.Models.DiscoveryV2Models.Filters
+namespace CCM.DiscoveryApi.Models.Discovery
 {
-    public class FilterV2
+    /// <summary>
+    /// SR Discovery entity
+    /// </summary>
+    [XmlRoot("sr-discovery", Namespace = "", IsNullable = false)]
+    public class DiscoveryResponse
     {
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [XmlArray("profiles")]
+        [XmlArrayItem("profile", IsNullable = false)]
+        public List<DiscoveryProfile> Profiles { get; set; }
 
-        [JsonProperty("options")]
-        public List<FilterOptionV2> Options { get; set; }
+        [XmlArray("filters")]
+        [XmlArrayItem("filter", IsNullable = false)]
+        public List<DiscoveryFilter> Filters { get; set; }
+
+        [XmlArray("user-agents")]
+        [XmlArrayItem("user-agent")]
+        public List<DiscoveryUserAgent> UserAgents { get; set; }
     }
 }

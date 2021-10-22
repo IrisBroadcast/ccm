@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -38,7 +37,6 @@ using NLog;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
-using System.Diagnostics;
 using System.Net.Http.Headers;
 
 namespace CCM.DiscoveryApi.Services

@@ -25,9 +25,6 @@
  */
 
 using CCM.Core.Entities.Discovery;
-using CCM.DiscoveryApi.Models.DiscoveryV2Models.Filters;
-using CCM.DiscoveryApi.Models.DiscoveryV2Models.Profiles;
-using CCM.DiscoveryApi.Models.DiscoveryV2Models.UserAgents;
 using CCM.DiscoveryApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +32,7 @@ using NLog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CCM.DiscoveryApi.Models.DiscoveryV2;
 
 namespace CCM.DiscoveryApi.Controllers
 {
@@ -52,16 +50,16 @@ namespace CCM.DiscoveryApi.Controllers
 
         [HttpGet]
         [Route("~/v2/filters")]
-        public async Task<List<FilterV2>> Filters()
+        public async Task<List<DiscoveryV2Filter>> Filters()
         {
             log.Trace("Discovery V2 API - requesting 'filters'");
 
             List<FilterDto> filterDtos = await _discoveryService.GetFiltersAsync(Request);
 
-            var filters = filterDtos.Select(f => new FilterV2
+            var filters = filterDtos.Select(f => new DiscoveryV2Filter
             {
                 Name = f.Name,
-                Options = f.Options.Select(o => new FilterOptionV2
+                Options = f.Options.Select(o => new DiscoveryV2FilterOption
                 {
                     Name = o
                 }).ToList()
@@ -72,14 +70,14 @@ namespace CCM.DiscoveryApi.Controllers
 
         [HttpGet]
         [Route("~/v2/profiles")]
-        public async Task<List<ProfileDtoV2>> Profiles()
+        public async Task<List<DiscoveryV2Profile>> Profiles()
         {
             log.Trace("Discovery V2 API - requesting 'profiles'");
 
             var profileDtos = await _discoveryService.GetProfilesAsync(Request);
 
             var profiles = profileDtos
-                .Select(p => new ProfileDtoV2()
+                .Select(p => new DiscoveryV2Profile()
                 {
                     Name = p.Name,
                     Sdp = p.Sdp
@@ -91,7 +89,7 @@ namespace CCM.DiscoveryApi.Controllers
 
         [HttpPost]
         [Route("~/v2/useragents")]
-        public async Task<ActionResult> UserAgents([FromBody]UserAgentSearchParamsV2 searchParams)
+        public async Task<ActionResult> UserAgents([FromBody]DiscoveryV2UserAgentRequest searchParams)
         {
             log.Trace("Discovery V2 API - requesting 'useragents'", searchParams); // old return UserAgentsResultV2
 
@@ -100,7 +98,7 @@ namespace CCM.DiscoveryApi.Controllers
                 log.Debug("Requesting useragents from Discovery V2, but search params is null");
                 //throw new HttpResponseException(HttpStatusCode.BadRequest);
                 //return BadRequest("No search parameters");
-                searchParams = new UserAgentSearchParamsV2();
+                searchParams = new DiscoveryV2UserAgentRequest();
             }
 
             var searchParamsDto = new UserAgentSearchParamsDto
@@ -115,16 +113,16 @@ namespace CCM.DiscoveryApi.Controllers
 
             log.Debug("Returning {0} useragents and {1} profiles (V2).", uaResult.UserAgents?.Count ?? 0, uaResult.Profiles?.Count ?? 0);
 
-            var result = new UserAgentsResultV2
+            var result = new DiscoveryV2UserAgentsResponse
             {
-                Profiles = uaResult?.Profiles?.Select(p => new ProfileDtoV2 { Name = p.Name, Sdp = p.Sdp }).ToList() ?? new List<ProfileDtoV2>(),
-                UserAgents = uaResult?.UserAgents?.Select(ua => new UserAgentDtoV2
+                Profiles = uaResult?.Profiles?.Select(p => new DiscoveryV2Profile { Name = p.Name, Sdp = p.Sdp }).ToList() ?? new List<DiscoveryV2Profile>(),
+                UserAgents = uaResult?.UserAgents?.Select(ua => new DiscoveryV2UserAgent
                 {
                     SipId = ua.SipId,
                     ConnectedTo = ua.ConnectedTo,
                     Profiles = ua.Profiles,
-                    MetaData = ua.MetaData?.Select(m => new KeyValuePairDtoV2(m.Key, m.Value)).ToList() ?? new List<KeyValuePairDtoV2>()
-                }).ToList() ?? new List<UserAgentDtoV2>()
+                    MetaData = ua.MetaData?.Select(m => new DiscoveryV2UserAgentMetaData(m.Key, m.Value)).ToList() ?? new List<DiscoveryV2UserAgentMetaData>()
+                }).ToList() ?? new List<DiscoveryV2UserAgent>()
             };
 
             return Ok(result);

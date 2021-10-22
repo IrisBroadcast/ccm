@@ -24,25 +24,22 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using System.Xml.Serialization;
+using Newtonsoft.Json;
 
-namespace CCM.DiscoveryApi.Models.DiscoveryModels
+namespace CCM.DiscoveryApi.Models.DiscoveryV2
 {
-    public class DiscoveryUserAgent
+    public class DiscoveryV2UserAgentMetaData
     {
-        [XmlAttribute("sip-id")]
-        public string SipId { get; set; }
+        [JsonProperty("key")]
+        public string Key { get; set; }
 
-        [XmlAttribute("connected-to")]
-        public string ConnectedTo { get; set; }
+        [JsonProperty("value")]
+        public string Value { get; set; }
 
-        [XmlArray("profile-rec")]
-        [XmlArrayItem("profile-ref")]
-        public List<DiscoveryUserAgentProfileRef> ProfileRec { get; set; }
-
-        [XmlArray("meta-data")]
-        [XmlArrayItem("data")]
-        public List<DiscoveryUserAgentMetaData> MetaData { get; set; }
+        public DiscoveryV2UserAgentMetaData(string key, string value)
+        {
+            Key = key;
+            Value = value;
+        }
     }
 }

@@ -24,21 +24,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using Newtonsoft.Json;
+using System.Xml.Serialization;
 
-namespace CCM.DiscoveryApi.Models.DiscoveryV2Models.UserAgents
+namespace CCM.DiscoveryApi.Models.Discovery
 {
-    public class KeyValuePairDtoV2
+    public class DiscoveryUserAgentProfileRef
     {
-        [JsonProperty("key")]
-        public string Key { get; set; }
-        [JsonProperty("value")]
-        public string Value { get; set; }
-
-        public KeyValuePairDtoV2(string key, string value)
-        {
-            Key = key;
-            Value = value;
-        }
+        [XmlAttribute("name")]
+        public string Name { get; set; }
     }
 }

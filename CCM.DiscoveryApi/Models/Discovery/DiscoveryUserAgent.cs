@@ -25,17 +25,24 @@
  */
 
 using System.Collections.Generic;
-using CCM.DiscoveryApi.Models.DiscoveryV2Models.Profiles;
-using Newtonsoft.Json;
+using System.Xml.Serialization;
 
-namespace CCM.DiscoveryApi.Models.DiscoveryV2Models.UserAgents
+namespace CCM.DiscoveryApi.Models.Discovery
 {
-    public class UserAgentsResultV2
+    public class DiscoveryUserAgent
     {
-        [JsonProperty("profiles")]
-        public List<ProfileDtoV2> Profiles { get; set; }
+        [XmlAttribute("sip-id")]
+        public string SipId { get; set; }
 
-        [JsonProperty("userAgents")]
-        public List<UserAgentDtoV2> UserAgents { get; set; }
+        [XmlAttribute("connected-to")]
+        public string ConnectedTo { get; set; }
+
+        [XmlArray("profile-rec")]
+        [XmlArrayItem("profile-ref")]
+        public List<DiscoveryUserAgentProfileRef> ProfileRec { get; set; }
+
+        [XmlArray("meta-data")]
+        [XmlArrayItem("data")]
+        public List<DiscoveryUserAgentMetaData> MetaData { get; set; }
     }
 }

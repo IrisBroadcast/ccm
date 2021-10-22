@@ -26,7 +26,6 @@
 
 using CCM.Core.Entities.Discovery;
 using CCM.DiscoveryApi.Models;
-using CCM.DiscoveryApi.Models.DiscoveryModels;
 using CCM.DiscoveryApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +33,7 @@ using NLog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CCM.DiscoveryApi.Models.Discovery;
 
 namespace CCM.DiscoveryApi.Controllers
 {
@@ -83,7 +83,7 @@ namespace CCM.DiscoveryApi.Controllers
 
         [Route("~/useragents")]
         [HttpPost]
-        public async Task<DiscoveryResponse> UserAgents([FromForm]SrDiscoveryParameters srDiscoveryParameters)
+        public async Task<DiscoveryResponse> UserAgents([FromForm]DiscoveryUserAgentRequest srDiscoveryParameters)
         {
             if (Request.ContentType != "application/x-www-form-urlencoded")
             {

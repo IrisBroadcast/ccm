@@ -24,22 +24,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Xml.Serialization;
+using System.Collections.Generic;
 
-namespace CCM.DiscoveryApi.Models.DiscoveryModels
+namespace CCM.DiscoveryApi.Models.DiscoveryV2
 {
-    /// <summary>
-    /// Profile entity
-    /// </summary>
-    public class DiscoveryProfile
+    public class DiscoveryV2UserAgentRequest
     {
-        [XmlAttribute("name")]
-        public string Name { get; set; }
-
-        [XmlElement("sdp")]
-        public string Sdp { get; set; }
-
-        [XmlElement("localised-name")]
-        public DiscoveryLocalisedName LocalisedName { get; set; }
+        public string Caller { get; set; }
+        public string Callee { get; set; }
+        public IList<KeyValuePair<string, string>> Filters { get; set; }
+        public bool IncludeCodecsInCall { get; set; }
     }
 }

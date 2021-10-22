@@ -26,11 +26,14 @@
 
 using Newtonsoft.Json;
 
-namespace CCM.DiscoveryApi.Models.DiscoveryV2Models.Filters
+namespace CCM.DiscoveryApi.Models.DiscoveryV2
 {
-    public class FilterOptionV2
+    public class DiscoveryV2Profile
     {
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("sdp")]
+        public string Sdp { get; set; }
     }
 }

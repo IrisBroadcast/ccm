@@ -25,14 +25,22 @@
  */
 
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace CCM.DiscoveryApi.Models
+namespace CCM.DiscoveryApi.Models.DiscoveryV2
 {
-    public class SrDiscoveryParameters
+    public class DiscoveryV2UserAgent
     {
-        public string Caller { get; set; }
-        public string Callee { get; set; }
-        public IList<KeyValuePair<string,string>> Filters { get; set; }
-        public bool IncludeCodecsInCall { get; set; }
+        [JsonProperty("sipId")]
+        public string SipId { get; set; }
+
+        [JsonProperty("connectedTo")]
+        public string ConnectedTo { get; set; }
+
+        [JsonProperty("profiles")]
+        public List<string> Profiles { get; set; }
+
+        [JsonProperty("metadata")]
+        public List<DiscoveryV2UserAgentMetaData> MetaData { get; set; }
     }
 }
