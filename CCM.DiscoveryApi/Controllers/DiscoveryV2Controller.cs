@@ -51,7 +51,7 @@ namespace CCM.DiscoveryApi.Controllers
         }
 
         [HttpGet]
-        [Route("~/v2/filters2")]
+        [Route("~/v2/filters")]
         public async Task<List<FilterV2>> Filters()
         {
             log.Trace("Discovery V2 API - requesting 'filters'");
@@ -71,7 +71,7 @@ namespace CCM.DiscoveryApi.Controllers
         }
 
         [HttpGet]
-        [Route("~/v2/profiles2")]
+        [Route("~/v2/profiles")]
         public async Task<List<ProfileDtoV2>> Profiles()
         {
             log.Trace("Discovery V2 API - requesting 'profiles'");
@@ -90,7 +90,7 @@ namespace CCM.DiscoveryApi.Controllers
         }
 
         [HttpPost]
-        [Route("~/v2/useragents2")]
+        [Route("~/v2/useragents")]
         public async Task<ActionResult> UserAgents([FromBody]UserAgentSearchParamsV2 searchParams)
         {
             log.Trace("Discovery V2 API - requesting 'useragents'", searchParams); // old return UserAgentsResultV2
@@ -99,7 +99,8 @@ namespace CCM.DiscoveryApi.Controllers
             {
                 log.Debug("Requesting useragents from Discovery V2, but search params is null");
                 //throw new HttpResponseException(HttpStatusCode.BadRequest);
-                return BadRequest("No search parameters");
+                //return BadRequest("No search parameters");
+                searchParams = new UserAgentSearchParamsV2();
             }
 
             var searchParamsDto = new UserAgentSearchParamsDto
