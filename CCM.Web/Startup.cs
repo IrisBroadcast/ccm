@@ -334,7 +334,7 @@ namespace CCM.Web
             services.AddTransient<ICodecStatusHubUpdater, CodecStatusHubUpdater>();
 
             // Discovery related
-            services.AddScoped<IDiscoveryService, DiscoveryService>();
+            services.AddScoped<IDiscoveryServiceManager, DiscoveryServiceManager>();
 
             // Background service
             services.AddHostedService<SipAccountService>();

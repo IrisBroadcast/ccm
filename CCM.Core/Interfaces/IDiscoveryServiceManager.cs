@@ -29,7 +29,7 @@ using CCM.Core.Entities.Discovery;
 
 namespace CCM.Core.Interfaces
 {
-    public interface IDiscoveryService
+    public interface IDiscoveryServiceManager
     {
         UserAgentsResultDto GetUserAgents(string caller, string callee, IList<KeyValuePair<string, string>> filters, bool includeCodecsInCall = false);
         List<ProfileDto> GetProfiles();

@@ -41,9 +41,9 @@ namespace CCM.Web.Controllers.ApiDiscovery
     [Route("api/authenticateddiscovery")]
     public class AuthenticatedDiscoveryController : ControllerBase
     {
-        private readonly IDiscoveryService _discoveryService;
+        private readonly IDiscoveryServiceManager _discoveryService;
 
-        public AuthenticatedDiscoveryController(IDiscoveryService discoveryService)
+        public AuthenticatedDiscoveryController(IDiscoveryServiceManager discoveryService)
         {
             _discoveryService = discoveryService;
         }

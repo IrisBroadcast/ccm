@@ -44,7 +44,7 @@ namespace CCM.Core.Service
     /// The core service of CCM, Discovery Service / Active Phonebook
     /// Profiles (SDPs), Filters and User Agents
     /// </summary>
-    public class DiscoveryService : IDiscoveryService
+    public class DiscoveryServiceManager : IDiscoveryServiceManager
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly ISettingsManager _settingsManager;
@@ -53,7 +53,7 @@ namespace CCM.Core.Service
         private readonly IRegisteredCodecsManager _registeredCodecsManager;
         private readonly IAppCache _cache;
 
-        public DiscoveryService(
+        public DiscoveryServiceManager(
             ISettingsManager settingsManager,
             IFilterManager filterManager,
             ICachedProfileRepository cachedProfileRepository,
