@@ -51,7 +51,7 @@ namespace CCM.DiscoveryApi.Controllers
         }
 
         [HttpGet]
-        [Route("~/v2/filters")]
+        [Route("~/v2/filters2")]
         public async Task<List<FilterV2>> Filters()
         {
             log.Trace("Discovery V2 API - requesting 'filters'");
@@ -71,7 +71,7 @@ namespace CCM.DiscoveryApi.Controllers
         }
 
         [HttpGet]
-        [Route("~/v2/profiles")]
+        [Route("~/v2/profiles2")]
         public async Task<List<ProfileDtoV2>> Profiles()
         {
             log.Trace("Discovery V2 API - requesting 'profiles'");
@@ -90,7 +90,7 @@ namespace CCM.DiscoveryApi.Controllers
         }
 
         [HttpPost]
-        [Route("~/v2/useragents")]
+        [Route("~/v2/useragents2")]
         public async Task<ActionResult> UserAgents([FromBody]UserAgentSearchParamsV2 searchParams)
         {
             log.Trace("Discovery V2 API - requesting 'useragents'", searchParams); // old return UserAgentsResultV2
