@@ -35,10 +35,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace CCM.DiscoveryApi.Controllers
 {
-    //[DiscoveryControllerConfig] // TODO: // Only allow XML in the discovery controllers defined somewhere else
     [Produces("application/xml")]
     [Authorize("BasicAuthenticationDiscoveryV1")]
     public class DiscoveryController : ControllerBase
@@ -53,7 +51,6 @@ namespace CCM.DiscoveryApi.Controllers
         }
 
         [Route("~/filters")]
-        [Produces("application/xml")]
         [HttpPost]
         public async Task<SrDiscovery> Filters()
         {
