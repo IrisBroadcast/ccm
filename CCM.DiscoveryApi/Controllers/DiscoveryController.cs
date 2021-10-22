@@ -41,7 +41,7 @@ namespace CCM.DiscoveryApi.Controllers
     //[DiscoveryControllerConfig] // TODO: // Only allow XML in the discovery controllers defined somewhere else
     [Produces("application/xml")]
     [Authorize("BasicAuthenticationDiscoveryV1")]
-    public class DiscoveryController : Controller
+    public class DiscoveryController : ControllerBase
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 

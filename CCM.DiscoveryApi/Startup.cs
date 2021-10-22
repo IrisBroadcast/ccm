@@ -87,7 +87,8 @@ namespace CCM.DiscoveryApi
                 .AddNewtonsoftJson(options => {
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 })
-                .AddXmlSerializerFormatters();
+                .AddXmlSerializerFormatters()
+                .AddXmlDataContractSerializerFormatters();
 
             // Used to forward requests to the Discovery API's
             services.AddHttpClient();
