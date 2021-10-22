@@ -25,7 +25,7 @@
  */
 
 using CCM.Core.Helpers;
-using CCM.DiscoveryApi.Infrastructure;
+using CCM.DiscoveryApi.Authentication;
 using CCM.DiscoveryApi.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;

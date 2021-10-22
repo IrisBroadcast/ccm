@@ -32,12 +32,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Entities.Discovery;
-using CCM.DiscoveryApi.Infrastructure;
 using NLog;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Net.Http.Headers;
+using CCM.DiscoveryApi.Models;
 
 namespace CCM.DiscoveryApi.Services
 {

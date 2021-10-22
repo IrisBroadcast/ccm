@@ -1,5 +1,6 @@
 using System;
-using CCM.DiscoveryApi.Infrastructure;
+using System.Security.Authentication;
+using CCM.DiscoveryApi.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

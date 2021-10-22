@@ -25,7 +25,7 @@
  */
 
 using CCM.Core.Helpers;
-using CCM.DiscoveryApi.Infrastructure;
+using CCM.DiscoveryApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

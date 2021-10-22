@@ -27,7 +27,7 @@
 using System;
 using System.Text;
 
-namespace CCM.DiscoveryApi.Infrastructure
+namespace CCM.DiscoveryApi.Authentication
 {
     public class AuthenticationHelper
     {

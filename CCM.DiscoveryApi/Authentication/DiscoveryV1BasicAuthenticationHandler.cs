@@ -29,21 +29,18 @@
 using System;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using CCM.DiscoveryApi.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-using System.Security.Claims;
 using NLog;
 using Claim = System.Security.Claims.Claim;
 using ClaimsIdentity = System.Security.Claims.ClaimsIdentity;
 using ClaimsPrincipal = System.Security.Claims.ClaimsPrincipal;
 using ClaimTypes = System.Security.Claims.ClaimTypes;
 
-namespace CCM.DiscoveryApi.Infrastructure
+namespace CCM.DiscoveryApi.Authentication
 {
     /// <summary>
     /// Supposed to be used only with DiscoveryV2Controller in CCM.Discovery.Api

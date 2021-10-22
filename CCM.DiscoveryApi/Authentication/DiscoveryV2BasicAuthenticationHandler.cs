@@ -36,7 +36,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NLog;
 
-namespace CCM.DiscoveryApi.Infrastructure
+namespace CCM.DiscoveryApi.Authentication
 {
     /// <summary>
     /// Supposed to be used only with DiscoveryV2Controller in CCM.Discovery.Api
