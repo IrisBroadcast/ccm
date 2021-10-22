@@ -40,7 +40,5 @@ namespace CCM.DiscoveryApi.Infrastructure
         {
             return Convert.ToBase64String(Encoding.ASCII.GetBytes(userName + ":" + password));
         }
-
-
     }
 }

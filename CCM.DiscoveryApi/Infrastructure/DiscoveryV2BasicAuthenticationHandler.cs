@@ -42,7 +42,6 @@ namespace CCM.DiscoveryApi.Infrastructure
     /// Supposed to be used only with DiscoveryV2Controller in CCM.Discovery.Api
     /// Performs pre-authentication by checking that request contains basic authentication credentials.
     /// Actual user authentication is deferred to CCM web api.
-    /// INFO: New for .NET Core TODO: Move this to discovery.Api project
     /// </summary>
     public class DiscoveryV2BasicAuthenticationHandler: AuthenticationHandler<AuthenticationSchemeOptions>
     {
@@ -63,6 +62,13 @@ namespace CCM.DiscoveryApi.Infrastructure
             AuthenticationHeaderValue header;
             try
             {
+                foreach (var hh in Request.Headers)
+                {
+                    log.Info($"REQ: {hh.Key}:{hh.Value}");
+                    Console.WriteLine($"REQ: {hh.Key}:{hh.Value}");
+                }
+
+
                 header = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
             }
             catch(Exception e)
@@ -85,7 +91,6 @@ namespace CCM.DiscoveryApi.Infrastructure
                 log.Debug("Not a Basic authentication header in request for {0}", new Uri(Request.GetDisplayUrl()).ToString());
                 return AuthenticateResult.Fail("Not using basic authorization scheme");
             }
-
 
             AuthenticationCredentials authenticationCredentials = BasicAuthenticationHelper.ParseCredentials(header.Parameter);
             if (authenticationCredentials == null)
