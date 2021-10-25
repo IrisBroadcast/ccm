@@ -557,11 +557,13 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
 
     $scope.editComment = function (id) {
         let url = '/home/EditRegisteredSipComment/' + id;
+        console.log(`editComment called for ${url}`);
         $('#registeredSipModal').modal({ remote: url });
     };
 
     $scope.editPresentationName = function (id) {
         let url = '/home/EditSipAccountPresentationName/' + id;
+        console.log(`editPresentationName called for ${url}`);
         $('#registeredSipPresentationNameModal').modal({ remote: url });
     };
 

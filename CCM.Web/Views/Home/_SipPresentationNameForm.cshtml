@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        @Html.HiddenFor(m => m.SipAccountId, new { @id = "SipAccountPresentationNameId", @name = "SipAccountPresentationNameId" })
+        @Html.HiddenFor(m => m.SipAccountId, new { @id = "SipAccountPresentationNameId", Name = "SipAccountPresentationNameId" })
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -35,11 +35,12 @@
     $("#presentationNameForm").submit(function (event) {
         event.preventDefault();
 
-        var $form = $(this);
-        var sipAccountId = $("#SipAccountPresentationNameId").val();
-        var presentationName = $form.find("input[name='PresentationName']").val();
-        var requestVerificationToken = $form.find("input[name='__RequestVerificationToken']").val();
-        var data = { SipAccountId: sipAccountId, PresentationName: presentationName, __RequestVerificationToken: requestVerificationToken };
+        const $form = $(this);
+        console.log("This is form:", $form);
+        const sipAccountId = $("#SipAccountPresentationNameId").val();
+        const presentationName = $form.find("input[name='PresentationName']").val();
+        const requestVerificationToken = $form.children('input[name="__RequestVerificationToken"]').val(); //$form.find("input[name='__RequestVerificationToken']").val();
+        const data = { SipAccountId: sipAccountId, PresentationName: presentationName, __RequestVerificationToken: requestVerificationToken };
 
         $.post("/Home/EditSipAccountPresentationName", data)
             .done(function (data) {
