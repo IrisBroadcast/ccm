@@ -345,7 +345,7 @@
 
                                 @if (hasWriteRights)
                                 {
-                                    <button title="{{sip.displayName ? '@Localizer["Edit Presentation Name"]' : '@Localizer["Add a Presentation Name"]' }}" ng-dblclick="editPresentationName(sip.id)" ng-class="sip.displayName ? 'edit' : 'edit-empty'"><span>Edit name&nbsp;</span></button>
+                                    <span title="{{sip.displayName ? '@Localizer["Edit Presentation Name"]' : '@Localizer["Add a Presentation Name"]' }}" ng-dblclick="editPresentationName(sip.id)" ng-class="sip.displayName ? 'edit' : 'edit-empty'">Edit name&nbsp;</span>
                                 }
 
                                 <span ng-if="sip.inCall">
