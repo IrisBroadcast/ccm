@@ -86,12 +86,12 @@ namespace CCM.DiscoveryApi
                 {
                     options.RespectBrowserAcceptHeader = true; // false by default
 
-                    var xmlWriterSettings = options.OutputFormatters
-                        .OfType<XmlSerializerOutputFormatter>()
-                        .Single()
-                        .WriterSettings;
+                    //var xmlWriterSettings = options.OutputFormatters
+                    //    .OfType<XmlSerializerOutputFormatter>()
+                    //    .Single()
+                    //    .WriterSettings;
 
-                    xmlWriterSettings.Indent = false;
+                    //xmlWriterSettings.Indent = false;
                 })
                 .AddNewtonsoftJson(options =>
                 {
