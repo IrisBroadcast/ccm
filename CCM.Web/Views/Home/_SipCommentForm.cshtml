@@ -45,6 +45,7 @@
         $.post("/Home/EditRegisteredSipComment", data)
             .done(function (data) {
                 $('#registeredSipModal').modal('hide');
+                $('#registeredSipModal').modal('dispose');
             });
     });
 </script>

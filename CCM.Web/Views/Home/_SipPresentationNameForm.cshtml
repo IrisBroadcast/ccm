@@ -45,6 +45,7 @@
         $.post("/Home/EditSipAccountPresentationName", data)
             .done(function (data) {
                 $('#registeredSipPresentationNameModal').modal('hide');
+                $('#registeredSipPresentationNameModal').modal('dispose');
             });
     });
 </script>
