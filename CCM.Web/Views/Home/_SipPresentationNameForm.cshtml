@@ -37,9 +37,9 @@
 
         var $form = $(this);
         var sipAccountId = $form.find("input[name='SipAccountId']").val();
-        var comment = $form.find("input[name='PresentationName']").val();
+        var presentationName = $form.find("input[name='PresentationName']").val();
         var requestVerificationToken = $form.find("input[name='__RequestVerificationToken']").val();
-        var data = { SipAccountId: sipAccountId, Comment: comment, __RequestVerificationToken: requestVerificationToken };
+        var data = { SipAccountId: sipAccountId, PresentationName: presentationName, __RequestVerificationToken: requestVerificationToken };
 
         $.post("/Home/EditSipAccountPresentationName", data)
             .done(function (data) {

@@ -340,20 +340,23 @@
                     <tbody>
                         <tr ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
                             <td class="mui-col mui-col--ua-registered" title="{{sip.sip}}">
-                                <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
-                                <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name" title="{{sip.id}}">{{sip.displayName}}</a>
 
                                 @if (hasWriteRights)
                                 {
-                                    <span title="{{sip.displayName ? '@Localizer["Edit Presentation Name"]' : '@Localizer["Add a Presentation Name"]' }}" ng-dblclick="editPresentationName(sip.id)" ng-class="sip.displayName ? 'edit' : 'edit-empty'">Edit name&nbsp;</span>
+                                    <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}" ng-dblclick="editPresentationName(sip.id)">&nbsp;</span>
                                 }
+                                else
+                                {
+                                    <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
+                                }
+
+                                <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name" title="{{sip.id}}">{{sip.displayName}}</a>
 
                                 <span ng-if="sip.inCall">
                                     <span class="mui-registered-incall-dir">
                                         <?xml version="1.0" encoding="utf-8" ?>
                                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
                                         <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25" />
-
                                         </svg>
                                     </span>
                                     <a ng-if="sip.inCallWithId.length" ng-click="showSipInfo(sip.inCallWithId, sip.inCallWithSip, $event)" href="#"
