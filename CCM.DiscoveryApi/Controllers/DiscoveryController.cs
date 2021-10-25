@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using CCM.Core.Entities.Discovery;
 using CCM.DiscoveryApi.Models;
 using CCM.DiscoveryApi.Services;
@@ -31,9 +32,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using CCM.DiscoveryApi.Models.Discovery;
+using Microsoft.AspNetCore.Http;
 
 namespace CCM.DiscoveryApi.Controllers
 {
@@ -83,12 +86,15 @@ namespace CCM.DiscoveryApi.Controllers
 
         [Route("~/useragents")]
         [HttpPost]
-        public async Task<DiscoveryResponse> UserAgents([FromForm]DiscoveryUserAgentRequest srDiscoveryParameters)
+        public async Task<DiscoveryResponse> UserAgents([FromForm] DiscoveryUserAgentRequest reqFormData)
         {
             if (Request.ContentType != "application/x-www-form-urlencoded")
             {
                 log.Warn("Wrong content type, expecting 'application/x-www-form-urlencoded'");
             }
+
+            // Since nested filter choices does not work with flat keys, special parsing is done
+            DiscoveryUserAgentRequest srDiscoveryParameters = ParseDiscoveryParameters(Request.Form);
 
             var searchParams = new UserAgentSearchParamsDto
             {
@@ -123,5 +129,31 @@ namespace CCM.DiscoveryApi.Controllers
             return new DiscoveryResponse { UserAgents = userAgents, Profiles = profiles };
         }
 
+        /// <summary>
+        /// These parameters are not filter parameters
+        /// </summary>
+        private readonly IEnumerable<string> _nonFilterKeys = new List<string> { "username", "pwdhash", "caller", "callee", "includeCodecsInCall" }.Select(i => i.ToLower());
+
+        private DiscoveryUserAgentRequest ParseDiscoveryParameters(IFormCollection formData)
+        {
+            if (formData == null)
+            {
+                return new DiscoveryUserAgentRequest();
+            }
+            IList<KeyValuePair<string, string>> filters = formData.Keys
+                .Where(k => !_nonFilterKeys.Contains(k.ToLower()))
+                .Select(key => new KeyValuePair<string, string>(key, formData[key]))
+                .ToList();
+
+            bool.TryParse(formData["includeCodecsInCall"], out var includeCodecsInCall);
+
+            return new DiscoveryUserAgentRequest
+            {
+                Caller = formData["caller"],
+                Callee = formData["callee"],
+                IncludeCodecsInCall = includeCodecsInCall,
+                Filters = filters
+            };
+        }
     }
 }

@@ -67,14 +67,14 @@ namespace CCM.DiscoveryApi.Controllers
                             margin: 0;
                             padding: 0;
                             height: 100%;
-                            background-color: #72c7bf !important;
+                            background-color: #3a4cb7 !important;
                             font-family: Arial, Helvetica, sans-serif !important;
                             font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif !important;
                             -webkit-font-smoothing: subpixel-antialiased;
                             -ms-text-size-adjust: 100%;
                             -webkit-text-size-adjust: 100%;
                             line-height: 1;
-                            color: #2d8b6c;
+                            color: #251f81;
                         }
                         .container {
                             padding: 4vh 1vw 2vh 1vw;
@@ -83,9 +83,11 @@ namespace CCM.DiscoveryApi.Controllers
                             width: 95vw;
                         }
                         h1 {
-                            border-top: 2vh solid #FFEB3B;
-                            padding-top: 7vh
-                            font-size: 5rem;
+                            border-top: 15px solid #ffc107;
+                            padding-top: 7vh;
+                            padding-bottom: 36vh;
+                            font-size: 6rem;
+                            font-weight: 200;
                         }
                     </style>
                 </head>
