@@ -24,12 +24,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Linq;
 using CCM.Core.Helpers;
 using CCM.DiscoveryApi.Authentication;
 using CCM.DiscoveryApi.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -83,8 +85,16 @@ namespace CCM.DiscoveryApi
             services.AddControllers(options =>
                 {
                     options.RespectBrowserAcceptHeader = true; // false by default
+
+                    var xmlWriterSettings = options.OutputFormatters
+                        .OfType<XmlSerializerOutputFormatter>()
+                        .Single()
+                        .WriterSettings;
+
+                    xmlWriterSettings.Indent = false;
                 })
-                .AddNewtonsoftJson(options => {
+                .AddNewtonsoftJson(options =>
+                {
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 })
                 .AddXmlSerializerFormatters()
