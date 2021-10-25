@@ -189,6 +189,18 @@ namespace CCM.Data.Repositories
             }
         }
 
+        public void UpdatePresentationName(Guid id, string presentationName)
+        {
+            var db = _ccmDbContext;
+            SipAccountEntity dbUser = db.SipAccounts.SingleOrDefault(u => u.Id == id);
+
+            if (dbUser != null)
+            {
+                dbUser.DisplayName = presentationName;
+                db.SaveChanges();
+            }
+        }
+
         public void UpdatePassword(Guid id, string password)
         {
             var db = _ccmDbContext;

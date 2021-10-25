@@ -1,0 +1,49 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Home.SipAccountPresentationNameViewModel
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+</div>
+<div class="modal-body">
+    @using (Html.BeginForm("EditSipAccountPresentationName", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form", name = "presentationNameForm", @id = "presentationNameForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @Html.Label(@Localizer["Presentation Name"].Value, @Localizer["Presentation Name"].Value, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PresentationName, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @Html.HiddenFor(m => m.SipAccountId)
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Localizer["Close"]</button>
+                <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
+            </div>
+        </div>
+    }
+</div>
+<div class="modal-footer">
+
+</div>
+
+<script>
+    $("#commentForm").submit(function (event) {
+        event.preventDefault();
+
+        var $form = $(this);
+        var sipAccountId = $form.find("input[name='SipAccountId']").val();
+        var comment = $form.find("input[name='PresentationName']").val();
+        var requestVerificationToken = $form.find("input[name='__RequestVerificationToken']").val();
+        var data = { SipAccountId: sipAccountId, Comment: comment, __RequestVerificationToken: requestVerificationToken };
+
+        $.post("/Home/EditSipAccountPresentationName", data)
+            .done(function (data) {
+                $('#registeredSipPresentationNameModal').modal('hide');
+            });
+    });
+</script>

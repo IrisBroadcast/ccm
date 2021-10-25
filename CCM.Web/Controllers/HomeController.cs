@@ -118,5 +118,40 @@ namespace CCM.Web.Controllers
             }
             return BadRequest();
         }
+
+        [CcmAuthorize(Roles = "Admin, Remote")]
+        [HttpGet]
+        public ActionResult EditSipAccountPresentationName(Guid id)
+        {
+            var sipAccount = _cachedSipAccountRepository.GetByRegisteredSipId(id);
+            if (sipAccount == null)
+            {
+                return BadRequest();
+            }
+
+            return PartialView("_SipPresentationNameForm", new SipAccountPresentationNameViewModel { PresentationName = sipAccount.DisplayName, SipAccountId = sipAccount.Id });
+        }
+
+        [ValidateAntiForgeryToken]
+        [CcmAuthorize(Roles = "Admin, Remote")]
+        [HttpPost]
+        public ActionResult EditSipAccountPresentationName(SipAccountPresentationNameViewModel model)
+        {
+            if (model.SipAccountId != Guid.Empty)
+            {
+                _cachedSipAccountRepository.UpdatePresentationName(model.SipAccountId, model.PresentationName);
+
+                var updateResult = new SipEventHandlerResult()
+                {
+                    ChangeStatus = SipEventChangeStatus.CodecUpdated,
+                    ChangedObjectId = model.SipAccountId
+                };
+
+                _webGuiHubUpdater.Update(updateResult); // First web gui
+                _codecStatusHubUpdater.Update(updateResult); // Then codec status to external clients
+                return Ok();
+            }
+            return BadRequest();
+        }
     }
 }

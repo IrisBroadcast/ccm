@@ -98,6 +98,13 @@ namespace CCM.Core.Cache
             // TODO: Maybe this needs to clear more things? like registeredUserAgents
         }
 
+        public void UpdatePresentationName(Guid id, string presentationName)
+        {
+            _internalRepository.UpdatePresentationName(id, presentationName);
+            _lazyCache.ClearSipAccounts();
+            // TODO: Maybe this needs to clear more things? like registeredUserAgents
+        }
+
         public void UpdatePassword(Guid id, string password)
         {
             _internalRepository.UpdatePassword(id, password);

@@ -560,6 +560,11 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         $('#registeredSipModal').modal({ remote: url });
     };
 
+    $scope.editPresentationName = function (id) {
+        let url = '/home/EditSipAccountPresentationName/' + id;
+        $('#registeredSipPresentationNameModal').modal({ remote: url });
+    };
+
     $scope.$on("$destroy", function () {
         console.log("> Destroy called, stopCallDurationTimer");
         $scope.stopCallDurationTimer();
