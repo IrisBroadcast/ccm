@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        @Html.HiddenFor(m => m.SipAccountId)
+        @Html.HiddenFor(m => m.SipAccountId, new { @id = "SipAccountPresentationNameId" })
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -36,7 +36,7 @@
         event.preventDefault();
 
         var $form = $(this);
-        var sipAccountId = $form.find("input[name='SipAccountId']").val();
+        var sipAccountId = $("#SipAccountPresentationNameId").val();
         var presentationName = $form.find("input[name='PresentationName']").val();
         var requestVerificationToken = $form.find("input[name='__RequestVerificationToken']").val();
         var data = { SipAccountId: sipAccountId, PresentationName: presentationName, __RequestVerificationToken: requestVerificationToken };
