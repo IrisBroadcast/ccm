@@ -339,7 +339,7 @@
 
                     <tbody>
                         <tr ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
-                            <button class="mui-col mui-col--ua-registered" title="{{sip.sip}}">
+                            <td class="mui-col mui-col--ua-registered" title="{{sip.sip}}">
                                 <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
                                 <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name" title="{{sip.id}}">{{sip.displayName}}</a>
 
