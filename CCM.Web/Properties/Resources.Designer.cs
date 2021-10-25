@@ -286,20 +286,20 @@ namespace CCM.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Förändra kodarens egenskaper.
+        /// </summary>
+        public static string Change_some_codec_data {
+            get {
+                return ResourceManager.GetString("Change some codec data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ändra kodarens kommentar.
         /// </summary>
         public static string Change_the_codec_comment {
             get {
                 return ResourceManager.GetString("Change the codec comment", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Förändra kodarens presentationsnamn.
-        /// </summary>
-        public static string Change_the_codec_presentation_name {
-            get {
-                return ResourceManager.GetString("Change the codec presentation name", resourceCulture);
             }
         }
         
@@ -1101,6 +1101,15 @@ namespace CCM.Web.Properties {
         public static string Extension_Number {
             get {
                 return ResourceManager.GetString("Extension_Number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extern kontoreferens.
+        /// </summary>
+        public static string External_Reference {
+            get {
+                return ResourceManager.GetString("External Reference", resourceCulture);
             }
         }
         

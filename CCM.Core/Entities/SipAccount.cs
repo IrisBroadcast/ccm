@@ -43,6 +43,7 @@ namespace CCM.Core.Entities
         public DateTime? LastUsed { get; set; }
         public string LastUserAgent { get; set; }
         public string LastKnownAddress { get; set; }
+        public string ExternalReference { get; set; }
         public CodecType CodecType { get; set; }
         public Owner Owner { get; set; }
 

@@ -52,6 +52,9 @@ namespace CCM.Data.Entities
         /// <summary> Filled in on registration </summary>
         public string LastKnownAddress { get; set; }
 
+        /// <summary> An external reference that can be used to link accounts in other systems</summary>
+        public string ExternalReference { get; set; }
+
         [MetaType]
         [ForeignKey("Owner_Id")]
         public virtual OwnerEntity Owner { get; set; }

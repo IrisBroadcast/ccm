@@ -69,5 +69,4 @@ namespace CCM.Web.Models.ApiExternal
         [MustContainUpperCaseLetters(PasswordComplexityConfiguration.MinNumberOfUpper)]
         public string Password { get; set; }
     }
-
 }

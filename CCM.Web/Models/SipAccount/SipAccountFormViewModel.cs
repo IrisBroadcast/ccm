@@ -52,6 +52,9 @@ namespace CCM.Web.Models.SipAccount
         [Display(ResourceType = typeof(Resources), Name = "Account_Locked")]
         public bool AccountLocked { get; set; }
 
+        [Display(ResourceType = typeof(Resources), Name = "External_Reference")]
+        public string ExternalReference { get; set; }
+
         [Display(ResourceType = typeof(Resources), Name = "Owner")]
         public Guid? OwnerId { get; set; }
 

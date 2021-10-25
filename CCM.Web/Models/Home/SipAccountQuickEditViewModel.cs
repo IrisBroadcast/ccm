@@ -28,9 +28,10 @@ using System;
 
 namespace CCM.Web.Models.Home
 {
-    public class SipAccountPresentationNameViewModel
+    public class SipAccountQuickEditViewModel
     {
         public Guid SipAccountId { get; set; }
         public string PresentationName { get; set; }
+        public string ExternalReference { get; set; }
     }
 }

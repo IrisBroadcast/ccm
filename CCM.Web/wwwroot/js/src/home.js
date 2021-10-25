@@ -561,10 +561,10 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         $('#registeredSipModal').modal('show').load(url); //.modal({ remote: url });
     };
 
-    $scope.editPresentationName = function (id) {
-        let url = '/home/EditSipAccountPresentationName/' + id;
-        console.log(`editPresentationName called for ${url}`);
-        $('#registeredSipPresentationNameModal').modal('show').load(url); //.modal({ remote: url });
+    $scope.editCodecAccountData = function (id) {
+        let url = '/home/EditSipAccountQuickData/' + id;
+        console.log(`EditSipAccountQuickData called for ${url}`);
+        $('#registeredAccountEditModal').modal('show').load(url); //.modal({ remote: url });
     };
 
     $scope.$on("$destroy", function () {

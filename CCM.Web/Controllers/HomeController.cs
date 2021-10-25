@@ -121,7 +121,7 @@ namespace CCM.Web.Controllers
 
         [CcmAuthorize(Roles = "Admin, Remote")]
         [HttpGet]
-        public ActionResult EditSipAccountPresentationName(Guid id)
+        public ActionResult EditSipAccountQuickData(Guid id)
         {
             var sipAccount = _cachedSipAccountRepository.GetByRegisteredSipId(id);
             if (sipAccount == null)
@@ -129,13 +129,13 @@ namespace CCM.Web.Controllers
                 return BadRequest();
             }
 
-            return PartialView("_SipPresentationNameForm", new SipAccountPresentationNameViewModel { PresentationName = sipAccount.DisplayName, SipAccountId = sipAccount.Id });
+            return PartialView("_SipAccountQuickEditForm", new SipAccountQuickEditViewModel { PresentationName = sipAccount.DisplayName, SipAccountId = sipAccount.Id });
         }
 
         [ValidateAntiForgeryToken]
         [CcmAuthorize(Roles = "Admin, Remote")]
         [HttpPost]
-        public ActionResult EditSipAccountPresentationName(SipAccountPresentationNameViewModel model)
+        public ActionResult EditSipAccountQuickData(SipAccountQuickEditViewModel model)
         {
             if (model.SipAccountId != Guid.Empty)
             {

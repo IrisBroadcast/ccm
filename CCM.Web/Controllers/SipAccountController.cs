@@ -114,6 +114,7 @@ namespace CCM.Web.Controllers
                     AccountType = model.AccountType,
                     AccountLocked = model.AccountLocked,
                     Password = model.PasswordDefault,
+                    ExternalReference = model.ExternalReference,
                     Owner = _ownersRepository.GetById(model.OwnerId ?? Guid.Empty),
                     CodecType = _codecTypeRepository.GetById(model.CodecType_Id ?? Guid.Empty),
                 };
@@ -160,6 +161,7 @@ namespace CCM.Web.Controllers
                 ExtensionNumber = user.ExtensionNumber,
                 AccountLocked = user.AccountLocked,
                 AccountType = user.AccountType,
+                ExternalReference = user.ExternalReference,
                 OwnerId = user.Owner?.Id ?? Guid.Empty,
                 CodecType_Id = user.CodecType?.Id ?? Guid.Empty,
             };
@@ -185,6 +187,7 @@ namespace CCM.Web.Controllers
                     AccountType = model.AccountType,
                     AccountLocked = model.AccountLocked,
                     Password = model.PasswordDefault,
+                    ExternalReference = model.ExternalReference,
                     Owner = _ownersRepository.GetById(model.OwnerId ?? Guid.Empty),
                     CodecType = _codecTypeRepository.GetById(model.CodecType_Id ?? Guid.Empty),
                 };

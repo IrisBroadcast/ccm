@@ -234,6 +234,7 @@ namespace CCM.Data.Repositories
                 LastKnownAddress = dbAccount.LastKnownAddress,
                 LastUsed = dbAccount.LastUsed,
                 LastUserAgent = dbAccount.LastUserAgent,
+                ExternalReference = dbAccount.ExternalReference,
                 Owner = MapToOwner(dbAccount.Owner),
                 CodecType = MapToCodecType(dbAccount.CodecType)
             };
@@ -250,9 +251,11 @@ namespace CCM.Data.Repositories
             dbAccount.CodecType = account.CodecType != null ? cxt.CodecTypes.SingleOrDefault(c => c.Id == account.CodecType.Id) : null;
             dbAccount.AccountLocked = account.AccountLocked;
             dbAccount.AccountType = account.AccountType;
-            dbAccount.LastKnownAddress = account.LastKnownAddress;
-            dbAccount.LastUsed = account.LastUsed;
-            dbAccount.LastUserAgent = account.LastUserAgent;
+            // INFO: Info make sure that this is not needed to be set here
+            //dbAccount.LastKnownAddress = account.LastKnownAddress;
+            //dbAccount.LastUsed = account.LastUsed;
+            //dbAccount.LastUserAgent = account.LastUserAgent;
+            dbAccount.ExternalReference = account.ExternalReference;
 
             if (!string.IsNullOrEmpty(account.Password))
             {
