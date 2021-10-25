@@ -7146,6 +7146,17 @@ h6 {
   /* These are just initial values which are overriden using JavaScript when a column is resized */
   grid-template-columns: minmax(200px, 4fr) minmax(150px, 3fr) minmax(50px, 2fr) minmax(50px, 1fr);
 }
+@media only screen and (max-width: 768px) {
+  .mui-panel table {
+    grid-template-columns: minmax(200px, 4fr) minmax(32px, 3fr);
+  }
+  .mui-panel table .mui-col--ua-comment {
+    grid-column: 1 / span 2;
+  }
+  .mui-panel table .mui-col--ua-image {
+    display: none !important;
+  }
+}
 .mui-panel thead,
 .mui-panel tbody,
 .mui-panel tr {
@@ -7213,6 +7224,7 @@ h6 {
   align-items: center;
   font-size: 0.8rem;
   line-height: 1.5;
+  cursor: pointer;
 }
 .mui-panel .comment-to,
 .mui-panel .comment-from {
@@ -7575,6 +7587,18 @@ body {
 }
 .mui-billboard .board .text {
   font-size: 1.2rem;
+}
+@media only screen and (max-width: 768px) {
+  .mui-billboard {
+    flex-direction: column;
+  }
+  .mui-billboard .board .count {
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  .mui-billboard .board .text {
+    font-size: 1rem;
+  }
 }
 .mui-filter-box {
   padding: 1rem;

@@ -3,32 +3,37 @@
 @inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
 @model CCM.Web.Models.Home.SipAccountCommentViewModel
 
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-</div>
-<div class="modal-body">
-    @using (Html.BeginForm("EditRegisteredSipComment", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form", name = "commentForm", @id = "commentForm" }))
-    {
-        @Html.AntiForgeryToken()
-        <div class="form-group">
-            @Html.Label(@Localizer["Comment"].Value, @Localizer["Comment"].Value, new { @class = "col-md-2 control-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Comment, new { @class = "form-control" })
-            </div>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">@Localizer["Change the codec comment"]</h4>
         </div>
+        <div class="modal-body">
+            @using (Html.BeginForm("EditRegisteredSipComment", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form", name = "commentForm", @id = "commentForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    @Html.Label(@Localizer["Comment"].Value, @Localizer["Comment"].Value, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Comment, new { @class = "form-control" })
+                    </div>
+                </div>
 
-        @Html.HiddenFor(m => m.SipAccountId, new { @id = "SipAccountCommentId", Name = "SipAccountCommentId" })
+                @Html.HiddenFor(m => m.SipAccountId, new { @id = "SipAccountCommentId", Name = "SipAccountCommentId" })
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <button type="button" class="btn btn-default" data-dismiss="modal">@Localizer["Close"]</button>
-                <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
-            </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">@Localizer["Close"]</button>
+                        <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
+                    </div>
+                </div>
+            }
         </div>
-    }
-</div>
-<div class="modal-footer">
+        <div class="modal-footer">
 
+        </div>
+    </div>
 </div>
 
 <script>
@@ -44,8 +49,8 @@
 
         $.post("/Home/EditRegisteredSipComment", data)
             .done(function (data) {
+                console.log("Done:", data);
                 $('#registeredSipModal').modal('hide');
-                $('#registeredSipModal').modal('dispose');
             });
     });
 </script>

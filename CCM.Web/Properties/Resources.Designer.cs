@@ -286,6 +286,24 @@ namespace CCM.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ändra kodarens kommentar.
+        /// </summary>
+        public static string Change_the_codec_comment {
+            get {
+                return ResourceManager.GetString("Change the codec comment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Förändra kodarens presentationsnamn.
+        /// </summary>
+        public static string Change_the_codec_presentation_name {
+            get {
+                return ResourceManager.GetString("Change the codec presentation name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CIDR IPv4.
         /// </summary>
         public static string Cidr_V4 {
@@ -2325,6 +2343,15 @@ namespace CCM.Web.Properties {
         public static string Password_To_Short {
             get {
                 return ResourceManager.GetString("Password_To_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presentationsnamn.
+        /// </summary>
+        public static string Presentation_Name {
+            get {
+                return ResourceManager.GetString("Presentation Name", resourceCulture);
             }
         }
         

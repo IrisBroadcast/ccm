@@ -1079,4 +1079,13 @@
   <data name="Use of resource" xml:space="preserve">
     <value>Resursutnyttjande</value>
   </data>
+  <data name="Change the codec comment" xml:space="preserve">
+    <value>Ändra kodarens kommentar</value>
+  </data>
+  <data name="Change the codec presentation name" xml:space="preserve">
+    <value>Förändra kodarens presentationsnamn</value>
+  </data>
+  <data name="Presentation Name" xml:space="preserve">
+    <value>Presentationsnamn</value>
+  </data>
 </root>

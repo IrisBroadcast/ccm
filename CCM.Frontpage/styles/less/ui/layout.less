@@ -18,6 +18,17 @@
             minmax(150px, 3fr)
             minmax(50px, 2fr)
             minmax(50px, 1fr);
+
+        @media only screen and (max-width: 768px) {
+            grid-template-columns: minmax(200px, 4fr) minmax(32px, 3fr);
+
+            .mui-col--ua-comment {
+                grid-column: 1 / span 2;
+            }
+            .mui-col--ua-image {
+                display: none !important;
+            }
+        }
     }
 
     thead,
@@ -99,6 +110,7 @@
         align-items: center;
         font-size: 0.8rem;
         line-height: 1.5;
+        cursor: pointer;
     }
 
     .comment-to, .comment-from {
