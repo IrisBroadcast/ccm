@@ -441,6 +441,12 @@
             <!-- Information -->
             <div class="tab-pane ccm-ui-pop-tab--information active" id="reginfo">
                 <div class="row">
+                    <label class="col-md-3">@Localizer["SIP"]</label>
+                    <div class="col-lg-9">
+                        {{info.sip}}
+                    </div>
+                </div>
+                <div class="row">
                     <label class="col-md-3">@Localizer["Status"]</label>
                     <div class="col-lg-9">
                         <span ng-show="info.inCall">
@@ -485,19 +491,25 @@
                 <div class="row">
                     <label class="col-md-3">@Localizer["UserAgent"]</label>
                     <div class="col-lg-9">
-                        {{info.userAgentName}} ({{info.userAgentHeader}} @Localizer["Api"]: {{info.apiDefinition}})
+                        {{info.userAgentName}} <i>@Localizer["Api"]: {{info.apiDefinition}}</i>
                     </div>
                 </div>
                 <div class="row">
-                    <label class="col-md-3">@Localizer["SIP"]</label>
+                    <label class="col-md-3"></label>
                     <div class="col-lg-9">
-                        {{info.sip}}
+                        {{info.userAgentHeader}}
                     </div>
                 </div>
                 <div class="row">
                     <label class="col-md-3">@Localizer["Sip_Registrar_Server"]</label>
                     <div class="col-lg-9">
                         {{info.registrar}}
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3">@Localizer["External Reference"]</label>
+                    <div class="col-lg-9">
+                        {{info.userExternalReference}}
                     </div>
                 </div>
                 <div class="row" ng-show="info.finalUserInterfaceLink.length > 0">

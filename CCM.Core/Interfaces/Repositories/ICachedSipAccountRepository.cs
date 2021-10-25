@@ -41,7 +41,7 @@ namespace CCM.Core.Interfaces.Repositories
         void Create(SipAccount ccmUser);
         void Update(SipAccount ccmUser);
         void UpdateComment(Guid id, string comment);
-        void UpdatePresentationName(Guid id, string presentationName);
+        void UpdateSipAccountQuick(Guid id, string presentationName, string externalReference);
         void UpdatePassword(Guid id, string password);
         string[] GetAllAccountNames();
         Task<bool> AuthenticateAsync(string username, string password);
@@ -56,7 +56,7 @@ namespace CCM.Core.Interfaces.Repositories
         void Create(SipAccount ccmUser);
         void Update(SipAccount ccmUser);
         void UpdateComment(Guid id, string comment);
-        void UpdatePresentationName(Guid id, string presentationName);
+        void UpdateSipAccountQuick(Guid id, string presentationName, string externalReference);
         void UpdatePassword(Guid id, string password);
         bool DeleteWithResult(Guid id);
         string[] GetAllAccountNames();

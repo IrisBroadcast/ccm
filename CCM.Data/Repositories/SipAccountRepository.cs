@@ -189,7 +189,7 @@ namespace CCM.Data.Repositories
             }
         }
 
-        public void UpdatePresentationName(Guid id, string presentationName)
+        public void UpdateSipAccountQuick(Guid id, string presentationName, string externalReference)
         {
             var db = _ccmDbContext;
             SipAccountEntity dbUser = db.SipAccounts.SingleOrDefault(u => u.Id == id);
@@ -197,6 +197,7 @@ namespace CCM.Data.Repositories
             if (dbUser != null)
             {
                 dbUser.DisplayName = presentationName;
+                dbUser.ExternalReference = externalReference;
                 db.SaveChanges();
             }
         }

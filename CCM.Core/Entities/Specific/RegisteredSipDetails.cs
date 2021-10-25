@@ -32,14 +32,17 @@ namespace CCM.Core.Entities.Specific
     {
         public Guid Id { get; set; }
         public string Sip { get; set; }
+        public string DisplayName { get; set; }
         public string UserDisplayName { get; set; }
         public string Ip { get; set; }
         public string Api { get; set; }
-        public string UserAgentHeader { get; set; }
         public string Image { get; set; }
         public string Registrar { get; set; }
-        public string DisplayName { get; set; }
+        
         public string Comment { get; set; }
+        public string UserExternalReference { get; set; }
+
+        public string UserAgentHeader { get; set; }
         public string UserAgentName { get; set; }
 
         public string LocationName { get; set; }

@@ -77,6 +77,9 @@ namespace CCM.Web.Models.Home
         [Display(ResourceType = typeof(Resources), Name = "Sip_Registrar_Server")]
         public string Registrar { get; set; }
 
+        [Display(ResourceType = typeof(Resources), Name = "External_Reference")]
+        public string UserExternalReference { get; set; }
+
         public string Image { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "Web_Interface")]

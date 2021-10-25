@@ -348,6 +348,7 @@ namespace CCM.Data.Repositories
                         CodecTypeName = x.User.CodecType.Name,
                         CodecTypeColor = x.User.CodecType.Color,
                         CodecTypeCategory = x.UserAgent.Category.Name,
+                        UserExternalReference = x.User.ExternalReference,
                         UserDisplayName = x.User.DisplayName,
                         UserComment = x.User.Comment,
                         RegionName = x.Location.Region.Name
@@ -365,6 +366,7 @@ namespace CCM.Data.Repositories
                     codecTypeName: x.CodecTypeName,
                     codecTypeColor: x.CodecTypeColor,
                     codecTypeCategory: x.CodecTypeCategory,
+                    userExternalReference: x.UserExternalReference,
                     userDisplayName: x.UserDisplayName,
                     userComment: x.UserComment,
                     regionName: x.RegionName))

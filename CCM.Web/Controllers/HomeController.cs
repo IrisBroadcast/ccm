@@ -129,7 +129,7 @@ namespace CCM.Web.Controllers
                 return BadRequest();
             }
 
-            return PartialView("_SipAccountQuickEditForm", new SipAccountQuickEditViewModel { PresentationName = sipAccount.DisplayName, SipAccountId = sipAccount.Id });
+            return PartialView("_SipAccountQuickEditForm", new SipAccountQuickEditViewModel { PresentationName = sipAccount.DisplayName, ExternalReference = sipAccount.ExternalReference, SipAccountId = sipAccount.Id });
         }
 
         [ValidateAntiForgeryToken]
@@ -139,7 +139,7 @@ namespace CCM.Web.Controllers
         {
             if (model.SipAccountId != Guid.Empty)
             {
-                _cachedSipAccountRepository.UpdatePresentationName(model.SipAccountId, model.PresentationName);
+                _cachedSipAccountRepository.UpdateSipAccountQuick(model.SipAccountId, model.PresentationName, model.ExternalReference);
 
                 var updateResult = new SipEventHandlerResult()
                 {

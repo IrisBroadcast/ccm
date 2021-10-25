@@ -155,6 +155,7 @@ namespace CCM.Web.Mappers
                     CodecTypeName = regSip.CodecTypeName,
                     CodecTypeCategory = regSip.CodecTypeCategory,
                     CodecTypeColor = regSip.CodecTypeColor,
+                    UserExternalReference = regSip.UserExternalReference,
                     LocationName = regSip.Location,
                     LocationCategory = regSip.LocationCategory,
                     RegionName = regSip.RegionName,
@@ -209,6 +210,7 @@ namespace CCM.Web.Mappers
                         LocationName = uu.FromLocationName,
                         LocationCategory = uu.FromLocationCategory,
                         RegionName = uu.FromRegionName,
+                        UserExternalReference = uu.FromExternalReference,
                         UserComment = uu.FromComment
                     });
                 }
@@ -236,6 +238,7 @@ namespace CCM.Web.Mappers
                         LocationName = uu.ToLocationName,
                         LocationCategory = uu.ToLocationCategory,
                         RegionName = uu.ToRegionName,
+                        UserExternalReference = uu.ToExternalReference,
                         UserComment = uu.ToComment
                     });
                 }

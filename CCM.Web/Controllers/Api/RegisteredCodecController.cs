@@ -90,6 +90,7 @@ namespace CCM.Web.Controllers.Api
                 Ip = regSipDetails.Ip,
                 UserAgentHeader = regSipDetails.UserAgentHeader,
                 Registrar = regSipDetails.Registrar,
+                UserExternalReference = regSipDetails.UserExternalReference,
 
                 Image = regSipDetails.Image,
                 CodecControl = ShouldShowCodecControlView(regSipDetails),

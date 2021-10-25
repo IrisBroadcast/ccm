@@ -43,6 +43,7 @@ namespace CCM.Web.Models.Home
         public string CodecTypeCategory { get; set; }
         public string RegionName { get; set; }
         public string UserComment { get; set; }
+        public string UserExternalReference { get; set; }
         public string InCallWithId { get; set; }
         public string InCallWithSip { get; set; }
         public string InCallWithName { get; set; }

@@ -47,6 +47,7 @@ namespace CCM.Core.Entities.Specific
         public string FromCodecTypeColor { get; set; }
         public string FromCodecTypeCategory { get; set; }
         public string FromCategory { get; set; }
+        public string FromExternalReference { get; set; }
 
         public string ToDisplayName { get; set; }
         public string ToSip { get; set; }
@@ -60,6 +61,7 @@ namespace CCM.Core.Entities.Specific
         public string ToCodecTypeColor { get; set; }
         public string ToCodecTypeCategory { get; set; }
         public string ToCategory { get; set; }
+        public string ToExternalReference { get; set; }
 
         public int DurationSeconds => Convert.ToInt32(DateTime.UtcNow.Subtract(Started).TotalSeconds);
     }

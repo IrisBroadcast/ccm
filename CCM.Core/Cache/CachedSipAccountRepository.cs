@@ -98,9 +98,9 @@ namespace CCM.Core.Cache
             // TODO: Maybe this needs to clear more things? like registeredUserAgents
         }
 
-        public void UpdatePresentationName(Guid id, string presentationName)
+        public void UpdateSipAccountQuick(Guid id, string presentationName, string externalReference)
         {
-            _internalRepository.UpdatePresentationName(id, presentationName);
+            _internalRepository.UpdateSipAccountQuick(id, presentationName, externalReference);
             _lazyCache.ClearSipAccounts();
             // TODO: Maybe this needs to clear more things? like registeredUserAgents
         }

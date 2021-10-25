@@ -71,6 +71,7 @@ namespace CCM.Data.Repositories
                 Ip = rs.IP,
                 UserAgentHeader = rs.UserAgentHeader,
                 Registrar = rs.Registrar ?? string.Empty,
+                UserExternalReference = rs.User?.ExternalReference ?? string.Empty,
 
                 Comment = rs.User?.Comment ?? string.Empty,
                 UserDisplayName = rs.User?.DisplayName ?? string.Empty,

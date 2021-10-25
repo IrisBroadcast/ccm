@@ -35,7 +35,7 @@ namespace CCM.Web.Models.ApiExternal
         public CodecState State { get; set; }
         public string SipAddress { get; set; }
         public string PresentationName { get; set; }
-        public string DisplayName { get; set; } //TODO:  Not in use ... yet
+        public string DisplayName { get; set; } //TODO:  Not in use ... yet, changed my mind, will be removed...
         #endregion
 
         #region Call
@@ -57,6 +57,7 @@ namespace CCM.Web.Models.ApiExternal
         public string CodecTypeName { get; set; }
         public string CodecTypeColor { get; set; }
         public string CodecTypeCategory { get; set; }
+        public string UserExternalReference { get; set; }
         public string RegionName { get; set; }
         public string UserComment { get; set; }
         #endregion
