@@ -44,7 +44,12 @@ body {
 .mui-filter {
 
     &-box {
-        padding: 1rem;
+        padding: 0.5rem 1rem;
+
+        .mui-a {
+            display: inline-block;
+            margin: 0.25rem;
+        }
     }
 
     &-search {
@@ -92,6 +97,25 @@ body {
         a {
             padding: 0.2rem 0.5rem !important;
             background: #fff5cf;
+        }
+    }
+}
+
+@media (max-width: 480px)  { /* smartphones, iPhone, portrait 480x320 phones */
+    .mui-filter {
+        &-box {
+            padding: 0.25rem 0;
+
+            .mui-a {
+                white-space: nowrap;
+                margin: 0.25rem;
+                display: block;
+            }
+        }
+
+        &-search {
+            font-size: 1rem;
+            min-height: unset;
         }
     }
 }

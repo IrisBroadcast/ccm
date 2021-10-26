@@ -6,14 +6,14 @@
 <ul class="mui-nav">
     <!-- Overview -->
     <li class="mui-nav-li">
-        <div class="mui-link">
+        <div class="mui-link mui-link--not-mobile">
             @Html.ActionLink(@Localizer["Overview"].Value, "Index", "Home")
         </div>
     </li>
 
     <!-- Statistics -->
     <li class="mui-nav-li">
-        <div class="mui-link">
+        <div class="mui-link mui-link--not-mobile">
             @Html.ActionLink(@Localizer["Statistics"].Value, "Index", "Statistics")
         </div>
     </li>
@@ -32,6 +32,10 @@
         @if (User.IsInRole(Roles.Admin))
         {
             <div class="mui-nav-group section collapsible" id="admin-navigation-content">
+                <ul class="mui-subnav mui-subnav--mobile">
+                    <li>@Html.ActionLink(@Localizer["Overview"].Value, "Index", "Home")</li>
+                    <li>@Html.ActionLink(@Localizer["Statistics"].Value, "Index", "Statistics")</li>
+                </ul>
                 <ul class="mui-subnav">
                     <li>@Html.ActionLink(@Localizer["Accounts"].Value, "Index", "SipAccount")</li>
                     <li>@Html.ActionLink(@Localizer["UserAgents"].Value, "Index", "UserAgents")</li>

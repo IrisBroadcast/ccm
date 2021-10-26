@@ -106,6 +106,10 @@ header.mui-header {
                 display: block;
             }
         }
+
+        &--mobile {
+            display: none;
+        }
     }
 }
 
@@ -226,15 +230,27 @@ ul.mui-nav {
     background-color: aquamarine;
 }
 
-@media (max-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */
+@media (max-width: 480px)  { /* smartphones, iPhone, portrait 480x320 phones */
+
+    .mui-nav {
+        .mui-link--not-mobile {
+            display: none;
+        }
+    }
+
     .mui-nav-group {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
         overflow-y: auto;
+        max-height: 86vh;
 
         .mui-subnav {
             padding: 0.5rem !important;
             margin: 0.5rem !important;
+
+            &--mobile {
+                display: block;
+            }
         }
     }
 }

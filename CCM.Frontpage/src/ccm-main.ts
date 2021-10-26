@@ -163,6 +163,18 @@ export class Application {
             Tool.$dom("admin-menu-cover").classList.add("open");
         }
 
+        function clickOnAdminMenu(e) {
+            const section = document.querySelector(".section.collapsible");
+            const isCollapsed = section.getAttribute("data-collapsed") === "true";
+
+            if (isCollapsed) {
+                expandSection(section)
+                section.setAttribute("data-collapsed", "false")
+            } else {
+                collapseSection(section)
+            }
+        }
+
         let collapsableSection = document.querySelector(".section.collapsible");
         if (collapsableSection) {
             collapsableSection.setAttribute("data-collapsed", "true");
@@ -170,17 +182,8 @@ export class Application {
 
         let navigationAdminBtn = document.querySelector("#admin-navigation-btn");
         if (navigationAdminBtn) {
-            navigationAdminBtn.addEventListener("click", function(e) {
-                const section = document.querySelector(".section.collapsible");
-                const isCollapsed = section.getAttribute("data-collapsed") === "true";
-
-                if (isCollapsed) {
-                    expandSection(section)
-                    section.setAttribute("data-collapsed", "false")
-                } else {
-                    collapseSection(section)
-                }
-            });
+            //navigationAdminBtn.addEventListener("click", clickOnAdminMenu);
+            Tool.$event(navigationAdminBtn, "click", clickOnAdminMenu);
         }
 
         Tool.$event("admin-menu-cover", "click", clickOutsideMenu);

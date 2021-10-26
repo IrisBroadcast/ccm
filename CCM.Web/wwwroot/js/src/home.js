@@ -588,6 +588,12 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         }
     };
 
+    $scope.onPageKeyUp = function (keyCode) {
+        if (keyCode === 27) {
+            $scope.resetViewFilters();
+        }
+    };
+
     $scope.refreshOngoing();
     $scope.refreshRegistered();
 

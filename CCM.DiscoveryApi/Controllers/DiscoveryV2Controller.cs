@@ -128,5 +128,38 @@ namespace CCM.DiscoveryApi.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        [HttpGet]
+        [Route("~/v2/useragents")]
+        public async Task<ActionResult> UserAgents()
+        {
+            log.Trace("Discovery V2 API - requesting 'useragents' without anything");
+
+            var searchParamsDto = new UserAgentSearchParamsDto
+            {
+                Caller = "",
+                Callee = "",
+                IncludeCodecsInCall = false,
+                Filters = null
+            };
+
+            UserAgentsResultDto uaResult = await _discoveryService.GetUserAgentsAsync(searchParamsDto, Request);
+
+            log.Debug("Returning {0} useragents and {1} profiles (V2).", uaResult.UserAgents?.Count ?? 0, uaResult.Profiles?.Count ?? 0);
+
+            var result = new DiscoveryV2UserAgentsResponse
+            {
+                Profiles = uaResult?.Profiles?.Select(p => new DiscoveryV2Profile { Name = p.Name, Sdp = p.Sdp }).ToList() ?? new List<DiscoveryV2Profile>(),
+                UserAgents = uaResult?.UserAgents?.Select(ua => new DiscoveryV2UserAgent
+                {
+                    SipId = ua.SipId,
+                    ConnectedTo = ua.ConnectedTo,
+                    Profiles = ua.Profiles,
+                    MetaData = ua.MetaData?.Select(m => new DiscoveryV2UserAgentMetaData(m.Key, m.Value)).ToList() ?? new List<DiscoveryV2UserAgentMetaData>()
+                }).ToList() ?? new List<DiscoveryV2UserAgent>()
+            };
+
+            return Ok(result);
+        }
     }
 }
