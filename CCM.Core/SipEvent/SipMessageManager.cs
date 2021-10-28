@@ -57,7 +57,7 @@ namespace CCM.Core.SipEvent
         /// <param name="sipMessage"></param>
         public SipEventHandlerResult HandleSipMessage(SipMessageBase sipMessage)
         {
-            _logger.LogDebug("Parsed Kamailio Message {0}", sipMessage.ToDebugString());
+            //_logger.LogDebug("Parsed Kamailio Message {0}", sipMessage.ToDebugString());
 
             switch (sipMessage)
             {
@@ -148,7 +148,7 @@ namespace CCM.Core.SipEvent
 
         public SipEventHandlerResult RegisterCall(SipDialogMessage sipMessage)
         {
-            _logger.LogDebug("Register call from:{0} to:{1}, call id:{2}, hash id:{3}, hash entry:{4}",
+            //_logger.LogDebug("Register call from:{0} to:{1}, call id:{2}, hash id:{3}, hash entry:{4}",
                 sipMessage.FromSipUri.UserAtHost, sipMessage.ToSipUri.UserAtHost, sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
 
             if (_cachedCallRepository.CallExists(sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry))
@@ -221,7 +221,7 @@ namespace CCM.Core.SipEvent
 
         public SipEventHandlerResult CloseCall(SipDialogMessage sipMessage)
         {
-            _logger.LogDebug("Closing call with id:{0}, hash id:{1}, hash entry:{2}", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
+            //_logger.LogDebug("Closing call with id:{0}, hash id:{1}, hash entry:{2}", sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
 
             try
             {
