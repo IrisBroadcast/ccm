@@ -52,9 +52,10 @@ namespace CCM.Core.Cache
 
         public bool Save(CallHistory callHistory)
         {
-            var success = _internalRepository.Save(callHistory);
-            _lazyCache.ClearCallHistory();
-            return success;
+            //var success = _internalRepository.Save(callHistory);
+            //_lazyCache.ClearCallHistory();
+            //return success;
+            return true;
         }
 
         public CallHistory GetById(Guid id)
