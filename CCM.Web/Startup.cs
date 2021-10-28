@@ -287,8 +287,8 @@ namespace CCM.Web
             services.AddTransient<ISettingsManager, SettingsManager>();
             services.AddTransient<IStatisticsManager, StatisticsManager>();
 
-            services.AddTransient<ISipMessageManager, SipMessageManager>();
-            services.AddTransient<IExternalStoreMessageManager, ExternalStoreMessageManager>();
+            services.AddScoped<ISipMessageManager, SipMessageManager>();
+            services.AddScoped<IExternalStoreMessageManager, ExternalStoreMessageManager>();
 
             services.AddTransient<ICachedCallHistoryRepository, CachedCallHistoryRepository>();
             services.AddTransient<ICallHistoryRepository, CallHistoryRepository>();
