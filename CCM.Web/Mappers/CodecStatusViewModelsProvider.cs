@@ -95,7 +95,9 @@ namespace CCM.Web.Mappers
             foreach (var uu in ongoingCalls)
             {
                 // Check if 'from' codec is not in registered codecs
-                if (String.IsNullOrEmpty(uu.FromId) || userAgentsOnline.All(x => x.Id != Guid.Parse(uu.FromId)))
+                var nyFromGuid = Guid.Empty;
+                Guid.TryParse(uu.FromId, out nyFromGuid);
+                if (String.IsNullOrEmpty(uu.FromId) || userAgentsOnline.All(x => x.Id != nyFromGuid))
                 {
                     userAgentsOnline.Add(new CodecStatusViewModel
                     {
@@ -115,7 +117,9 @@ namespace CCM.Web.Mappers
                 }
 
                 // Check if 'to' codec is not in registered codecs
-                if (String.IsNullOrEmpty(uu.ToId) || userAgentsOnline.All(x => x.Id != Guid.Parse(uu.ToId)))
+                var nyToGuid = Guid.Empty;
+                Guid.TryParse(uu.FromId, out nyToGuid);
+                if (String.IsNullOrEmpty(uu.ToId) || userAgentsOnline.All(x => x.Id != nyToGuid))
                 {
                     userAgentsOnline.Add(new CodecStatusViewModel
                     {
