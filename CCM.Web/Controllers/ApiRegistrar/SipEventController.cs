@@ -34,6 +34,7 @@ using CCM.Core.SipEvent.Messages;
 using CCM.Core.SipEvent.Models;
 using CCM.Web.Hubs;
 using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace CCM.Web.Controllers.ApiRegistrar
 {
@@ -43,6 +44,8 @@ namespace CCM.Web.Controllers.ApiRegistrar
     /// </summary>
     public class SipEventController : ControllerBase
     {
+        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         private readonly ILogger<SipEventController> _logger;
         private readonly ISipEventParser _sipEventParser;
         private readonly ISipMessageManager _sipMessageManager;
@@ -83,33 +86,43 @@ namespace CCM.Web.Controllers.ApiRegistrar
 
             if (sipEventData == null)
             {
-                _logger.LogWarning("SIP event controller received empty data");
+                log.Warn("SIP event controller received empty data");
                 return BadRequest();
             }
 
-            SipMessageBase sipMessage = _sipEventParser.Parse(sipEventData);
-            if (sipMessage == null)
+            try
             {
-                _logger.LogWarning("Incorrect SIP message format: ", sipEventData);
-                return BadRequest();
+
+
+                SipMessageBase sipMessage = _sipEventParser.Parse(sipEventData);
+                if (sipMessage == null)
+                {
+                    log.Warn("Incorrect SIP message format: ", sipEventData);
+                    return BadRequest();
+                }
+
+                log.Debug("SIP message, Handled: {0}, Parsed: {1}, Result: {2}", sipEventData.ToLogString(),
+                    sipMessage.ToDebugString());
+
+                SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
+                //var expireTime = DateTime.UtcNow;
+
+                log.Debug($"REGISTE: SIP: {sipEventData.FromUri.Replace("sip:", "")} '{sipEventData.FromDisplayName ?? ""}' {sipEventData.Expires} -- # Now____: Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
+                //_logger.LogDebug("SIP message, Handled: {0}, Parsed: {1}, Result: {2}", sipEventData.ToLogString(), sipMessage.ToDebugString(), result?.ChangeStatus);
+
+                if (result == null)
+                {
+                    log.Warn("SIP message was handled but result was null");
+                }
+                else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
+                {
+                    _webGuiHubUpdater.Update(result); // First web gui
+                    _codecStatusHubUpdater.Update(result); // Then codec status to external clients
+                }
             }
-
-            //_logger.LogInformation("SIP message, Handled: {0}, Parsed: {1}, Result: {2}", sipEventData.ToLogString(), sipMessage.ToDebugString());
-
-            SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-            var expireTime = DateTime.UtcNow;
-            
-            _logger.LogDebug($"REGISTE: SIP: {sipEventData.FromUri.Replace("sip:", "")} '{sipEventData.FromDisplayName ?? ""}' {sipEventData.Expires} -- # Now____:{expireTime} Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
-            //_logger.LogDebug("SIP message, Handled: {0}, Parsed: {1}, Result: {2}", sipEventData.ToLogString(), sipMessage.ToDebugString(), result?.ChangeStatus);
-
-            if (result == null)
+            catch (Exception ex)
             {
-                _logger.LogWarning("SIP message was handled but result was null");
-            }
-            else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
-            {
-                _webGuiHubUpdater.Update(result); // First web gui
-                _codecStatusHubUpdater.Update(result); // Then codec status to external clients
+                log.Error(ex.Message);
             }
 
             return Ok();
