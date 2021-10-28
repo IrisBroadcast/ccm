@@ -85,13 +85,13 @@ namespace CCM.Data.Repositories
             {
                 var db = _ccmDbContext;
                 var dbSip = db.RegisteredCodecs
-                    .Include(rs => rs.Location)
-                    .Include(rs => rs.Location.Region)
-                    .Include(rs => rs.Location.City)
-                    .Include(rs => rs.User)
-                    .Include(rs => rs.User.Owner)
-                    .Include(rs => rs.User.CodecType)
-                    .Include(rs => rs.UserAgent)
+                    //.Include(rs => rs.Location)
+                    //.Include(rs => rs.Location.Region)
+                    //.Include(rs => rs.Location.City)
+                    //.Include(rs => rs.User)
+                    //.Include(rs => rs.User.Owner)
+                    //.Include(rs => rs.User.CodecType)
+                    //.Include(rs => rs.UserAgent)
                     .SingleOrDefault(rs => rs.SIP == registration.SipUri);
 
                 // Is it a new registration?
@@ -146,6 +146,7 @@ namespace CCM.Data.Repositories
                 // If you call SaveChanges() or SaveChanges(true),the EF simply assumes that if its work completes okay, everything is okay, so it will discard the changes it has been tracking, and wait for new changes.
                 db.SaveChanges(true);
 
+                db.Dispose();
                 return new SipEventHandlerResult
                 {
                     ChangeStatus = changeStatus,
@@ -211,7 +212,7 @@ namespace CCM.Data.Repositories
         {
             var entry = cxt.Entry(dbCodec);
 
-            _logger.LogDebug($"UPDATE_: SIP: {dbCodec.SIP} STATE {entry.State} {dbCodec.Id} (SAVING_)");
+            //_logger.LogDebug($"UPDATE_: SIP: {dbCodec.SIP} STATE {entry.State} {dbCodec.Id} (SAVING_)");
 
             if (entry.State == EntityState.Added)
             {
@@ -404,7 +405,7 @@ namespace CCM.Data.Repositories
                 .OrderByDescending(ua => ua.Identifier.Length)
                 .ThenBy(ua => ua.Identifier).ToList();
 
-            _logger.LogDebug($"UA Indata {userAgentHeader}");
+            //_logger.LogDebug($"UA Indata {userAgentHeader}");
             //foreach (var uaAgent in allUserAgents)
             //{
             //    _logger.LogInformation($"UA Match {uaAgent.Identifier} {uaAgent.MatchType}");
@@ -444,14 +445,14 @@ namespace CCM.Data.Repositories
 
             if (dbUserAgent != null)
             {
-                _logger.LogDebug($"UA Match {dbUserAgent.MatchType} => {dbUserAgent.Identifier} on {userAgentHeader}");
+                //_logger.LogDebug($"UA Match {dbUserAgent.MatchType} => {dbUserAgent.Identifier} on {userAgentHeader}");
                 return dbUserAgent.UserAgentId;
             }
 
             dbUserAgent = allUserAgents.FirstOrDefault(u =>
                 u.MatchType != UserAgentPatternMatchType.Regular_Expression && userAgentHeader.Contains(u.Identifier));
 
-            _logger.LogDebug($"UA Match {dbUserAgent?.MatchType} => {dbUserAgent?.Identifier} on {userAgentHeader}");
+            //_logger.LogDebug($"UA Match {dbUserAgent?.MatchType} => {dbUserAgent?.Identifier} on {userAgentHeader}");
 
             return dbUserAgent?.UserAgentId;
         }
