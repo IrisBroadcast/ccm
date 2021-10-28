@@ -92,8 +92,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
 
             try
             {
-
-
+                log.Debug($"####RAW: {DateTime.Now.ToString()} {sipEventData.Event} {sipEventData.FromUri} {sipEventData.FromDisplayName}");
                 SipMessageBase sipMessage = _sipEventParser.Parse(sipEventData);
                 if (sipMessage == null)
                 {
@@ -121,6 +120,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
             }
             catch (Exception ex)
             {
+                log.Error(ex);
                 log.Error(ex.Message);
             }
 
