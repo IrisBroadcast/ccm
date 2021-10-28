@@ -149,7 +149,7 @@ namespace CCM.Core.SipEvent
         public SipEventHandlerResult RegisterCall(SipDialogMessage sipMessage)
         {
             //_logger.LogDebug("Register call from:{0} to:{1}, call id:{2}, hash id:{3}, hash entry:{4}",
-                sipMessage.FromSipUri.UserAtHost, sipMessage.ToSipUri.UserAtHost, sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
+            //    sipMessage.FromSipUri.UserAtHost, sipMessage.ToSipUri.UserAtHost, sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
 
             if (_cachedCallRepository.CallExists(sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry))
             {
