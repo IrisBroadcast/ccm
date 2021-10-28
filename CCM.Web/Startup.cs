@@ -172,7 +172,7 @@ namespace CCM.Web
                     {
                         options.EnableRetryOnFailure();
                     })
-                    .EnableDetailedErrors(false)
+                    .EnableDetailedErrors(true)
                     .EnableSensitiveDataLogging(false);
             });
 
@@ -278,60 +278,60 @@ namespace CCM.Web
             services.AddTransient<IPasswordGeneratorConfigurationProvider, PasswordGeneratorConfigurationProvider>();
             services.AddTransient<IPasswordGenerator, PasswordGenerator>();
 
-            services.AddScoped<IKamailioEventParser, KamailioEventParser>();
-            services.AddScoped<ISipEventParser, SipEventParser>();
+            services.AddTransient<IKamailioEventParser, KamailioEventParser>();
+            services.AddTransient<ISipEventParser, SipEventParser>();
 
-            services.AddScoped<IFilterManager, FilterManager>();
-            services.AddScoped<ILocationManager, LocationManager>();
-            services.AddScoped<IRegisteredCodecsManager, RegisteredCodecsManager>();
-            services.AddScoped<ISettingsManager, SettingsManager>();
-            services.AddScoped<IStatisticsManager, StatisticsManager>();
+            services.AddTransient<IFilterManager, FilterManager>();
+            services.AddTransient<ILocationManager, LocationManager>();
+            services.AddTransient<IRegisteredCodecsManager, RegisteredCodecsManager>();
+            services.AddTransient<ISettingsManager, SettingsManager>();
+            services.AddTransient<IStatisticsManager, StatisticsManager>();
 
-            services.AddScoped<ISipMessageManager, SipMessageManager>();
-            services.AddScoped<IExternalStoreMessageManager, ExternalStoreMessageManager>();
+            services.AddTransient<ISipMessageManager, SipMessageManager>();
+            services.AddTransient<IExternalStoreMessageManager, ExternalStoreMessageManager>();
 
-            services.AddScoped<ICachedCallHistoryRepository, CachedCallHistoryRepository>();
-            services.AddScoped<ICallHistoryRepository, CallHistoryRepository>();
+            services.AddTransient<ICachedCallHistoryRepository, CachedCallHistoryRepository>();
+            services.AddTransient<ICallHistoryRepository, CallHistoryRepository>();
 
-            services.AddScoped<ICachedCallRepository, CachedCallRepository>();
-            services.AddScoped<ICallRepository, CallRepository>();
+            services.AddTransient<ICachedCallRepository, CachedCallRepository>();
+            services.AddTransient<ICallRepository, CallRepository>();
 
-            services.AddScoped<ICachedLocationRepository, CachedLocationRepository>();
-            services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddTransient<ICachedLocationRepository, CachedLocationRepository>();
+            services.AddTransient<ILocationRepository, LocationRepository>();
 
-            services.AddScoped<ICachedProfileGroupRepository, CachedProfileGroupRepository>();
-            services.AddScoped<IProfileGroupRepository, ProfileGroupRepository>();
+            services.AddTransient<ICachedProfileGroupRepository, CachedProfileGroupRepository>();
+            services.AddTransient<IProfileGroupRepository, ProfileGroupRepository>();
 
-            services.AddScoped<ICachedProfileRepository, CachedProfileRepository>();
-            services.AddScoped<IProfileRepository, ProfileRepository>();
+            services.AddTransient<ICachedProfileRepository, CachedProfileRepository>();
+            services.AddTransient<IProfileRepository, ProfileRepository>();
 
-            services.AddScoped<ICachedRegisteredCodecRepository, CachedRegisteredCodecRepository>();
-            services.AddScoped<IRegisteredCodecRepository, RegisteredCodecRepository>();
+            services.AddTransient<ICachedRegisteredCodecRepository, CachedRegisteredCodecRepository>();
+            services.AddTransient<IRegisteredCodecRepository, RegisteredCodecRepository>();
 
-            services.AddScoped<ICachedSettingsRepository, CachedSettingsRepository>();
-            services.AddScoped<ISettingsRepository, SettingsRepository>();
+            services.AddTransient<ICachedSettingsRepository, CachedSettingsRepository>();
+            services.AddTransient<ISettingsRepository, SettingsRepository>();
 
-            services.AddScoped<ICachedSipAccountRepository, CachedSipAccountRepository>();
-            services.AddScoped<ISipAccountRepository, SipAccountRepository>();
+            services.AddTransient<ICachedSipAccountRepository, CachedSipAccountRepository>();
+            services.AddTransient<ISipAccountRepository, SipAccountRepository>();
 
-            services.AddScoped<ICachedUserAgentRepository, CachedUserAgentRepository>();
-            services.AddScoped<IUserAgentRepository, UserAgentRepository>();
+            services.AddTransient<ICachedUserAgentRepository, CachedUserAgentRepository>();
+            services.AddTransient<IUserAgentRepository, UserAgentRepository>();
 
-            services.AddScoped<ICcmUserRepository, CcmUserRepository>();
-            services.AddScoped<ICityRepository, CityRepository>();
-            services.AddScoped<ICodecTypeRepository, CodecTypeRepository>();
-            services.AddScoped<IFilterRepository, FilterRepository>();
+            services.AddTransient<ICcmUserRepository, CcmUserRepository>();
+            services.AddTransient<ICityRepository, CityRepository>();
+            services.AddTransient<ICodecTypeRepository, CodecTypeRepository>();
+            services.AddTransient<IFilterRepository, FilterRepository>();
 
-            services.AddScoped<ILogRepository, LogRepository>();
-            services.AddScoped<IMetaRepository, MetaRepository>();
-            services.AddScoped<IOwnersRepository, OwnersRepository>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IRegionRepository, RegionRepository>();
-            services.AddScoped<IRegisteredCodecDetailsRepository, RegisteredCodecDetailsRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddTransient<ILogRepository, LogRepository>();
+            services.AddTransient<IMetaRepository, MetaRepository>();
+            services.AddTransient<IOwnersRepository, OwnersRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddTransient<IRegionRepository, RegionRepository>();
+            services.AddTransient<IRegisteredCodecDetailsRepository, RegisteredCodecDetailsRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
 
-            services.AddScoped<IWebGuiHubUpdater, WebGuiHubUpdater>();
-            services.AddScoped<ICodecStatusHubUpdater, CodecStatusHubUpdater>();
+            services.AddTransient<IWebGuiHubUpdater, WebGuiHubUpdater>();
+            services.AddTransient<ICodecStatusHubUpdater, CodecStatusHubUpdater>();
 
             // Discovery related
             services.AddScoped<IDiscoveryServiceManager, DiscoveryServiceManager>();
