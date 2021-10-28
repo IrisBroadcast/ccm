@@ -91,13 +91,11 @@ namespace CCM.DiscoveryApi.Controllers
         [Route("~/v2/useragents")]
         public async Task<ActionResult> UserAgents([FromBody]DiscoveryV2UserAgentRequest searchParams)
         {
-            log.Error("Discovery V2 API - requesting 'useragents'", searchParams); // old return UserAgentsResultV2
+            log.Trace("Discovery V2 API - requesting 'useragents'", searchParams); // old return UserAgentsResultV2
 
             if (searchParams == null)
             {
                 log.Debug("Requesting useragents from Discovery V2, but search params is null");
-                //throw new HttpResponseException(HttpStatusCode.BadRequest);
-                //return BadRequest("No search parameters");
                 searchParams = new DiscoveryV2UserAgentRequest();
             }
 
