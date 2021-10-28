@@ -34,6 +34,7 @@ using CCM.Core.SipEvent.Event;
 using CCM.Core.SipEvent.Messages;
 using CCM.Core.SipEvent.Models;
 using CCM.Web.Hubs;
+using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 using NLog;
 
@@ -91,48 +92,45 @@ namespace CCM.Web.Controllers.ApiRegistrar
                 return BadRequest();
             }
 
-            Task.Run(() =>
+            try
             {
-                try
+                if (log.IsDebugEnabled)
                 {
-                    if (log.IsDebugEnabled)
-                    {
-                        log.Debug(
-                            $"####RAW: {DateTime.Now.ToString()} {sipEventData.Event} {sipEventData.FromUri} {sipEventData.FromDisplayName}");
-                    }
-
-                    SipMessageBase sipMessage = _sipEventParser.Parse(sipEventData);
-                    if (sipMessage == null)
-                    {
-                        log.Warn("Incorrect SIP message format: ", sipEventData);
-                        //return BadRequest();
-                        return;
-                    }
-
-                    SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-                    //var expireTime = DateTime.UtcNow;
-
-                    if (log.IsDebugEnabled) {
-                        log.Debug(
-                        $"SIP message, Handled: {sipEventData.FromUri.Replace("sip:", "")} '{sipEventData.FromDisplayName ?? ""}' {sipEventData.Expires} -- # Now____: Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
-                    }
-
-                    if (result == null)
-                    {
-                        log.Warn("SIP message was handled but result was null");
-                    }
-                    else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
-                    {
-                        _webGuiHubUpdater.Update(result); // First web gui
-                        _codecStatusHubUpdater.Update(result); // Then codec status to external clients
-                    }
+                    log.Debug(
+                        $"####RAW: {DateTime.Now.ToString()} {sipEventData.Event} {sipEventData.FromUri} {sipEventData.FromDisplayName}");
                 }
-                catch (Exception ex)
+
+                SipMessageBase sipMessage = _sipEventParser.Parse(sipEventData);
+                if (sipMessage == null)
                 {
-                    log.Error(ex);
-                    log.Error(ex.Message);
+                    log.Warn("Incorrect SIP message format: ", sipEventData);
+                    //return BadRequest();
+                    return;
                 }
-            });
+
+                SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
+                //var expireTime = DateTime.UtcNow;
+
+                if (log.IsDebugEnabled) {
+                    log.Debug(
+                    $"SIP message, Handled: {sipEventData.FromUri.Replace("sip:", "")} '{sipEventData.FromDisplayName ?? ""}' {sipEventData.Expires} -- # Now____: Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
+                }
+
+                if (result == null)
+                {
+                    log.Warn("SIP message was handled but result was null");
+                }
+                else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
+                {
+                    _webGuiHubUpdater.Update(result); // First web gui
+                    _codecStatusHubUpdater.Update(result); // Then codec status to external clients
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+                log.Error(ex.Message);
+            }
 
             return Ok();
         }
