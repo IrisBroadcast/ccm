@@ -50,29 +50,29 @@ namespace CCM.Web.Infrastructure
         {
             _logger.LogInformation($"*********** Starting CCM SIP Account Background service ************");
 
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                await Task.Delay(15000, stoppingToken);
+            //while (!stoppingToken.IsCancellationRequested)
+            //{
+            //    await Task.Delay(15000, stoppingToken);
 
-                using (var scope = _serviceProvider.CreateScope())
-                {
-                    var _registeredRepository = scope.ServiceProvider.GetRequiredService<ICachedRegisteredCodecRepository>();
+            //    using (var scope = _serviceProvider.CreateScope())
+            //    {
+            //        var _registeredRepository = scope.ServiceProvider.GetRequiredService<ICachedRegisteredCodecRepository>();
 
-                    var useragents = _registeredRepository.GetRegisteredCodecsUpdateTimes().ToList();
-                    var expireTime = DateTime.UtcNow;
+            //        var useragents = _registeredRepository.GetRegisteredCodecsUpdateTimes().ToList();
+            //        var expireTime = DateTime.UtcNow;
 
-                    foreach (var sip in useragents)
-                    {
-                        var expectedAfter = expireTime.AddSeconds(-(sip.Expires + 220));
-                        if (sip.Updated < expectedAfter)
-                        {
-                            _logger.LogDebug($"Cleanup service found expired registration: {sip.SIP} Expire:{sip.Expires}+20 -- Expected later than this:{expectedAfter} but was Updated:{sip.Updated} # Now:{expireTime}");
-                            //_registeredRepository.DeleteRegisteredSip(sip.SIP);
-                            // TODO: this does not trigger websocket info maybe?
-                        }
-                    }
-                }
-            }
+            //        foreach (var sip in useragents)
+            //        {
+            //            var expectedAfter = expireTime.AddSeconds(-(sip.Expires + 220));
+            //            if (sip.Updated < expectedAfter)
+            //            {
+            //                _logger.LogDebug($"Cleanup service found expired registration: {sip.SIP} Expire:{sip.Expires}+20 -- Expected later than this:{expectedAfter} but was Updated:{sip.Updated} # Now:{expireTime}");
+            //                //_registeredRepository.DeleteRegisteredSip(sip.SIP);
+            //                // TODO: this does not trigger websocket info maybe?
+            //            }
+            //        }
+            //    }
+            //}
 
             _logger.LogInformation($"*********** Stopping CCM SIP Account Background service ************");
         }
