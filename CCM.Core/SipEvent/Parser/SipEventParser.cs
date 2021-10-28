@@ -86,10 +86,21 @@ namespace CCM.Core.SipEvent.Parser
 
         private SipRegistrationExpireMessage ParseExpiredRegistration(KamailioSipEventData kamailioData)
         {
+            _logger.LogInformation("DOES IT MAKE IT TO HERE:::");
+            if (kamailioData == null)
+            {
+                _logger.LogError("KAMAILIO ParseExpiredRegistration Error");
+                return new SipRegistrationExpireMessage()
+                {
+                    SipAddress = new SipUri(""),
+                    ReceivedIp = ""
+                };
+
+            }
             var expire = new SipRegistrationExpireMessage()
             {
-                SipAddress = new SipUri(kamailioData.FromUri),
-                ReceivedIp = kamailioData.Ip.SenderIp
+                SipAddress = new SipUri(kamailioData?.FromUri ?? "Unknown"),
+                ReceivedIp = kamailioData?.Ip?.SenderIp ?? ""
             };
 
             return expire;
