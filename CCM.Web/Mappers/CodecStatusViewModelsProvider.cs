@@ -189,64 +189,64 @@ namespace CCM.Web.Mappers
             }).ToList();
 
             // Check if there is calling parts that are not registered
-            foreach (var uu in ongoingCalls)
-            {
-                // Check if 'from' codec is not in registered codecs
-                if (userAgentsOnline.All(x => x.Id != Guid.Parse(uu.FromId)))
-                {
-                    userAgentsOnline.Add(new CodecStatusExtendedViewModel
-                    {
-                        State = CodecState.InCall,
-                        SipAddress = uu.FromSip,
-                        Id = Guid.Parse(uu.FromId),
-                        PresentationName = uu.FromDisplayName,
-                        DisplayName = uu.FromDisplayName,
-                        InCall = true,
-                        ConnectedToSipAddress = uu.ToSip,
-                        ConnectedToPresentationName = uu.ToDisplayName,
-                        ConnectedToDisplayName = uu.ToDisplayName,
-                        ConnectedToLocation = uu.ToLocationName,
-                        IsCallingPart = true,
-                        CallStartedAt = uu.Started,
-                        CodecTypeName = uu.FromCodecTypeName,
-                        CodecTypeCategory = String.IsNullOrEmpty(uu.FromCategory) ? uu.FromCodecTypeCategory : uu.FromCategory,
-                        CodecTypeColor = uu.FromCodecTypeColor,
-                        LocationName = uu.FromLocationName,
-                        LocationCategory = uu.FromLocationCategory,
-                        RegionName = uu.FromRegionName,
-                        UserExternalReference = uu.FromExternalReference,
-                        UserComment = uu.FromComment
-                    });
-                }
+            //foreach (var uu in ongoingCalls)
+            //{
+            //    // Check if 'from' codec is not in registered codecs
+            //    if (userAgentsOnline.All(x => x.Id != Guid.Parse(uu.FromId)))
+            //    {
+            //        userAgentsOnline.Add(new CodecStatusExtendedViewModel
+            //        {
+            //            State = CodecState.InCall,
+            //            SipAddress = uu.FromSip,
+            //            Id = Guid.Parse(uu.FromId),
+            //            PresentationName = uu.FromDisplayName,
+            //            DisplayName = uu.FromDisplayName,
+            //            InCall = true,
+            //            ConnectedToSipAddress = uu.ToSip,
+            //            ConnectedToPresentationName = uu.ToDisplayName,
+            //            ConnectedToDisplayName = uu.ToDisplayName,
+            //            ConnectedToLocation = uu.ToLocationName,
+            //            IsCallingPart = true,
+            //            CallStartedAt = uu.Started,
+            //            CodecTypeName = uu.FromCodecTypeName,
+            //            CodecTypeCategory = String.IsNullOrEmpty(uu.FromCategory) ? uu.FromCodecTypeCategory : uu.FromCategory,
+            //            CodecTypeColor = uu.FromCodecTypeColor,
+            //            LocationName = uu.FromLocationName,
+            //            LocationCategory = uu.FromLocationCategory,
+            //            RegionName = uu.FromRegionName,
+            //            UserExternalReference = uu.FromExternalReference,
+            //            UserComment = uu.FromComment
+            //        });
+            //    }
 
-                // Check if 'to' codec is not in registered codecs
-                if (userAgentsOnline.All(x => x.Id != Guid.Parse(uu.ToId)))
-                {
-                    userAgentsOnline.Add(new CodecStatusExtendedViewModel
-                    {
-                        State = CodecState.InCall,
-                        SipAddress = uu.ToSip,
-                        Id = Guid.Parse(uu.ToId),
-                        PresentationName = uu.ToDisplayName,
-                        DisplayName = uu.ToDisplayName,
-                        InCall = true,
-                        ConnectedToSipAddress = uu.FromSip,
-                        ConnectedToPresentationName = uu.FromDisplayName,
-                        ConnectedToDisplayName = uu.FromDisplayName,
-                        ConnectedToLocation = uu.FromLocationName,
-                        IsCallingPart = false,
-                        CallStartedAt = uu.Started,
-                        CodecTypeName = uu.ToCodecTypeName,
-                        CodecTypeCategory = String.IsNullOrEmpty(uu.ToCategory) ? uu.ToCodecTypeCategory : uu.ToCategory,
-                        CodecTypeColor = uu.ToCodecTypeColor,
-                        LocationName = uu.ToLocationName,
-                        LocationCategory = uu.ToLocationCategory,
-                        RegionName = uu.ToRegionName,
-                        UserExternalReference = uu.ToExternalReference,
-                        UserComment = uu.ToComment
-                    });
-                }
-            }
+            //    // Check if 'to' codec is not in registered codecs
+            //    if (userAgentsOnline.All(x => x.Id != Guid.Parse(uu.ToId)))
+            //    {
+            //        userAgentsOnline.Add(new CodecStatusExtendedViewModel
+            //        {
+            //            State = CodecState.InCall,
+            //            SipAddress = uu.ToSip,
+            //            Id = Guid.Parse(uu.ToId),
+            //            PresentationName = uu.ToDisplayName,
+            //            DisplayName = uu.ToDisplayName,
+            //            InCall = true,
+            //            ConnectedToSipAddress = uu.FromSip,
+            //            ConnectedToPresentationName = uu.FromDisplayName,
+            //            ConnectedToDisplayName = uu.FromDisplayName,
+            //            ConnectedToLocation = uu.FromLocationName,
+            //            IsCallingPart = false,
+            //            CallStartedAt = uu.Started,
+            //            CodecTypeName = uu.ToCodecTypeName,
+            //            CodecTypeCategory = String.IsNullOrEmpty(uu.ToCategory) ? uu.ToCodecTypeCategory : uu.ToCategory,
+            //            CodecTypeColor = uu.ToCodecTypeColor,
+            //            LocationName = uu.ToLocationName,
+            //            LocationCategory = uu.ToLocationCategory,
+            //            RegionName = uu.ToRegionName,
+            //            UserExternalReference = uu.ToExternalReference,
+            //            UserComment = uu.ToComment
+            //        });
+            //    }
+            //}
 
             return userAgentsOnline;
         }
