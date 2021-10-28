@@ -104,8 +104,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
                 if (sipMessage == null)
                 {
                     log.Warn("Incorrect SIP message format: ", sipEventData);
-                    //return BadRequest();
-                    return;
+                    return BadRequest();
                 }
 
                 SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
