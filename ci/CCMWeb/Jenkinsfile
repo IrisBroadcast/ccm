@@ -32,7 +32,7 @@ node(jenkinsWorkerConstraint) {
         buildVersion = env.TAG_NAME
         buildEnvironment = "Prod"
         application.stackname = "ipk"
-        configFile = "ccm_appsettings_prod_3"
+        configFile = "ccm_appsettings_prod_2"
         dockerComposeFile = "./ci/CCMWeb/production/docker-compose.yml"
     }
 
