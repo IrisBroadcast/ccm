@@ -94,12 +94,6 @@ namespace CCM.Web.Controllers.ApiRegistrar
 
             try
             {
-                if (log.IsDebugEnabled)
-                {
-                    log.Debug(
-                        $"####RAW: {DateTime.Now.ToString()} {sipEventData.Event} {sipEventData.FromUri} {sipEventData.FromDisplayName}");
-                }
-
                 SipMessageBase sipMessage = _sipEventParser.Parse(sipEventData);
                 if (sipMessage == null)
                 {
@@ -108,11 +102,10 @@ namespace CCM.Web.Controllers.ApiRegistrar
                 }
 
                 SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-                //var expireTime = DateTime.UtcNow;
 
                 if (log.IsDebugEnabled) {
                     log.Debug(
-                    $"SIP message, Handled: {sipEventData.FromUri.Replace("sip:", "")} '{sipEventData.FromDisplayName ?? ""}' {sipEventData.Expires} -- # Now____: Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
+                    $"SIP message, Handled: {sipEventData.FromUri.Replace("sip:", "")} '{sipEventData.FromDisplayName ?? ""}' Expires:{sipEventData.Expires} -- RAW:${sipEventData.Event}: Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
                 }
 
                 if (result == null)

@@ -38,11 +38,14 @@ using CCM.Data.Entities;
 using CCM.Data.Helpers;
 using LazyCache;
 using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace CCM.Data.Repositories
 {
     public class CallRepository : BaseRepository, ICallRepository
     {
+        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         private readonly ILogger<CallRepository> _logger;
         private readonly ICachedCallHistoryRepository _cachedCallHistoryRepository;
         private readonly ISettingsManager _settingsManager;
@@ -129,6 +132,7 @@ namespace CCM.Data.Repositories
             }
             catch (Exception ex)
             {
+                log.Error(ex);
                 _logger.LogError(ex, $"Error saving/updating call with call id: {call.CallId}, hash id: {call.DialogHashId}, hash ent: {call.DialogHashEnt}");
             }
         }

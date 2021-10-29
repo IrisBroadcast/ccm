@@ -129,6 +129,7 @@ namespace CCM.Core.SipEvent
         /// <param name="sipDialogMessage"></param>
         private SipEventHandlerResult HandleDialog(SipDialogMessage sipDialogMessage)
         {
+            log.Info($"######## Handle Dialog {sipDialogMessage.ToDebugString()}");
             switch (sipDialogMessage.Status)
             {
                 case SipDialogStatus.Start:
@@ -161,7 +162,7 @@ namespace CCM.Core.SipEvent
                         sipMessage.HashId, sipMessage.HashEntry);
                     return NothingChangedResult;
                 }
-                log.Error("################### ------ MITTT");
+                log.Error("################### ------ After callexists");
                 var call = new Call();
 
                 // If the user-part is numeric, we make the assumption
@@ -171,7 +172,7 @@ namespace CCM.Core.SipEvent
                     .GetRegisteredUserAgents()
                     .FirstOrDefault(x =>
                         (x.SipUri == sipMessage.FromSipUri.User || x.SipUri == sipMessage.FromSipUri.UserAtHost));
-
+                log.Error("################### ------ GET ");
                 call.FromDisplayName = sipMessage.FromDisplayName;
                 if (from != null)
                 {
@@ -191,6 +192,8 @@ namespace CCM.Core.SipEvent
                 }
 
                 call.FromId = from?.Id ?? Guid.Empty;
+
+                log.Error("################### ------ From now done");
 
                 var to = _cachedRegisteredCodecRepository
                     .GetRegisteredUserAgents()
