@@ -26,5 +26,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:3.1
 # Copy buildfolder to runtime image
 WORKDIR /app
 COPY --from=builder /source/out .
+RUN apt-get install tcpdump -y
 
 ENTRYPOINT [ "/app/CCM.Web" ]
