@@ -24,7 +24,7 @@ RUN dotnet publish --configuration Release --output ./out ./CCM.Web/CCM.Web.cspr
 FROM mcr.microsoft.com/dotnet/aspnet:3.1
 RUN apt-get update
 RUN apt-get install tcpdump -y
-
+RUN apt-get install net-tools -y
 
 # Copy buildfolder to runtime image
 WORKDIR /app
