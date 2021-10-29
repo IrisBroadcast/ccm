@@ -75,20 +75,22 @@ namespace CCM.Web.Mappers
                     RegionName = regSip.RegionName
                 };
 
-                var call = calls.FirstOrDefault(c => c.FromSip == regSip.SipUri || c.ToSip == regSip.SipUri);
-                bool inCall = call != null;
-                result.InCall = inCall;
+                if (calls != null) { 
+                    var call = calls.FirstOrDefault(c => c.FromSip == regSip.SipUri || c.ToSip == regSip.SipUri);
+                    bool inCall = call != null;
+                    result.InCall = inCall;
 
-                if (inCall)
-                {
-                    var isFromCaller = call.FromSip == regSip.SipUri;
-                    result.InCallWithId = isFromCaller ? call.ToId : call.FromId;
-                    result.InCallWithSip = isFromCaller ? call.ToSip : call.FromSip;
-                    result.InCallWithName = isFromCaller ? call.ToDisplayName : call.FromDisplayName;
+                    if (inCall)
+                    {
+                        var isFromCaller = call.FromSip == regSip.SipUri;
+                        result.InCallWithId = isFromCaller ? call.ToId : call.FromId;
+                        result.InCallWithSip = isFromCaller ? call.ToSip : call.FromSip;
+                        result.InCallWithName = isFromCaller ? call.ToDisplayName : call.FromDisplayName;
+                    }
                 }
 
                 return result;
-            }).ToList();
+            }).OrderBy(reg => reg.Sip).ToList();
 
             return userAgentsOnline;
         }
