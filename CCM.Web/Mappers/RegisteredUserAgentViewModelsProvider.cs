@@ -90,7 +90,7 @@ namespace CCM.Web.Mappers
                 }
 
                 return result;
-            }).OrderBy(reg => reg.Sip).ToList();
+            }).OrderBy(reg => reg.DisplayName).ToList();
 
             return userAgentsOnline;
         }

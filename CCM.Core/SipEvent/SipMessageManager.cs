@@ -153,94 +153,80 @@ namespace CCM.Core.SipEvent
         {
             //_logger.LogDebug("Register call from:{0} to:{1}, call id:{2}, hash id:{3}, hash entry:{4}",
             //    sipMessage.FromSipUri.UserAtHost, sipMessage.ToSipUri.UserAtHost, sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry);
-            log.Error("################### >>>>>>> START");
-            try
+
+            if (_cachedCallRepository.CallExists(sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry))
             {
-                if (_cachedCallRepository.CallExists(sipMessage.CallId, sipMessage.HashId, sipMessage.HashEntry))
-                {
-                    _logger.LogDebug("Call with id:{0}, hash id:{1}, hash entry:{2} already exists", sipMessage.CallId,
-                        sipMessage.HashId, sipMessage.HashEntry);
-                    return NothingChangedResult;
-                }
-                log.Error("################### ------ After callexists");
-                var call = new Call();
-
-                // If the user-part is numeric, we make the assumption
-                // that it is a phone number (even though sip-address
-                // can be of the numeric kind)
-                var from = _cachedRegisteredCodecRepository
-                    .GetRegisteredUserAgents()
-                    .FirstOrDefault(x =>
-                        (x.SipUri == sipMessage.FromSipUri.User || x.SipUri == sipMessage.FromSipUri.UserAtHost));
-                log.Error("################### ------ GET ");
-                call.FromDisplayName = sipMessage.FromDisplayName;
-                if (from != null)
-                {
-                    call.FromSip = from.SipUri;
-                    call.FromDisplayName = string.IsNullOrEmpty(from.UserDisplayName)
-                        ? from.DisplayName
-                        : from.UserDisplayName; // TODO: maybe displayname helper should exist here.. check this
-                }
-                else if (sipMessage.FromSipUri.User.IsNumeric())
-                {
-                    call.FromSip = sipMessage.FromSipUri.User;
-                    call.IsPhoneCall = true;
-                }
-                else
-                {
-                    call.FromSip = sipMessage.FromSipUri.UserAtHost;
-                }
-
-                call.FromId = from?.Id ?? Guid.Empty;
-
-                log.Error("################### ------ From now done");
-
-                var to = _cachedRegisteredCodecRepository
-                    .GetRegisteredUserAgents()
-                    .FirstOrDefault(x =>
-                        (x.SipUri == sipMessage.ToSipUri.User || x.SipUri == sipMessage.ToSipUri.UserAtHost));
-
-                call.ToDisplayName = sipMessage.ToDisplayName;
-                if (to != null)
-                {
-                    call.ToSip = to.SipUri;
-                    call.ToDisplayName =
-                        string.IsNullOrEmpty(to.UserDisplayName)
-                            ? to.DisplayName
-                            : to.UserDisplayName; // TODO: maybe displayname helper should exist here.. check this
-                }
-                else if (sipMessage.ToSipUri.User.IsNumeric())
-                {
-                    call.ToSip = sipMessage.ToSipUri.User;
-                    call.IsPhoneCall = true;
-                }
-                else
-                {
-                    call.ToSip = sipMessage.ToSipUri.UserAtHost;
-                }
-
-                call.ToId = to?.Id ?? Guid.Empty;
-
-                call.Started = DateTime.UtcNow;
-                call.CallId = sipMessage.CallId;
-                call.DialogHashId = sipMessage.HashId;
-                call.DialogHashEnt = sipMessage.HashEntry;
-                call.Updated = DateTime.UtcNow;
-                call.ToTag = sipMessage.ToTag;
-                call.FromTag = sipMessage.FromTag;
-                call.SDP = sipMessage.Sdp;
-
-                _cachedCallRepository.UpdateCall(call);
-
-                return SipMessageResult(SipEventChangeStatus.CallStarted, call.Id, call.FromSip);
+                _logger.LogDebug("Call with id:{0}, hash id:{1}, hash entry:{2} already exists", sipMessage.CallId,
+                    sipMessage.HashId, sipMessage.HashEntry);
+                return NothingChangedResult;
             }
-            catch (Exception err)
+            var call = new Call();
+
+            // If the user-part is numeric, we make the assumption
+            // that it is a phone number (even though sip-address
+            // can be of the numeric kind)
+            var from = _cachedRegisteredCodecRepository
+                .GetRegisteredUserAgents()
+                .FirstOrDefault(x =>
+                    (x.SipUri == sipMessage.FromSipUri.User || x.SipUri == sipMessage.FromSipUri.UserAtHost));
+            call.FromDisplayName = sipMessage.FromDisplayName;
+            if (from != null)
             {
-                log.Error("###################");
-                _logger.LogError(err.Message);
-                log.Error(err);
-                return SipMessageResult(SipEventChangeStatus.CallStarted, Guid.Empty, "roger@vafan.sr");
+                call.FromSip = from.SipUri;
+                call.FromDisplayName = string.IsNullOrEmpty(from.UserDisplayName)
+                    ? from.DisplayName
+                    : from.UserDisplayName; // TODO: maybe displayname helper should exist here.. check this
             }
+            else if (sipMessage.FromSipUri.User.IsNumeric())
+            {
+                call.FromSip = sipMessage.FromSipUri.User;
+                call.IsPhoneCall = true;
+            }
+            else
+            {
+                call.FromSip = sipMessage.FromSipUri.UserAtHost;
+            }
+
+            call.FromId = from?.Id ?? Guid.Empty;
+
+            var to = _cachedRegisteredCodecRepository
+                .GetRegisteredUserAgents()
+                .FirstOrDefault(x =>
+                    (x.SipUri == sipMessage.ToSipUri.User || x.SipUri == sipMessage.ToSipUri.UserAtHost));
+
+            call.ToDisplayName = sipMessage.ToDisplayName;
+            if (to != null)
+            {
+                call.ToSip = to.SipUri;
+                call.ToDisplayName =
+                    string.IsNullOrEmpty(to.UserDisplayName)
+                        ? to.DisplayName
+                        : to.UserDisplayName; // TODO: maybe displayname helper should exist here.. check this
+            }
+            else if (sipMessage.ToSipUri.User.IsNumeric())
+            {
+                call.ToSip = sipMessage.ToSipUri.User;
+                call.IsPhoneCall = true;
+            }
+            else
+            {
+                call.ToSip = sipMessage.ToSipUri.UserAtHost;
+            }
+
+            call.ToId = to?.Id ?? Guid.Empty;
+
+            call.Started = DateTime.UtcNow;
+            call.CallId = sipMessage.CallId;
+            call.DialogHashId = sipMessage.HashId;
+            call.DialogHashEnt = sipMessage.HashEntry;
+            call.Updated = DateTime.UtcNow;
+            call.ToTag = sipMessage.ToTag;
+            call.FromTag = sipMessage.FromTag;
+            call.SDP = sipMessage.Sdp;
+
+            _cachedCallRepository.UpdateCall(call);
+
+            return SipMessageResult(SipEventChangeStatus.CallStarted, call.Id, call.FromSip);
         }
 
         public SipEventHandlerResult CloseCall(SipDialogMessage sipMessage)

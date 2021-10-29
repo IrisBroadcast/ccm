@@ -239,7 +239,7 @@ namespace CCM.Data.Repositories
                 .Include(c => c.ToCodec.Location)
                 .Include(c => c.ToCodec.Location.Region)
                 .Include(c => c.ToCodec.Location.Category)
-                .Where(call => !call.Closed).ToList();
+                .Where(call => !call.Closed).OrderByDescending(call => call.Started).ToList();
             return dbCalls.Select(dbCall => MapToOngoingCall(dbCall, anonymize)).ToList().AsReadOnly();
         }
 
