@@ -53,13 +53,13 @@ namespace CCM.Core.SipEvent.Parser
 
         public SipMessageBase Parse(KamailioSipEventData sipEventData)
         {
-            switch (sipEventData.Event)
+            switch (sipEventData.Event.ToLower())
             {
-                case SipEventType.Register:
+                case "register":
                     return ParseRegistration(sipEventData);
-                case SipEventType.Dialog:
+                case "dialog":
                     return ParseDialog(sipEventData);
-                case SipEventType.RegExpire:
+                case "regexpire":
                     return ParseExpiredRegistration(sipEventData);
             }
             return null;

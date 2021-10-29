@@ -33,8 +33,9 @@ namespace CCM.Core.SipEvent.Event
 {
     public class KamailioSipEventData
     {
+        [JsonPropertyName("version")] public int Version { get; set; } = 1;
         // Topic: Registration
-        [JsonPropertyName("event")] public SipEventType Event { get; set; } // "register"/"regexpire"/"dialog"
+        [JsonPropertyName("event")] public string Event { get; set; } // "register"/"regexpire"/"dialog"
         [JsonPropertyName("timestamp")] public long TimeStamp { get; set; } // TODO: THIS ONE IS OFF.. MAKE SURE TIME IS CORRECT ON SERVER
         [JsonPropertyName("registrar")] public string Registrar { get; set; } // "registrar.com"
         [JsonPropertyName("regtype")] public string RegType { get; set; } // "rereg/new/delete"

@@ -80,7 +80,6 @@ namespace CCM.Web.Controllers.ApiRegistrar
         [HttpPost]
         public IActionResult Index([FromBody] KamailioSipEventData sipEventData)
         {
-            return Ok();
             if (!_settingsManager.UseSipEvent)
             {
                 _logger.LogTrace("Receiving event but receiver is not ON for 'UseSipEvent'");
