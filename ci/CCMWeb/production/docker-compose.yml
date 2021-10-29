@@ -14,14 +14,15 @@ services:
       ASPNETCORE_URLS: http://+:80
     networks:
       - proxynet
+      - default
     configs:
-      - source: ccm_appsettings_prod_2
+      - source: ccm_appsettings_prod
         target: /app/appsettings.json
     volumes:
       - /mnt/nfs/msc-nfs/docker-share/production/ccm:/ccm
 
 configs:
-  ccm_appsettings_prod_2:
+  ccm_appsettings_prod:
     external: true
 networks:
   proxynet:
