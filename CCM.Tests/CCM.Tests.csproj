@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{07728425-C1A2-4ACC-AA14-689346E29E35}</ProjectGuid>
+    <ProjectGuid>{37FE2CCA-A481-47F6-BB91-7DEE3D1EE282}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CCM.Tests</RootNamespace>
