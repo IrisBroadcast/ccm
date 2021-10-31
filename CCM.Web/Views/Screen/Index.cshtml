@@ -1,0 +1,761 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@using Roles = CCM.Core.Helpers.Roles
+@model CCM.Web.Models.Home.HomeViewModel
+
+@{
+    Layout = "_LayoutStartPage";
+
+    var hasWriteRights = User.Identity.IsAuthenticated && (User.IsInRole(Roles.Admin) || User.IsInRole("Remote"));
+}
+
+@section search
+{
+
+}
+
+<div ng-keyup="onPageKeyUp($event.keyCode)">
+
+    <div class="mui-header-filterinfo" ng-class="{ 'active': isFiltered }">
+
+    </div>
+
+    <!-- Filter headlines -->
+    <div class="mui-panel">
+        <div class="mui-content mui-filter-box">
+            <input type="text" id="searchField" autofocus="autofocus" ng-model="searchString" ng-keydown="searchKeyUp($event.keyCode)" ng-model-options="{ debounce:250 }" class="mui-filter-search" placeholder="@Localizer["Search"] (@Localizer["Tip! Press ESC to clear the searchbar"])">
+        </div>
+
+        <div class="mui-content mui-filter-box">
+            <a class="mui-a" data-toggle="collapse" data-parent="#accordion" id="toggle-filters-btn" href="#toggle-filters">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                    <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4" />
+                    <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6" />
+                </svg>
+                @Localizer["Show more filters"]
+            </a>
+            <a href="#" class="mui-a blob" ng-show="regionName" ng-click="setFilterRegion('nofilter')">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                    <polygon fill="#A0A09F" points="39.8,15.8 34.2,10.2 25,19.3 15.8,10.2 10.2,15.8 19.3,25 10.2,34.2 15.8,39.8 25,30.7 34.2,39.8 39.8,34.2 30.7,25"/>
+                </svg>
+                {{regionName}}
+            </a>
+            <a href="#" class="mui-a blob" ng-show="codecTypeName" ng-click="setFilterCodecType('nofilter')">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                    <polygon fill="#A0A09F" points="39.8,15.8 34.2,10.2 25,19.3 15.8,10.2 10.2,15.8 19.3,25 10.2,34.2 15.8,39.8 25,30.7 34.2,39.8 39.8,34.2 30.7,25"/>
+                </svg>
+                {{codecTypeName}}
+            </a>
+            <a href="#" class="mui-a blob" ng-show="categoryName" ng-click="setFilterCategory('nofilter')">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                    <polygon fill="#A0A09F" points="39.8,15.8 34.2,10.2 25,19.3 15.8,10.2 10.2,15.8 19.3,25 10.2,34.2 15.8,39.8 25,30.7 34.2,39.8 39.8,34.2 30.7,25"/>
+                </svg>
+                {{categoryName}}
+            </a>
+            <a class="mui-a blob" href="#reset-filters" type="button" ng-click="resetViewFilters()" ng-class="{ 'disabled': !isFiltered }">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                    <polygon fill="#A0A09F" points="39.8,15.8 34.2,10.2 25,19.3 15.8,10.2 10.2,15.8 19.3,25 10.2,34.2 15.8,39.8 25,30.7 34.2,39.8 39.8,34.2 30.7,25"/>
+                </svg>
+                @Localizer["Reset filters"]
+            </a>
+        </div>
+
+        <div class="mui-content mui-filter-box collapse" id="toggle-filters">
+            <!-- Grouping Filter 1 -->
+            <div class="ccm-tabpane-filters hidden-sm hidden-xs">
+                <h5>
+                    @Localizer["Regions"]
+                    <span class="selected-name"> ({{regionName ? regionName : "@Localizer["All"]"}})</span>
+                </h5>
+                <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs mui-filter-cloud" id="regions-filter">
+                    <li ng-click="setFilterRegion('nofilter')" class="nofilter">
+                        <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
+                    </li>
+                    @foreach (var region in Model.Regions)
+                    {
+                        <li ng-click="setFilterRegion('@region.Name')" class="ccm-tabpane-filter--link">
+                            <a href="#">@region.Name</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="ccm-tabpane-filters visible-sm visible-xs">
+                <h5>
+                    @Localizer["Regions"]
+                    <span class="selected-name"> ({{regionName ? regionName : "@Localizer["All"]"}})</span>
+                </h5>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="regionsDropDown" aria-expanded="true">{{regionName ? regionName : "@Localizer["All"]"}}<span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="regionsDropDown" id="regions-dropdown-filter">
+                        <li ng-click="setFilterRegion('nofilter')" class="nofilter">
+                            <a href="#">@Localizer["All"]</a>
+                        </li>
+                        @foreach (var region in Model.Regions)
+                        {
+                            <li ng-click="setFilterRegion('@region.Name')"><a href="#">@region.Name</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Grouping Filter 2 -->
+            <div class="ccm-tabpane-filters hidden-sm hidden-xs">
+                <h5>
+                    @Localizer["Codec_Types"]
+                    <span class="selected-name"> ({{codecTypeName ? codecTypeName : "@Localizer["All"]"}})</span>
+                </h5>
+                <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs mui-filter-cloud" id="codecTypes-filter">
+                    <li ng-click="setFilterCodecType('nofilter')" class="nofilter">
+                        <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
+                    </li>
+                    @foreach (var codecType in Model.CodecTypes)
+                    {
+                        <li ng-click="setFilterCodecType('@codecType.Name')">
+                            <a href="#" class="ccm-tabpane-filter--link">
+                                <span @(string.IsNullOrWhiteSpace(codecType.Color) ? string.Empty : string.Format("style=background-color:{0};", codecType.Color))>&nbsp;</span>
+                                @codecType.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="ccm-tabpane-filters visible-sm visible-xs">
+                <h5>
+                    @Localizer["Codec_Types"]
+                    <span class="selected-name"> ({{codecTypeName ? codecTypeName : "@Localizer["All"]"}})</span>
+                </h5>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="codecTypesDropDown" aria-expanded="true">{{codecTypeName ? codecTypeName : "@Localizer["All"]"}}<span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="codecTypesDropDown" id="codecTypes-dropdown-filter">
+                        <li ng-click="setFilterCodecType('nofilter')" class="nofilter">
+                            <a href="#">@Localizer["All"]</a>
+                        </li>
+                        @foreach (var codecType in Model.CodecTypes)
+                        {
+                            <li ng-click="setFilterCodecType('@codecType.Name')">
+                                <a href="#">
+                                    <span @(string.IsNullOrWhiteSpace(codecType.Color) ? string.Empty : string.Format("style=background-color:{0};", codecType.Color))>&nbsp;</span>
+                                    @codecType.Name
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Grouping Filter 3 -->
+            <div class="ccm-tabpane-filters hidden-sm hidden-xs">
+                <h5>
+                    @Localizer["Category"]
+                    <span class="selected-name"> ({{categoryName ? categoryName : "@Localizer["All"]"}})</span>
+                </h5>
+                <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs mui-filter-cloud" id="categories-filter">
+                    <li ng-click="setFilterCategory('nofilter')" class="nofilter">
+                        <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
+                    </li>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <li ng-click="setFilterCategory('@category.Name')" class="ccm-tabpane-filter--link">
+                            <a href="#">@category.Name</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="ccm-tabpane-filters visible-sm visible-xs">
+                <h5>
+                    @Localizer["Category"]
+                    <span class="selected-name"> ({{categoryName ? categoryName : "@Localizer["All"]"}})</span>
+                </h5>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="categoryDropDown" aria-expanded="true">{{categoryName ? categoryName : "@Localizer["All"]"}}<span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="categoryDropDown" id="categories-dropdown-filter">
+                        <li ng-click="setFilterCategory('nofilter')" class="nofilter">
+                            <a href="#">@Localizer["All"]</a>
+                        </li>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <li ng-click="setFilterCategory('@category.Name')">
+                                <a href="#">
+                                    @category.Name
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="mui-panel">
+        <!-- Billboard top info -->
+        <div class="mui-billboard">
+            <!-- Ongoing calls headline -->
+            <div class="board">
+                <div class="count">{{filteredOnGoingCalls.length}} </div>
+                <div class="text">@Localizer["Ongoing_Calls"]</div>
+            </div>
+            <!-- Registered UAs headline -->
+            <div class="board">
+                <div class="count">{{filteredRegisteredSips.length}}</div>
+                <div class="text">@Localizer["Registered_Sips"]</div>
+            </div>
+            <!-- Used resources -->
+            <div class="board">
+                <div class="count">{{filteredRegisteredSips | ResourceUse}}%</div>
+                <div class="text">@Localizer["Use of resource"]</div>
+            </div>
+        </div>
+
+        <!-- Ongoing calls -->
+        <div class="mui-panel-block">
+            <div class="mui-content-heading">
+                <div class="mui-row header">
+                    <div class="mui-col mui-col--source" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'FromDisplayName'}">@Localizer["Caller"]</div>
+                    <div class="mui-col mui-col--direction"> </div>
+                    <div class="mui-col mui-col--destination" ng-click="changeOngoingCallSorting('ToDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'ToDisplayName'}">@Localizer["Callee"]</div>
+                    <div class="mui-col mui-col--duration text-right" ng-click="changeOngoingCallSorting('DurationSeconds')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'DurationSeconds'}">@Localizer["Call_Duration"]</div>
+                </div>
+            </div>
+            <div class="mui-content ongoing-calls">
+                <div class="mui-row call" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
+                    <div class="mui-col mui-col--source">
+                        <a class="list-ccm--sip-name" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
+                        <span class="list-ccm--sip-name" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{call.fromDisplayName}}</span>
+                        <span class="list-ccm--sip-location" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
+                        <span class="codec-type" title="{{call.fromCodecTypeName}}">{{call.fromCodecTypeName}}</span>
+                        <div class="comment-from">{{call.fromComment}}&nbsp;</div>
+                    </div>
+                    <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)" data-toggle="collapse" data-parent="#accordion" href="#toggle-call-{{call.callId}}">
+                        <?xml version="1.0" encoding="utf-8"?>
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+                            <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25"/>
+                        </svg>
+                    </div>
+                    <div class="mui-col mui-col--destination">
+                        <a class="list-ccm--sip-name-to" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
+                        <span class="list-ccm--sip-name-to" ng-if="!call.toId.length" title="{{call.toSip}}">{{call.toDisplayName}}</span>
+                        <span class="list-ccm--sip-location" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
+                        <span class="codec-type" title="{{call.toCodecTypeName}}">{{call.toCodecTypeName}}</span>
+                        <div class="comment-to">{{call.toComment}}&nbsp;</div>
+                    </div>
+                    <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
+                        @if (User.IsInRole(Roles.Admin))
+                        {
+                            <a href="@Url.Action("DeleteCall", "Call")/{{call.callId}}" class="list-ccm--ongoing-time list-ccm--trash-call">{{call.startedLocal | timeAgo:currentTime}}<span class="trash glyphicon-trash glyphicon"></span></a>
+                        }
+                        else
+                        {
+                            <span class="list-ccm--ongoing-time">{{call.startedLocal | timeAgo:currentTime}}</span>
+                        }
+                    </div>
+                    <div class="mui-col mui-col--call-info collapse" id="toggle-call-{{call.callId}}">
+<pre>{{call.sdp}}</pre>
+                    </div>
+                </div>
+
+                <div class="mui-row mui-row--feedback" ng-hide="filteredOnGoingCalls.length">
+                    <span ng-hide="isFiltered">
+                        @Localizer["No_Ongoing_Calls"]
+                    </span>
+                    <span ng-show="isFiltered">
+                        @Localizer["No_Items_In_Filtered_Result"]
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Old calls / History -->
+        <div class="mui-panel-block">
+            <div class="mui-content-heading">
+                <a class="mui-a" data-toggle="collapse" data-parent="#accordion" href="#toggle-calls-history">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                        <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4"/>
+                        <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6"/>
+                    </svg>
+                    @Localizer["Latest_Closed_Calls"]
+                </a>
+            </div>
+            <div class="mui-content calls-history collapse" id="toggle-calls-history">
+                <div class="mui-row" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
+                    <div class="mui-col mui-col--source">
+                        <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
+                        <a class="list-ccm--sip-name--history" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
+                        <span class="list-ccm--sip-name--history" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{ call.fromDisplayName }}</span>
+                        <span class="list-ccm--sip-location--history" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
+                    </div>
+                    <div class="mui-col mui-col--direction">
+                        <?xml version="1.0" encoding="utf-8"?>
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+                            <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25"/>
+                        </svg>
+                    </div>
+                    <div class="mui-col mui-col--destination">
+                        <span class="codec-type" ng-style="{'background-color': call.toCodecTypeColor}" title="{{call.toCodecTypeName}}">&nbsp;</span>
+                        <a class="list-ccm--sip-name-to--history" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
+                        <span class="list-ccm--sip-name-to--history" ng-if="!call.toId.length" title="{{call.toSip}}">{{ call.toDisplayName }}</span>
+                        <span class="list-ccm--sip-location--history" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
+                    </div>
+
+                    <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
+                        <div class="list-ccm--time--history" title="{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }} - {{ call.ended | date:'yyyy-MM-dd HH:mm:ss' }}">{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+                        <div class="list-ccm--time--history" title="{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }} - {{ call.ended | date:'yyyy-MM-dd HH:mm:ss' }}">{{ call.duration }}</div>
+                    </div>
+                </div>
+
+                <div class="mui-row mui-row--feedback" ng-hide="filteredOldCalls.length">
+                    <span ng-hide="isFiltered">
+                        @Localizer["No_Items_In_Filtered_Call_History"]
+                    </span>
+                    <span ng-show="isFiltered">
+                        @Localizer["No_Items_In_Filtered_Result"]
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registered User Agents -->
+        <div class="mui-panel-block">
+            <div class="mui-content-heading">
+                <a class="mui-a" data-toggle="collapse" data-parent="#accordion" id="toggle-registered-codecs-btn" href="#toggle-registered-codecs">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                        <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4"/>
+                        <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6"/>
+                    </svg>
+                    @Localizer["Registered Codecs"]
+                </a>
+            </div>
+            <div class="mui-content registered-codecs collapse" id="toggle-registered-codecs">
+                <table>
+                    <thead>
+                        <tr>
+                            <th data-type="text-long" ng-click="changeRegisteredSorting('DisplayName')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'DisplayName'}">@Localizer["Identity"] <span class="resize-handle"></span></th>
+                            <th data-type="text-short" ng-click="changeRegisteredSorting('Location')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Location'}">@Localizer["Location"] <span class="resize-handle"></span></th>
+                            <th data-type="text-short" ng-click="changeRegisteredSorting('Comment')" ng-class="{'list-ccm-thead--sort' : registeredSort.column == 'Comment'}">@Localizer["Comment"] <span class="resize-handle"></span></th>
+                            <th data-type="text-short"> <span class="resize-handle"></span></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="sip in filteredRegisteredSips = (registeredSips | filter: registeredSipsFilter) | orderBy:registeredSort.column:registeredSort.descending track by $index" ng-class="{ true: 'list-ccm--bg-active', false: 'list-ccm--bg' } [sip.inCall]">
+                            <td class="mui-col mui-col--ua-registered" title="{{sip.sip}}">
+
+                                @if (hasWriteRights)
+                                {
+                                    <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}" ng-dblclick="editCodecAccountData(sip.id)">&nbsp;</span>
+                                }
+                                else
+                                {
+                                    <span title="{{sip.codecTypeName}}" class="codec-type" ng-style="{'background-color': sip.codecTypeColor}">&nbsp;</span>
+                                }
+
+                                <a ng-click="showSipInfo(sip.id, sip.sip, $event)" href="#" class="list-ccm--sip-name list-ccm--reg-ua-name" title="{{sip.id}}">{{sip.displayName}}</a>
+
+                                <span ng-if="sip.inCall">
+                                    <span class="mui-registered-incall-dir">
+                                        <?xml version="1.0" encoding="utf-8" ?>
+                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+                                        <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25" />
+                                        </svg>
+                                    </span>
+                                    <a ng-if="sip.inCallWithId.length" ng-click="showSipInfo(sip.inCallWithId, sip.inCallWithSip, $event)" href="#"
+                                       title="{{sip.inCallWithSip}}" class="list-ccm--reg-ua-name-to">
+                                        {{sip.inCallWithName}}
+                                    </a>
+                                    <span ng-if="!sip.inCallWithId.length" title="{{sip.inCallWithSip}}"
+                                          class="list-ccm--reg-ua-name-to--less">{{sip.inCallWithName}}</span>
+                                </span>
+                            </td>
+                            <td class="mui-col mui-col--ua-location" title="{{sip.locationShortName}}">
+                                {{sip.location}}
+                            </td>
+                            @if (hasWriteRights)
+                            {
+                                <td class="mui-col mui-col--ua-comment" title="{{sip.userComment ? '@Localizer["Edit_Comment"]' : '@Localizer["Add_Comment"]' }}" ng-dblclick="editComment(sip.id)" ng-class="sip.userComment ? 'edit' : 'edit-empty'"><span>{{sip.userComment}}&nbsp;</span></td>
+                            }
+                            else
+                            {
+                                <td class="mui-col mui-col--ua-comment">{{sip.userComment}}&nbsp;</td>
+                            }
+                            <td class="mui-col mui-col--ua-image" ng-if="sip.image.length > 0">
+                                <img ng-src="@Url.Content("~/uaimages")/{{sip.image}}" alt="" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="mui-row mui-row--feedback" ng-hide="filteredRegisteredSips.length ">
+                    <span ng-hide="isFiltered">
+                        @Localizer["No_Registered_User_Agents"]
+                    </span>
+                    <span ng-show="isFiltered">
+                        @Localizer["No_Items_In_Filtered_Result"]
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="registeredSipModal">
+
+</div>
+
+<div class="modal fade" id="registeredAccountEditModal">
+
+</div>
+
+<script type="text/ng-template" id="sipInfo.html">
+
+    <!-- Navigation -->
+    <ul class="nav nav-tabs ccm-ui-pop-nav">
+        <li class="active"><a href="#reginfo" data-toggle="tab">@Localizer["Information"]</a></li>
+        @if (hasWriteRights)
+        {
+            <li id="codecControlTab" ng-show="codecOnline"><a href="#control" data-toggle="tab">@Localizer["Codec_Control"]</a></li>
+            <li ng-show="isLoading"><a href="#control-loading">@Localizer["Loading"]</a></li>
+            <li ng-show="!codecOnline && !isLoading"><a href="#no-control">@Localizer["No_Codec_Control_Available"]</a></li>
+        }
+        else
+        {
+            <li><a href="@Url.Action("Login", "Account")" title="@Localizer["Log_In"].Value">@Localizer["Login_For_Codec_Control"]</a></li>
+        }
+    </ul>
+
+    <!-- Header, codecname, logo, close btn -->
+    <div class="modal-header ccm-ui-pop-header">
+        <button type="button" class="close" ng-click="cancel()" aria-hidden="true">&times;</button>
+
+        <div class="agent-logo" ng-show="info.image">
+            <img ng-src="/uaimages/{{info.image}}" alt="" />
+        </div>
+
+        <h4 class="modal-title">{{info.displayName}}</h4>
+    </div>
+
+    <!-- Inspect codec -->
+    <div class="modal-body ccm-ui-pop-tab">
+        <div class="tab-content">
+
+            <!-- Information -->
+            <div class="tab-pane ccm-ui-pop-tab--information active" id="reginfo">
+                <div class="row">
+                    <label class="col-md-3">@Localizer["SIP"]</label>
+                    <div class="col-lg-9">
+                        {{info.sip}}
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3">@Localizer["Status"]</label>
+                    <div class="col-lg-9">
+                        <span ng-show="info.inCall">
+                            @Localizer["Connected_To"]:&nbsp;{{info.inCallWithName}}
+                        </span>
+                        <span ng-hide="info.inCall">
+                            @Localizer["Disconnected"]
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3">@Localizer["Comment"]</label>
+                    <div class="col-lg-9">
+                        {{info.comment}}
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3">@Localizer["Location"]</label>
+                    <div class="col-lg-9">
+                        {{info.locationName}}
+                        <span ng-show="info.locationComment.length > 0">({{info.locationComment}})</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3">@Localizer["City"]</label>
+                    <div class="col-lg-9">
+                        {{info.cityName}}
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3">@Localizer["Region"]</label>
+                    <div class="col-lg-9">
+                        {{info.regionName}}
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3">@Localizer["Ip_Address"]</label>
+                    <div class="col-lg-9">
+                        {{info.ip}}
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3">@Localizer["UserAgent"]</label>
+                    <div class="col-lg-9">
+                        {{info.userAgentName}} <i>@Localizer["Api"]: {{info.apiDefinition}}</i>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3"></label>
+                    <div class="col-lg-9">
+                        {{info.userAgentHeader}}
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3">@Localizer["Sip_Registrar_Server"]</label>
+                    <div class="col-lg-9">
+                        {{info.registrar}}
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-3">@Localizer["External Reference"]</label>
+                    <div class="col-lg-9">
+                        {{info.userExternalReference}}
+                    </div>
+                </div>
+                <div class="row" ng-show="info.finalUserInterfaceLink.length > 0">
+                    <label class="col-md-3">@Localizer["Web_Interface"]</label>
+                    <div class="col-lg-9">
+                        <a href="{{info.finalUserInterfaceLink}}" onclick="return false;" ng-click="openAdmin(info.finalUserInterfaceLink, info.width, info.height, info.useScrollbars); $event.stopPropagation();">
+                            {{info.finalUserInterfaceLink}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Codec control -->
+            <div class="tab-pane ccm-ui-pop-tab--control" id="control">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#inputTab" data-toggle="tab">@Localizer["Inputs"]</a></li>
+                    <li><a href="#statusTab" data-toggle="tab">@Localizer["Status_Information"]</a></li>
+                    <li><a href="#callingTab" data-toggle="tab">@Localizer["Make_A_Call"]</a></li>
+                    <li><a href="#rebootTab" data-toggle="tab">@Localizer["Reboot"]</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="inputTab">
+                        <div class="overlay-container">
+                            <loading-overlay ng-show="codecControlLoading" />
+                            <div class="ccm-ui-popmixer--unit-vu--feedback" ng-hide="codecControlAvailable">
+                                <h3>@Localizer["Codec_Error_No_Audio_Metering_Status_Available"]</h3>
+                                <span>{{codecMeteringErrorMessage}}</span>
+                            </div>
+                            <div ng-style="{ visibility : codecControlAvailable ? 'visible': 'hidden'}">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="ccm-ui-popmixer--unit" ng-repeat="input in inputs track by input.id">
+                                            <div class="widgets">
+                                                <div class="level-gain">
+                                                    <div class="db-value">
+                                                        {{input.value}}
+                                                    </div>
+                                                    <div class="db-range-control">
+                                                        <!--<input type="range" name="range" class="ccm-ui-mixer--slider" ng-model="input.changeValue" ng-mousedown="input.interactingValue=true" ng-mouseup="rangeSetInputTo(input, input.changeValue)" min="{{info.inputMinDb}}" max="{{info.inputMaxDb}}">-->
+                                                    </div>
+                                                    <div class="row db-control">
+                                                        <button class="btn btn-default" ng-click="setGainLevel(input, -1)">
+                                                            <svg version="1.1" id="minus-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+                                                                <path fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M5,24h38" />
+                                                            </svg>
+                                                        </button>
+                                                        <button class="btn btn-default" ng-click="setGainLevel(input, 1)">
+                                                            <svg version="1.1" id="plus-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+                                                                <path fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M24,5l0,38" />
+                                                                <path fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" d="M5,24h38" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button class="btn mixer-input-toggle"
+                                                    ng-class="{'btn-primary': input.enabled == true && !input.disabled, 'btn-default': input.enabled == false && !input.disabled }"
+                                                    ng-disabled="input.disabled"
+                                                    ng-click="toggleInputEnabled(input)">
+                                                ON {{input.number}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12" ng-show="codecControlAvailable">
+                                    <div class="row">
+                                        <div class="ccm-ui-popmixer--unit-gpo col-md-12">
+                                            <button ng-repeat="gpo in gpos" class="btn gpo"
+                                                    ng-class="{'btn-success': gpo.active == true, 'btn-default': gpo.active == false }"
+                                                    ng-click="setGpo(gpo)">
+                                                {{gpo.name}}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <hr />
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="ccm-ui-popmixer--unit-vu col-md-12">
+                                            <div class="vu-group vu-group--left">
+                                                <vu-meter level="rxL"></vu-meter>
+                                                <vu-meter level="rxR"></vu-meter>
+                                                <div class="col-md-12 vu-group--text">
+                                                    <h4>RX</h4>
+                                                    <h5>{{streamInfo.rxKbps}}Kbps</h5>
+                                                </div>
+                                            </div>
+                                            <div class="vu-group vu-group--right">
+                                                <vu-meter level="txL"></vu-meter>
+                                                <vu-meter level="txR"></vu-meter>
+                                                <div class="col-md-12 vu-group--text">
+                                                    <h4>TX</h4>
+                                                    <h5>{{streamInfo.txKbps}}Kbps</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="rebootTab">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>@Localizer["Reboot"]</h5>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" ng-model="rebootconfirm1" />
+                                        @Localizer["Codec_Reboot_First_Confirm"]
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" ng-model="rebootconfirm2" />
+                                        @Localizer["Codec_Reboot_Second_Confirm"]
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <button ng-disabled="!rebootconfirm1 || !rebootconfirm2" class="btn btn-danger" ng-click="reboot(info)">@Localizer["Reboot"]</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="statusTab">
+                        <div class="row" ng-show="codecControlAvailable">
+                            <div class="col-md-12">
+                                <h5>@Localizer["Stream_Status"]</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-7">Lost Packets (Per second)</label>
+                            <div class="col-md-5">{{streamInfo.lostPackets}} ({{streamInfo.lostPacketsPerSec}})</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-7">Recovered Packets (Per second)</label>
+                            <div class="col-md-5">{{streamInfo.recoveredPackets}} ({{streamInfo.recoveredPacketsPerSec}})</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-7">Obsolete Packets (Per second)</label>
+                            <div class="col-md-5">{{streamInfo.obsoletePackets}} ({{streamInfo.obsoletePacketsPerSec}})</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-7">Jitter (Per second)</label>
+                            <div class="col-md-5">{{streamInfo.jitter}} ({{streamInfo.jitterPerSec}})</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-7">Round Trip (Per second)</label>
+                            <div class="col-md-5">{{streamInfo.roundTrip}} ({{streamInfo.roundTripPerSec}})</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-7">RX</label>
+                            <div class="col-md-5">{{streamInfo.rxKbps}}</div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-7">TX</label>
+                            <div class="col-md-5">{{streamInfo.txKbps}}</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>@Localizer["Status_Jitter_Buffer"]</h5>
+                            </div>
+                        </div>
+                        <svg id="jitterbuffer-graph-svg"
+                             height="100%"
+                             width="100%"
+                             viewBox="0 -200 400 200"
+                             xmlns="http://ww.s3.org/2000/svg">
+                            <g fill="none"
+                               fill-rule="evenodd">
+                                <g transform="translate(0 0)">
+                                    <polyline fill="none"
+                                              stroke="#f1d612"
+                                              stroke-width="6"
+                                              stroke-linejoin="round"
+                                              id="diagram-poly"
+                                              points="0, -77 20,-45" />
+                                </g>
+                            </g>
+                        </svg>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <h5>@Localizer["Line_Status"]</h5>
+                            </div>
+                            <div class="col-md-9">
+                                <select id="line" ng-model="selectedLine" ng-hide="lines == 0" ng-options="line.number for line in lines track by line.id" class="form-control--horizontal"></select>
+                                <button class="btn btn-default" ng-click="getLineStatus(selectedLine)">@Localizer["Get"]</button>
+                            </div>
+                        </div>
+                        <pre class="ccm-ui-pop--logtextarea" id="lineStatus">{{lineStatusArea}}</pre>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <h5>@Localizer["Audio_Mode"]</h5>
+                            </div>
+                            <div class="col-md-9">
+                                <button class="btn btn-default" ng-click="getAudioMode()">@Localizer["Get"]</button>
+                            </div>
+                        </div>
+                        <pre class="ccm-ui-pop--logtextarea" id="audioMode">{{audioModeArea}}</pre>
+
+                    </div>
+
+                    <div class="tab-pane" id="callingTab">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>@Localizer["Make_A_Call"]</h5>
+                            </div>
+                        </div>
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">@Localizer["Destination"]</label>
+                                <div class="col-md-9">
+                                    <input type="text" ng-model="selectedDestination" class="form-control--horizontal" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">@Localizer["Profile"]</label>
+                                <div class="col-md-9">
+                                    <select id="prof" ng-model="selectedProfile" ng-hide="callProfiles == 0"
+                                            ng-options="prof.name for prof in callProfiles track by prof.name" class="form-control--horizontal"></select>
+                                    <button class="btn btn-default" ng-click="getCallProfiles()">@Localizer["Get"]</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-default" ng-hide="callProfiles == 0" ng-click="controlCall()">@Localizer["Call"]</button>
+                                    <button class="btn btn-default" ng-click="controlHangUp()">@Localizer["HangUp"]</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</script>
