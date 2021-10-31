@@ -112,9 +112,10 @@ namespace CCM.Core.Cache
 
             if (!string.IsNullOrEmpty(searchString))
             {
+                searchString = searchString.ToLower();
                 oldCalls = oldCalls.Where(ch =>
-                    ch.FromDisplayName.Contains(searchString) ||
-                    ch.ToDisplayName.Contains(searchString) ||
+                    ch.FromDisplayName.ToLower().Contains(searchString) ||
+                    ch.ToDisplayName.ToLower().Contains(searchString) ||
                     ch.FromSip.Contains(searchString) ||
                     ch.ToSip.Contains(searchString) ||
                     ch.FromLocationName.Contains(searchString) ||

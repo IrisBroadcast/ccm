@@ -110,6 +110,11 @@ namespace CCM.Data.Repositories
                         Id = Guid.NewGuid()
                     };
                     db.RegisteredCodecs.Add(dbSip);
+
+                    // Log to SIP account that it has been used
+                    dbSip.User.LastUsed = DateTime.UtcNow;
+                    dbSip.User.LastKnownAddress = registration.IpAddress;
+                    dbSip.User.LastUserAgent = registration.UserAgentHeader;
                 }
 
                 // Match and map
@@ -135,12 +140,6 @@ namespace CCM.Data.Repositories
                 dbSip.Updated = DateTime.UtcNow;
 
                 var changeStatus = GetChangeStatus(db, dbSip);
-
-                // Log to SIP account that it has been used
-                // TODO: only do this once on first registration!!!!
-                //dbSip.User.LastUsed = DateTime.UtcNow;
-                //dbSip.User.LastKnownAddress = registration.IpAddress;
-                //dbSip.User.LastUserAgent = registration.UserAgentHeader;
 
                 // SaveChanges(false) tells the EF to execute the necessary database commands, but hold on to the changes, so they can be replayed if necessary.
                 // If you call SaveChanges() or SaveChanges(true),the EF simply assumes that if its work completes okay, everything is okay, so it will discard the changes it has been tracking, and wait for new changes.
