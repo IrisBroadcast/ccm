@@ -70,7 +70,7 @@ namespace CCM.Data.Repositories
         {
             try
             {
-                var dbCall = call.Id != Guid.Empty ? _ccmDbContext.Calls.SingleOrDefault(c => c.Id == call.Id) : null;
+                var dbCall = call.Id != Guid.Empty ? _ccmDbContext.Calls.FirstOrDefault(c => c.Id == call.Id) : null;
 
                 if (dbCall == null)
                 {

@@ -48,11 +48,11 @@ namespace CCM.Web.Controllers.Api
             _settingsManager = settingsManager;
         }
 
-        [Obsolete("This method is going to be deprecated, use OldCall/Filtered instead")]
+        [Obsolete("This method is going to be deprecated, use api/OldCall/Filtered instead")]
         public IList<OldCall> Index(string region = "", string codecType = "", string search = "")
         {
-            Response.Headers.Add("x-deprecated-warning", "Requested api endpoint is deprecated, use oldcall/filtered instead");
-            var oldCalls = _cachedCallHistoryRepository.GetOldCallsFiltered(region, codecType, "", search, true, false, _settingsManager.LatestCallCount, true);
+            Response.Headers.Add("x-deprecated-warning", "Requested api endpoint is deprecated, use api/oldcall/filtered instead");
+            var oldCalls = _cachedCallHistoryRepository.GetOldCallsFiltered(region, codecType, "", search, false, _settingsManager.LatestCallCount, true);
             return oldCalls;
         }
     }

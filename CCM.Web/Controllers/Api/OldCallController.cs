@@ -48,12 +48,12 @@ namespace CCM.Web.Controllers.Api
 
         public IList<OldCall> Index()
         {
-            return _cachedCallHistoryRepository.GetOldCalls(_settingsManager.LatestCallCount, true);
+            return _cachedCallHistoryRepository.GetOldCalls(_settingsManager.LatestCallCount);
         }
 
         public IList<OldCall> Filtered(string region = "", string codecType = "", string category = "", string search = "")
         {
-            var oldCalls = _cachedCallHistoryRepository.GetOldCallsFiltered(region, codecType, "", search, true, false, _settingsManager.LatestCallCount, true);
+            var oldCalls = _cachedCallHistoryRepository.GetOldCallsFiltered(region, codecType, "", search, false, _settingsManager.LatestCallCount, true);
             return oldCalls;
         }
     }

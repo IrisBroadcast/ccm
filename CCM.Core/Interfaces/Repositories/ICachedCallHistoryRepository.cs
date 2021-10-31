@@ -36,8 +36,8 @@ namespace CCM.Core.Interfaces.Repositories
         bool Save(CallHistory callHistory);
         CallHistory GetById(Guid id);
         CallHistory GetCallHistoryByCallId(Guid callId);
-        IList<OldCall> GetOldCalls(int callCount, bool anonymize);
-        IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount, bool limitByMonth);
+        IList<OldCall> GetOldCalls(int callCount);
+        IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool onlyPhoneCalls, int callCount, bool limitByMonth);
 
         IList<CallHistory> GetCallHistoriesByDate(DateTime startDate, DateTime endDate);
         IList<CallHistory> GetCallHistoriesForRegion(DateTime startDate, DateTime endDate, Guid regionId);
@@ -50,9 +50,8 @@ namespace CCM.Core.Interfaces.Repositories
     {
         bool Save(CallHistory callHistory);
         CallHistory GetById(Guid id);
-        CallHistory GetCallHistoryByCallId(Guid callId);
-        IList<OldCall> GetOldCalls(int callCount, bool anonymize);
-        IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount, bool limitByMonth);
+        IReadOnlyCollection<OldCall> GetOneMonthOldCalls();
+        IReadOnlyCollection<CallHistory> GetOneMonthCallHistories();
 
         IReadOnlyList<CallHistory> GetOneYearCallHistory();
 

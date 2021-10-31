@@ -46,7 +46,7 @@ namespace CCM.Web.Controllers.ApiExternal
         [Route("api/external/oldcall")]
         public IList<OldCall> Get(string region = "", string codecType = "", string sipAddress = "", string search = "", bool onlyPhoneCalls = false, int callCount = 20)
         {
-            var oldCalls = _cachedCallHistoryRepository.GetOldCallsFiltered(region, codecType, sipAddress, search, false, onlyPhoneCalls, callCount, true);
+            var oldCalls = _cachedCallHistoryRepository.GetOldCallsFiltered(region, codecType, sipAddress, search, onlyPhoneCalls, callCount, true);
             return oldCalls;
         }
     }

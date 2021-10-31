@@ -50,12 +50,15 @@ namespace CCM.Data.Repositories
 
             if (callHistory.CallHistoryId != Guid.Empty)
             {
-                dbCallHistory = _ccmDbContext.CallHistories.SingleOrDefault(c => c.Id == callHistory.CallHistoryId);
+                dbCallHistory = _ccmDbContext.CallHistories.FirstOrDefault(c => c.Id == callHistory.CallHistoryId);
             }
 
             if (dbCallHistory == null)
             {
-                dbCallHistory = new CallHistoryEntity { Id = Guid.NewGuid() };
+                dbCallHistory = new CallHistoryEntity
+                {
+                    Id = Guid.NewGuid()
+                };
                 callHistory.CallHistoryId = dbCallHistory.Id;
                 _ccmDbContext.CallHistories.Add(dbCallHistory);
             }
@@ -118,90 +121,37 @@ namespace CCM.Data.Repositories
         public CallHistory GetById(Guid id)
         {
             var dbCallHistory = _ccmDbContext.CallHistories.AsNoTracking().SingleOrDefault(c => c.Id == id);
-            return dbCallHistory == null ? null : MapCallHistory(dbCallHistory);
+            return dbCallHistory == null ? null : MapToCallHistory(dbCallHistory);
         }
 
         /// <summary>
-        /// Used by CodecStatusHub
+        /// Used by WebGuiHub on frontpage
         /// </summary>
-        /// <param name="callId"></param>
-        public CallHistory GetCallHistoryByCallId(Guid callId)
+        public IReadOnlyCollection<OldCall> GetOneMonthOldCalls()
         {
-            try
-            {
-                var dbCallHistory = _ccmDbContext.CallHistories.AsNoTracking().OrderByDescending(callHistory => callHistory.Ended)
-                    .FirstOrDefault((c) => c.CallId == callId);
-                return dbCallHistory == null ? null : MapCallHistory(dbCallHistory);
-            }
-            catch (Exception)
-            {
-                var dbCallHistory = _ccmDbContext.CallHistories.AsNoTracking().FirstOrDefault(c => c.CallId == callId);
-                return dbCallHistory == null ? null : MapCallHistory(dbCallHistory);
-            }
+            var nowTime = DateTime.Now;
+            var startTime = DateTime.Now.AddMonths(-1);
+            var callHistories = _ccmDbContext.CallHistories
+                .AsNoTracking()
+                .OrderByDescending(callHistory => callHistory.Ended)
+                .Where(c => c.Started <= nowTime && c.Ended >= startTime)
+                .ToList();
+            return callHistories.Select(MapToOldCall).ToList().AsReadOnly();
         }
 
-        /// <summary>
-        /// Used by WebGuiHub
-        /// </summary>
-        /// <param name="callCount"></param>
-        /// <param name="anonymize"></param>
-        public IList<OldCall> GetOldCalls(int callCount, bool anonymize)
+        public IReadOnlyCollection<CallHistory> GetOneMonthCallHistories()
         {
-            var dbCalls = _ccmDbContext.CallHistories.OrderByDescending(callHistory => callHistory.Ended).Take(callCount).ToList();
-            return dbCalls.Select(dbCall => MapToOldCall(dbCall, anonymize)).ToList();
+            var nowTime = DateTime.Now;
+            var startTime = DateTime.Now.AddMonths(-1);
+            var callHistories = _ccmDbContext.CallHistories
+                .AsNoTracking()
+                .OrderByDescending(callHistory => callHistory.Ended)
+                .Where(c => c.Started <= nowTime && c.Ended >= startTime)
+                .ToList();
+            return callHistories.Select(MapToCallHistory).ToList().AsReadOnly();
         }
 
-        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount, bool limitByMonth)
-        {
-            var query = _ccmDbContext.CallHistories.AsQueryable();
-
-            if (!string.IsNullOrEmpty(region))
-            {
-                query = query.Where(ch => ch.FromRegionName == region || ch.ToRegionName == region);
-            }
-
-            if (!string.IsNullOrEmpty(codecType))
-            {
-                query = query.Where(ch => ch.FromCodecTypeName == codecType || ch.ToCodecTypeName == codecType);
-            }
-
-            if (!string.IsNullOrEmpty(sipAddress))
-            {
-                query = query.Where(ch => ch.FromSip.Contains(sipAddress) || ch.ToSip.Contains(sipAddress));
-            }
-
-            if (onlyPhoneCalls)
-            {
-                query = query.Where(ch => ch.IsPhoneCall);
-            }
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                query = query.Where(ch =>
-                    ch.FromDisplayName.Contains(searchString) ||
-                    ch.ToDisplayName.Contains(searchString) ||
-                    ch.FromSip.Contains(searchString) ||
-                    ch.ToSip.Contains(searchString) ||
-                    ch.FromLocationName.Contains(searchString) ||
-                    ch.ToLocationName.Contains(searchString) ||
-                    ch.FromLocationShortName.Contains(searchString) ||
-                    ch.ToLocationShortName.Contains(searchString) ||
-                    ch.FromUsername.Contains(searchString) ||
-                    ch.ToUsername.Contains(searchString)
-                );
-            }
-
-            if (limitByMonth)
-            {
-                var monthLimit = DateTime.Today.AddMonths(-1);
-                query = query.Where(ch => ch.Ended >= monthLimit);
-            }
-
-            var dbCalls = query.OrderByDescending(callHistory => callHistory.Ended).Take(callCount).ToList();
-            return dbCalls.Select(dbCall => MapToOldCall(dbCall, anonymize)).ToList();
-        }
-
-        private OldCall MapToOldCall(CallHistoryEntity dbCallHistory, bool anonymize)
+        private OldCall MapToOldCall(CallHistoryEntity dbCallHistory)
         {
             return new OldCall
             {
@@ -212,24 +162,24 @@ namespace CCM.Data.Repositories
                 IsPhoneCall = dbCallHistory.IsPhoneCall,
 
                 FromId = MapGuidString(dbCallHistory.FromId),
-                FromSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCallHistory.FromUsername) : dbCallHistory.FromUsername,
+                FromSip = dbCallHistory.FromUsername,
                 FromCodecTypeColor = dbCallHistory.FromCodecTypeColor,
                 FromCodecTypeName = dbCallHistory.FromCodecTypeName,
                 FromCodecTypeCategory = dbCallHistory.FromCodecTypeCategory,
                 FromComment = dbCallHistory.FromComment,
-                FromDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(dbCallHistory.FromDisplayName) : dbCallHistory.FromDisplayName,
+                FromDisplayName = dbCallHistory.FromDisplayName,
                 FromLocationName = dbCallHistory.FromLocationName,
                 FromLocationShortName = dbCallHistory.FromLocationShortName,
                 FromRegionName = dbCallHistory.FromRegionName,
                 FromLocationCategory = dbCallHistory.FromLocationCategory,
 
                 ToId = MapGuidString(dbCallHistory.ToId),
-                ToSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCallHistory.ToUsername) : dbCallHistory.ToUsername,
+                ToSip = dbCallHistory.ToUsername,
                 ToCodecTypeColor = dbCallHistory.ToCodecTypeColor,
                 ToCodecTypeName = dbCallHistory.ToCodecTypeName,
                 ToCodecTypeCategory = dbCallHistory.ToCodecTypeCategory,
                 ToComment = dbCallHistory.ToComment,
-                ToDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(dbCallHistory.ToDisplayName) : dbCallHistory.ToDisplayName,
+                ToDisplayName = dbCallHistory.ToDisplayName,
                 ToLocationName = dbCallHistory.ToLocationName,
                 ToLocationShortName = dbCallHistory.ToLocationShortName,
                 ToRegionName = dbCallHistory.ToRegionName,
@@ -249,7 +199,7 @@ namespace CCM.Data.Repositories
                 .OrderByDescending(callHistory => callHistory.Ended)
                 .Where(c => c.Started <= nowTime && c.Ended >= startTime)
                 .ToList();
-            return callHistories.Select(MapCallHistory).ToList();
+            return callHistories.Select(MapToCallHistory).ToList();
         }
 
         public IList<CallHistory> GetCallHistoriesByDate(DateTime startTime, DateTime endTime)
@@ -320,10 +270,10 @@ namespace CCM.Data.Repositories
                 .AsNoTracking()
                 .Where(filterExpression)
                 .ToList();
-            return dbCallHistories.Select(MapCallHistory).ToList();
+            return dbCallHistories.Select(MapToCallHistory).ToList();
         }
 
-        private CallHistory MapCallHistory(CallHistoryEntity dbCallHistory)
+        private CallHistory MapToCallHistory(CallHistoryEntity dbCallHistory)
         {
             return dbCallHistory == null ? null : new CallHistory()
             {

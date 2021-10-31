@@ -244,7 +244,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
 
     ccmDataHub.on('oldCalls',
         function (data) {
-            console.log("Received old calls update: ", data.length);
+            console.log(`Received old calls update: ${data.length}`);
             onOldCalls(data);
         });
 
@@ -380,6 +380,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     $scope.refreshOngoing = function () {
         $http.post('/api/OngoingCall')
             .then(function (response) {
+                console.log(`Received ongoing calls rest data: ${response.data.length}`);
                 setOngoingCalls(response.data);
             },
             function () {
@@ -390,7 +391,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     $scope.refreshOld = function () {
         $http.post('/api/OldCall')
             .then(function (response) {
-                console.log(response)
+                console.log(`Received old calls rest data: ${response.data.length}`);
                 $scope.oldCalls = response.data;
             },
             function (response) {

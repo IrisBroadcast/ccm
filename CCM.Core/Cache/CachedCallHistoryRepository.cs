@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Managers;
@@ -52,10 +53,9 @@ namespace CCM.Core.Cache
 
         public bool Save(CallHistory callHistory)
         {
-            //var success = _internalRepository.Save(callHistory);
-            //_lazyCache.ClearCallHistory();
-            //return success;
-            return true;
+            var success = _internalRepository.Save(callHistory);
+            _lazyCache.ClearCallHistory();
+            return success;
         }
 
         public CallHistory GetById(Guid id)
@@ -65,18 +65,73 @@ namespace CCM.Core.Cache
 
         public CallHistory GetCallHistoryByCallId(Guid callId)
         {
-            return _internalRepository.GetCallHistoryByCallId(callId);
+            try
+            {
+                var history = _lazyCache.GetOrAddCallHistories(() => _internalRepository.GetOneMonthCallHistories(), _settingsManager.CacheTimeLiveData);
+                return history?.FirstOrDefault(c => c.CallId == callId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public IList<OldCall> GetOldCalls(int callCount, bool anonymize)
+        public IList<OldCall> GetOldCalls(int callCount = 0)
         {
-            // TODO: check if anonomize should be in cache saving...
-            return _lazyCache.GetOrAddCallHistory(() => _internalRepository.GetOldCalls(callCount, anonymize), _settingsManager.CacheTimeLiveData);
+            var history = _lazyCache.GetOrAddOldCalls(() => _internalRepository.GetOneMonthOldCalls(), _settingsManager.CacheTimeLiveData);
+            return history.Take(callCount).ToList();
         }
 
-        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount, bool limitByMonth)
+        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool onlyPhoneCalls, int callCount, bool limitByMonth)
         {
-            return _internalRepository.GetOldCallsFiltered(region, codecType, sipAddress, searchString, anonymize, onlyPhoneCalls, callCount, limitByMonth);
+            var oldCalls = _lazyCache.GetOrAddOldCalls(() => _internalRepository.GetOneMonthOldCalls(), _settingsManager.CacheTimeLiveData).AsEnumerable();
+            if (oldCalls == null)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrEmpty(region))
+            {
+                oldCalls = oldCalls.Where(ch => ch.FromRegionName == region || ch.ToRegionName == region);
+            }
+
+            if (!string.IsNullOrEmpty(codecType))
+            {
+                oldCalls = oldCalls.Where(ch => ch.FromCodecTypeName == codecType || ch.ToCodecTypeName == codecType);
+            }
+
+            if (!string.IsNullOrEmpty(sipAddress))
+            {
+                oldCalls = oldCalls.Where(ch => ch.FromSip.Contains(sipAddress) || ch.ToSip.Contains(sipAddress));
+            }
+
+            if (onlyPhoneCalls)
+            {
+                oldCalls = oldCalls.Where(ch => ch.IsPhoneCall);
+            }
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                oldCalls = oldCalls.Where(ch =>
+                    ch.FromDisplayName.Contains(searchString) ||
+                    ch.ToDisplayName.Contains(searchString) ||
+                    ch.FromSip.Contains(searchString) ||
+                    ch.ToSip.Contains(searchString) ||
+                    ch.FromLocationName.Contains(searchString) ||
+                    ch.ToLocationName.Contains(searchString) ||
+                    ch.FromLocationShortName.Contains(searchString) ||
+                    ch.ToLocationShortName.Contains(searchString)
+                );
+            }
+
+            if (limitByMonth)
+            {
+                var monthLimit = DateTime.Today.AddMonths(-1);
+                oldCalls = oldCalls.Where(ch => ch.Ended >= monthLimit);
+            }
+
+            var calls = oldCalls.OrderByDescending(callHistory => callHistory.Ended).Take(callCount).ToList();
+            return calls;
         }
 
         #region Statistics

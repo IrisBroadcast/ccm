@@ -41,6 +41,7 @@ namespace CCM.Core.Cache
         private const string RegisteredUserAgentsKey = "RegisteredUserAgents";
         private const string OngoingCallsKey = "OngoingCalls";
         private const string CallHistoryKey = "CallHistory";
+        private const string OldCallHistoryKey = "OldCallHistory";
         private const string OneYearCallHistoryKey = "OneYearCallHistory";
         private const string SettingsKey = "Settings";
         private const string LocationNetworksKey = "LocationNetworks";
@@ -112,7 +113,12 @@ namespace CCM.Core.Cache
         #endregion
 
         #region CallHistory
-        public static IList<OldCall> GetOrAddCallHistory(this IAppCache cache, Func<IList<OldCall>> callHistoryLoader, int cacheTimeLiveData)
+        public static IReadOnlyCollection<OldCall> GetOrAddOldCalls(this IAppCache cache, Func<IReadOnlyCollection<OldCall>> callHistoryLoader, int cacheTimeLiveData)
+        {
+            return cache.GetOrAdd(OldCallHistoryKey, callHistoryLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
+        }
+
+        public static IReadOnlyCollection<CallHistory> GetOrAddCallHistories(this IAppCache cache, Func<IReadOnlyCollection<CallHistory>> callHistoryLoader, int cacheTimeLiveData)
         {
             return cache.GetOrAdd(CallHistoryKey, callHistoryLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
         }
@@ -126,6 +132,7 @@ namespace CCM.Core.Cache
         {
             log.Debug("Removing call history from cache");
             cache.Remove(CallHistoryKey);
+            cache.Remove(OldCallHistoryKey);
             cache.Remove(OneYearCallHistoryKey);
         }
         #endregion
