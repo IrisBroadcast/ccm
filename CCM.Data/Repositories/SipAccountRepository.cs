@@ -150,12 +150,6 @@ namespace CCM.Data.Repositories
                 .ToList();
         }
 
-        public string[] GetAllAccountNames()
-        {
-            // TODO: definitly use cache for this
-            return _ccmDbContext.SipAccounts.Select(ur => ur.UserName).ToArray();
-        }
-
         public List<SipAccount> Find(string startsWith)
         {
             var db = _ccmDbContext;
@@ -167,14 +161,8 @@ namespace CCM.Data.Repositories
 
         public SipAccount GetByUserName(string userName)
         {
-            SipAccountEntity user = _ccmDbContext.SipAccounts.SingleOrDefault(u => u.UserName == userName);
+            SipAccountEntity user = _ccmDbContext.SipAccounts.SingleOrDefault(u => u.UserName.ToLower() == userName);
             return MapToSipAccount(user);
-        }
-
-        public SipAccount GetSipAccountByUserName(string username)
-        {
-            // TODO: Keep this one. But maybe if nothing can be found, trigger cache reload of sipAccounts and search again.
-            return GetAll().ToList().FirstOrDefault(u => u.UserName.ToLower() == username);
         }
 
         public void UpdateComment(Guid id, string comment)

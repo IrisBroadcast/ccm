@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using LazyCache;
@@ -62,7 +63,14 @@ namespace CCM.Core.Cache
 
         public SipAccount GetByUserName(string userName)
         {
+            // TODO: XXXX Is already????
             return _internalRepository.GetByUserName(userName);
+        }
+
+        public SipAccount GetSipAccountByUserName(string username)
+        {
+            // TODO: XXXX Is already????
+            return GetAll().FirstOrDefault(u => u.UserName.ToLower() == username);
         }
 
         public List<SipAccount> GetAll()
@@ -120,16 +128,6 @@ namespace CCM.Core.Cache
         public Task<bool> AuthenticateAsync(string username, string password)
         {
             return _internalRepository.AuthenticateAsync(username, password);
-        }
-
-        public SipAccount GetSipAccountByUserName(string username)
-        {
-            return _internalRepository.GetSipAccountByUserName(username);
-        }
-
-        public string[] GetAllAccountNames()
-        {
-            return _lazyCache.GetOrAddSipAccountUserNames(() => _internalRepository.GetAllAccountNames(), _settingsManager.CacheTimeConfigData);
         }
     }
 }

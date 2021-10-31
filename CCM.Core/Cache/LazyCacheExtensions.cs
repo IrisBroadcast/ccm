@@ -53,7 +53,6 @@ namespace CCM.Core.Cache
         private const string UserAgentsKey = "UserAgents";
         private const string UserAgentsAndProfilesKey = "UserAgentsAndProfiles";
         private const string SipAccountsKey = "SipAccounts";
-        private const string SipAccountUserNamesKey = "SipAccountUserNamesKey";
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
@@ -63,18 +62,10 @@ namespace CCM.Core.Cache
             return cache.GetOrAdd(SipAccountsKey, sipAccountsLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeSipAccounts));
         }
 
-        public static string[] GetOrAddSipAccountUserNames(this IAppCache cache, Func<string[]> sipAccountUserNamesLoader, int cacheTimeSipAccounts)
-        {
-            return cache.GetOrAdd(SipAccountUserNamesKey, sipAccountUserNamesLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeSipAccounts));
-        }
-
         public static void ClearSipAccounts(this IAppCache cache)
         {
             log.Debug("Removing sip accounts from cache");
             cache.Remove(SipAccountsKey);
-
-            log.Debug("Removing sip account user names from cache");
-            cache.Remove(SipAccountUserNamesKey);
         }
         #endregion
 

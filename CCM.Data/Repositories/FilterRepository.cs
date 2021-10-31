@@ -117,19 +117,17 @@ namespace CCM.Data.Repositories
                 db.Filters.Add(dbFilter);
             }
 
-
             dbFilter.FilteringName = filter.FilteringName;
             dbFilter.Name = filter.Name;
             dbFilter.PropertyName = filter.ColumnName;
             dbFilter.Type = filter.TableName;
             dbFilter.UpdatedBy = filter.UpdatedBy;
             dbFilter.UpdatedOn = DateTime.UtcNow;
-            filter.UpdatedOn = dbFilter.UpdatedOn;
-
-            db.SaveChanges();
 
             filter.CreatedOn = dbFilter.CreatedOn;
             filter.UpdatedOn = dbFilter.UpdatedOn;
+
+            db.SaveChanges();
         }
 
         public List<Filter> GetAll()

@@ -144,7 +144,6 @@ namespace CCM.Data.Repositories
                 .Select(dbCodecType => MapToCodecType(dbCodecType, false))
                 .OrderBy(c => c.Name)
                 .ToList();
-
         }
 
         public List<CodecType> Find(string search, bool includeUsers = true)

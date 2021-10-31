@@ -43,7 +43,6 @@ namespace CCM.Core.Interfaces.Repositories
         void UpdateComment(Guid id, string comment);
         void UpdateSipAccountQuick(Guid id, string presentationName, string externalReference);
         void UpdatePassword(Guid id, string password);
-        string[] GetAllAccountNames();
         Task<bool> AuthenticateAsync(string username, string password);
     }
 
@@ -51,7 +50,6 @@ namespace CCM.Core.Interfaces.Repositories
     {
         SipAccount GetByRegisteredSipId(Guid registeredSipId);
         SipAccount GetByUserName(string userName);
-        SipAccount GetSipAccountByUserName(string username);
         List<SipAccount> Find(string startsWith);
         void Create(SipAccount ccmUser);
         void Update(SipAccount ccmUser);
@@ -59,7 +57,6 @@ namespace CCM.Core.Interfaces.Repositories
         void UpdateSipAccountQuick(Guid id, string presentationName, string externalReference);
         void UpdatePassword(Guid id, string password);
         bool DeleteWithResult(Guid id);
-        string[] GetAllAccountNames();
         Task<bool> AuthenticateAsync(string username, string password);
     }
 }

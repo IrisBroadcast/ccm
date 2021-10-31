@@ -118,6 +118,7 @@ namespace CCM.Data.Repositories
 
         public override City MapToCoreObject(CityEntity dbCity)
         {
+            // TODO: is this one needed? feels like no other is using this
             return dbCity != null ? new City
             {
                 Id = dbCity.Id,
@@ -127,7 +128,7 @@ namespace CCM.Data.Repositories
                 : null;
         }
 
-        public Location MapToLocation(LocationEntity dbLocation)
+        private Location MapToLocation(LocationEntity dbLocation)
         {
             if (dbLocation == null) return null;
 

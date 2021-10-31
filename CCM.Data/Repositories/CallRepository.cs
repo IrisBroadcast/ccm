@@ -272,12 +272,12 @@ namespace CCM.Data.Repositories
 
             var onGoingCall = new OnGoingCall
             {
-                CallId = GuidHelper.GuidString(dbCall.Id),
+                CallId = GuidHelper.AsString(dbCall.Id),
                 Started = dbCall.Started,
                 SDP = dbCall.SDP,
                 IsPhoneCall = dbCall.IsPhoneCall,
 
-                FromId = GuidHelper.GuidString(dbCall.FromId),
+                FromId = GuidHelper.AsString(dbCall.FromId),
                 FromSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.FromUsername) : dbCall.FromUsername,
                 FromDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(fromDisplayName) : fromDisplayName,
                 FromCodecTypeColor = dbCall.FromCodec?.User?.CodecType?.Color ?? string.Empty,
@@ -291,7 +291,7 @@ namespace CCM.Data.Repositories
                 FromRegionName = dbCall.FromCodec?.Location?.Region?.Name ?? string.Empty,
                 FromCategory = dbCall.FromCategory,
 
-                ToId = GuidHelper.GuidString(dbCall.ToId),
+                ToId = GuidHelper.AsString(dbCall.ToId),
                 ToSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.ToUsername) : dbCall.ToUsername,
                 ToDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(toDisplayName) : toDisplayName,
                 ToCodecTypeColor = dbCall.ToCodec?.User?.CodecType?.Color ?? string.Empty,
@@ -393,8 +393,8 @@ namespace CCM.Data.Repositories
                 Closed = dbCall.Closed,
                 DialogHashId = dbCall.DialogHashId,
                 DialogHashEnt = dbCall.DialogHashEnt,
-                From = MapRegisteredCodec(dbCall.FromCodec),
-                To = MapRegisteredCodec(dbCall.ToCodec),
+                From = MapToRegisteredCodec(dbCall.FromCodec),
+                To = MapToRegisteredCodec(dbCall.ToCodec),
                 FromSip = dbCall.FromUsername,
                 ToSip = dbCall.ToUsername,
                 FromTag = dbCall.FromTag,
@@ -406,7 +406,7 @@ namespace CCM.Data.Repositories
             };
         }
 
-        private CallRegisteredCodec MapRegisteredCodec(RegisteredCodecEntity dbCodec)
+        private CallRegisteredCodec MapToRegisteredCodec(RegisteredCodecEntity dbCodec)
         {
             var sip = dbCodec == null ? null : new CallRegisteredCodec()
             {
@@ -423,19 +423,19 @@ namespace CCM.Data.Repositories
                     dbCodec?.SIP ?? string.Empty,
                     string.Empty,
                     _settingsManager.SipDomain),
-                User = MapSipAccount(dbCodec.User),
+                User = MapToSipAccount(dbCodec.User),
             };
 
             return sip;
         }
 
-        private CallRegisteredCodecSipAccount MapSipAccount(SipAccountEntity dbAccount)
+        private CallRegisteredCodecSipAccount MapToSipAccount(SipAccountEntity dbAccount)
         {
             return dbAccount == null ? null : new CallRegisteredCodecSipAccount()
             {
                 Id = dbAccount.Id,
                 UserName = dbAccount.UserName,
-                DisplayName = dbAccount.DisplayName,
+                DisplayName = dbAccount.DisplayName
             };
         }
     }
