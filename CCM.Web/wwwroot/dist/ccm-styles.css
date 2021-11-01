@@ -1081,13 +1081,13 @@ textarea {
   line-height: inherit;
 }
 a {
-  color: #337ab7;
+  color: #1c6aad;
+  font-weight: 600;
   text-decoration: none;
 }
 a:hover,
 a:focus {
   color: #23527c;
-  text-decoration: underline;
 }
 a:focus {
   outline: 5px auto -webkit-focus-ring-color;
@@ -7100,7 +7100,6 @@ h6 {
 }
 /* 16px x 1   = 16px */
 .mui-a {
-  text-decoration: underline;
   padding: 0.25rem 0.5rem;
   margin: 0 0.25rem;
   border-radius: 0.1rem;
@@ -7132,10 +7131,10 @@ h6 {
   display: none;
 }
 .mui-panel {
-  padding: 0.5rem 0;
+  padding: 0rem 0;
 }
 .mui-panel-block {
-  margin: 1rem auto;
+  margin: 0.5rem auto;
 }
 .mui-panel table {
   width: auto;
@@ -7184,8 +7183,7 @@ h6 {
 }
 .mui-panel .list-ccm-thead--sort {
   /* List is sorted on this */
-  text-decoration: underline;
-  font-weight: 800;
+  text-decoration: none;
 }
 .mui-panel .resize-handle {
   position: absolute;
@@ -7333,7 +7331,7 @@ h6 {
   flex: 1 1 100%;
 }
 .mui-content-heading {
-  padding: 0.5rem;
+  padding: 0.3rem;
   background-color: #e9e9e9;
   border-bottom: 1px solid #ddd;
   border-radius: 3px 3px 0 0;
@@ -7588,14 +7586,14 @@ body {
 .mui-billboard .board {
   text-align: center;
   font-kerning: auto;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 }
 .mui-billboard .board .count {
-  font-size: 4rem;
+  font-size: 3rem;
   font-weight: 600;
 }
 .mui-billboard .board .text {
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 @media only screen and (max-width: 768px) {
   .mui-billboard {
@@ -7610,7 +7608,7 @@ body {
   }
 }
 .mui-filter-box {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0rem;
 }
 .mui-filter-box .mui-a {
   display: inline-block;
@@ -7620,9 +7618,10 @@ body {
   display: block;
   width: 100%;
   max-width: unset;
-  min-height: 3rem;
+  outline-color: #c1c1c1;
+  min-height: 2.5rem;
   padding: 6px 12px;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   line-height: 1.5rem;
   color: #555555;
   background-color: #fff;
