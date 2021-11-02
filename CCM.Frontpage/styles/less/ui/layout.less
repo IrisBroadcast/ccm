@@ -1,10 +1,10 @@
 
 .mui-panel {
 
-    padding: 0.5rem 0;
+    padding: 0;
 
     &-block {
-        margin: 1rem auto;
+        margin: 0.5rem auto;
     }
 
     table {
@@ -61,9 +61,13 @@
         border: 0;
     }
 
+    .sortable-header {
+        cursor: pointer;
+    }
+
     .list-ccm-thead--sort {
         /* List is sorted on this */
-        text-decoration: underline;
+        text-decoration: none;
         font-weight: 800;
     }
 
@@ -252,7 +256,7 @@
 
 .mui-content {
     &-heading {
-        padding: 0.5rem;
+        padding: 0.3rem;
         background-color: @text-header-bg;
         border-bottom: 1px solid #ddd;
         border-radius: 3px 3px 0 0;

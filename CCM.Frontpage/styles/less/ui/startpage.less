@@ -13,15 +13,15 @@ body {
     .board {
         text-align: center;
         font-kerning: auto;
-        padding: 1rem 0;
+        padding: 0.5rem 0;
 
         .count {
-            font-size: 4rem;
+            font-size: 3rem;
             font-weight: 600;
         }
 
         .text {
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
     }
 
@@ -44,7 +44,7 @@ body {
 .mui-filter {
 
     &-box {
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 0;
 
         .mui-a {
             display: inline-block;
@@ -56,10 +56,11 @@ body {
         display: block;
         width: 100%;
         max-width: unset;
-        min-height: 3rem;
+        min-height: 2.5rem;
         padding: 6px 12px;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         line-height: 1.5rem;
+        outline-color: #c1c1c1;
         color: #555555;
         background-color: #fff;
         background-image: none;
@@ -70,6 +71,9 @@ body {
         -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
         -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
         transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        &:focus {
+            outline-color: #555555;
+        }
     }
 }
 

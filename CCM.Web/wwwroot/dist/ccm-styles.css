@@ -1081,13 +1081,13 @@ textarea {
   line-height: inherit;
 }
 a {
-  color: #1c6aad;
-  font-weight: 600;
+  color: #337ab7;
   text-decoration: none;
 }
 a:hover,
 a:focus {
   color: #23527c;
+  text-decoration: underline;
 }
 a:focus {
   outline: 5px auto -webkit-focus-ring-color;
@@ -7099,7 +7099,12 @@ h6 {
   font-size: 1rem;
 }
 /* 16px x 1   = 16px */
+a {
+  color: #1c6aad;
+  font-weight: 600;
+}
 .mui-a {
+  text-decoration: none;
   padding: 0.25rem 0.5rem;
   margin: 0 0.25rem;
   border-radius: 0.1rem;
@@ -7131,7 +7136,7 @@ h6 {
   display: none;
 }
 .mui-panel {
-  padding: 0rem 0;
+  padding: 0;
 }
 .mui-panel-block {
   margin: 0.5rem auto;
@@ -7181,9 +7186,13 @@ h6 {
 .mui-panel th:last-child {
   border: 0;
 }
+.mui-panel .sortable-header {
+  cursor: pointer;
+}
 .mui-panel .list-ccm-thead--sort {
   /* List is sorted on this */
   text-decoration: none;
+  font-weight: 800;
 }
 .mui-panel .resize-handle {
   position: absolute;
@@ -7608,7 +7617,7 @@ body {
   }
 }
 .mui-filter-box {
-  padding: 0.5rem 0rem;
+  padding: 0.5rem 0;
 }
 .mui-filter-box .mui-a {
   display: inline-block;
@@ -7618,11 +7627,11 @@ body {
   display: block;
   width: 100%;
   max-width: unset;
-  outline-color: #c1c1c1;
   min-height: 2.5rem;
   padding: 6px 12px;
   font-size: 1.2rem;
   line-height: 1.5rem;
+  outline-color: #c1c1c1;
   color: #555555;
   background-color: #fff;
   background-image: none;
@@ -7633,6 +7642,9 @@ body {
   -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+.mui-filter-search:focus {
+  outline-color: #555555;
 }
 .mui-call-direction svg {
   height: 2rem;
