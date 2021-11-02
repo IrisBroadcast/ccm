@@ -81,6 +81,8 @@ namespace CCM.Data.Repositories
             // 2. Codec existed but registration has relevant changes
             // 3. Codec existed and registration is identical = NothingChanged
 
+            var isNewRegistration = false;
+
             try
             {
                 var db = _ccmDbContext;
@@ -88,7 +90,7 @@ namespace CCM.Data.Repositories
                     //.Include(rs => rs.Location)
                     //.Include(rs => rs.Location.Region)
                     //.Include(rs => rs.Location.City)
-                    //.Include(rs => rs.User)
+                    .Include(rs => rs.User)
                     //.Include(rs => rs.User.Owner)
                     //.Include(rs => rs.User.CodecType)
                     //.Include(rs => rs.UserAgent)
@@ -97,6 +99,7 @@ namespace CCM.Data.Repositories
                 // Is it a new registration?
                 if (dbSip == null)
                 {
+                    isNewRegistration = true;
                     if (registration.ExpirationTimeSeconds == 0)
                     {
                         // Unregistration of not registered user-agent. Do nothing.
@@ -110,11 +113,6 @@ namespace CCM.Data.Repositories
                         Id = Guid.NewGuid()
                     };
                     db.RegisteredCodecs.Add(dbSip);
-
-                    // Log to SIP account that it has been used
-                    dbSip.User.LastUsed = DateTime.UtcNow;
-                    dbSip.User.LastKnownAddress = registration.IpAddress;
-                    dbSip.User.LastUserAgent = registration.UserAgentHeader;
                 }
 
                 // Match and map
@@ -129,6 +127,12 @@ namespace CCM.Data.Repositories
                 dbSip.Username = registeredSipUsername;
                 var sipAccount = _cachedSipAccountRepository.GetSipAccountByUserName(registeredSipUsername);
                 dbSip.User_UserId = sipAccount?.Id;
+                if (isNewRegistration && sipAccount != null) {
+                    // Log to SIP account that it has been used
+                    dbSip.User.LastUsed = DateTime.UtcNow;
+                    dbSip.User.LastKnownAddress = registration.IpAddress;
+                    dbSip.User.LastUserAgent = registration.UserAgentHeader;
+                }
 
                 dbSip.SIP = registration.SipUri;
                 dbSip.DisplayName = registration.DisplayName;

@@ -75,7 +75,7 @@ namespace CCM.Data.Entities
         [ForeignKey(nameof(User_UserId))]
         public virtual SipAccountEntity User { get; set; }
 
-        public Guid? UserAgentId { get; set; } // TODO: Redo this so it looks like everything else... 
+        public Guid? UserAgentId { get; set; } // TODO: Redo this so it looks like everything else...
         [MetaType]
         [ForeignKey(nameof(UserAgentId))]
         public virtual UserAgentEntity UserAgent { get; set; }
