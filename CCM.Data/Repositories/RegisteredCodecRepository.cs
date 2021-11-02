@@ -90,11 +90,11 @@ namespace CCM.Data.Repositories
                     //.Include(rs => rs.Location)
                     //.Include(rs => rs.Location.Region)
                     //.Include(rs => rs.Location.City)
-                    .Include(rs => rs.User)
+                    // .Include(rs => rs.User)
                     //.Include(rs => rs.User.Owner)
                     //.Include(rs => rs.User.CodecType)
                     //.Include(rs => rs.UserAgent)
-                    .SingleOrDefault(rs => rs.SIP == registration.SipUri);
+                    .FirstOrDefault(rs => rs.SIP == registration.SipUri);
 
                 // Is it a new registration?
                 if (dbSip == null)
@@ -127,6 +127,13 @@ namespace CCM.Data.Repositories
                 dbSip.Username = registeredSipUsername;
                 var sipAccount = _cachedSipAccountRepository.GetSipAccountByUserName(registeredSipUsername);
                 dbSip.User_UserId = sipAccount?.Id;
+                if (isNewRegistration && sipAccount != null) {
+                    var dbUser = db.SipAccounts.FirstOrDefault(rs => rs.Id == sipAccount.Id);
+                    // Log to SIP account that it has been used
+                    dbUser.LastUsed = DateTime.UtcNow;
+                    dbUser.LastKnownAddress = registration.IpAddress;
+                    dbUser.LastUserAgent = registration.UserAgentHeader;
+                }
                 dbSip.SIP = registration.SipUri;
                 dbSip.DisplayName = registration.DisplayName;
                 dbSip.IP = registration.IpAddress;
@@ -141,14 +148,6 @@ namespace CCM.Data.Repositories
                 // SaveChanges(false) tells the EF to execute the necessary database commands, but hold on to the changes, so they can be replayed if necessary.
                 // If you call SaveChanges() or SaveChanges(true),the EF simply assumes that if its work completes okay, everything is okay, so it will discard the changes it has been tracking, and wait for new changes.
                 db.SaveChanges(true);
-
-                if (isNewRegistration && sipAccount != null) {
-                    // Log to SIP account that it has been used
-                    dbSip.User.LastUsed = DateTime.UtcNow;
-                    dbSip.User.LastKnownAddress = registration.IpAddress;
-                    dbSip.User.LastUserAgent = registration.UserAgentHeader;
-                    db.SaveChanges(true);
-                }
 
                 //db.Dispose(); 2021 after issues...
                 return new SipEventHandlerResult
