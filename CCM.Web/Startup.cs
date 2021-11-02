@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Globalization;
 using System.IO;
 using System.Text.Json.Serialization;
@@ -116,6 +117,7 @@ namespace CCM.Web
                     // - Challenge: A cookie authentication scheme redirecting the user to a login page.
                     // - Forbid: A cookie authentication scheme redirecting the user to a page indicating access was forbidden.
                     Configuration.Bind("CookieSettings", options);
+                    options.ExpireTimeSpan = new TimeSpan(30, 0, 0, 0, 0);
                     options.LoginPath = new PathString("/Account/Login/");
                     options.LogoutPath = new PathString("/Account/LogOff/");
                     options.AccessDeniedPath = new PathString("/Account/Forbidden/");
