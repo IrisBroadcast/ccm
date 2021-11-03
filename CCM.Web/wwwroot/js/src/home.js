@@ -451,7 +451,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         $scope.setFilterCategory("");
 
         $scope.searchString = "";
-        $scope.closeRegisteredCodecsView();
+        closeRegisteredCodecsView();
     };
 
     $scope.closeFilterView = function () {
@@ -476,7 +476,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
             $('#regions-dropdown-filter li:contains(' + $scope.regionName + ')').addClass('active');
 
             // Unfold registered codecs view on filtering
-            $scope.openRegisteredCodecsView();
+            openRegisteredCodecsView();
         }
 
         $sessionStorage.region = $scope.region;
@@ -501,7 +501,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
             $('#codecTypes-dropdown-filter li:contains(' + $scope.codecTypeName + ')').addClass('active');
 
             // Unfold registered codecs view on filtering
-            $scope.openRegisteredCodecsView();
+            openRegisteredCodecsView();
         }
 
         // TODO: make these correct and maybe just angular fully..
@@ -528,7 +528,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
             $('#categories-dropdown-filter li:contains(' + $scope.categoryName + ')').addClass('active');
 
             // Unfold registered codecs view on filtering
-            $scope.openRegisteredCodecsView();
+            openRegisteredCodecsView();
         }
 
         $sessionStorage.category = $scope.category;
@@ -584,9 +584,9 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         if (keyCode === 27) {
             // when escape = 27 is pressed clear field
             $scope.searchString = "";
-            $scope.closeRegisteredCodecsView();
+            closeRegisteredCodecsView();
         } else if (searchStringInitiated) {
-            $scope.openRegisteredCodecsView();
+            openRegisteredCodecsView();
         }
     };
 
@@ -651,13 +651,13 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     var searchStringInitiated = true;
     var searchStringEscaped = false;
 
-    $scope.closeRegisteredCodecsView = function () {
+    var closeRegisteredCodecsView = function () {
         $('#toggle-registered-codecs-btn').removeClass('open');
         $('#toggle-registered-codecs').removeClass('open');
         searchStringInitiated = true;
     }
 
-    $scope.openRegisteredCodecsView = function () {
+    var openRegisteredCodecsView = function () {
         if (searchStringInitiated) {
             // Unfold registered codecs view on filtering
             $('#toggle-registered-codecs-btn').addClass('open');
