@@ -459,7 +459,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         $('#toggle-filters-btn').removeClass('open');
     };
 
-    $scope.setFilterRegion = function (region) {
+    $scope.setFilterRegion = (region) => {
         if (region == "nofilter" || region === "" || region === null  || region === undefined) {
             $scope.region = "";
             $scope.regionName = "";
@@ -484,7 +484,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         $scope.closeFilterView();
     };
 
-    $scope.setFilterCodecType = function (codecType) {
+    $scope.setFilterCodecType = (codecType) => {
         if (codecType == "nofilter" || codecType === "" || codecType === null || codecType === undefined) {
             $scope.codecType = "";
             $scope.codecTypeName = "";
@@ -511,7 +511,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         $scope.closeFilterView();
     };
 
-    $scope.setFilterCategory = function (category) {
+    $scope.setFilterCategory = (category) => {
         if (category == "nofilter" || category === "" || category === null || category === undefined) {
             $scope.category = "";
             $scope.categoryName = "";
