@@ -3,8 +3,6 @@
  * Codec control for front page popup */
 ccmControllers.controller('sipInfoController', function ($scope, $http, $interval, $uibModalInstance, sipid, sipAddress) {
 
-    $scope.isLoading = true;
-
     $scope.codecControlHost = window.codecControlHost;
     $scope.userName = window.codecControlUserName;
     $scope.password = window.codecControlPassword;
@@ -45,6 +43,8 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
         if (codecIsOnline) {
             $scope.getAvailableGpos();
             $scope.getAudioStatus();
+            //$scope.startAudioStatus();
+            $scope.startAudioUpdateHub();
         }
     };
 
@@ -69,6 +69,66 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
                 return console.error(err.toString());
             });
     };
+
+    $scope.startAudioUpdateHub = () => {
+        $scope.codecControlLoading = true;
+
+        $scope.signalrConnection = new signalR.HubConnectionBuilder()
+            .withUrl($scope.codecControlHost + "/audioStatusHub")
+            .configureLogging(signalR.LogLevel.Information)
+            .withAutomaticReconnect()
+            .build();
+
+        $scope.signalrConnection.on("AudioStatus", (sipAddress, audioStatus) => {
+            //console.log("AudioStatus received", sipAddress, audioStatus);
+            if (sipAddress === $scope.sipAddress) {
+                $scope.updateAudioStatus(audioStatus);
+            }
+        });
+
+        var sipJitterBufferArray = [];
+        var graph = document.getElementById("diagram-poly");
+
+        $scope.signalrConnection.on("StreamStatus", (sipAddress, streamStatus) => {
+            // console.log("StreamStatus received", sipAddress, streamStatus);
+            if (sipAddress === $scope.sipAddress) {
+                $scope.streamInfo = streamStatus;
+
+                sipJitterBufferArray.push($scope.streamInfo.jitterPerSec);
+                if (sipJitterBufferArray.length > 40) {
+                    sipJitterBufferArray.splice(0, 1);
+                }
+
+                let flattened = "";
+                for (var i = 0; i < sipJitterBufferArray.length; ++i) {
+                    const current = (sipJitterBufferArray[i] / 1200) * -100;
+                    flattened += i*10 + "," + current + " ";
+                }
+
+                window.requestAnimationFrame(function() {
+                    graph.setAttributeNS(null, "points", flattened);
+                });
+            }
+        });
+
+        $scope.signalrConnection.on("Subscribed", (subscriptionInfo) => {
+            console.log("Subscribed received", subscriptionInfo);
+        });
+
+        $scope.signalrConnection.on("Unubscribed", (subscriptionInfo) => {
+            console.log("Unubscribed received", subscriptionInfo);
+        });
+
+        $scope.signalrConnection.onclose((e) => {
+            console.log('Signalr connection closed');
+            $scope.codecControlAvailable = false;
+            $scope.codecControlLoading = false;
+            $scope.codecMeteringErrorMessage = "";
+            //setTimeout($scope.startSignalrConnection, 3000);
+        });
+
+        $scope.startSignalrConnection();
+    }
 
     // API
     $scope.getAvailableGpos = () => {
@@ -182,6 +242,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             $scope.codecControlAvailable = false;
             $scope.codecControlLoading = false;
             $scope.codecMeteringErrorMessage = response.data;
+            //$scope.stopAudioStatus();
         });
     };
 
@@ -377,15 +438,12 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             $scope.selectedLine = lines[0];
 
             $scope.checkCodecAvailable();
-            $scope.isLoading = false;
         } else {
             console.warn('Codec-control is not Authorized');
-            $scope.isLoading = false;
         }
     },
     (error) => {
         console.error("No answer from '/api/RegisteredCodec/ById/?id=" + $scope.sipid + "'", error);
-        $scope.isLoading = false;
     });
 
     // Utilities

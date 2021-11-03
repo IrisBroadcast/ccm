@@ -47,7 +47,6 @@ ccmApp.filter('ResourceUse', function () {
     };
 });
 
-
 ccmApp.filter('max', function () {
     return function (value, max) {
         if (max < 0) {
@@ -73,9 +72,25 @@ ccmApp.filter('callTimeWarning', function () {
     };
 });
 
+ccmApp.directive('shortcut', function () {
+    return {
+        restrict: 'E',
+        replace: true,
+        scope: true,
+        link: function postLink(scope, iElement, iAttrs) {
+            jQuery(document).on('keypress', function (e) {
+                scope.$apply(scope.keyPressed(e));
+            });
+        }
+    };
+});
+
 ccmApp.factory('backendHubProxy', ['$rootScope', function ($rootScope) {
 
     function backendFactory(serverUrl, hubName) {
+
+        //var connection = $.hubConnection(serverUrl);
+
         const connection = new signalR.HubConnectionBuilder()
             .withUrl('/' + hubName)
             .withAutomaticReconnect()
@@ -147,22 +162,6 @@ ccmApp.factory('backendHubProxy', ['$rootScope', function ($rootScope) {
     return backendFactory;
 }]);
 
-ccmApp.directive('vuMeter', function () {
-    return {
-        restrict: 'E',
-        scope: { level: '=level' },
-        template: "<div class='progress vertical'>" +
-            "<div class='progress-bar green' style='bottom: 0%;' ng-style='{ height: (level | max:70) + \"%\"}'></div>" +
-            "<div class='progress-bar yellow' style='bottom: 70%;' ng-style='{height: (level-70 | max:15) + \"%\"}'></div>" +
-            "<div class='progress-bar red' style='bottom: 85%;' ng-style='{height: (level-85 | max:15) + \"%\"}'></div>" +
-            "</div>"
-    };
-});
-
-ccmApp.component("loadingOverlay", {
-    template: "<div class='overlay'><div class='spinner'/></div>"
-});
-
 var searchStringInitiated = true;
 var searchStringEscaped = false;
 
@@ -180,6 +179,22 @@ var openRegisteredCodecsView = function () {
         searchStringInitiated = false;
     }
 }
+
+ccmApp.directive('vuMeter', function () {
+    return {
+        restrict: 'E',
+        scope: { level: '=level' },
+        template: "<div class='progress vertical'>" +
+            "<div class='progress-bar green' style='bottom: 0%;' ng-style='{ height: (level | max:70) + \"%\"}'></div>" +
+            "<div class='progress-bar yellow' style='bottom: 70%;' ng-style='{height: (level-70 | max:15) + \"%\"}'></div>" +
+            "<div class='progress-bar red' style='bottom: 85%;' ng-style='{height: (level-85 | max:15) + \"%\"}'></div>" +
+            "</div>"
+    };
+});
+
+ccmApp.component("loadingOverlay", {
+    template: "<div class='overlay'><div class='spinner'/></div>"
+});
 
 var ccmControllers = angular.module('ccmControllers', []);
 
@@ -250,13 +265,13 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
 
     ccmDataHub.on('codecsOnline',
         function (data) {
-            console.log("Received codecs online update: ", data.length);
+            console.log(`Received codecs online update: ${data.length}`);
             $scope.registeredSips = data;
         });
 
     ccmDataHub.on('ongoingCalls',
         function (data) {
-            console.log("Received ongoing calls update: ", data.length);
+            console.log(`Received ongoing calls update: ${data.length}`);
             setOngoingCalls(data);
         });
 
@@ -321,6 +336,9 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
             if ($scope.containsString(item.sip, search)) {
                 return true;
             }
+            // if ($scope.containsString(item.userName, search)) {
+            //     return true;
+            // }
             if ($scope.containsString(item.userComment, search)) {
                 return true;
             }
@@ -524,6 +542,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
 
         // TODO: make these correct and maybe just angular fully..
 
+
         $sessionStorage.codecType = $scope.codecType;
 
         $scope.closeFilterView();
@@ -679,7 +698,17 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
     var checkIfFiltered = function() {
         $scope.isFiltered = viewIsFiltered();
     }
+
     checkIfFiltered();
+
+    // Night-mode, full-overview , shift + i = 73, ctrl + i = 9
+    // $scope.uiStateNightmode = false;
+    // $scope.keyPressed = function (e) {
+    //     if (e.which === 9) {
+    //         console.log("Triggered nightmode");
+    //         $scope.uiStateNightmode = !$scope.uiStateNightmode;
+    //     }
+    // };
 });
 
 var makeUrlAbsolute = function (url) {
@@ -688,3 +717,24 @@ var makeUrlAbsolute = function (url) {
     }
     return url.match(/^[a-zA-Z]+:\/\//) ? url : 'http://' + url;
 }
+
+// var convertRange = function (value, returnPercent, limitMin, limitMax) {
+//     if (value === null && value === undefined) {
+//         return 0;
+//     }
+//     var yMin = limitMin || -128, // -128 actual limit
+//         yMax = limitMax || 0;
+
+//     if (value <= yMin) {
+//         value = yMin;
+//     }
+
+//     var percent = (value - yMin) / (yMax - yMin);
+
+//     if (returnPercent === undefined || returnPercent) {
+//         return percent * 100;//((xMax - xMin) + xMin); var xMax = 100; var xMin = 1;
+//     }
+//     else {
+//         return percent.toFixed(2);
+//     }
+// }
