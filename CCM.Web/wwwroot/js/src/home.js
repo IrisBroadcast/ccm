@@ -163,6 +163,24 @@ ccmApp.component("loadingOverlay", {
     template: "<div class='overlay'><div class='spinner'/></div>"
 });
 
+var searchStringInitiated = true;
+var searchStringEscaped = false;
+
+var closeRegisteredCodecsView = function () {
+    $('#toggle-registered-codecs-btn').removeClass('open');
+    $('#toggle-registered-codecs').removeClass('open');
+    searchStringInitiated = true;
+}
+
+var openRegisteredCodecsView = function () {
+    if (searchStringInitiated) {
+        // Unfold registered codecs view on filtering
+        $('#toggle-registered-codecs-btn').addClass('open');
+        $('#toggle-registered-codecs').addClass('open');
+        searchStringInitiated = false;
+    }
+}
+
 var ccmControllers = angular.module('ccmControllers', []);
 
 /* *******************************************************
@@ -647,24 +665,6 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
             refreshOldFilteredDebounce();
             checkIfFiltered();
         });
-
-    var searchStringInitiated = true;
-    var searchStringEscaped = false;
-
-    var closeRegisteredCodecsView = function () {
-        $('#toggle-registered-codecs-btn').removeClass('open');
-        $('#toggle-registered-codecs').removeClass('open');
-        searchStringInitiated = true;
-    }
-
-    var openRegisteredCodecsView = function () {
-        if (searchStringInitiated) {
-            // Unfold registered codecs view on filtering
-            $('#toggle-registered-codecs-btn').addClass('open');
-            $('#toggle-registered-codecs').addClass('open');
-            searchStringInitiated = false;
-        }
-    }
 
     $scope.$watch('searchString',
         function (newValue, oldValue) {
