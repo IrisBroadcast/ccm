@@ -56,7 +56,6 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
         $scope.signalrConnection.start()
             .then((result) => {
                 console.log("Signalr started");
-
                 $scope.codecControlLoading = false;
 
                 $scope.signalrConnection.invoke("Subscribe", $scope.sipAddress).catch((err) => {
@@ -88,9 +87,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
 
         var sipJitterBufferArray = [];
         var graph = document.getElementById("diagram-poly");
-
         $scope.signalrConnection.on("StreamStatus", (sipAddress, streamStatus) => {
-            // console.log("StreamStatus received", sipAddress, streamStatus);
             if (sipAddress === $scope.sipAddress) {
                 $scope.streamInfo = streamStatus;
 

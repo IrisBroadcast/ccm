@@ -184,11 +184,12 @@ ccmApp.directive('vuMeter', function () {
     return {
         restrict: 'E',
         scope: { level: '=level' },
-        template: "<div class='progress vertical'>" +
-            "<div class='progress-bar green' style='bottom: 0%;' ng-style='{ height: (level | max:70) + \"%\"}'></div>" +
-            "<div class='progress-bar yellow' style='bottom: 70%;' ng-style='{height: (level-70 | max:15) + \"%\"}'></div>" +
-            "<div class='progress-bar red' style='bottom: 85%;' ng-style='{height: (level-85 | max:15) + \"%\"}'></div>" +
-            "</div>"
+        template: `<div class='progress vertical'>
+            <div class='progress-bar green' style='bottom: 0%; height: 70%;'></div>
+            <div class='progress-bar yellow' style='bottom: 70%; height: 15%;'></div>
+            <div class='progress-bar red' style='bottom: 85%; height: 15%;'></div>
+            <div class='progress-bar data' ng-style="{'transform': 'translateY('+level+'px)'}"></div>
+            </div>`
     };
 });
 

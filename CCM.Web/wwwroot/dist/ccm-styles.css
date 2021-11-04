@@ -8637,25 +8637,17 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
   max-width: none;
   margin-top: 5px;
 }
+.ccm-ui-faders {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
 .ccm-ui-popmixer--unit {
   float: left;
   padding: 2px;
   text-align: center;
-}
-@media (max-width: 500px) {
-  .ccm-ui-popmixer--unit {
-    width: 50%;
-  }
-}
-@media (max-width: 600px) and (min-width: 500px) {
-  .ccm-ui-popmixer--unit {
-    width: 25%;
-  }
-}
-@media (min-width: 600px) {
-  .ccm-ui-popmixer--unit {
-    width: 20%;
-  }
+  flex: 1 1 auto;
 }
 .ccm-ui-popmixer--unit .btn {
   width: 100%;
@@ -8663,7 +8655,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 }
 .ccm-ui-popmixer--unit .mixer-input-toggle {
   width: 100%;
-  min-height: 8vh;
+  min-height: 6vh;
 }
 .ccm-ui-popmixer--unit .no-codec {
   position: relative;
@@ -8712,7 +8704,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 }
 .ccm-ui-popmixer--unit .widgets .level-gain .db-value {
   font-weight: bold;
-  font-size: 2.5em;
+  font-size: 1.8em;
 }
 .ccm-ui-popmixer--unit .widgets .level-gain .db-control {
   display: inline-block;
@@ -8757,6 +8749,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
   float: left;
   background: #dedede;
   border: 2px solid #d1d1d1;
+  transform: translateZ(0);
 }
 .ccm-ui-popmixer--unit-vu .vu-group .progress .progress-marker-target-0 {
   background: rgba(39, 83, 121, 0.65);
@@ -8773,14 +8766,25 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
   position: absolute;
   bottom: 0;
 }
+.ccm-ui-popmixer--unit-vu .vu-group .progress .progress-bar.data {
+  z-index: 0;
+  background-color: #33b766;
+  height: 100px;
+}
 .ccm-ui-popmixer--unit-vu .vu-group .progress .progress-bar.green {
   background-color: #33b766;
+  z-index: 1;
+  opacity: 0;
 }
 .ccm-ui-popmixer--unit-vu .vu-group .progress .progress-bar.yellow {
   background-color: #ffd941;
+  z-index: 1;
+  opacity: 0.2;
 }
 .ccm-ui-popmixer--unit-vu .vu-group .progress .progress-bar.red {
   background-color: #f23530;
+  z-index: 1;
+  opacity: 0.2;
 }
 .ccm-ui-popmixer--unit-gpo {
   overflow: hidden;
