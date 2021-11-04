@@ -8770,6 +8770,7 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
   z-index: 0;
   background-color: #33b766;
   height: 100px;
+  transition: transform 600ms;
 }
 .ccm-ui-popmixer--unit-vu .vu-group .progress .progress-bar.green {
   background-color: #33b766;
