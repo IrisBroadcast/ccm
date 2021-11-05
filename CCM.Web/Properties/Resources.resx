@@ -1107,7 +1107,7 @@
     <value>Registrerade enheter</value>
   </data>
   <data name="Show more filters" xml:space="preserve">
-    <value>Visa fler filterval</value>
+    <value>Filterval</value>
   </data>
   <data name="Tip! Press ESC to clear the searchbar" xml:space="preserve">
     <value>Tips! Tryck Escape för att tömma sökbaren</value>
@@ -1127,5 +1127,8 @@
   </data>
   <data name="Presentation Name" xml:space="preserve">
     <value>Presentationsnamn</value>
+  </data>
+  <data name="Ongoing calls" xml:space="preserve">
+    <value>Pågående samtal</value>
   </data>
 </root>

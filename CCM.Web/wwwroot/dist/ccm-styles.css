@@ -7340,10 +7340,28 @@ a {
   flex: 1 1 100%;
 }
 .mui-content-heading {
-  padding: 0.3rem;
-  background-color: #e9e9e9;
+  background-color: #c3d4f1;
   border-bottom: 1px solid #ddd;
   border-radius: 3px 3px 0 0;
+}
+.mui-content-heading-main {
+  font-size: 1.1rem;
+  padding: 0.5rem;
+}
+.mui-content-heading-sub {
+  background-color: #e9e9e9;
+  padding: 0.3rem;
+  margin: 5px 5px 0 5px;
+}
+.mui-content.registered-codecs {
+  margin: 5px 0 0 0;
+  padding: 0 5px 0 5px;
+}
+.mui-content.ongoing-calls {
+  margin: 0 5px;
+}
+.mui-content.calls-history {
+  margin: 0 5px;
 }
 .account-is-unused {
   background-color: #ffc5c5 !important;
@@ -7663,7 +7681,8 @@ body {
 }
 .mui-filter-cloud li a {
   padding: 0.2rem 0.5rem !important;
-  background: #fff5cf;
+  /*background: #fff5cf;*/
+  border: 1px solid #337ab7;
 }
 @media (max-width: 480px) {
   /* smartphones, iPhone, portrait 480x320 phones */
@@ -7772,7 +7791,9 @@ footer p {
   max-width: unset;
 }
 .ccm-tabpane-filters h5 {
-  padding: 0.5rem 0 0.2rem 0;
+  padding: 0.25rem 0 0.1rem 0;
+  font-size: 1.2rem;
+  font-weight: 200;
 }
 /* TODO: rename this and reuse */
 .sort-column {

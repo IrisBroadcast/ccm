@@ -28,7 +28,7 @@
         </div>
 
         <div class="mui-content mui-filter-box">
-            <a class="mui-a" data-toggle="collapse" data-parent="#accordion" id="toggle-filters-btn" href="#toggle-filters">
+            <a class="mui-a open" data-toggle="collapse" data-parent="#accordion" id="toggle-filters-btn" href="#toggle-filters">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
                     <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4" />
                     <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6" />
@@ -61,7 +61,7 @@
             </a>
         </div>
 
-        <div class="mui-content mui-filter-box collapse" id="toggle-filters">
+        <div class="mui-content mui-filter-box collapse open" id="toggle-filters">
             <!-- Grouping Filter 1 -->
             <div class="ccm-tabpane-filters hidden-sm hidden-xs">
                 <h5>
@@ -210,7 +210,7 @@
 
         <!-- Registered User Agents -->
         <div class="mui-panel-block">
-            <div class="mui-content-heading">
+            <div class="mui-content-heading mui-content-heading-main">
                 <a class="mui-a" data-toggle="collapse" data-parent="#accordion" id="toggle-registered-codecs-btn" href="#toggle-registered-codecs">
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
                         <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4"/>
@@ -289,109 +289,115 @@
             </div>
         </div>
 
-        <!-- Ongoing calls -->
+        <!-- Ongoing calls & old calls -->
         <div class="mui-panel-block">
-            <div class="mui-content-heading">
-                <div class="mui-row header">
-                    <div class="mui-col mui-col--source sortable-header" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'FromDisplayName'}">@Localizer["Caller"]</div>
-                    <div class="mui-col mui-col--direction"> </div>
-                    <div class="mui-col mui-col--destination sortable-header" ng-click="changeOngoingCallSorting('ToDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'ToDisplayName'}">@Localizer["Callee"]</div>
-                    <div class="mui-col mui-col--duration text-right sortable-header" ng-click="changeOngoingCallSorting('DurationSeconds')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'DurationSeconds'}">@Localizer["Call_Duration"]</div>
-                </div>
-            </div>
-            <div class="mui-content ongoing-calls">
-                <div class="mui-row call" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
-                    <div class="mui-col mui-col--source">
-                        <a class="list-ccm--sip-name" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
-                        <span class="list-ccm--sip-name" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{call.fromDisplayName}}</span>
-                        <span class="list-ccm--sip-location" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
-                        <span class="codec-type" title="{{call.fromCodecTypeName}}">{{call.fromCodecTypeName}}</span>
-                        <div class="comment-from">{{call.fromComment}}&nbsp;</div>
-                    </div>
-                    <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)" data-toggle="collapse" data-parent="#accordion" href="#toggle-call-{{call.callId}}">
-                        <?xml version="1.0" encoding="utf-8"?>
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-                            <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25"/>
-                        </svg>
-                    </div>
-                    <div class="mui-col mui-col--destination">
-                        <a class="list-ccm--sip-name-to" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
-                        <span class="list-ccm--sip-name-to" ng-if="!call.toId.length" title="{{call.toSip}}">{{call.toDisplayName}}</span>
-                        <span class="list-ccm--sip-location" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
-                        <span class="codec-type" title="{{call.toCodecTypeName}}">{{call.toCodecTypeName}}</span>
-                        <div class="comment-to">{{call.toComment}}&nbsp;</div>
-                    </div>
-                    <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
-                        @if (User.IsInRole(Roles.Admin))
-                        {
-                            <a href="@Url.Action("DeleteCall", "Call")/{{call.callId}}" class="list-ccm--ongoing-time list-ccm--trash-call">{{call.startedLocal | timeAgo:currentTime}}<span class="trash glyphicon-trash glyphicon"></span></a>
-                        }
-                        else
-                        {
-                            <span class="list-ccm--ongoing-time">{{call.startedLocal | timeAgo:currentTime}}</span>
-                        }
-                    </div>
-                    <div class="mui-col mui-col--call-info collapse" id="toggle-call-{{call.callId}}">
-<pre>{{call.sdp}}</pre>
-                    </div>
-                </div>
-
-                <div class="mui-row mui-row--feedback" ng-hide="filteredOnGoingCalls.length">
-                    <span ng-hide="isFiltered">
-                        @Localizer["No_Ongoing_Calls"]
-                    </span>
-                    <span ng-show="isFiltered">
-                        @Localizer["No_Items_In_Filtered_Result"]
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Old calls / History -->
-        <div class="mui-panel-block">
-            <div class="mui-content-heading">
-                <a class="mui-a" data-toggle="collapse" data-parent="#accordion" href="#toggle-calls-history">
+            <div class="mui-content-heading mui-content-heading-main">
+                <a class="mui-a open" data-toggle="collapse" data-parent="#accordion" href="#toggle-calls-history">
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
                         <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4"/>
                         <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6"/>
                     </svg>
-                    @Localizer["Latest_Closed_Calls"]
+                    @Localizer["Ongoing calls"]
                 </a>
             </div>
-            <div class="mui-content calls-history collapse" id="toggle-calls-history">
-                <div class="mui-row" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
-                    <div class="mui-col mui-col--source">
-                        <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
-                        <a class="list-ccm--sip-name--history" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
-                        <span class="list-ccm--sip-name--history" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{ call.fromDisplayName }}</span>
-                        <span class="list-ccm--sip-location--history" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
+
+            <div class="mui-content collapse open" id="toggle-calls-history">
+                <div class="mui-content-heading mui-content-heading-sub">
+                    <div class="mui-row header">
+                        <div class="mui-col mui-col--source sortable-header" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'FromDisplayName'}">@Localizer["Caller"]</div>
+                        <div class="mui-col mui-col--direction"> </div>
+                        <div class="mui-col mui-col--destination sortable-header" ng-click="changeOngoingCallSorting('ToDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'ToDisplayName'}">@Localizer["Callee"]</div>
+                        <div class="mui-col mui-col--duration text-right sortable-header" ng-click="changeOngoingCallSorting('DurationSeconds')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'DurationSeconds'}">@Localizer["Call_Duration"]</div>
                     </div>
-                    <div class="mui-col mui-col--direction">
-                        <?xml version="1.0" encoding="utf-8"?>
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-                            <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25"/>
-                        </svg>
-                    </div>
-                    <div class="mui-col mui-col--destination">
-                        <span class="codec-type" ng-style="{'background-color': call.toCodecTypeColor}" title="{{call.toCodecTypeName}}">&nbsp;</span>
-                        <a class="list-ccm--sip-name-to--history" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
-                        <span class="list-ccm--sip-name-to--history" ng-if="!call.toId.length" title="{{call.toSip}}">{{ call.toDisplayName }}</span>
-                        <span class="list-ccm--sip-location--history" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
+                </div>
+                <div class="mui-content ongoing-calls">
+                    <div class="mui-row call" ng-repeat="call in filteredOnGoingCalls = (onGoingCalls | filter: callFilter ) | orderBy:ongoingCallSort.column:ongoingCallSort.descending track by call.callId">
+                        <div class="mui-col mui-col--source">
+                            <a class="list-ccm--sip-name" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
+                            <span class="list-ccm--sip-name" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{call.fromDisplayName}}</span>
+                            <span class="list-ccm--sip-location" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
+                            <span class="codec-type" title="{{call.fromCodecTypeName}}">{{call.fromCodecTypeName}}</span>
+                            <div class="comment-from">{{call.fromComment}}&nbsp;</div>
+                        </div>
+                        <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)" data-toggle="collapse" data-parent="#accordion" href="#toggle-call-{{call.callId}}">
+                            <?xml version="1.0" encoding="utf-8" ?>
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+                                <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25" />
+                            </svg>
+                        </div>
+                        <div class="mui-col mui-col--destination">
+                            <a class="list-ccm--sip-name-to" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
+                            <span class="list-ccm--sip-name-to" ng-if="!call.toId.length" title="{{call.toSip}}">{{call.toDisplayName}}</span>
+                            <span class="list-ccm--sip-location" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
+                            <span class="codec-type" title="{{call.toCodecTypeName}}">{{call.toCodecTypeName}}</span>
+                            <div class="comment-to">{{call.toComment}}&nbsp;</div>
+                        </div>
+                        <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
+                            @if (User.IsInRole(Roles.Admin))
+                            {
+                                <a href="@Url.Action("DeleteCall", "Call")/{{call.callId}}" class="list-ccm--ongoing-time list-ccm--trash-call">{{call.startedLocal | timeAgo:currentTime}}<span class="trash glyphicon-trash glyphicon"></span></a>
+                            }
+                            else
+                            {
+                                <span class="list-ccm--ongoing-time">{{call.startedLocal | timeAgo:currentTime}}</span>
+                            }
+                        </div>
+                        <div class="mui-col mui-col--call-info collapse" id="toggle-call-{{call.callId}}">
+                            <pre>{{call.sdp}}</pre>
+                        </div>
                     </div>
 
-                    <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
-                        <div class="list-ccm--time--history" title="{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }} - {{ call.ended | date:'yyyy-MM-dd HH:mm:ss' }}">{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }}</div>
-                        <div class="list-ccm--time--history" title="{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }} - {{ call.ended | date:'yyyy-MM-dd HH:mm:ss' }}">{{ call.duration }}</div>
+                    <div class="mui-row mui-row--feedback" ng-hide="filteredOnGoingCalls.length">
+                        <span ng-hide="isFiltered">
+                            @Localizer["No_Ongoing_Calls"]
+                        </span>
+                        <span ng-show="isFiltered">
+                            @Localizer["No_Items_In_Filtered_Result"]
+                        </span>
                     </div>
                 </div>
 
-                <div class="mui-row mui-row--feedback" ng-hide="filteredOldCalls.length">
-                    <span ng-hide="isFiltered">
-                        @Localizer["No_Items_In_Filtered_Call_History"]
+                <!-- Old calls / History -->
+                <div class="mui-content-heading mui-content-heading-sub">
+                    <span class="mui-a">
+                        @Localizer["Latest_Closed_Calls"]
                     </span>
-                    <span ng-show="isFiltered">
-                        @Localizer["No_Items_In_Filtered_Result"]
-                    </span>
+                </div>
+                <div class="mui-content calls-history">
+                    <div class="mui-row" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
+                        <div class="mui-col mui-col--source">
+                            <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>
+                            <a class="list-ccm--sip-name--history" ng-if="call.fromId.length" href="#" ng-click="showSipInfo(call.fromId, call.fromSip, $event)" title="{{call.fromSip}}">{{call.fromDisplayName}}</a>
+                            <span class="list-ccm--sip-name--history" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{ call.fromDisplayName }}</span>
+                            <span class="list-ccm--sip-location--history" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
+                        </div>
+                        <div class="mui-col mui-col--direction">
+                            <?xml version="1.0" encoding="utf-8" ?>
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+                                <polygon fill="#A0A09F" points="15.6,40.5 11.1,33.9 24.5,25 11.1,16.1 15.6,9.5 38.9,25" />
+                            </svg>
+                        </div>
+                        <div class="mui-col mui-col--destination">
+                            <span class="codec-type" ng-style="{'background-color': call.toCodecTypeColor}" title="{{call.toCodecTypeName}}">&nbsp;</span>
+                            <a class="list-ccm--sip-name-to--history" ng-if="call.toId.length" href="#" ng-click="showSipInfo(call.toId, call.toSip, $event)" title="{{call.toSip}}">{{call.toDisplayName}}</a>
+                            <span class="list-ccm--sip-name-to--history" ng-if="!call.toId.length" title="{{call.toSip}}">{{ call.toDisplayName }}</span>
+                            <span class="list-ccm--sip-location--history" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
+                        </div>
+
+                        <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
+                            <div class="list-ccm--time--history" title="{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }} - {{ call.ended | date:'yyyy-MM-dd HH:mm:ss' }}">{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+                            <div class="list-ccm--time--history" title="{{ call.started | date:'yyyy-MM-dd HH:mm:ss' }} - {{ call.ended | date:'yyyy-MM-dd HH:mm:ss' }}">{{ call.duration }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mui-row mui-row--feedback" ng-hide="filteredOldCalls.length">
+                        <span ng-hide="isFiltered">
+                            @Localizer["No_Items_In_Filtered_Call_History"]
+                        </span>
+                        <span ng-show="isFiltered">
+                            @Localizer["No_Items_In_Filtered_Result"]
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

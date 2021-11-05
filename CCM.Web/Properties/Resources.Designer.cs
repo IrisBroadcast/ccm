@@ -2212,15 +2212,6 @@ namespace CCM.Web.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pågående samtal.
-        /// </summary>
-        public static string Ongoing_Calls {
-            get {
-                return ResourceManager.GetString("Ongoing_Calls", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Visa länk för alla.
         /// </summary>
         public static string Open_User_Interface {
@@ -2626,7 +2617,7 @@ namespace CCM.Web.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visa fler filterval.
+        ///   Looks up a localized string similar to Filterval.
         /// </summary>
         public static string Show_more_filters {
             get {

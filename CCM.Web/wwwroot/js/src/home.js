@@ -518,7 +518,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
 
         $sessionStorage.region = $scope.region;
 
-        $scope.closeFilterView();
+        //$scope.closeFilterView();
     };
 
     $scope.setFilterCodecType = (codecType) => {
@@ -546,7 +546,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
 
         $sessionStorage.codecType = $scope.codecType;
 
-        $scope.closeFilterView();
+        //$scope.closeFilterView();
     };
 
     $scope.setFilterCategory = (category) => {
@@ -571,7 +571,7 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
 
         $sessionStorage.category = $scope.category;
 
-        $scope.closeFilterView();
+        //$scope.closeFilterView();
     };
 
     $scope.showSipInfo = function (id, sipAddress, $event) {

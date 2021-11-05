@@ -49,7 +49,7 @@
         position: sticky;
         top: 0;
         padding: 0.5rem 0.25rem 0.5rem 0.5rem;
-        background: #e9e9e9;
+        background: @text-header-bg;
         text-align: left;
         font-weight: normal;
         font-size: 1rem;
@@ -256,10 +256,33 @@
 
 .mui-content {
     &-heading {
-        padding: 0.3rem;
-        background-color: @text-header-bg;
+        background-color: #c3d4f1;
         border-bottom: 1px solid #ddd;
         border-radius: 3px 3px 0 0;
+
+        &-main {
+            font-size: 1.1rem;
+            padding: 0.5rem;
+        }
+
+        &-sub {
+            background-color: @text-header-bg;
+            padding: 0.3rem;
+            margin: 5px 5px 0 5px;
+        }
+    }
+
+    &.registered-codecs {
+        margin: 5px 0 0 0;
+        padding: 0 5px 0 5px;
+    }
+
+    &.ongoing-calls {
+        margin: 0 5px;
+    }
+
+    &.calls-history {
+        margin: 0 5px;
     }
 }
 

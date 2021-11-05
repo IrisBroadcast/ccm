@@ -323,7 +323,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
     };
 
     $scope.toggleInputEnabled = (input) => {
-        var enabled = input.enabled ? false : true;
+        const enabled = input.enabled ? false : true;
         let data = { sipAddress: $scope.sipAddress, input: input.id, enabled: enabled };
         $scope.httpPost('/api/codeccontrol/setinputenabled', data).then((data) => {
             let isEnabled = data.enabled;
