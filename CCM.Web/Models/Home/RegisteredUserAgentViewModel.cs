@@ -47,5 +47,6 @@ namespace CCM.Web.Models.Home
         public string InCallWithId { get; set; }
         public string InCallWithSip { get; set; }
         public string InCallWithName { get; set; }
+        public bool HasCodecControl { get; set; }
     }
 }

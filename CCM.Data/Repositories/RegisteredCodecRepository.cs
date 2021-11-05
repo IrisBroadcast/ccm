@@ -353,6 +353,7 @@ namespace CCM.Data.Repositories
                         CodecTypeName = x.User.CodecType.Name,
                         CodecTypeColor = x.User.CodecType.Color,
                         CodecTypeCategory = x.UserAgent.Category.Name,
+                        CodecApi = x.UserAgent.Api,
                         UserExternalReference = x.User.ExternalReference,
                         UserDisplayName = x.User.DisplayName,
                         UserComment = x.User.Comment,
@@ -374,7 +375,8 @@ namespace CCM.Data.Repositories
                     userExternalReference: x.UserExternalReference,
                     userDisplayName: x.UserDisplayName,
                     userComment: x.UserComment,
-                    regionName: x.RegionName))
+                    regionName: x.RegionName,
+                    codecApi: x.CodecApi))
                 .ToList();
         }
 

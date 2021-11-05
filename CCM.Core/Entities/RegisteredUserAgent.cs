@@ -44,7 +44,8 @@ namespace CCM.Core.Entities
             string userExternalReference,
             string userDisplayName,
             string userComment,
-            string regionName)
+            string regionName,
+            string codecApi)
         {
             SipUri = sipUri;
             Id = id;
@@ -60,6 +61,7 @@ namespace CCM.Core.Entities
             UserDisplayName = userDisplayName;
             UserComment = userComment;
             RegionName = regionName;
+            CodecApi = codecApi;
         }
 
         public string SipUri { get; }
@@ -72,6 +74,7 @@ namespace CCM.Core.Entities
         public string CodecTypeName { get; }
         public string CodecTypeColor { get; }
         public string CodecTypeCategory { get; }
+        public string CodecApi { get; }
         public string UserExternalReference { get; }
         public string UserDisplayName { get; }
         public string UserComment { get; }

@@ -72,7 +72,8 @@ namespace CCM.Web.Mappers
                     CodecTypeCategory = regSip.CodecTypeCategory,
                     UserComment = regSip.UserComment,
                     UserExternalReference = regSip.UserExternalReference,
-                    RegionName = regSip.RegionName
+                    RegionName = regSip.RegionName,
+                    HasCodecControl = (string.IsNullOrEmpty(regSip.CodecApi) == false)
                 };
 
                 if (calls != null) { 
