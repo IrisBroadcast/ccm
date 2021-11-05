@@ -419,7 +419,8 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
         let info = response.data;
         $scope.info = info;
 
-        if (info.isAuthenticated && info.codecControl) {
+        // TODO: ADD THIS BACK WHEN AUTH CAN BE VERIFIED FUNCTIONING
+        // if (info.codecControl) {
             // TODO: Here somethings should be automated... inputs and lines should not get from here. and what is lines?
 
             // Prepare available lines
@@ -435,9 +436,9 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
             $scope.selectedLine = lines[0];
 
             $scope.checkCodecAvailable();
-        } else {
-            console.warn('Codec-control is not Authorized');
-        }
+        // } else {
+        //     console.warn('Codec-control is not Authorized');
+        // }
     },
     (error) => {
         console.error("No answer from '/api/RegisteredCodec/ById/?id=" + $scope.sipid + "'", error);

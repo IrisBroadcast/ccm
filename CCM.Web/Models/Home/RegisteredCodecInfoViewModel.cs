@@ -99,7 +99,7 @@ namespace CCM.Web.Models.Home
                 if (string.IsNullOrWhiteSpace(UserInterfaceLink)) {
                     return string.Empty;
                 }
-                if (!UserInterfaceIsOpen && !IsAuthenticated) {
+                if (!UserInterfaceIsOpen) {
                     return string.Empty;
                 }
                 string ip = Ip;

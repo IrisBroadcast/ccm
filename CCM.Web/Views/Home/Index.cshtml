@@ -417,16 +417,9 @@
     <!-- Navigation -->
     <ul class="nav nav-tabs ccm-ui-pop-nav">
         <li class="active"><a href="#reginfo" data-toggle="tab">@Localizer["Information"]</a></li>
-        @if (hasWriteRights)
-        {
-            <li id="codecControlTab" ng-show="codecOnline"><a href="#control" data-toggle="tab">@Localizer["Codec_Control"]</a></li>
-            <li ng-show="isLoading"><a href="#control-loading">@Localizer["Loading"]</a></li>
-            <li ng-show="!codecOnline && !isLoading"><a href="#no-control">@Localizer["No_Codec_Control_Available"]</a></li>
-        }
-        else
-        {
-            <li><a href="@Url.Action("Login", "Account")" title="@Localizer["Log_In"].Value">@Localizer["Login_For_Codec_Control"]</a></li>
-        }
+        <li id="codecControlTab" ng-show="codecOnline"><a href="#control" data-toggle="tab">@Localizer["Codec_Control"]</a></li>
+        <li ng-show="isLoading"><a href="#control-loading">@Localizer["Loading"]</a></li>
+        <li ng-show="!codecOnline && !isLoading"><a href="#no-control">@Localizer["No_Codec_Control_Available"]</a></li>
     </ul>
 
     <!-- Header, codecname, logo, close btn -->
