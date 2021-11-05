@@ -7680,7 +7680,7 @@ body {
   margin: 2px !important;
 }
 .mui-filter-cloud li a {
-  padding: 0.2rem 0.5rem !important;
+  padding: 0.1rem 0.4rem !important;
   /*background: #fff5cf;*/
   border: 1px solid #337ab7;
 }
@@ -8801,12 +8801,12 @@ a.list-ccm-inlineicon.glyphicon.glyphicon-trash {
 .ccm-ui-popmixer--unit-vu .vu-group .progress .progress-bar.yellow {
   background-color: #ffd941;
   z-index: 1;
-  opacity: 0.2;
+  opacity: 0.6;
 }
 .ccm-ui-popmixer--unit-vu .vu-group .progress .progress-bar.red {
   background-color: #f23530;
   z-index: 1;
-  opacity: 0.2;
+  opacity: 0.6;
 }
 .ccm-ui-popmixer--unit-gpo {
   overflow: hidden;
