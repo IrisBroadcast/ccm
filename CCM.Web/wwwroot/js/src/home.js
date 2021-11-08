@@ -35,6 +35,12 @@ ccmApp.filter('timeAgo', function () {
     };
 });
 
+ccmApp.filter('categoryCleanup', function () {
+    return function (category) {
+        return (category || "").split("-").join(" ");
+    };
+});
+
 ccmApp.filter('ResourceUse', function () {
     return function (registered) {
         if (!registered) {
@@ -507,10 +513,14 @@ ccmControllers.controller('overviewController', function ($scope, $http, $interv
         } else {
             $scope.region = region;
             $scope.regionName = region;
-            $('#regions-filter li').removeClass('active');
-            $('#regions-filter li:contains(' + $scope.regionName + ')').addClass('active');
-            $('#regions-dropdown-filter li').removeClass('active');
-            $('#regions-dropdown-filter li:contains(' + $scope.regionName + ')').addClass('active');
+            const filters = document.querySelectorAll(`[data-filter-region]`)
+            filters.forEach((element) => {
+                if (element.dataset.filterRegion == region) {
+                    element.classList.add('active');
+                } else {
+                    element.classList.remove('active');
+                }
+            });
 
             // Unfold registered codecs view on filtering
             openRegisteredCodecsView();

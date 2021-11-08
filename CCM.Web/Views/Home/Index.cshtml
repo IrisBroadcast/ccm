@@ -69,12 +69,12 @@
                     <span class="selected-name"> ({{regionName ? regionName : "@Localizer["All"]"}})</span>
                 </h5>
                 <ul class="nav nav-stacked nav-pills hidden-sm hidden-xs mui-filter-cloud" id="regions-filter">
-                    <li ng-click="setFilterRegion('nofilter')" class="nofilter">
+                    <li ng-click="setFilterRegion('nofilter')" data-filter-region="nofilter" class="nofilter">
                         <a href="#" class="ccm-tabpane-filter--link">@Localizer["All"]</a>
                     </li>
                     @foreach (var region in Model.Regions)
                     {
-                        <li ng-click="setFilterRegion('@region.Name')" class="ccm-tabpane-filter--link">
+                        <li ng-click="setFilterRegion('@region.Name')" data-filter-region="@region.Name" class="ccm-tabpane-filter--link">
                             <a href="#">@region.Name</a>
                         </li>
                     }
@@ -88,12 +88,12 @@
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="regionsDropDown" aria-expanded="true">{{regionName ? regionName : "@Localizer["All"]"}}<span class="caret"></span></button>
                     <ul class="dropdown-menu dropdown-filter-frontpage" role="menu" aria-labelledby="regionsDropDown" id="regions-dropdown-filter">
-                        <li ng-click="setFilterRegion('nofilter')" class="nofilter">
+                        <li ng-click="setFilterRegion('nofilter')" data-filter-region="nofilter" class="nofilter">
                             <a href="#">@Localizer["All"]</a>
                         </li>
                         @foreach (var region in Model.Regions)
                         {
-                            <li ng-click="setFilterRegion('@region.Name')"><a href="#">@region.Name</a></li>
+                            <li ng-click="setFilterRegion('@region.Name')" data-filter-region="@region.Name"><a href="#">@region.Name</a></li>
                         }
                     </ul>
                 </div>
@@ -289,10 +289,10 @@
             </div>
         </div>
 
-        <!-- Ongoing calls & old calls -->
+        <!-- Ongoing calls -->
         <div class="mui-panel-block">
             <div class="mui-content-heading mui-content-heading-main">
-                <a class="mui-a open" data-toggle="collapse" data-parent="#accordion" href="#toggle-calls-history">
+                <a class="mui-a open" data-toggle="collapse" data-parent="#accordion" href="#toggle-ongoing-calls">
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
                         <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4"/>
                         <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6"/>
@@ -301,7 +301,7 @@
                 </a>
             </div>
 
-            <div class="mui-content collapse open" id="toggle-calls-history">
+            <div class="mui-content collapse open" id="toggle-ongoing-calls">
                 <div class="mui-content-heading mui-content-heading-sub">
                     <div class="mui-row header">
                         <div class="mui-col mui-col--source sortable-header" ng-click="changeOngoingCallSorting('FromDisplayName')" ng-class="{'list-ccm-thead--sort' : ongoingCallSort.column == 'FromDisplayName'}">@Localizer["Caller"]</div>
@@ -317,6 +317,7 @@
                             <span class="list-ccm--sip-name" ng-if="!call.fromId.length" title="{{call.fromSip}}">{{call.fromDisplayName}}</span>
                             <span class="list-ccm--sip-location" ng-if="call.fromLocationName.length" title="{{call.fromLocationShortName}}">({{call.fromLocationName}})</span>
                             <span class="codec-type" title="{{call.fromCodecTypeName}}">{{call.fromCodecTypeName}}</span>
+                            <span class="codec-type category" title="{{call.fromCategory}}">{{call.fromCategory | categoryCleanup}}</span>
                             <div class="comment-from">{{call.fromComment}}&nbsp;</div>
                         </div>
                         <div class="mui-col mui-col--direction" data-call="{{call}}" ng-click="unfoldCallInfo($event, call)" data-toggle="collapse" data-parent="#accordion" href="#toggle-call-{{call.callId}}">
@@ -330,6 +331,7 @@
                             <span class="list-ccm--sip-name-to" ng-if="!call.toId.length" title="{{call.toSip}}">{{call.toDisplayName}}</span>
                             <span class="list-ccm--sip-location" ng-if="call.toLocationName.length" title="{{call.toLocationShortName}}">({{call.toLocationName}})</span>
                             <span class="codec-type" title="{{call.toCodecTypeName}}">{{call.toCodecTypeName}}</span>
+                            <span class="codec-type category" title="{{call.toCategory}}">{{call.toCategory | categoryCleanup}}</span>
                             <div class="comment-to">{{call.toComment}}&nbsp;</div>
                         </div>
                         <div class="mui-col mui-col--duration" ng-class="'class'|callTimeWarning:10000:call.started:call.ended">
@@ -356,14 +358,23 @@
                         </span>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Old calls -->
+        <div class="mui-panel-block">
+            <div class="mui-content-heading mui-content-heading-main">
+                <a class="mui-a open" data-toggle="collapse" data-parent="#accordion" href="#toggle-calls-history">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" width="50px" height="50px" xml:space="preserve" class="mui-caret">
+                        <polygon class="down" fill="#A0A09F" points="34.2,14.7 25,23.9 15.8,14.7 10.2,20.4 19.3,29.6 25,35.3 30.7,29.6 39.8,20.4"/>
+                        <polygon class="up" fill="#A0A09F" points="34.2,35.3 25,26.1 15.8,35.3 10.2,29.6 19.3,20.4 25,14.7 30.7,20.4 39.8,29.6"/>
+                    </svg>
+                    @Localizer["Old calls"]
+                </a>
+            </div>
 
                 <!-- Old calls / History -->
-                <div class="mui-content-heading mui-content-heading-sub">
-                    <span class="mui-a">
-                        @Localizer["Latest_Closed_Calls"]
-                    </span>
-                </div>
-                <div class="mui-content calls-history">
+                <div class="mui-content calls-history collapse" id="toggle-calls-history">
                     <div class="mui-row" ng-repeat="call in filteredOldCalls = (oldCalls | filter: callFilter) track by $index">
                         <div class="mui-col mui-col--source">
                             <span class="codec-type" ng-style="{'background-color': call.fromCodecTypeColor}" title="{{call.fromCodecTypeName}}">&nbsp;</span>

@@ -7232,6 +7232,10 @@ a {
   line-height: 1.5;
   cursor: pointer;
 }
+.mui-panel .codec-type.category {
+  background-color: #eef5d0;
+  text-transform: capitalize;
+}
 .mui-panel .comment-to,
 .mui-panel .comment-from {
   color: #757575;
@@ -7635,7 +7639,7 @@ body {
   }
 }
 .mui-filter-box {
-  padding: 0.5rem 0;
+  padding: 0.5rem 0 0 0;
 }
 .mui-filter-box .mui-a {
   display: inline-block;

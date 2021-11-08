@@ -1094,4 +1094,7 @@
   <data name="Ongoing calls" xml:space="preserve">
     <value>Pågående samtal</value>
   </data>
+    <data name="Old calls" xml:space="preserve">
+    <value>Senast avslutade samtal</value>
+  </data>
 </root>
