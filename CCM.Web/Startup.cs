@@ -207,6 +207,14 @@ namespace CCM.Web
             }
 
             // Static files for serving images and static files in wwwroot.
+            //app.UseStaticFiles(new StaticFileOptions()
+            //{
+            //    OnPrepareResponse = context =>
+            //    {
+            //        context.Context.Response.Headers.Add("Cache-Control", "no-cache, no-store");
+            //        context.Context.Response.Headers.Add("Expires", "-1");
+            //    }
+            //});
             app.UseStaticFiles();
             var uapath = Configuration.GetValue<string>("UserAgentImagesFolder");
             if (!string.IsNullOrWhiteSpace(uapath) && Directory.Exists(uapath))
