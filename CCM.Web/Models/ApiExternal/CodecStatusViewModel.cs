@@ -35,7 +35,8 @@ namespace CCM.Web.Models.ApiExternal
         public CodecState State { get; set; }
         public string SipAddress { get; set; }
         public string PresentationName { get; set; }
-        public string DisplayName { get; set; } //TODO:  Not in use ... yet, changed my mind, will be removed...
+        public string DisplayName { get; set; } //TODO:  Not in use ... yet, changed my mind, will be removed...since it's PresentationName...
+        public bool HasCodecControl { get; set; }
         #endregion
 
         #region Call
