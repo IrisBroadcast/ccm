@@ -143,7 +143,23 @@ namespace CCM.Data.Repositories
         /// <param name="callId"></param>
         public void CloseCall(Guid callId)
         {
-            var dbCall = _ccmDbContext.Calls.SingleOrDefault(c => c.Id == callId);
+            // TODO: Make help function that returns one call
+            var dbCall = _ccmDbContext.Calls
+                .Include(c => c.FromCodec)
+                .Include(c => c.FromCodec.User)
+                .Include(c => c.FromCodec.User.CodecType)
+                .Include(c => c.FromCodec.UserAgent.Category)
+                .Include(c => c.FromCodec.Location)
+                .Include(c => c.FromCodec.Location.Region)
+                .Include(c => c.FromCodec.Location.Category)
+                .Include(c => c.ToCodec)
+                .Include(c => c.ToCodec.User)
+                .Include(c => c.ToCodec.User.CodecType)
+                .Include(c => c.ToCodec.UserAgent.Category)
+                .Include(c => c.ToCodec.Location)
+                .Include(c => c.ToCodec.Location.Region)
+                .Include(c => c.ToCodec.Location.Category)
+                .SingleOrDefault(c => c.Id == callId);
 
             if (dbCall == null)
             {
