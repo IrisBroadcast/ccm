@@ -274,6 +274,9 @@
                             <td class="mui-col mui-col--ua-image" ng-if="sip.image.length > 0">
                                 <img ng-src="@Url.Content("~/uaimages")/{{sip.image}}" alt="" />
                             </td>
+                            <td class="mui-col mui-col--ua-image" ng-if="sip.image.length == 0">
+                                <!-- Empty -->
+                            </td>
                         </tr>
                     </tbody>
                 </table>
