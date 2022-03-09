@@ -9,59 +9,43 @@ service developed by Sveriges Radio AB in Sweden. This code has
 been in production for many years and we're proud to share it
 with a larger community!
 
-## Release plan after 1.0
-This first release is a first, but important, step for us as
-maintainers of this Open Source project. The code is licensed
-using the BSD 3-clause license and we have gone through the process
-internally of releasing in-house software as Open Source.
+## Release information
+Finally the code base is converted to .NET Core. Now we can run it fully containerised and on any OS.
+This is a big change and improvement. There is still some work to be done in the "testing" part, Tests and UnitTests project.
 
-We will now work to move our in-house development to github
-and move our production servers to the Open Source code. This
-means that we will release a new set of code at some point
-during the first half of 2018 and from that point continue
-development in the open on github.
-
-The changes between the 1.0 release and the coming version will
-not be committed to the github repository until we have a new
-process for our in-house development.
+The code is licensed using the BSD 3-clause license.
 
 If you like to contribute documentation, local translations
 or code you are more than welcome with a pull request on github.com.
-
-## Release plan after 1.5
-To get a more flexible solution a few things is on the roadmap
-- A better way to collect the incoming information from Kamailio. Today during deploy or failover data could be lost.
-- Dotnet Core, so the the whole system can be runned on a preferred server Windows, Linux, Mac and so on. 
 
 Documentation
 =============
 
 ### Requirements
 The application might work on anything higher than these versions, but it's not tested yet.
-- Minimum support and tested MySQL 5.7
-- Visual Studio 2017
-- Minimum Microsoft Windows Server 20XX
+- Minimum support and tested MySQL 8
+- Visual Studio 2022
 
 ### How to get started
 (If you want codec control, set up that project separetely.)
 
 1. Open the Visual Studio solution and get the nuget packages required.
 2. The application is built as follows:
-+ CCM.Core:	The core of the IRIS CCM platform. 
-+ CCM.Data:	Module for data storage. 
-+ CCM.Web: 	The web user interface (ASP.NET MVC 5 project)
-+ CCM.DiscoveryApi:	The IRIS discovery service (ASP.NET MVC 5 project)
-+ CCM.Tests:	Unit and integration tests
-		Note: The unit tests are in working shape, but the rest of the tests may or
-		may not work at this stage.
++ CCM.Core:	        The core of the IRIS CCM platform. 
++ CCM.Data:	        Module for data storage. 
++ CCM.Web: 	        The web user interface (Base application)
++ CCM.Frontpage:    Frontend JavaScript/Typescript components.
++ CCM.DiscoveryApi: The IRIS discovery service (Discovery application)
++ CCM.Tests/Tests:	Unit and integration tests, Note: The unit tests are in working shape.
 
 4. Set up the database of choice, instructions here [database setup](CCM.Data/README.md)
 4. Run the application
-5. Set up messages from your SIP-registrar (e.g Kamalio) to start recieving data at your endpoint. Check out IRIS Connect for Kamailio settings. 
+5. Set up messages from your SIP-registrar (e.g Kamailio) to start recieving data at your endpoint.
+   Check out the [IRIS Connect](https://github.com/IrisBroadcast/connect) for Kamailio settings. 
 
 License
 =======
-IRIS CCM and Discovery Service is (C) Sveriges Radio AB, Stockholm, Sweden 2017
+IRIS CCM and Discovery Service is (C) Sveriges Radio AB, Stockholm, Sweden 2017-2022
 The code is licensed under the BSD 3-clause license.
 
 The license for CCM is in the LICENSE.txt file
@@ -91,15 +75,6 @@ moment these two columns are not replicated, this should be added.
 
 Load balancing between the two CCM servers can be done with external HTTP load
 balancers, using DNS or virtual IP failover.
-
-Platforms and tools
--------------------
-CCM is build on a Microsoft Windows platform interacting with a Kamailio SIP server
-running on a Linux server. 
-CCM is developed in C# using Microsoft .NET Framework 4.5. ASP.NET MVC 5 is used for
-the web services. Development is done in Microsoft Visual Studio 2017.
-
-For databases, the Entity Framework v6 is used.
 
 IRIS Codec Call Monitor - Monitoring & CMS
 -----------
