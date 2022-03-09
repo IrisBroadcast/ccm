@@ -26,13 +26,11 @@
 
 using System;
 using CCM.Core.Entities.Discovery;
-using CCM.DiscoveryApi.Models;
 using CCM.DiscoveryApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using CCM.DiscoveryApi.Models.Discovery;

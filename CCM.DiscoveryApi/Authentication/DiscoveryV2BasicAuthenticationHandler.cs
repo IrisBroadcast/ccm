@@ -1,5 +1,6 @@
-﻿/*
- * Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
+﻿#region copyright
+/*
+ * Copyright (c) 2022 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#endregion copyright
 
 using System;
 using System.Net.Http.Headers;
@@ -39,8 +41,10 @@ using NLog;
 namespace CCM.DiscoveryApi.Authentication
 {
     /// <summary>
-    /// Supposed to be used only with DiscoveryV2Controller in CCM.Discovery.Api
-    /// Performs pre-authentication by checking that request contains basic authentication credentials.
+    /// Used by DiscoveryV2Controller
+    /// Performs pre-authentication of a SR Discovery request by checking that
+    /// the request contains basic authentication credentials.
+    ///
     /// Actual user authentication is deferred to CCM web api.
     /// </summary>
     public class DiscoveryV2BasicAuthenticationHandler: AuthenticationHandler<AuthenticationSchemeOptions>

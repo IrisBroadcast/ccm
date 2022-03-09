@@ -126,44 +126,6 @@ namespace CCM.DiscoveryApi.Services
             }
 
             return default(T);
-
-
-            //using (var responseStream = await response.Content.ReadAsStreamAsync())
-            //{
-            //    var jsonReader = new JsonTextReader(new StreamReader(responseStream));
-            //    var str =  jsonReader.ReadAsString();
-            //    log.Debug(str);
-            //    return JsonConvert.DeserializeObject<T>(jsonReader.ReadAsString());
-            //}
-
-
-            // Old
-            //using (var client = new HttpClient())
-            //{
-            //    HttpContent content = data != null ? 
-            //        new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json") : null;
-
-            //    var request = new HttpRequest(method, url) { Content = content };
-            //    request.Headers.Authorization = originalRequest.Headers.Authorization;
-
-            //    HttpResponseMessage response = await client.SendAsync(request);
-
-            //    if (!response.IsSuccessStatusCode)
-            //    {
-            //        if (response.StatusCode == HttpStatusCode.Forbidden)
-            //        {
-            //            log.Debug("Failed to get discovery data. Response: {0} {1}", response.StatusCode, response.ReasonPhrase);
-            //        }
-            //        else
-            //        {
-            //            log.Warn("Failed to get discovery data. Response: {0} {1}", response.StatusCode, response.ReasonPhrase);
-            //        }
-            //        throw new HttpResponseException(response);
-            //    }
-
-            //    return await response.Content.ReadAsAsync<T>();
-            //}
         }
-
     }
 }

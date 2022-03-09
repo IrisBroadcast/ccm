@@ -1,6 +1,6 @@
 ﻿#region copyright
 /*
- * Copyright (c) 2020 Sveriges Radio AB, Stockholm, Sweden
+ * Copyright (c) 2022 Sveriges Radio AB, Stockholm, Sweden
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -43,21 +43,13 @@ using ClaimTypes = System.Security.Claims.ClaimTypes;
 namespace CCM.DiscoveryApi.Authentication
 {
     /// <summary>
-    /// Supposed to be used only with DiscoveryV2Controller in CCM.Discovery.Api
-    /// Performs pre-authentication by checking that request contains basic authentication credentials.
-    /// Actual user authentication is deferred to CCM web api.
-    /// INFO: New for .NET Core TODO: Move this to discovery.Api project
-
     /// Used by DiscoveryController
-    /// Performs pre-authentication of a SR Discovery request
+    /// Performs pre-authentication of a SR Discovery request by checking that
+    /// the request contains authentication credentials.The parameters are
+    /// converted to a basic authentication HTTP header and forwarded.
     ///
-    /// Checks that the request contains SR Discovery authentication parameters
-    /// and converts then to basic authentication HTTP header
-    ///
-    /// SIP account authentication for SR Discovery
-    ///
+    /// Actual user authentication is deferred to CCM web api.
     /// </summary>
-
     public class DiscoveryV1BasicAuthenticationHandler: AuthenticationHandler<AuthenticationSchemeOptions>
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
