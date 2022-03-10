@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Enums;
+using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using NLog;
@@ -38,11 +39,11 @@ namespace CCM.Core.Managers
     public class SettingsManager : ISettingsManager
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
-        private readonly ISettingsRepository _settingsRepository;
+        private readonly ICachedSettingsRepository _cachedSettingsRepository;
 
-        public SettingsManager(ISettingsRepository settingsRepository)
+        public SettingsManager(ICachedSettingsRepository cachedSettingsRepository)
         {
-            _settingsRepository = settingsRepository;
+            _cachedSettingsRepository = cachedSettingsRepository;
         }
 
         public string SipDomain => GetSetting(SettingsEnum.SIPDomain);
@@ -51,15 +52,22 @@ namespace CCM.Core.Managers
         public bool CodecControlActive => GetSetting<bool>(SettingsEnum.CodecControlActive);
         public bool UseOldKamailioEvent => GetSetting<bool>(SettingsEnum.UseOldKamailioEvent);
         public bool UseSipEvent => GetSetting<bool>(SettingsEnum.UseSipEvent);
-
-        public List<Setting> GetSettings()
-        {
-            return _settingsRepository.GetAll();
-        }
+        public string UserAgentImagesFolder => GetSetting<string>(SettingsEnum.UserAgentImagesFolder);
+        public string DiscoveryServiceUrl => GetSetting<string>(SettingsEnum.DiscoveryServiceUrl);
+        public string CodecControlHost => GetSetting<string>(SettingsEnum.CodecControlHost);
+        public string CodecControlUserName => GetSetting<string>(SettingsEnum.CodecControlUserName);
+        public string CodecControlPassword => GetSetting<string>(SettingsEnum.CodecControlPassword);
+        public int CacheTimeLiveData => GetSetting<int>(SettingsEnum.CacheTimeLiveData);
+        public int CacheTimeConfigData => GetSetting<int>(SettingsEnum.CacheTimeConfigData);
 
         public void SaveSettings(List<Setting> newSettings, string userName)
         {
-            _settingsRepository.Save(newSettings, userName);
+            _cachedSettingsRepository.Save(newSettings, userName);
+        }
+
+        public List<Setting> GetSettings()
+        {
+            return _cachedSettingsRepository.GetAll();
         }
 
         private string GetSetting(SettingsEnum enumName)

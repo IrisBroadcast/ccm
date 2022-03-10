@@ -32,6 +32,7 @@ using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 
 namespace CCM.Data.Repositories
@@ -40,59 +41,58 @@ namespace CCM.Data.Repositories
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public CityRepository(IAppCache cache) : base(cache)
+        public CityRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
         public override void Save(City city)
         {
-            using (var db = GetDbContext())
+            CityEntity dbCity;
+
+            if (city.Id != Guid.Empty)
             {
-                CityEntity dbCity;
+                dbCity = _ccmDbContext.Cities
+                    .Include(c => c.Locations)
+                    .SingleOrDefault(g => g.Id == city.Id);
 
-                if (city.Id != Guid.Empty)
+                if (dbCity == null)
                 {
-                    dbCity = db.Cities.SingleOrDefault(g => g.Id == city.Id);
-                    if (dbCity == null)
-                    {
-                        throw new Exception("Region could not be found");
-                    }
-
-                    dbCity.Locations.Clear();
-                }
-                else
-                {
-                    dbCity = new CityEntity {Locations = new Collection<LocationEntity>()};
-                    db.Cities.Add(dbCity);
+                    throw new Exception("City could not be found");
                 }
 
-                dbCity.Name = city.Name;
-
-                foreach (var location in city.Locations)
-                {
-                    var dbLocation = db.Locations.SingleOrDefault(l => l.Id == location.Id);
-                    if (dbLocation != null)
-                    {
-                        dbCity.Locations.Add(dbLocation);
-                    }
-                }
-
-                db.SaveChanges();
-                city.Id = dbCity.Id;
+                dbCity.Locations?.Clear();
             }
+            else
+            {
+                dbCity = new CityEntity { Locations = new Collection<LocationEntity>() };
+                _ccmDbContext.Cities.Add(dbCity);
+            }
+
+            dbCity.Name = city.Name;
+
+            foreach (var location in city.Locations)
+            {
+                var dbLocation = _ccmDbContext.Locations.SingleOrDefault(l => l.Id == location.Id);
+                if (dbLocation != null)
+                {
+                    dbCity.Locations?.Add(dbLocation);
+                }
+            }
+
+            _ccmDbContext.SaveChanges();
+            city.Id = dbCity.Id;
         }
 
         public override void Delete(Guid id)
         {
-            using (var db = GetDbContext())
+            var dbCity = _ccmDbContext.Cities
+                .Include(c => c.Locations)
+                .SingleOrDefault(g => g.Id == id);
+            if (dbCity != null)
             {
-                var dbCity = db.Cities.SingleOrDefault(g => g.Id == id);
-                if (dbCity != null)
-                {
-                    dbCity.Locations.Clear();
-                    db.Cities.Remove(dbCity);
-                    db.SaveChanges();
-                }
+                dbCity.Locations?.Clear();
+                _ccmDbContext.Cities.Remove(dbCity);
+                _ccmDbContext.SaveChanges();
             }
         }
 
@@ -118,15 +118,17 @@ namespace CCM.Data.Repositories
 
         public override City MapToCoreObject(CityEntity dbCity)
         {
-            return dbCity != null ? new City {
-                    Id = dbCity.Id,
-                    Name = dbCity.Name,
-                    Locations = dbCity.Locations.Select(MapToLocation).ToList(),
-                }
+            // TODO: is this one needed? feels like no other is using this
+            return dbCity != null ? new City
+            {
+                Id = dbCity.Id,
+                Name = dbCity.Name,
+                Locations = dbCity.Locations.Select(MapToLocation).ToList(),
+            }
                 : null;
         }
 
-        public Location MapToLocation(LocationEntity dbLocation)
+        private Location MapToLocation(LocationEntity dbLocation)
         {
             if (dbLocation == null) return null;
 

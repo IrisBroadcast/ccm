@@ -42,115 +42,106 @@ namespace CCM.Data.Repositories
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
         private static List<AvailableMetaType> availableMetaTypes;
 
-        public MetaRepository(IAppCache cache) : base(cache)
+        public MetaRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
-        /// <summary>
-        /// Gets the meta type property values.
-        /// </summary>
-        /// <param name="metaType">Type of the meta.</param>
-        /// <returns></returns>
-        public List<string> GetMetaTypePropertyValues(AvailableMetaType metaType)
-        {
-            using (var db = GetDbContext())
-            {
-                var values = new List<string>();
-                var objectType = Type.GetType(metaType.Type);
-                var contextSet = db.Set(objectType);
+        ///// <summary>
+        ///// Gets the meta type property values.
+        ///// </summary>
+        ///// <param name="metaType">Type of the meta.</param>
+        ///// <returns></returns>
+        ///// TODO: does not seem to be in  use 
+        //public List<string> GetMetaTypePropertyValues(AvailableMetaType metaType)
+        //{
+        //    var db = _ccmDbContext;
+        //    {
+        //        var values = new List<string>();
+        //        Type objectType = Type.GetType(metaType.Type);
+        //        var contextSet = db.Set<objectType>(); // TODO: replaced this db.Set(objectType);
 
-                foreach (var item in contextSet)
-                {
-                    try
-                    {
-                        var prop = item.GetType().GetProperty(metaType.PropertyName);
-                        var objectValue = prop?.GetValue(item) ?? String.Empty;
-                        values.Add(objectValue.ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Error(ex, $"Error getting {metaType.Type} Meta value for property {metaType.PropertyName}");
-                    }
-                }
+        //        foreach (var item in contextSet)
+        //        {
+        //            try
+        //            {
+        //                var prop = item.GetType().GetProperty(metaType.PropertyName);
+        //                var objectValue = prop?.GetValue(item) ?? String.Empty;
+        //                values.Add(objectValue.ToString());
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                log.Error(ex, $"Error getting {metaType.Type} Meta value for property {metaType.PropertyName}");
+        //            }
+        //        }
 
-                return values;
-            }
-        }
+        //        return values;
+        //    }
+        //}
 
         public bool CheckMetaTypeNameAvailability(string name, Guid id)
         {
-            using (var db = GetDbContext())
-            {
-                return !db.MetaTypes.Any(m => m.Name == name && m.Id != id);
-            }
+            var db = _ccmDbContext;
+            return !db.MetaTypes.Any(m => m.Name == name && m.Id != id);
         }
 
         public void Save(MetaType metaType)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            Entities.MetaTypeEntity dbMetaType = null;
+
+            if (metaType.Id != Guid.Empty)
             {
-                Entities.MetaTypeEntity dbMetaType = null;
-
-                if (metaType.Id != Guid.Empty)
-                {
-                    dbMetaType = db.MetaTypes.SingleOrDefault(m => m.Id == metaType.Id);
-                }
-
-                if (dbMetaType == null)
-                {
-                    dbMetaType = new Entities.MetaTypeEntity()
-                    {
-                        Id = Guid.NewGuid(),
-                        CreatedBy = metaType.CreatedBy,
-                        CreatedOn = DateTime.UtcNow
-                    };
-                    metaType.Id = dbMetaType.Id;
-                    metaType.CreatedOn = dbMetaType.CreatedOn;
-
-                    db.MetaTypes.Add(dbMetaType);
-                }
-
-                dbMetaType.FullPropertyName = metaType.FullPropertyName;
-                dbMetaType.Name = metaType.Name;
-                dbMetaType.PropertyName = metaType.PropertyName;
-                dbMetaType.Type = metaType.Type;
-                dbMetaType.UpdatedBy = metaType.UpdatedBy;
-                dbMetaType.UpdatedOn = DateTime.UtcNow;
-                metaType.UpdatedOn = dbMetaType.UpdatedOn;
-
-                db.SaveChanges();
+                dbMetaType = db.MetaTypes.SingleOrDefault(m => m.Id == metaType.Id);
             }
+
+            if (dbMetaType == null)
+            {
+                dbMetaType = new Entities.MetaTypeEntity()
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedBy = metaType.CreatedBy,
+                    CreatedOn = DateTime.UtcNow
+                };
+                metaType.Id = dbMetaType.Id;
+                metaType.CreatedOn = dbMetaType.CreatedOn;
+
+                db.MetaTypes.Add(dbMetaType);
+            }
+
+            dbMetaType.FullPropertyName = metaType.FullPropertyName;
+            dbMetaType.Name = metaType.Name;
+            dbMetaType.PropertyName = metaType.PropertyName;
+            dbMetaType.Type = metaType.Type;
+            dbMetaType.UpdatedBy = metaType.UpdatedBy;
+            dbMetaType.UpdatedOn = DateTime.UtcNow;
+            metaType.UpdatedOn = dbMetaType.UpdatedOn;
+
+            db.SaveChanges();
         }
 
         public List<MetaType> GetAll()
         {
-            using (var db = GetDbContext())
-            {
-                var dbMetaTypes = db.MetaTypes.ToList();
-                return dbMetaTypes.Select(MapMetaType).OrderBy(m => m.Name).ToList();
-            }
+            var db = _ccmDbContext;
+            var dbMetaTypes = db.MetaTypes.ToList();
+            return dbMetaTypes.Select(MapMetaType).OrderBy(m => m.Name).ToList();
         }
 
         public MetaType GetById(Guid id)
         {
-            using (var db = GetDbContext())
-            {
-                var dbMetaType = db.MetaTypes.SingleOrDefault(m => m.Id == id);
-                return dbMetaType != null ? MapMetaType(dbMetaType) : null;
-            }
+            var db = _ccmDbContext;
+            var dbMetaType = db.MetaTypes.SingleOrDefault(m => m.Id == id);
+            return dbMetaType != null ? MapMetaType(dbMetaType) : null;
         }
 
         public void Delete(Guid id)
         {
-            using (var db = GetDbContext())
-            {
-                var dbMetaType = db.MetaTypes.SingleOrDefault(m => m.Id == id);
+            var db = _ccmDbContext;
+            var dbMetaType = db.MetaTypes.SingleOrDefault(m => m.Id == id);
 
-                if (dbMetaType != null)
-                {
-                    db.MetaTypes.Remove(dbMetaType);
-                    db.SaveChanges();
-                }
+            if (dbMetaType != null)
+            {
+                db.MetaTypes.Remove(dbMetaType);
+                db.SaveChanges();
             }
         }
 
@@ -166,7 +157,7 @@ namespace CCM.Data.Repositories
             }
 
             availableMetaTypes = new List<AvailableMetaType>();
-            var properties = (typeof(Entities.RegisteredSipEntity)).GetProperties().Where(p => p.GetCustomAttributes(false).Any(a => a is MetaPropertyAttribute || a is MetaTypeAttribute));
+            var properties = (typeof(Entities.RegisteredCodecEntity)).GetProperties().Where(p => p.GetCustomAttributes(false).Any(a => a is MetaPropertyAttribute || a is MetaTypeAttribute));
 
             foreach (var property in properties)
             {
@@ -186,12 +177,10 @@ namespace CCM.Data.Repositories
 
         public List<MetaType> FindMetaTypes(string search)
         {
-            using (var db = GetDbContext())
-            {
-                var list = db.MetaTypes.Where(m => m.Name.ToLower().Contains(search.ToLower()) ||
-                                                        m.PropertyName.ToLower().Contains(search.ToLower())).ToList();
-                return list.Select(MapMetaType).OrderBy(m => m.Name).ToList();
-            }
+            var db = _ccmDbContext;
+            var list = db.MetaTypes.Where(m => m.Name.ToLower().Contains(search.ToLower()) ||
+                                               m.PropertyName.ToLower().Contains(search.ToLower())).ToList();
+            return list.Select(MapMetaType).OrderBy(m => m.Name).ToList();
         }
 
         private List<AvailableMetaType> GetSubMetaTypeProperties(System.Reflection.PropertyInfo property, string parent)

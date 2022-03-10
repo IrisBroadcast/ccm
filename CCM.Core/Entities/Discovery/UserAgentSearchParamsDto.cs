@@ -25,14 +25,19 @@
  */
 
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace CCM.Core.Entities.Discovery
 {
     public class UserAgentSearchParamsDto
     {
+        [JsonProperty("caller")]
         public string Caller { get; set; }
+        [JsonProperty("callee")]
         public string Callee { get; set; }
+        [JsonProperty("filters")]
         public IList<KeyValuePair<string, string>> Filters { get; set; }
+        [JsonProperty("includeCodecsInCall")]
         public bool IncludeCodecsInCall { get; set; }
     }
 }

@@ -24,71 +24,109 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Linq;
-using System.Web.Mvc;
+using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Web.Mappers;
-using Microsoft.AspNet.SignalR;
+using CCM.Web.Models.Home;
+using Microsoft.AspNetCore.SignalR;
+using NLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CCM.Web.Hubs
 {
-    public class WebGuiHub : HubBase
+    public interface IWebGuiHub
     {
-        private static readonly Throttler CodecsOnlineThrottler;
-        private static readonly Throttler OngoingCallsThrottler;
-        private static readonly Throttler OldCallsThrottler;
+        Task CodecsOnline(IEnumerable<RegisteredUserAgentViewModel> registeredUserAgentViewModelsProvider);
+        Task OldCalls(IList<OldCall> oldCalls);
+        Task OnGoingCalls(IReadOnlyCollection<OnGoingCall> onGoingCalls);
+    }
 
-        static WebGuiHub()
+    public class WebGuiHub : Hub<IWebGuiHub>
+    {
+        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+        //private readonly IServiceProvider _serviceProvider;
+        //private static readonly IHubContext<WebGuiHub, IWebGuiHub> myHubContext;
+
+        //private readonly Throttler CodecsOnlineThrottler;
+        //private readonly Throttler OngoingCallsThrottler;
+        //private readonly Throttler OldCallsThrottler;
+
+        public WebGuiHub()
         {
-            CodecsOnlineThrottler = new Throttler("RegisteredCodecs", 200, UpdateCodecsOnline);
-            OngoingCallsThrottler = new Throttler("OnGoingCalls", 300, UpdateOngoingCalls);
-            OldCallsThrottler = new Throttler("OldCalls", 400, UpdateOldCalls);
+            //_serviceProvider = serviceProvider;
+            
+            //CodecsOnlineThrottler = new Throttler("RegisteredCodecs", 200, UpdateCodecsOnline);
+            //OngoingCallsThrottler = new Throttler("OnGoingCalls", 300, UpdateOngoingCalls);
+            //OldCallsThrottler = new Throttler("OldCalls", 400, UpdateOldCalls);
         }
 
-        public static void ThrottlingUpdateCodecsOnline()
+        public override async Task OnConnectedAsync()
         {
-            CodecsOnlineThrottler.Trigger();
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug($"SignalR client connected to {GetType().Name}, connection id={Context.ConnectionId}");
+            }
+            await base.OnConnectedAsync();
         }
 
-        private static void UpdateCodecsOnline()
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
-            var registeredUserAgentViewModelsProvider = (RegisteredUserAgentViewModelsProvider)DependencyResolver.Current.GetService(typeof(RegisteredUserAgentViewModelsProvider));
-            var userAgentsOnline = registeredUserAgentViewModelsProvider.GetAll();
-
-            var webGuiHubContext = GlobalHost.ConnectionManager.GetHubContext<WebGuiHub>();
-            webGuiHubContext.Clients.All.codecsOnline(userAgentsOnline);
+            if (exception == null)
+            {
+                log.Debug($"SignalR client disconnected gracefully from {GetType().Name}, connection id={Context.ConnectionId}");
+            }
+            else
+            {
+                log.Debug($"SignalR client disconnected ungracefully from {GetType().Name}, connection id={Context.ConnectionId}");
+            }
+            await base.OnDisconnectedAsync(exception);
         }
 
-        public static void ThrottlingUpdateOldCalls()
-        {
-            OldCallsThrottler.Trigger();
-        }
+        //public void ThrottlingUpdateCodecsOnline()
+        //{
+        //    CodecsOnlineThrottler.Trigger();
+        //}
 
-        private static void UpdateOldCalls()
-        {
-            var callHistoryRepository = (ICallHistoryRepository)DependencyResolver.Current.GetService(typeof(ICallHistoryRepository));
-            var settingsManager = (ISettingsManager)DependencyResolver.Current.GetService(typeof(ISettingsManager));
-            var oldCalls = callHistoryRepository.GetOldCalls(settingsManager.LatestCallCount, true);
+        //private void UpdateCodecsOnline()
+        //{
+        //    var registeredUserAgentViewModelsProvider = _serviceProvider.GetService<RegisteredUserAgentViewModelsProvider>();
+        //    var userAgentsOnline = registeredUserAgentViewModelsProvider.GetAll();
+        //    myHubContext.Clients.All.CodecsOnline(userAgentsOnline);
+        //}
 
-            log.Debug($"WebGuiHubUpdater. Updating list of old calls on web gui clients. Old calls count: {oldCalls.Count.ToString()}");
-            var webGuiHubContext = GlobalHost.ConnectionManager.GetHubContext<WebGuiHub>();
-            webGuiHubContext.Clients.All.oldCalls(oldCalls);
-        }
+        //public void ThrottlingUpdateOngoingCalls()
+        //{
+        //    OngoingCallsThrottler.Trigger();
+        //}
 
-        public static void ThrottlingUpdateOngoingCalls()
-        {
-            OngoingCallsThrottler.Trigger();
-        }
+        //private void UpdateOngoingCalls()
+        //{
+        //    var callRepository = _serviceProvider.GetService<ICallRepository>();
+        //    var onGoingCalls = callRepository.GetOngoingCalls(true);
 
-        private static void UpdateOngoingCalls()
-        {
-            var callRepository = (ICallRepository)DependencyResolver.Current.GetService(typeof(ICallRepository));
-            var onGoingCalls = callRepository.GetOngoingCalls(true);
+        //    log.Debug($"WebGuiHubUpdater. Updating list of ongoing calls on web gui clients. Ongoing calls count: {onGoingCalls.Count.ToString()}");
+        //    myHubContext.Clients.All.OnGoingCalls(onGoingCalls);
+        //}
 
-            log.Debug($"WebGuiHubUpdater. Updating list of ongoing calls on web gui clients. Ongoing calls count: {onGoingCalls.Count.ToString()}");
-            var webGuiHubContext = GlobalHost.ConnectionManager.GetHubContext<WebGuiHub>();
-            webGuiHubContext.Clients.All.ongoingCalls(onGoingCalls);
-        }
+        //public void ThrottlingUpdateOldCalls()
+        //{
+        //    OldCallsThrottler.Trigger();
+        //}
+
+        //private void UpdateOldCalls()
+        //{
+        //    var callHistoryRepository = _serviceProvider.GetService<ICachedCallHistoryRepository>();
+        //    var settingsManager = _serviceProvider.GetService<ISettingsManager>();
+        //    var oldCalls = callHistoryRepository.GetOldCalls(settingsManager.LatestCallCount, true);
+
+        //    log.Debug($"WebGuiHubUpdater. Updating list of old calls on web gui clients. Old calls count: {oldCalls.Count.ToString()}");
+        //    myHubContext.Clients.All.OldCalls(oldCalls);
+        //}
     }
 }

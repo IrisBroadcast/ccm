@@ -24,10 +24,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System.Collections.Generic;
+
 namespace CCM.Web.Models.Location
 {
-    using System.Collections.Generic;
-
     public class LocationIndexViewModel
     {
         public List<Core.Entities.Location> Locations { get; set; }

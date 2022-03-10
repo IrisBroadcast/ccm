@@ -34,7 +34,7 @@ namespace CCM.Core.Entities
     {
         public string Name { get; set; }
         public string Color { get; set; }
-        public List<SipAccount> Users { get; set; }
+        public List<SipAccount> Users { get; set; } // TODO: Mode out to specific class
 
         public CodecType()
         {

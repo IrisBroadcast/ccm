@@ -30,10 +30,11 @@ using CCM.Data.Entities.Base;
 
 namespace CCM.Data.Entities
 {
-    [Table("Roles")]
+    [Table("Roles")] // TODO: Roles should probably be removed from the database and specified in settings table or directly in code
     public class RoleEntity : EntityBase
     {
         public string Name { get; set; }
+
         public virtual ICollection<UserEntity> Users { get; set; }
     }
 }

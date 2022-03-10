@@ -36,7 +36,10 @@ namespace CCM.Core.Entities
         public string ShortName { get; set; }
         public string Comment { get; set; }
 
-        public string Net { get; set; } // First IP-address for the network. Together with CIDR it describes a net-span
+        /// <summary>
+        /// First IP-address for the network. Together with CIDR it describes a net-span
+        /// </summary>
+        public string Net { get; set; }
         public byte? Cidr { get; set; }
 
         public string Net_v6 { get; set; }
@@ -46,6 +49,7 @@ namespace CCM.Core.Entities
         public City City { get; set; }
         public ProfileGroup ProfileGroup { get; set; }
         public Region Region { get; set; }
+        public Category Category { get; set; }
 
         public string ToIpV4String() { return !string.IsNullOrEmpty(Net) ? string.Format("{0} / {1}", Net, Cidr) : string.Empty; }
         public string ToIpV6String() { return !string.IsNullOrEmpty(Net_v6) ? string.Format("{0} / {1}", Net_v6, Cidr_v6) : string.Empty; }
@@ -58,6 +62,5 @@ namespace CCM.Core.Entities
             }
             return ipAddress.GetAddressBytes();
         }
-
     }
 }

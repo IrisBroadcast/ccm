@@ -24,12 +24,17 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using CCM.Core.SipEvent.Models;
+
 namespace CCM.Core.SipEvent.Messages
 {
     public class SipRegistrationExpireMessage : SipMessageBase
     {
-        public SipUri SipAddress { get; set; }  // Sip-URI
-        public string ReceivedIp { get; set; }  // IP-address the message was sent from
+        public SipUri SipAddress { get; set; }
+        /// <summary>
+        /// IP-address the message was sent from
+        /// </summary>
+        public string ReceivedIp { get; set; }
 
         public override string ToDebugString()
         {

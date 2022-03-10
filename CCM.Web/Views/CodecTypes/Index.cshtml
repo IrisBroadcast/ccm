@@ -1,17 +1,20 @@
-﻿@using CCM.Core.Helpers
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
 @using Roles = CCM.Core.Helpers.Roles
 @model List<CCM.Core.Entities.CodecType>
 
 @{
-    ViewBag.Title = Resources.Codec_Types;
+    ViewData["Title"] = @Localizer["Codec_Types"];
 }
+
 @section search
 {
-    @using (Html.BeginForm("Index", "CodecTypes", FormMethod.Post, new {@class = "navbar-form navbar-right ccm-navbar-search", role = "search"}))
+    @using (Html.BeginForm("Index", "CodecTypes", FormMethod.Post, new { @class = "navbar-form navbar-right ccm-navbar-search", role = "search" }))
     {
         <div class="form-group">
-            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Resources.Search" value="@ViewBag.SearchString">
-            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Resources.Search</button>
+            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Localizer["Search"]" value="@ViewData["SearchString"]">
+            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Localizer["Search"]</button>
         </div>
     }
 }
@@ -20,13 +23,14 @@
     <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header ccm-sub-navbar--admin--header">
-                <span class="navbar-brand">@Resources.Codec_Types</span>
+                <h2>@Localizer["Codec_Types"]</h2>
+                <span class="navbar-page-description"></span>
             </div>
-            <div class="navbar ccm-sub-navbar--admin--links" >
+            <div class="navbar ccm-sub-navbar--admin--links">
                 @if (User.IsInRole(Roles.Admin))
                 {
                     <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
-                        <li>@Html.ActionLink(Resources.New_Codec_Type, "Create", "CodecTypes")</li>
+                        <li>@Html.ActionLink(@Localizer["New_Codec_Type"].Value, "Create", "CodecTypes")</li>
                     </ul>
                 }
             </div>
@@ -37,7 +41,7 @@
 <div class="row">
     <div class="panel panel-default list-ccm">
         <div class="panel-heading list-ccm-heading">
-            <div>@Resources.Name</div>
+            <div>@Localizer["Name"]</div>
         </div>
         <div class="panel-body-lp">
             @foreach (var codecType in Model)
@@ -48,7 +52,7 @@
                         @if (!string.IsNullOrWhiteSpace(codecType.Color))
                         {
                             <div class="list-ccm--codectype-color" style="background-color: @codecType.Color">
-                                <span style="color: @codecType.Color">@Resources.Color</span>
+                                <span style="color: @codecType.Color">@Localizer["Color"]</span>
                             </div>
                         }
                     </div>
@@ -56,10 +60,10 @@
                     <div class="col-md-1 text-right list-ccm-icongroup">
                         @if (User.IsInRole(Roles.Admin))
                         {
-                            @Html.ActionLink(" ", "Edit", "CodecTypes", new {@id = codecType.Id}, new {@class = "glyphicon glyphicon-pencil list-ccm-inlineicon"})
+                            @Html.ActionLink(" ", "Edit", "CodecTypes", new { @id = codecType.Id }, new { @class = "glyphicon glyphicon-pencil list-ccm-inlineicon" })
                             if (codecType.Users.Count == 0)
                             {
-                                @Html.ActionLink(" ", "Delete", "CodecTypes", new {@id = codecType.Id}, new {@class = "glyphicon glyphicon-trash list-ccm-inlineicon"})
+                                @Html.ActionLink(" ", "Delete", "CodecTypes", new { @id = codecType.Id }, new { @class = "glyphicon glyphicon-trash list-ccm-inlineicon" })
                             }
                         }
                     </div>

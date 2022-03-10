@@ -31,6 +31,7 @@ namespace CCM.Web.Models.Home
     public class HomeViewModel
     {
         public IEnumerable<CodecTypeViewModel> CodecTypes { get; set; }
-        public IEnumerable<string> Regions { get; set; }
+        public IEnumerable<CodecRegionViewModel> Regions { get; set; }
+        public IEnumerable<CodecCategoryViewModel> Categories { get; set; }
     }
 }

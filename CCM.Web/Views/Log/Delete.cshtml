@@ -1,24 +1,29 @@
-﻿@using CCM.Core.Entities
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@using CCM.Core.Entities
 @using CCM.Web.Models.Log
+
 @{
-    ViewBag.Title = Resources.Logs_Title_Clear_Logs;
-    var logCount = ViewBag.LogCount as IList<LogInfo>;
-    int nrOfRowsToDelete = ViewBag.nrOfRowsToDelete; 
+    ViewData["Title"] = @Localizer["Logs_Title_Clear_Logs"];
+    int nrOfRowsToDelete = (int)ViewData["nrOfRowsToDelete"];
+    var logInfo = (LogInfo)ViewData["LogCount"];
 }
 
 <div class="row">
     <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header ccm-sub-navbar--admin--header">
-                <span class="navbar-brand">@Resources.Logs_Title_Clear_Logs</span>
+                <h2>@Localizer["Logs_Title_Clear_Logs"]</h2>
+                <span class="navbar-page-description"></span>
             </div>
             <div class="navbar ccm-sub-navbar--admin--links">
                 <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
-                    <li>@Html.ActionLink(CcmApplications.Web + " " + Resources.Logs, "Index", "Log", new { application = CcmApplications.Web }, new { })</li>
-                    <li>@Html.ActionLink(CcmApplications.Discovery + " " + Resources.Logs, "Index", "Log", new { application = CcmApplications.Discovery }, new { })</li>
-                    <li class="active">@Html.ActionLink(Resources.Logs_Title_Clear_Logs, "Delete", "Log", new { }, new { })</li>
-                    <li>@Html.ActionLink(Resources.Logs_Link_Change_Log_Level_For + " " + CcmApplications.Web, "Level", "Log", new { application = CcmApplications.Web }, new { })</li>
-                    <li>@Html.ActionLink(Resources.Logs_Link_Change_Log_Level_For + " " + CcmApplications.Discovery, "Level", "Log", new { application = CcmApplications.Discovery }, new { })</li>
+                    <li>@Html.ActionLink(CcmApplications.Web + " " + @Localizer["Logs"].Value, "Index", "Log", new { application = CcmApplications.Web }, new { })</li>
+                    <li>@Html.ActionLink(CcmApplications.Discovery + " " + @Localizer["Logs"].Value, "Index", "Log", new { application = CcmApplications.Discovery }, new { })</li>
+                    <li class="active">@Html.ActionLink(@Localizer["Logs_Title_Clear_Logs"].Value, "Delete", "Log", new { }, new { })</li>
+                    <li>@Html.ActionLink(@Localizer["Logs_Link_Change_Log_Level_For"].Value + " " + CcmApplications.Web, "Level", "Log", new { application = CcmApplications.Web }, new { })</li>
+                    <li>@Html.ActionLink(@Localizer["Logs_Link_Change_Log_Level_For"].Value + " " + CcmApplications.Discovery, "Level", "Log", new { application = CcmApplications.Discovery }, new { })</li>
                 </ul>
             </div>
         </div>
@@ -29,30 +34,29 @@
     <div class="panel panel-default list-ccm">
         <div class="panel-heading list-ccm-heading">
             <div class="row">
-                <div class="col-md-5">@Resources.Logs_Application</div>
-                <div class="col-md-3">@Resources.Logs_Number_Of_Rows</div>
-                <div class="col-md-4">@Resources.Logs_Oldest</div>
+                <div class="col-md-5">@Localizer["Logs_Application"]</div>
+                <div class="col-md-3">@Localizer["Logs_Number_Of_Rows"]</div>
+                <div class="col-md-4">@Localizer["Logs_Oldest"]</div>
             </div>
         </div>
         <div class="panel-body-lp">
-            @foreach (var logInfo in logCount)
-            {
+
             <div class="panel-body-item row">
                 <div class="col-md-5">@logInfo.Application</div>
                 <div class="col-md-3">@logInfo.Count</div>
                 <div class="col-md-4">@logInfo.MinDate</div>
             </div>
-            }
+
         </div>
     </div>
 </div>
 
-<br/>
+<br />
 
 @using (Html.BeginForm("Delete", "Log", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     <div class="form-group">
-        <label class="col-md-2 control-label" for="nrOfRowsToDelete">@Resources.Logs_Number_Of_Rows_To_Delete</label>
+        <label class="col-md-2 control-label" for="nrOfRowsToDelete">@Localizer["Logs_Number_Of_Rows_To_Delete"]</label>
         <div class="col-md-10">
             <input class="form-control" id="nrOfRowsToDelete" name="nrOfRowsToDelete" type="text" value="@nrOfRowsToDelete">
         </div>
@@ -60,7 +64,18 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-primary">@Resources.Logs_Delete_Rows_From_Log</button>
+            <button type="submit" class="btn btn-primary">@Localizer["Logs_Delete_Rows_From_Log"]</button>
+        </div>
+    </div>
+}
+
+<br />
+
+@using (Html.BeginForm("DeleteAll", "Log", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-primary">@Localizer["Logs_Delete_All_Records_From_Log"]</button>
         </div>
     </div>
 }

@@ -1,0 +1,22 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Core.Entities.Owner
+
+@Html.AntiForgeryToken()
+
+<div class="form-group">
+    @Html.Label(@Localizer["Name"].Value, @Localizer["Name"].Value, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id)
+
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "Owners", null, new { @class = "btn btn-default" })
+        <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
+    </div>
+</div>

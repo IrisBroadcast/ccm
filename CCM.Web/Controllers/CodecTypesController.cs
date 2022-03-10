@@ -25,29 +25,34 @@
  */
 
 using System;
-using System.Web.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
+using CCM.Web.Properties;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
-    public class CodecTypesController : BaseController
+    public class CodecTypesController : Controller
     {
         private readonly ICodecTypeRepository _codecTypeRepository;
+        private readonly IStringLocalizer<Resources> _localizer;
 
-        public CodecTypesController(ICodecTypeRepository codecTypeRepository)
+        public CodecTypesController(
+            ICodecTypeRepository codecTypeRepository,
+            IStringLocalizer<Resources> localizer)
         {
             _codecTypeRepository = codecTypeRepository;
+            _localizer = localizer;
         }
 
         public ActionResult Index(string search = "")
         {
             var codecTypes = string.IsNullOrWhiteSpace(search) ? _codecTypeRepository.GetAll(true) : _codecTypeRepository.Find(search, true);
-            ViewBag.SearchString = search;
+            ViewData["SearchString"] = search;
             return View(codecTypes);
         }
 
@@ -72,7 +77,7 @@ namespace CCM.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            ModelState.AddModelError("Name", Resources.Name_Required);
+            ModelState.AddModelError("Name", _localizer["Name_Required"]);
             return View(model);
         }
 
@@ -107,7 +112,7 @@ namespace CCM.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            ModelState.AddModelError("Name", Resources.Name_Required);
+            ModelState.AddModelError("Name", _localizer["Name_Required"]);
             return View(model);
         }
 
@@ -121,7 +126,6 @@ namespace CCM.Web.Controllers
             }
 
             var codecType = _codecTypeRepository.GetById(id);
-
             if (codecType == null)
             {
                 return RedirectToAction("Index");

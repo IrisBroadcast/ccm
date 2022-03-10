@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CCM.Core.Entities;
@@ -35,20 +36,28 @@ namespace CCM.Data.Repositories
 {
     public class RoleRepository : BaseRepository, IRoleRepository
     {
-        public RoleRepository(IAppCache cache) : base(cache)
+        public RoleRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
         public List<CcmRole> GetRoles()
         {
-            using (var db = GetDbContext())
-            {
-                var roles = db.Roles.ToList()
-                    .Select(MapToRole)
-                    .OrderBy(r => r.Name)
-                    .ToList();
-                return roles;
-            }
+            var roles = _ccmDbContext.Roles.ToList()
+                .Select(MapToRole)
+                .OrderBy(r => r.Name)
+                .ToList();
+            return roles;
+        }
+
+        public CcmRole GetById(string roleId)
+        {
+            return string.IsNullOrWhiteSpace(roleId) ? null : GetById(new Guid(roleId)); 
+        }
+
+        public CcmRole GetById(Guid roleId)
+        {
+            RoleEntity role = _ccmDbContext.Roles.SingleOrDefault(r => r.Id == roleId);
+            return MapToRole(role);
         }
 
         private CcmRole MapToRole(RoleEntity dbRole)

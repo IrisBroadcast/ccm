@@ -34,11 +34,11 @@ namespace CCM.Core.Managers
 {
     public class LocationManager : ILocationManager
     {
-        private readonly ILocationRepository _locationRepository;
+        private readonly ICachedLocationRepository _cachedLocationRepository;
 
-        public LocationManager(ILocationRepository locationRepository)
+        public LocationManager(ICachedLocationRepository cachedLocationRepository)
         {
-            _locationRepository = locationRepository;
+            _cachedLocationRepository = cachedLocationRepository;
         }
 
         public Guid GetLocationIdByIp(string ip)
@@ -49,10 +49,11 @@ namespace CCM.Core.Managers
                 return Guid.Empty;
             }
 
-            var networks = _locationRepository.GetAllLocationNetworks().Where(n => n.Network.AddressFamily == ipAddress.AddressFamily);
+            var networks = _cachedLocationRepository.GetAllLocationNetworks().Where(n => n.Network.AddressFamily == ipAddress.AddressFamily);
 
             Guid match = networks
-                .Where(n => IPNetwork.Contains(n.Network, ipAddress))
+                //.Where(n => IPNetwork.Contains(n.Network, ipAddress)) // TODO: redid this one, not sure correct, verify
+                .Where(n => n.Network.Contains(ipAddress))
                 .OrderByDescending(n => n.Cidr)
                 .Select(n => n.Id)
                 .FirstOrDefault();

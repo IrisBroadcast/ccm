@@ -36,14 +36,17 @@ namespace CCM.Web.Models.Home
         public string DisplayName { get; set; }
         public string Location { get; set; }
         public string LocationShortName { get; set; }
+        public string LocationCategory { get; set; }
         public string Image { get; set; }
         public string CodecTypeName { get; set; }
         public string CodecTypeColor { get; set; }
-        public string UserName { get; set; }
+        public string CodecTypeCategory { get; set; }
+        public string RegionName { get; set; }
         public string UserComment { get; set; }
+        public string UserExternalReference { get; set; }
         public string InCallWithId { get; set; }
         public string InCallWithSip { get; set; }
         public string InCallWithName { get; set; }
-        public string RegionName { get; set; }
+        public bool HasCodecControl { get; set; }
     }
 }

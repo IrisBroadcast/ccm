@@ -1,0 +1,42 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@using CCM.Web.Models.Profile
+@model ProfileCodecViewModel
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.LongDescription, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.LongDescription, 10, 20, new { @class = "form-control sdp-textarea" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Sdp, new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Sdp, 10, 20, new { @class = "form-control sdp-textarea", @data = new { sdp = "field" }, @id = "sdp-field" })
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id)
+
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "ProfileCodec", null, new { @class = "btn btn-default" })
+        <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
+    </div>
+</div>

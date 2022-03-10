@@ -24,16 +24,23 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using Microsoft.Extensions.Localization;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Resources;
-using CCM.Core.Properties;
+using CCM.Core.Enums;
 
 namespace CCM.Core.Helpers
 {
     public static class EnumHelper
     {
-        private static ResourceManager coreResourceManager = new ResourceManager(typeof(Resources));
+        // Tobias tillägg: Denna smäller inte men frågan är vad som ska hända. 
+        private static ResourceManager coreResourceManager = new ResourceManager("CCM.Core.Resources.Resources", Assembly.GetExecutingAssembly());
+
+        //private static ResourceManager coreResourceManager = new ResourceManager("Resources.resx", Assembly.GetExecutingAssembly());
+        //private static ResourceManager coreResourceManager = new ResourceManager(typeof(Resources));
 
         public static string DescriptionAsResource(this Enum enumValue)
         {
@@ -48,12 +55,25 @@ namespace CCM.Core.Helpers
             return coreResourceManager.GetString(((DescriptionAttribute)attributes[0]).Description) ?? string.Format($"Update your resource file with resource key in '{enumType.ToString()}'.");
         }
 
-        public static string Description(this Enum enumValue)
+        //public static string DefaultDescription(this Enum enumValue)
+        //{
+        //    var enumType = enumValue.GetType();
+        //    var field = enumType.GetField(enumValue.ToString());
+        //    var attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+        //    return attributes.Length == 0 ? enumValue.ToString() : ((DescriptionAttribute)attributes[0]).Description;
+        //}
+
+        public static (string, string) DefaultValue(this Enum enumValue)
         {
             var enumType = enumValue.GetType();
             var field = enumType.GetField(enumValue.ToString());
-            var attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            return attributes.Length == 0 ? enumValue.ToString() : ((DescriptionAttribute)attributes[0]).Description;
+            var attributes = field.GetCustomAttributes(typeof(DefaultSettingAttribute), false);
+
+            if (attributes.Length == 0)
+            {
+                return (enumValue.ToString(), "Unknown description");
+            }
+            return (((DefaultSettingAttribute) attributes[0]).Value, ((DefaultSettingAttribute)attributes[0]).Description);
         }
     }
 }

@@ -24,41 +24,90 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Threading;
-using System.Threading.Tasks;
+using CCM.Core.Authentication;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Data.Repositories;
-using CCM.WebCommon.Authentication;
-using LazyCache;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using NLog;
+using System;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace CCM.Web.Infrastructure
 {
-    public class SipAccountBasicAuthenticationAttribute : BasicAuthenticationAttributeBase
+    /// <summary>
+    /// Basic Authentication with SIP account
+    /// </summary>
+    public class SipAccountBasicAuthenticationAttribute : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        // Basic Authentication with SIP account
+        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private readonly ICachedSipAccountRepository _cachedSipAccountRepository;
 
-        // Due to earlier intermittent errors during many simultanious API calls with authentication we're not using Ninject dependency injection here
-        // The error occured because the same Ninject created instance were reused between calls. Possibly caused by ASP.NET reusing attributs/filters.
-        public ISipAccountRepository SipAccountRepository => new SipAccountRepository(new CachingService());
-        //[Inject]
-        //public ISipAccountRepository SipAccountRepository { get; set; }
-
-        protected override async Task<IPrincipal> AuthenticateAsync(string userName, string password, CancellationToken cancellationToken)
+        public SipAccountBasicAuthenticationAttribute(
+            IOptionsMonitor<AuthenticationSchemeOptions> options,
+            ILoggerFactory logger,
+            UrlEncoder encoder,
+            ISystemClock clock,
+            ICachedSipAccountRepository cachedSipAccountRepository)
+            : base(options, logger, encoder, clock)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            _cachedSipAccountRepository = cachedSipAccountRepository;
+        }
 
-            if (!await SipAccountRepository.AuthenticateAsync(userName, password))
+        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+        {
+            AuthenticationHeaderValue header = null;
+            try
             {
-                return null;
+                header = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+            }
+            catch (Exception e)
+            {
+                return AuthenticateResult.Fail(e.Message);
+            }
+            if (string.IsNullOrEmpty(header.Parameter))
+            {
+                // No authentication was attempted (for this authentication method).
+                // Do not set either Principal (which would indicate success) or ErrorResult (indicating an error).
+                log.Debug("No authentication header in request for {0}", new Uri(Request.GetDisplayUrl()).ToString());
+                return AuthenticateResult.Fail("Missing authorization header");
             }
 
-            List<Claim> claims = new List<Claim> {new Claim(ClaimTypes.Name, userName)};
-            ClaimsIdentity identity = new ClaimsIdentity(claims, AuthenticationTypes.Basic);
+            if (header.Scheme.StartsWith("basic", StringComparison.OrdinalIgnoreCase) == false)
+            {
+                log.Debug("Not a Basic authentication header in request for {0}", new Uri(Request.GetDisplayUrl()).ToString());
+                return AuthenticateResult.Fail("Not using basic authorization scheme");
+            }
 
-            return new ClaimsPrincipal(identity);
+            AuthenticationCredentials authenticationCredentials = BasicAuthenticationHelper.ParseCredentials(header.Parameter);
+            if (authenticationCredentials == null)
+            {
+                // Authentication was attempted but failed. Set ErrorResult to indicate an error.
+                log.Debug("No username and password in request for {0}", new Uri(Request.GetDisplayUrl()).ToString());
+                return AuthenticateResult.Fail("Missing or invalid credentials");
+            }
+
+            if (await _cachedSipAccountRepository.AuthenticateAsync(authenticationCredentials.Username, authenticationCredentials.Password) == false)
+            {
+                return AuthenticateResult.Fail("Could not authenticate");
+            }
+
+            // Setting up some claims
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Role, "Authenticated"),
+                new Claim(ClaimTypes.NameIdentifier, authenticationCredentials.Username),
+            };
+            var identity = new ClaimsIdentity(claims, Scheme.Name);
+            // Claims principal, an array of Claim Identities or Claims (Many authorities can say how you are)
+            var principal = new ClaimsPrincipal(identity);
+            var ticket = new AuthenticationTicket(principal, Scheme.Name);
+
+            return AuthenticateResult.Success(ticket);
         }
     }
 }

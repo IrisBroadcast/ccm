@@ -36,25 +36,16 @@ namespace CCM.Core.Entities
             Guid id,
             string name,
             string identifier,
-            MatchType matchType,
+            UserAgentPatternMatchType matchType,
             string imagePath,
             string userInterfaceLink,
-            bool activeX,
             int width,
             int height,
             string comment,
             string apiType,
-            int connectionLines,
-            int inputs,
-            int outputs,
-            int nrOfGpos,
-            int inputMinDb,
-            int inputMaxDb,
-            int inputGainStep,
-            string gpoNames,
             bool userInterfaceIsOpen,
             bool useScrollbars,
-            List<Profile> profiles)
+            List<ProfileCodec> profiles)
         {
             Id = id;
             Name = name;
@@ -62,19 +53,10 @@ namespace CCM.Core.Entities
             MatchType = matchType;
             Image = imagePath;
             UserInterfaceLink = userInterfaceLink;
-            Ax = activeX;
             Width = width;
             Height = height;
             Comment = comment;
             Api = apiType;
-            Lines = connectionLines;
-            Inputs = inputs;
-            Outputs = outputs; // TODO: add this
-            NrOfGpos = nrOfGpos;
-            InputMinDb = inputMinDb;
-            InputMaxDb = inputMaxDb;
-            InputGainStep = inputGainStep;
-            GpoNames = gpoNames;
             UserInterfaceIsOpen = userInterfaceIsOpen;
             UseScrollbars = useScrollbars;
             Profiles = profiles;
@@ -83,24 +65,15 @@ namespace CCM.Core.Entities
         public Guid Id { get; }
         public string Name { get; }
         public string Identifier { get; }
-        public MatchType MatchType { get; }
+        public UserAgentPatternMatchType MatchType { get; }
         public string Image { get; }
         public string UserInterfaceLink { get; }
-        public bool Ax { get; }
         public int Width { get; }
         public int Height { get; }
         public string Comment { get; }
         public string Api { get; }
-        public int Lines { get; }
-        public int Inputs { get; }
-        public int Outputs { get; } // New addition
-        public int NrOfGpos { get; }
-        public int InputMinDb { get; }
-        public int InputMaxDb { get; }
-        public int InputGainStep { get; }
-        public string GpoNames { get; }
         public bool UserInterfaceIsOpen { get; }
         public bool UseScrollbars { get; }
-        public List<Profile> Profiles { get; }
+        public List<ProfileCodec> Profiles { get; }
     }
 }

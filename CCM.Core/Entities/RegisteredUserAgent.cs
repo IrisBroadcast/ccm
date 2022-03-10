@@ -36,26 +36,32 @@ namespace CCM.Core.Entities
             string displayName,
             string location,
             string locationShortName,
+            string locationCategory,
             string image,
             string codecTypeName,
             string codecTypeColor,
-            string username,
+            string codecTypeCategory,
+            string userExternalReference,
             string userDisplayName,
             string userComment,
-            string regionName)
+            string regionName,
+            string codecApi)
         {
             SipUri = sipUri;
             Id = id;
             DisplayName = displayName;
             Location = location;
             LocationShortName = locationShortName;
+            LocationCategory = locationCategory;
             Image = image;
             CodecTypeName = codecTypeName;
             CodecTypeColor = codecTypeColor;
-            Username = username;
+            CodecTypeCategory = codecTypeCategory;
+            UserExternalReference = userExternalReference;
             UserDisplayName = userDisplayName;
             UserComment = userComment;
             RegionName = regionName;
+            CodecApi = codecApi;
         }
 
         public string SipUri { get; }
@@ -63,10 +69,13 @@ namespace CCM.Core.Entities
         public string DisplayName { get; }
         public string Location { get; }
         public string LocationShortName { get; }
+        public string LocationCategory { get; }
         public string Image { get; }
         public string CodecTypeName { get; }
         public string CodecTypeColor { get; }
-        public string Username { get; }
+        public string CodecTypeCategory { get; }
+        public string CodecApi { get; }
+        public string UserExternalReference { get; }
         public string UserDisplayName { get; }
         public string UserComment { get; }
         public string RegionName { get; }

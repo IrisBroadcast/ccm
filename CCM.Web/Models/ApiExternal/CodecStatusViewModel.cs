@@ -30,18 +30,37 @@ namespace CCM.Web.Models.ApiExternal
 {
     public class CodecStatusViewModel
     {
-        // Registration
+        #region Registration
+        public Guid Id { get; set; } // TODO: Not in use ... yet
         public CodecState State { get; set; }
         public string SipAddress { get; set; }
-        public Guid Id { get; set; } // Not in use ... yet
         public string PresentationName { get; set; }
-        public string DisplayName { get; set; } // Not in use ... yet
-        // Call
-        public bool InCall { get; set; } // Not in use .. yet
+        public string DisplayName { get; set; } //TODO:  Not in use ... yet, changed my mind, will be removed...since it's PresentationName...
+        public bool HasCodecControl { get; set; }
+        #endregion
+
+        #region Call
+        public bool InCall { get; set; } // TODO: Not in use .. yet
         public string ConnectedToSipAddress { get; set; }
         public string ConnectedToPresentationName { get; set; }
+        public string ConnectedToDisplayName { get; set; } //TODO:  Not in use ... yet
         public string ConnectedToLocation { get; set; }
         public bool IsCallingPart { get; set; }
         public DateTime CallStartedAt { get; set; }
+        #endregion
+    }
+
+    public class CodecStatusExtendedViewModel : CodecStatusViewModel
+    {
+        #region MetaData
+        public string LocationName { get; set; }
+        public string LocationCategory { get; set; }
+        public string CodecTypeName { get; set; }
+        public string CodecTypeColor { get; set; }
+        public string CodecTypeCategory { get; set; }
+        public string UserExternalReference { get; set; }
+        public string RegionName { get; set; }
+        public string UserComment { get; set; }
+        #endregion
     }
 }

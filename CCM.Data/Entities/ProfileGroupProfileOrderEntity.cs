@@ -40,10 +40,9 @@ namespace CCM.Data.Entities
         public Guid ProfileId { get; set; }
 
         public virtual ProfileGroupEntity ProfileGroup { get; set; }
-        public virtual ProfileEntity Profile { get; set; }
+        public virtual ProfileCodecEntity Profile { get; set; }
 
         [Column("SortIndex")]
-        public int SortIndex { get; set; }
-        //public int SortIndexForProfileInGroup { get; set; } // TODO: Rename this so that we know
+        public int SortIndexForProfileInGroup { get; set; }
     }
 }

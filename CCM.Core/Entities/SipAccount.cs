@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using CCM.Core.Entities.Base;
 using CCM.Core.Enums;
 using CCM.Core.Interfaces;
@@ -39,7 +40,13 @@ namespace CCM.Core.Entities
         public SipAccountType AccountType { get; set; }
         public bool AccountLocked { get; set; }
         public string Password { get; set; }
+        public DateTime? LastUsed { get; set; }
+        public string LastUserAgent { get; set; }
+        public string LastKnownAddress { get; set; }
+        public string ExternalReference { get; set; }
         public CodecType CodecType { get; set; }
         public Owner Owner { get; set; }
+
+        public bool IsUnused => LastUsed == null || LastUsed < DateTime.UtcNow.AddDays(-360);
     }
 }

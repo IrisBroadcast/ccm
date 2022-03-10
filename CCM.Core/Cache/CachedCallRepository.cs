@@ -28,26 +28,36 @@ using System;
 using System.Collections.Generic;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
+using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using LazyCache;
 
 namespace CCM.Core.Cache
 {
-    public class CachedCallRepository : ICallRepository
+    public class CachedCallRepository : ICachedCallRepository
     {
         private readonly ICallRepository _internalRepository;
         private readonly IAppCache _lazyCache;
+        private readonly ISettingsManager _settingsManager;
 
-        public CachedCallRepository(IAppCache cache, ICallRepository internalRepository)
+        public CachedCallRepository(
+            IAppCache cache,
+            ICallRepository internalRepository,
+            ISettingsManager settingsManager)
         {
-            // TODO: Use cache call on the other queries
             _lazyCache = cache;
             _internalRepository = internalRepository;
+            _settingsManager = settingsManager;
         }
 
         public IReadOnlyCollection<OnGoingCall> GetOngoingCalls(bool anonymize)
         {
-            return _lazyCache.GetOrAddOngoingCalls(() => _internalRepository.GetOngoingCalls(anonymize));
+            return _lazyCache.GetOrAddOngoingCalls(() => _internalRepository.GetOngoingCalls(anonymize), _settingsManager.CacheTimeLiveData);
+        }
+
+        public OnGoingCall GetOngoingCallById(Guid callId)
+        {
+            return _internalRepository.GetOngoingCallById(callId);
         }
 
         public bool CallExists(string callId, string hashId, string hashEnt)
@@ -81,6 +91,5 @@ namespace CCM.Core.Cache
             _internalRepository.CloseCall(callId);
             _lazyCache.ClearOngoingCalls();
         }
-
     }
 }

@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
-using CCM.Core.Helpers;
 using LazyCache;
 using NLog;
 
@@ -36,41 +35,32 @@ namespace CCM.Core.Cache
 {
     public static class LazyCacheExtensions
     {
-        // Cache time in seconds
-        public static int CacheTimeLiveData = ApplicationSettings.CacheTimeLiveData;
-
-        public static int CacheTimeFilter = ApplicationSettings.CacheTimeConfigData;
-        public static int CacheTimeProfiles = ApplicationSettings.CacheTimeConfigData;
-        public static int CacheTimeProfileGroups = ApplicationSettings.CacheTimeConfigData;
-        public static int CacheTimeLocations = ApplicationSettings.CacheTimeConfigData;
-        public static int CacheTimeUserAgents = ApplicationSettings.CacheTimeConfigData;
-        public static int CacheTimeUserAgentsAndProfiles = ApplicationSettings.CacheTimeConfigData;
-        public static int CacheTimeSipAccounts = ApplicationSettings.CacheTimeConfigData;
-
         // Cache keys
         private const string RegisteredUserAgentsDiscoveryKey = "RegisteredUserAgentsDiscovery";
         private const string RegisteredUserAgentsCodecInformationKey = "RegisteredUserAgentsCodecInformation";
         private const string RegisteredUserAgentsKey = "RegisteredUserAgents";
         private const string OngoingCallsKey = "OngoingCalls";
         private const string CallHistoryKey = "CallHistory";
+        private const string OldCallHistoryKey = "OldCallHistory";
+        private const string OneYearCallHistoryKey = "OneYearCallHistory";
         private const string SettingsKey = "Settings";
         private const string LocationNetworksKey = "LocationNetworks";
         private const string LocationsAndProfilesKey = "LocationsAndProfiles";
+        private const string LocationsInfoKey = "LocationsInfoKey";
         private const string AvailableFiltersKey = "AvailableFilters";
         private const string AllProfileNamesAndSdpKey = "AllProfileNamesAndSdp";
         private const string ProfileGroupsKey = "ProfileGroups";
+        private const string FullDetailProfilesKey = "FullDetailProfilesKey";
         private const string UserAgentsKey = "UserAgents";
         private const string UserAgentsAndProfilesKey = "UserAgentsAndProfiles";
         private const string SipAccountsKey = "SipAccounts";
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        // TODO: Make some decisions on how we deal with replication changes that doesn't trigger a reload of cache if this instance was not the one saving changes.
-
         #region SipAccounts
-        public static List<SipAccount> GetOrAddSipAccounts(this IAppCache cache, Func<List<SipAccount>> sipAccountsLoader)
+        public static List<SipAccount> GetOrAddSipAccounts(this IAppCache cache, Func<List<SipAccount>> sipAccountsLoader, int cacheTimeSipAccounts)
         {
-            return cache.GetOrAdd(SipAccountsKey, sipAccountsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeSipAccounts));
+            return cache.GetOrAdd(SipAccountsKey, sipAccountsLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeSipAccounts));
         }
 
         public static void ClearSipAccounts(this IAppCache cache)
@@ -81,19 +71,19 @@ namespace CCM.Core.Cache
         #endregion
 
         #region RegisteredUserAgents
-        public static IEnumerable<RegisteredUserAgent> GetOrAddRegisteredUserAgents(this IAppCache cache, Func<IEnumerable<RegisteredUserAgent>> registeredUserAgentsLoader)
+        public static IEnumerable<RegisteredUserAgent> GetOrAddRegisteredUserAgents(this IAppCache cache, Func<IEnumerable<RegisteredUserAgent>> registeredUserAgentsLoader, int cacheTimeLiveData)
         {
-            return cache.GetOrAdd(RegisteredUserAgentsKey, registeredUserAgentsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLiveData));
+            return cache.GetOrAdd(RegisteredUserAgentsKey, registeredUserAgentsLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
         }
 
-        public static IEnumerable<RegisteredUserAgentDiscovery> GetOrAddRegisteredUserAgentsDiscovery(this IAppCache cache, Func<IEnumerable<RegisteredUserAgentDiscovery>> registeredUserAgentsDiscoveryLoader)
+        public static IEnumerable<RegisteredUserAgentDiscovery> GetOrAddRegisteredUserAgentsDiscovery(this IAppCache cache, Func<IEnumerable<RegisteredUserAgentDiscovery>> registeredUserAgentsDiscoveryLoader, int cacheTimeLiveData)
         {
-            return cache.GetOrAdd(RegisteredUserAgentsDiscoveryKey, registeredUserAgentsDiscoveryLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLiveData));
+            return cache.GetOrAdd(RegisteredUserAgentsDiscoveryKey, registeredUserAgentsDiscoveryLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
         }
 
-        public static IEnumerable<RegisteredUserAgentCodecInformation> GetOrAddRegisteredUserAgentsCodecInformation(this IAppCache cache, Func<IEnumerable<RegisteredUserAgentCodecInformation>> registeredUserAgentsCodecInformationLoader)
+        public static IEnumerable<RegisteredUserAgentCodecInformation> GetOrAddRegisteredUserAgentsCodecInformation(this IAppCache cache, Func<IEnumerable<RegisteredUserAgentCodecInformation>> registeredUserAgentsCodecInformationLoader, int cacheTimeLiveData)
         {
-            return cache.GetOrAdd(RegisteredUserAgentsCodecInformationKey, registeredUserAgentsCodecInformationLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLiveData));
+            return cache.GetOrAdd(RegisteredUserAgentsCodecInformationKey, registeredUserAgentsCodecInformationLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
         }
 
         public static void ClearRegisteredUserAgents(this IAppCache cache)
@@ -110,9 +100,9 @@ namespace CCM.Core.Cache
         #endregion
 
         #region OngoingCalls
-        public static IReadOnlyCollection<OnGoingCall> GetOrAddOngoingCalls(this IAppCache cache, Func<IReadOnlyCollection<OnGoingCall>> ongoingCallsLoader)
+        public static IReadOnlyCollection<OnGoingCall> GetOrAddOngoingCalls(this IAppCache cache, Func<IReadOnlyCollection<OnGoingCall>> ongoingCallsLoader, int cacheTimeLiveData)
         {
-            return cache.GetOrAdd(OngoingCallsKey, ongoingCallsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLiveData));
+            return cache.GetOrAdd(OngoingCallsKey, ongoingCallsLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
         }
 
         public static void ClearOngoingCalls(this IAppCache cache)
@@ -123,15 +113,27 @@ namespace CCM.Core.Cache
         #endregion
 
         #region CallHistory
-        public static IList<OldCall> GetOrAddCallHistory(this IAppCache cache, Func<IList<OldCall>> callHistoryLoader)
+        public static IReadOnlyCollection<OldCall> GetOrAddOldCalls(this IAppCache cache, Func<IReadOnlyCollection<OldCall>> callHistoryLoader, int cacheTimeLiveData)
         {
-            return cache.GetOrAdd(CallHistoryKey, callHistoryLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLiveData));
+            return cache.GetOrAdd(OldCallHistoryKey, callHistoryLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
+        }
+
+        public static IReadOnlyCollection<CallHistory> GetOrAddCallHistories(this IAppCache cache, Func<IReadOnlyCollection<CallHistory>> callHistoryLoader, int cacheTimeLiveData)
+        {
+            return cache.GetOrAdd(CallHistoryKey, callHistoryLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
+        }
+
+        public static IReadOnlyList<CallHistory> GetOrAddOneYearCallHistory(this IAppCache cache, Func<IReadOnlyList<CallHistory>> oneYearCallHistoryLoader, int cacheTimeLiveData)
+        {
+            return cache.GetOrAdd(OneYearCallHistoryKey, oneYearCallHistoryLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLiveData));
         }
 
         public static void ClearCallHistory(this IAppCache cache)
         {
             log.Debug("Removing call history from cache");
             cache.Remove(CallHistoryKey);
+            cache.Remove(OldCallHistoryKey);
+            cache.Remove(OneYearCallHistoryKey);
         }
         #endregion
 
@@ -149,15 +151,20 @@ namespace CCM.Core.Cache
         #endregion
 
         #region LocationNetworks
-        public static List<LocationNetwork> GetOrAddLocationNetworks(this IAppCache cache, Func<List<LocationNetwork>> loader)
+        public static List<LocationNetwork> GetOrAddLocationNetworks(this IAppCache cache, Func<List<LocationNetwork>> loader, int cacheTimeLocations)
         {
-            var list = cache.GetOrAdd(LocationNetworksKey, loader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLocations));
+            var list = cache.GetOrAdd(LocationNetworksKey, loader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLocations));
             return list;
         }
 
-        public static Dictionary<Guid, LocationAndProfiles> GetOrAddLocationsAndProfiles(this IAppCache cache, Func<Dictionary<Guid, LocationAndProfiles>> loader)
+        public static Dictionary<Guid, LocationAndProfiles> GetOrAddLocationsAndProfiles(this IAppCache cache, Func<Dictionary<Guid, LocationAndProfiles>> loader, int cacheTimeLocations)
         {
-            return cache.GetOrAdd(LocationsAndProfilesKey, loader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeLocations));
+            return cache.GetOrAdd(LocationsAndProfilesKey, loader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLocations));
+        }
+
+        public static List<LocationInfo> GetOrAddLocationsInfo(this IAppCache cache, Func<List<LocationInfo>> loader, int cacheTimeLocations)
+        {
+            return cache.GetOrAdd(LocationsInfoKey, loader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeLocations));
         }
 
         public static void ClearLocationNetworks(this IAppCache cache)
@@ -167,14 +174,17 @@ namespace CCM.Core.Cache
 
             log.Debug("Removing locations and profiles from cache");
             cache.Remove(LocationsAndProfilesKey);
+
+            log.Debug("Removing locations info from cache");
+            cache.Remove(LocationsInfoKey);
         }
         #endregion
 
         #region AvailableFilters
-        public static IList<AvailableFilter> GetAvailableFilters(this IAppCache cache, Func<IList<AvailableFilter>> loader)
+        public static IList<AvailableFilter> GetAvailableFilters(this IAppCache cache, Func<IList<AvailableFilter>> loader, int cacheTimeFilter)
         {
             // TODO: Should not be called like this?!
-            var list = cache.GetOrAdd(AvailableFiltersKey, loader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeFilter));
+            var list = cache.GetOrAdd(AvailableFiltersKey, loader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeFilter));
             return list;
         }
 
@@ -186,22 +196,30 @@ namespace CCM.Core.Cache
         #endregion
 
         #region Profiles
-        public static IList<ProfileNameAndSdp> GetOrAddAllProfileNamesAndSdp(this IAppCache cache, Func<IList<ProfileNameAndSdp>> allProfileNamesAndSdpLoader)
+        public static IList<ProfileNameAndSdp> GetOrAddAllProfileNamesAndSdp(this IAppCache cache, Func<IList<ProfileNameAndSdp>> allProfileNamesAndSdpLoader, int cacheTimeProfiles)
         {
-            return cache.GetOrAdd(AllProfileNamesAndSdpKey, allProfileNamesAndSdpLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeProfiles));
+            return cache.GetOrAdd(AllProfileNamesAndSdpKey, allProfileNamesAndSdpLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeProfiles));
+        }
+
+        public static IReadOnlyCollection<ProfileFullDetail> GetOrAddFullDetailProfiles(this IAppCache cache, Func<IReadOnlyCollection<ProfileFullDetail>> loader, int cacheTime)
+        {
+            return cache.GetOrAdd(FullDetailProfilesKey, loader, DateTimeOffset.UtcNow.AddSeconds(cacheTime));
         }
 
         public static void ClearProfiles(this IAppCache cache)
         {
             log.Debug("Removing all profile names and sdp from cache");
             cache.Remove(AllProfileNamesAndSdpKey);
+
+            log.Debug("Clearing full detail profiles from cache");
+            cache.Remove(FullDetailProfilesKey);
         }
         #endregion
 
         #region ProfileGroups
-        public static List<ProfileGroup> GetOrAddProfileGroups(this IAppCache cache, Func<List<ProfileGroup>> profileGroupsLoader)
+        public static List<ProfileGroup> GetOrAddProfileGroups(this IAppCache cache, Func<List<ProfileGroup>> profileGroupsLoader, int cacheTimeProfileGroups)
         {
-            return cache.GetOrAdd(ProfileGroupsKey, profileGroupsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeProfileGroups));
+            return cache.GetOrAdd(ProfileGroupsKey, profileGroupsLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeProfileGroups));
         }
 
         public static void ClearProfileGroups(this IAppCache cache)
@@ -212,14 +230,14 @@ namespace CCM.Core.Cache
         #endregion
 
         #region UserAgent
-        public static List<UserAgent> GetOrAddUserAgents(this IAppCache cache, Func<List<UserAgent>> userAgentsLoader)
+        public static List<UserAgent> GetOrAddUserAgents(this IAppCache cache, Func<List<UserAgent>> userAgentsLoader, int cacheTimeUserAgents)
         {
-            return cache.GetOrAdd(UserAgentsKey, userAgentsLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeUserAgents));
+            return cache.GetOrAdd(UserAgentsKey, userAgentsLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeUserAgents));
         }
 
-        public static Dictionary<Guid, UserAgentAndProfiles> GetOrAddUserAgentsAndProfiles(this IAppCache cache, Func<Dictionary<Guid, UserAgentAndProfiles>> userAgentsAndProfilesLoader)
+        public static Dictionary<Guid, UserAgentAndProfiles> GetOrAddUserAgentsAndProfiles(this IAppCache cache, Func<Dictionary<Guid, UserAgentAndProfiles>> userAgentsAndProfilesLoader, int cacheTimeUserAgentsAndProfiles)
         {
-            return cache.GetOrAdd(UserAgentsAndProfilesKey, userAgentsAndProfilesLoader, DateTimeOffset.UtcNow.AddSeconds(CacheTimeUserAgentsAndProfiles));
+            return cache.GetOrAdd(UserAgentsAndProfilesKey, userAgentsAndProfilesLoader, DateTimeOffset.UtcNow.AddSeconds(cacheTimeUserAgentsAndProfiles));
         }
 
         public static void ClearUserAgents(this IAppCache cache)

@@ -26,46 +26,59 @@
 
 using System;
 using System.Linq;
-using System.Web.Mvc;
-using CCM.Core.Entities.Specific;
-using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.SipEvent;
-using CCM.Web.Authentication;
+using CCM.Core.SipEvent.Models;
+using CCM.Web.Hubs;
 using CCM.Web.Infrastructure;
-using CCM.Web.Infrastructure.SignalR;
 using CCM.Web.Models.Home;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         private readonly ICodecTypeRepository _codecTypeRepository;
         private readonly IRegionRepository _regionRepository;
-        private readonly ISipAccountManager _sipAccountManager;
-        private readonly IGuiHubUpdater _guiHubUpdater;
-        private readonly IStatusHubUpdater _statusHubUpdater;
+        private readonly ICachedSipAccountRepository _cachedSipAccountRepository;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IWebGuiHubUpdater _webGuiHubUpdater;
+        private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
 
         public HomeController(
             IRegionRepository regionRepository,
             ICodecTypeRepository codecTypeRepository,
-            ISipAccountManager sipAccountManager,
-            IGuiHubUpdater guiHubUpdater,
-            IStatusHubUpdater statusHubUpdater)
+            ICachedSipAccountRepository cachedSipAccountRepository,
+            ICategoryRepository categoryRepository,
+            IWebGuiHubUpdater webGuiHubUpdater,
+            ICodecStatusHubUpdater codecStatusHubUpdater)
         {
             _regionRepository = regionRepository;
             _codecTypeRepository = codecTypeRepository;
-            _sipAccountManager = sipAccountManager;
-            _guiHubUpdater = guiHubUpdater;
-            _statusHubUpdater = statusHubUpdater;
+            _cachedSipAccountRepository = cachedSipAccountRepository;
+            _categoryRepository = categoryRepository;
+            _webGuiHubUpdater = webGuiHubUpdater;
+            _codecStatusHubUpdater = codecStatusHubUpdater;
         }
 
         public ActionResult Index()
         {
             var vm = new HomeViewModel
             {
-                CodecTypes = _codecTypeRepository.GetAll(false).Select(ct => new CodecTypeViewModel { Name = ct.Name, Color = ct.Color }),
-                Regions = _regionRepository.GetAllRegionNames()
+                CodecTypes = _codecTypeRepository.GetAll(false).Select(ct => new CodecTypeViewModel
+                {
+                    Name = ct.Name,
+                    Color = ct.Color
+                }),
+                Regions = _regionRepository.GetAllRegionNames().Select(re => new CodecRegionViewModel
+                {
+                    Name = re
+                }),
+                Categories = _categoryRepository.GetAll().Select(ca => new CodecCategoryViewModel
+                {
+                    Name = ca.Name,
+                    Description = ca.Description
+                })
             };
 
             return View(vm);
@@ -75,33 +88,70 @@ namespace CCM.Web.Controllers
         [HttpGet]
         public ActionResult EditRegisteredSipComment(Guid id)
         {
-            var sipAccount = _sipAccountManager.GetByRegisteredSip(id);
+            var sipAccount = _cachedSipAccountRepository.GetByRegisteredSipId(id);
+            if (sipAccount == null)
+            {
+                return BadRequest();
+            }
 
-            return sipAccount == null ? 
-                null : 
-                PartialView("_SipCommentForm", new SipAccountComment { Comment = sipAccount.Comment, SipAccountId = sipAccount.Id });
+            return PartialView("_SipCommentForm", new SipAccountCommentViewModel { Comment = sipAccount.Comment, SipAccountId = sipAccount.Id });
         }
 
         [ValidateAntiForgeryToken]
         [CcmAuthorize(Roles = "Admin, Remote")]
         [HttpPost]
-        public ActionResult EditRegisteredSipComment(SipAccountComment model)
+        public ActionResult EditRegisteredSipComment(SipAccountCommentViewModel model)
         {
             if (model.SipAccountId != Guid.Empty)
             {
-                _sipAccountManager.UpdateComment(model.SipAccountId, model.Comment);
+                _cachedSipAccountRepository.UpdateComment(model.SipAccountId, model.Comment);
+                
+                var updateResult = new SipEventHandlerResult()
+                {
+                    ChangeStatus = SipEventChangeStatus.CodecUpdated,
+                    ChangedObjectId = model.SipAccountId
+                };
+
+                _webGuiHubUpdater.Update(updateResult); // First web gui
+                _codecStatusHubUpdater.Update(updateResult); // Then codec status to external clients
+                return Ok();
             }
-
-            var updateResult = new SipEventHandlerResult()
-            {
-                ChangeStatus = SipEventChangeStatus.CodecUpdated,
-                ChangedObjectId = model.SipAccountId
-            };
-
-            _guiHubUpdater.Update(updateResult); // First web gui
-            _statusHubUpdater.Update(updateResult); // Then codec status to external clients
-            return null;
+            return BadRequest();
         }
 
+        [CcmAuthorize(Roles = "Admin, Remote")]
+        [HttpGet]
+        public ActionResult EditSipAccountQuickData(Guid id)
+        {
+            var sipAccount = _cachedSipAccountRepository.GetByRegisteredSipId(id);
+            if (sipAccount == null)
+            {
+                return BadRequest();
+            }
+
+            return PartialView("_SipAccountQuickEditForm", new SipAccountQuickEditViewModel { PresentationName = sipAccount.DisplayName, ExternalReference = sipAccount.ExternalReference, SipAccountId = sipAccount.Id });
+        }
+
+        [ValidateAntiForgeryToken]
+        [CcmAuthorize(Roles = "Admin, Remote")]
+        [HttpPost]
+        public ActionResult EditSipAccountQuickData(SipAccountQuickEditViewModel model)
+        {
+            if (model.SipAccountId != Guid.Empty)
+            {
+                _cachedSipAccountRepository.UpdateSipAccountQuick(model.SipAccountId, model.PresentationName, model.ExternalReference);
+
+                var updateResult = new SipEventHandlerResult()
+                {
+                    ChangeStatus = SipEventChangeStatus.CodecUpdated,
+                    ChangedObjectId = model.SipAccountId
+                };
+
+                _webGuiHubUpdater.Update(updateResult); // First web gui
+                _codecStatusHubUpdater.Update(updateResult); // Then codec status to external clients
+                return Ok();
+            }
+            return BadRequest();
+        }
     }
 }

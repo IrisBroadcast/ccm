@@ -25,29 +25,28 @@
  */
 
 using System.Collections.Generic;
-using System.Web.Http;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
     /// <summary>
     /// Used by Dialers
     /// </summary>
-    public class OldCallExternalController : ApiController
+    public class OldCallExternalController : ControllerBase
     {
-        private readonly ICallHistoryRepository _callHistoryRepository;
+        private readonly ICachedCallHistoryRepository _cachedCallHistoryRepository;
 
-        public OldCallExternalController(ICallHistoryRepository callHistoryRepository)
+        public OldCallExternalController(ICachedCallHistoryRepository cachedCallHistoryRepository)
         {
-            _callHistoryRepository = callHistoryRepository;
+            _cachedCallHistoryRepository = cachedCallHistoryRepository;
         }
 
         [Route("api/external/oldcall")]
         public IList<OldCall> Get(string region = "", string codecType = "", string sipAddress = "", string search = "", bool onlyPhoneCalls = false, int callCount = 20)
         {
-            // TODO: Remove when world domination is achievied in the NG project
-            var oldCalls = _callHistoryRepository.GetOldCallsFiltered(region, codecType, sipAddress, search, false, onlyPhoneCalls, callCount);
+            var oldCalls = _cachedCallHistoryRepository.GetOldCallsFiltered(region, codecType, sipAddress, search, onlyPhoneCalls, callCount, true);
             return oldCalls;
         }
     }

@@ -24,23 +24,36 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Web.Http;
-using CCM.DiscoveryApi.Infrastructure;
+using CCM.Core.Helpers;
+using CCM.DiscoveryApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace CCM.DiscoveryApi.Controllers
 {
-    public class HomeController : ApiController
+    /// <summary>
+    /// Some basic information about the Discovery Api
+    /// </summary>
+    public class HomeController : Controller
     {
-        [HttpGet]
-        [Route("")]
-        public HttpResponseMessage Index()
+        protected ILogger<HomeController> _logger;
+        private readonly ApplicationSettingsDiscovery _configuration;
+        private readonly ApplicationBuildInformation _buildInformation;
+
+        public HomeController(ILogger<HomeController> logger, IOptions<ApplicationSettingsDiscovery> configuration, IOptions<ApplicationBuildInformation> buildInformation)
         {
-            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
-            var buildDate = ApplicationSettings.BuildDate;
-            var deployServer = ApplicationSettings.Server;
+            _logger = logger;
+            _configuration = configuration.Value;
+            _buildInformation = buildInformation.Value;
+        }
+
+        [HttpGet]
+        [Route("~/", Name = "default")]
+        public IActionResult Index()
+        {
+            var version = _buildInformation.Version;
+            var releaseDate = _buildInformation.ReleaseDate;
             var html = @"<!DOCTYPE html>
                 <html>
                 <head>
@@ -54,13 +67,14 @@ namespace CCM.DiscoveryApi.Controllers
                             margin: 0;
                             padding: 0;
                             height: 100%;
-                            background-color: #2fd7c7 !important;
+                            background-color: #3a4cb7 !important;
                             font-family: Arial, Helvetica, sans-serif !important;
+                            font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif !important;
                             -webkit-font-smoothing: subpixel-antialiased;
                             -ms-text-size-adjust: 100%;
                             -webkit-text-size-adjust: 100%;
                             line-height: 1;
-                            color: #fdf525;
+                            color: #251f81;
                         }
                         .container {
                             padding: 4vh 1vw 2vh 1vw;
@@ -69,23 +83,27 @@ namespace CCM.DiscoveryApi.Controllers
                             width: 95vw;
                         }
                         h1 {
-                            border-top: 2vh solid #FFEB3B;
+                            border-top: 15px solid #ffc107;
                             padding-top: 7vh;
+                            padding-bottom: 36vh;
+                            font-size: 6rem;
+                            font-weight: 200;
                         }
                     </style>
                 </head>
                 <body>
                     <div class='container'>
                         <h1>IRIS<br/>Discovery</h1>
-                        <h3>Version: " + version + @"<br/>Build date: " + buildDate + @"</h3>
+                        <h3>Version: " + version + @"<br/>Build date: " + releaseDate + @"</h3>
                     </div>
                 </body>
                 </html>";
 
-            var htmlContent = new StringContent(html);
-            htmlContent.Headers.ContentType = new MediaTypeHeaderValue("text/html");
-            return new HttpResponseMessage { Content = htmlContent };
+            return new ContentResult()
+            {
+                Content = html,
+                ContentType = "text/html"
+            };
         }
-
     }
 }

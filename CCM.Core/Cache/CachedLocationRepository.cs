@@ -28,20 +28,26 @@ using System;
 using System.Collections.Generic;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
+using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using LazyCache;
 
 namespace CCM.Core.Cache
 {
-    public class CachedLocationRepository : ILocationRepository
+    public class CachedLocationRepository : ICachedLocationRepository
     {
         private readonly IAppCache _lazyCache;
         private readonly ILocationRepository _internalRepository;
+        private readonly ISettingsManager _settingsManager;
 
-        public CachedLocationRepository(IAppCache lazyCache, ILocationRepository internalRepository)
+        public CachedLocationRepository(
+            IAppCache lazyCache,
+            ILocationRepository internalRepository,
+            ISettingsManager settingsManager)
         {
             _lazyCache = lazyCache;
             _internalRepository = internalRepository;
+            _settingsManager = settingsManager;
         }
 
         public Location GetById(Guid id)
@@ -73,12 +79,17 @@ namespace CCM.Core.Cache
 
         public List<LocationNetwork> GetAllLocationNetworks()
         {
-            return _lazyCache.GetOrAddLocationNetworks(() => _internalRepository.GetAllLocationNetworks());
+            return _lazyCache.GetOrAddLocationNetworks(() => _internalRepository.GetAllLocationNetworks(), _settingsManager.CacheTimeConfigData);
         }
 
         public Dictionary<Guid, LocationAndProfiles> GetLocationsAndProfiles()
         {
-            return _lazyCache.GetOrAddLocationsAndProfiles(() => _internalRepository.GetLocationsAndProfiles());
+            return _lazyCache.GetOrAddLocationsAndProfiles(() => _internalRepository.GetLocationsAndProfiles(), _settingsManager.CacheTimeConfigData);
+        }
+
+        public List<LocationInfo> GetAllLocationInfo()
+        {
+            return _lazyCache.GetOrAddLocationsInfo(() => _internalRepository.GetAllLocationInfo(), _settingsManager.CacheTimeConfigData);
         }
     }
 }

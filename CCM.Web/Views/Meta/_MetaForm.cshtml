@@ -1,4 +1,6 @@
-﻿@model CCM.Web.Models.Meta.MetaFormViewModel
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Meta.MetaFormViewModel
 
 @Html.ValidationSummary()
 @Html.AntiForgeryToken()
@@ -16,10 +18,12 @@
         @Html.DropDownListFor(m => m.SelectedMetaTypeValue, new SelectList(Model.MetaTypeValues, "FullPropertyName", "FullPropertyName"), new { @class = "form-control" })
     </div>
 </div>
+
 @Html.HiddenFor(m => m.Id)
+
 <div class="form-group">
     <div class="col-md-offset-2 col-md-10">
-        @Html.ActionLink(Resources.Cancel, "Index", "Meta", null, new { @class = "btn btn-default" })
-        <button type="submit" class="btn btn-primary">@Resources.Save</button>
+        @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "Meta", null, new { @class = "btn btn-default" })
+        <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
     </div>
 </div>

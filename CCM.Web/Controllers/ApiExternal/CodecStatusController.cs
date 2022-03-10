@@ -24,38 +24,32 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
 using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
     /// <summary>
     /// Used by Dialers, EmBER+ Providers and external services
     /// </summary>
-    public class CodecStatusController : ApiController
+    public class CodecStatusController : ControllerBase
     {
-        [HttpGet]
-        public IEnumerable<CodecStatusViewModel> GetAll(bool includeCodecsOffline = false)
+        private readonly IServiceProvider _serviceProvider;
+
+        public CodecStatusController(IServiceProvider serviceProvider)
         {
-            // TODO: Alexander, Är detta sätt det bästa? Många ToList();
-            var codecStatusViewModelsProvider = (CodecStatusViewModelsProvider)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(CodecStatusViewModelsProvider));
-
-            if (includeCodecsOffline)
-            {
-                return codecStatusViewModelsProvider.GetAllCodecsIncludeOffline();
-            }
-
-            return codecStatusViewModelsProvider.GetAll();
+            _serviceProvider = serviceProvider;
         }
 
         [HttpGet]
-        public CodecStatusViewModel Get(string sipId)
+        public CodecStatusViewModel Index(string sipId)
         {
-            // TODO: Alexander, Är detta sätt det bästa?
-            var codecStatusViewModelsProvider = (CodecStatusViewModelsProvider)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(CodecStatusViewModelsProvider));
+            var codecStatusViewModelsProvider = _serviceProvider.GetService<CodecStatusViewModelsProvider>();
             var userAgentsOnline = codecStatusViewModelsProvider.GetAll();
 
             var codecStatus = userAgentsOnline.FirstOrDefault(x => x.SipAddress == sipId);
@@ -72,5 +66,17 @@ namespace CCM.Web.Controllers.ApiExternal
             return codecStatus;
         }
 
+        [HttpGet]
+        public IEnumerable<CodecStatusViewModel> GetAll(bool includeCodecsOffline = false)
+        {
+            var codecStatusViewModelsProvider = _serviceProvider.GetService<CodecStatusViewModelsProvider>();
+
+            if (includeCodecsOffline)
+            {
+                return codecStatusViewModelsProvider.GetAllCodecsIncludeOffline();
+            }
+
+            return codecStatusViewModelsProvider.GetAll();
+        }
     }
 }

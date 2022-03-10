@@ -1,15 +1,15 @@
-﻿@model CCM.Web.Models.Account.LoginViewModel
-@{
-    ViewBag.Title = Resources.Log_In;
-}
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Account.LoginViewModel
 
-<h2>@ViewBag.Title</h2>
+<h2>@Localizer["Log_In"].Value</h2>
 <hr />
 
 <div class="row">
     <div class="col-md-8">
         <section id="loginForm">
-            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewData["ReturnUrl"] }, FormMethod.Post, false, new { @class = "form-horizontal", role = "form" }))
             {
                 @Html.AntiForgeryToken()
                 @Html.ValidationSummary(true)
@@ -21,7 +21,7 @@
                         @Html.ValidationMessageFor(m => m.UserName)
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
@@ -29,7 +29,7 @@
                         @Html.ValidationMessageFor(m => m.Password)
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     @Html.LabelFor(m => m.RememberMe, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
@@ -43,7 +43,7 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="@Resources.Log_In" class="btn btn-default" />
+                        <input type="submit" value="@Localizer["Log_In"].Value" class="btn btn-default" />
                     </div>
                 </div>
             }

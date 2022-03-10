@@ -26,6 +26,7 @@
 
 using System;
 using System.Linq;
+using AutoMapper;
 using CCM.Core.Managers;
 using CCM.Data.Repositories;
 using LazyCache;
@@ -36,6 +37,8 @@ namespace CCM.Tests.RepositoryTests
     [TestFixture]
     public class StatisticsManagerTests
     {
+        private readonly IMapper _mapper;
+
         [Test, Explicit]
         public void GetLocationStatistics()
         {
@@ -43,7 +46,7 @@ namespace CCM.Tests.RepositoryTests
                 new CodecTypeRepository(new CachingService()), 
                 new OwnersRepository(new CachingService()), 
                 new RegionRepository(new CachingService()), 
-                new LocationRepository(new CachingService()), 
+                new LocationRepository(_mapper, new CachingService()), 
                 new SipAccountRepository(new CachingService()));
 
             var result = manager.GetLocationStatistics(DateTime.Parse("2016-06-10 00:00:00"),

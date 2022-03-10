@@ -41,7 +41,7 @@ namespace CCM.Core.Interfaces.Repositories
         bool Update(CcmUser ccmUser);
         void UpdatePassword(Guid id, string passwordHash, string salt);
         bool Delete(Guid userId);
-        CcmRole GetUserRole(CcmUser ccmUser);
+        //CcmRole GetUserRole(CcmUser ccmUser);
         Task<bool> AuthenticateAsync(string username, string password);
     }
 }

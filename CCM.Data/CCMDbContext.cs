@@ -25,14 +25,12 @@
  */
 
 using System;
-using System.Configuration;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using CCM.Core.Cache;
 using CCM.Data.Entities;
 using CCM.Data.Entities.Base;
-using CCM.Data.Entities.DocumentDb;
 using LazyCache;
 using NLog;
 
@@ -43,35 +41,41 @@ namespace CCM.Data
         private readonly IAppCache _cache;
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public CcmDbContext(IAppCache cache)
+        public CcmDbContext(DbContextOptions<CcmDbContext> options, IAppCache cache) : base(options)
         {
             _cache = cache;
-
-            if(ConfigurationManager.AppSettings["Environment"] == "Initiate")
-            {
-                //Database create database with any off these
-                //Database.SetInitializer<CcmDbContext>(new CreateDatabaseIfNotExists<CcmDbContext>());
-                //Database.SetInitializer<CcmDbContext>(new DropCreateDatabaseIfModelChanges<CcmDbContext>());
-                //Database.SetInitializer<CcmDbContext>(new DropCreateDatabaseAlways<CcmDbContext>());
-            }
-            else
-            {
-                //Database initial creation (off) use for production
-                Database.SetInitializer<CcmDbContext>(null);
-            }
         }
 
-        public DbSet<RegisteredSipEntity> RegisteredSips { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // https://docs.microsoft.com/en-us/ef/core/modeling/keys?tabs=fluent-api
+
+            modelBuilder.Entity<ProfileGroupProfileOrdersEntity>()
+                .HasKey(c => new { c.ProfileGroupId, c.ProfileId });
+
+            modelBuilder.Entity<CallHistoryEntity>().HasKey(c => new { c.Id });
+
+            modelBuilder.Entity<UserAgentProfileOrderEntity>().HasKey(c => new { c.UserAgentId, c.ProfileId });
+
+            // CodecType matching Users
+            modelBuilder.Entity<CodecTypeEntity>(entity =>
+            {
+                entity.HasMany(ct => ct.SipAccounts);
+            });
+        }
+
+        public DbSet<RegisteredCodecEntity> RegisteredCodecs { get; set; }
         public DbSet<CallEntity> Calls { get; set; }
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<SipAccountEntity> SipAccounts { get; set; }
         public DbSet<RoleEntity> Roles { get; set; }
         public DbSet<SettingEntity> Settings { get; set; }
-        public DbSet<ProfileEntity> Profiles { get; set; }
+        public DbSet<ProfileCodecEntity> Profiles { get; set; }
         public DbSet<ProfileGroupEntity> ProfileGroups { get; set; }
         public DbSet<ProfileGroupProfileOrdersEntity> ProfileGroupProfileOrders { get; set; }
         public DbSet<LocationEntity> Locations { get; set; }
         public DbSet<OwnerEntity> Owners { get; set; }
+        public DbSet<CategoryEntity> Categories { get; set; }
         public DbSet<UserAgentEntity> UserAgents { get; set; }
         public DbSet<RegionEntity> Regions { get; set; }
         public DbSet<FilterEntity> Filters { get; set; }
@@ -80,28 +84,13 @@ namespace CCM.Data
         public DbSet<UserAgentProfileOrderEntity> UserAgentProfileOrders { get; set; }
         public DbSet<MetaTypeEntity> MetaTypes { get; set; }
         public DbSet<CallHistoryEntity> CallHistories { get; set; }
-        public DbSet<CodecPresetEntity> CodecPresets { get; set; }
         public DbSet<LogEntity> Logs { get; set; }
-        public DbSet<StudioEntity> Studios { get; set; }
 
-        // Document Db Entities
-        public DbSet<CodecControlApiEntity> ApiDefinition { get; set; }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<UserAgentEntity>()
-                .HasMany(e => e.CodecPresets)
-                .WithMany(e => e.UserAgents)
-                .Map(m => m.ToTable("CodecPresetUserAgents").MapLeftKey("UserAgent_Id").MapRightKey("CodecPreset_Id"));
-        }
-
-        protected string CurrentUserName()
-        {
-            return Thread.CurrentPrincipal?.Identity?.Name ?? "unknown";
-        }
-
+        /// <summary>
+        /// Overrides the saving method to determine if cache should be cleared and if the
+        /// changes are relevant to update interested clients about.
+        /// </summary>
+        /// <returns></returns>
         public override int SaveChanges()
         {
             // Set changed/updated info
@@ -114,22 +103,18 @@ namespace CCM.Data
                 {
                     ((EntityBase)entity.Entity).Id = Guid.NewGuid();
                     ((EntityBase)entity.Entity).CreatedOn = timeStamp;
-                    ((EntityBase)entity.Entity).CreatedBy = CurrentUserName();
                 }
 
                 ((EntityBase)entity.Entity).UpdatedOn = timeStamp;
-                ((EntityBase)entity.Entity).UpdatedBy = CurrentUserName();
             }
 
-            // Should invalidate cache?
-            bool shouldInvalidateCache = ChangeTracker.Entries().Any(
-                x => x.Entity is EntityBase && (x.State == EntityState.Added || x.State == EntityState.Modified || x.State == EntityState.Deleted)
-                );
+            // Decide if we should invalidate cache
+            bool shouldInvalidateCache = ChangeTracker.Entries().Any(x => x.Entity is EntityBase && (x.State == EntityState.Added || x.State == EntityState.Modified || x.State == EntityState.Deleted));
 
+            // Make the actual save
             var saveChangesResult = base.SaveChanges();
 
             shouldInvalidateCache = shouldInvalidateCache && saveChangesResult > 0;
-
             if (shouldInvalidateCache)
             {
                 log.Debug("Changes in data saved to database. Trigger full cache update.");
@@ -138,6 +123,24 @@ namespace CCM.Data
             }
 
             return saveChangesResult;
+
+            //try
+            //{
+            //    _context.SaveChanges();
+            //}
+            //catch (DbEntityValidationException dbEx)
+            //{
+            //    var sb = new StringBuilder();
+            //    foreach (var validationErrors in dbEx.EntityValidationErrors)
+            //    {
+            //        foreach (var validationError in validationErrors.ValidationErrors)
+            //        {
+            //            sb.AppendLine(string.Format("Property: {0} Error: {1}",
+            //                validationError.PropertyName, validationError.ErrorMessage));
+            //        }
+            //    }
+            //    throw new Exception(sb.ToString(), dbEx);
+            //}
         }
     }
 }

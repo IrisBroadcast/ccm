@@ -25,11 +25,9 @@
  */
 
 using System.Collections.Generic;
-using System.Net;
-using System.Web.Http;
 using CCM.Core.Entities.Discovery;
 using CCM.Core.Interfaces;
-using CCM.Web.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers.ApiDiscovery
 {
@@ -37,13 +35,12 @@ namespace CCM.Web.Controllers.ApiDiscovery
     /// This an internal discovery service without authentication. This endpoint should of course newer be exposed
     /// outside your private corporate network.
     /// </summary>
-    [CamelCaseControllerConfig]
-    [RoutePrefix("api/discovery")]
-    public class DiscoveryController : ApiController
+    [Route("api/discovery")]
+    public class DiscoveryController : ControllerBase
     {
-        private readonly IDiscoveryService _discoveryService;
+        private readonly IDiscoveryServiceManager _discoveryService;
 
-        public DiscoveryController(IDiscoveryService discoveryService)
+        public DiscoveryController(IDiscoveryServiceManager discoveryService)
         {
             _discoveryService = discoveryService;
         }
@@ -62,18 +59,17 @@ namespace CCM.Web.Controllers.ApiDiscovery
             return _discoveryService.GetProfiles();
         }
 
-        [Route("useragents")]
         [HttpPost]
-        public UserAgentsResultDto UserAgents(UserAgentSearchParamsDto searchParams)
+        [Route("useragents")]
+        public ActionResult UserAgents([FromBody]UserAgentSearchParamsDto searchParams)
         {
             if (searchParams == null)
             {
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest("No search parameters");
             }
 
             UserAgentsResultDto uaResult = _discoveryService.GetUserAgents(searchParams.Caller, searchParams.Callee, searchParams.Filters, searchParams.IncludeCodecsInCall);
-            return uaResult;
+            return Ok(uaResult);
         }
-
     }
 }

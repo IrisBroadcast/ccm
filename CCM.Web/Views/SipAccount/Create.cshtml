@@ -1,57 +1,19 @@
-﻿@using CCM.Core.Enums
-@using CCM.Web.Extensions;
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
 @model CCM.Web.Models.SipAccount.SipAccountCreateFormViewModel
 
 @section scripts
 {
-    <script type="text/javascript" src="@Url.Content("~/Scripts/src/passwordGeneratorApi.js")"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            let checkBox = $('#generatePasswordCheckBox');
-            checkBox.prop('checked', true).change();
-        });
-
-        $('#generatePasswordCheckBox').change(function () {
-            let checked = $(this).is(':checked');
-            showGeneratedPassword(checked);
-            if (checked) {
-                generatePassword(function (password) {
-                    setPasswordFields(password);
-                });
-            }
-            else {
-                setPasswordFields(null);
-            }
-        });
-
-        function showGeneratedPassword(show) {
-            setGeneratedPasswordFieldVisibility(show);
-            setPasswordFieldsVisibility(!show);
-        }
-
-        function setPasswordFields(password) {
-            $('#Password').val(password);
-            $('#PasswordConfirm').val(password);
-            $('#generatedPassword').val(password);
-        }
-
-        function setGeneratedPasswordFieldVisibility(show) {
-            $('#generatedPasswordWrapper').toggleClass('hidden', !show);
-        }
-
-        function setPasswordFieldsVisibility(show) {
-            $('#passwordFieldsWrapper').toggleClass('hidden', !show);
-        }
-    </script>
+    <script src="~/dist/ccm-form.js"></script>
 }
 
-<h2>@Resources.New_Account</h2>
+<h2>@Localizer["New_Account"]</h2>
 <hr />
 
 @using (Html.BeginForm("Create", "SipAccount", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.ValidationSummary(false)
-
     @Html.AntiForgeryToken()
 
     <div class="form-group">
@@ -93,6 +55,13 @@
         </div>
     </div>
 
+    <div class="form-group">
+        @Html.LabelFor(m => m.ExternalReference, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.ExternalReference, new { @class = "form-control" })
+        </div>
+    </div>
+
     <div class="form-group" id="accountTypeGroup">
         @Html.LabelFor(m => m.AccountType, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
@@ -103,19 +72,19 @@
     <div class="form-group" id="ownerGroup">
         @Html.LabelFor(m => m.OwnerId, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.OwnerId, new SelectList(Model.Owners, "Id", "Name"), new { @class = "form-control" })
+            @Html.DropDownListFor(m => m.OwnerId, new SelectList(Model.Owners, "Id", "Name"), "", new { @class = "form-control" })
         </div>
     </div>
 
     <div class="form-group" id="codecTypeGroup">
-        @Html.LabelFor(m => m.CodecTypeId, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.CodecType_Id, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.CodecTypeId, new SelectList(Model.CodecTypes, "Id", "Name"), new { @class = "form-control" })
+            @Html.DropDownListFor(m => m.CodecType_Id, new SelectList(Model.CodecTypes, "Id", "Name"), "", new { @class = "form-control" })
         </div>
     </div>
 
     <div class="form-group">
-        <label class="col-md-2 control-label">@Resources.Generate_Password</label>
+        <label class="col-md-2 control-label">@Localizer["Generate_Password"]</label>
         <div class="col-md-10">
             <div class="ccm-form-group--checkbox">
                 <div class="ccm-form-group-checkbox--btn">
@@ -126,7 +95,7 @@
     </div>
 
     <div id="generatedPasswordWrapper" class="form-group hidden">
-        <label class="col-md-2 control-label">@Resources.Generated_Password</label>
+        <label class="col-md-2 control-label">@Localizer["Generated_Password"]</label>
         <div class="col-md-10">
             <input id="generatedPassword" class="form-control" readonly />
         </div>
@@ -134,24 +103,24 @@
 
     <div id="passwordFieldsWrapper">
         <div class="form-group">
-            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+            @Html.LabelFor(m => m.PasswordDefault, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                @Html.PasswordFor(m => m.PasswordDefault, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(m => m.PasswordConfirm, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
-                @Html.PasswordFor(m => m.PasswordConfirm, new { @class = "form-control" })
+                @Html.PasswordFor(m => m.PasswordConfirm, new { @class = "form-control", @autocomplete = "off" })
             </div>
         </div>
     </div>
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            @Html.ActionLink(Resources.Cancel, "Index", "SipAccount", null, new { @class = "btn btn-default" })
-            <button type="submit" class="btn btn-primary">@Resources.Save</button>
+            @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "SipAccount", null, new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
         </div>
     </div>
 }

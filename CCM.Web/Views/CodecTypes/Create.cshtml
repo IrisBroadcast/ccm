@@ -1,47 +1,23 @@
-﻿@model CCM.Core.Entities.CodecType
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Core.Entities.CodecType
 
 @{
-    ViewBag.Title = Resources.New_Codec_Type;
+    ViewData["Title"] = @Localizer["New_Codec_Type"];
 }
 
-<h2>@Resources.New_Codec_Type</h2>
+<h2>@Localizer["New_Codec_Type"]</h2>
 <hr />
 
 @using (Html.BeginForm("Create", "CodecTypes", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <div class="form-group">
-        @Html.Label(Resources.Name, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
-        </div>
-    </div>
 
-    <div class="form-group">
-        @Html.Label(Resources.Color, new { @class = "col-md-2 control-label" })
-        <div class="col-md-2">
-            <div class="input-group color">
-                @Html.TextBoxFor(m => m.Color, new { @class = "form-control" })
-                <span class="input-group-addon"><i></i></span>
-            </div>
-        </div>
-    </div>
-
-    @Html.HiddenFor(m => m.Id)
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            @Html.ActionLink(Resources.Cancel, "Index", "CodecTypes", null, new { @class = "btn btn-default" })
-            <button type="submit" class="btn btn-primary">@Resources.Save</button>
-        </div>
-    </div>
+    <partial name="_CodecTypeForm" model="Model" />
 }
 
 @section scripts
 {
-    <script>
-        $(function () {
-            $('.color').colorpicker();
-        });
-    </script>
+    <script src="~/dist/ccm-form.js"></script>
 }

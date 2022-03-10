@@ -77,7 +77,7 @@ namespace CCM.Core.Entities.Statistics
             if (_maxSimultaneousCallsPerDay.Count < 1)
                 _maxSimultaneousCallsPerDay.Add(0);
             if (callEvent.EventTime > Date.AddHours(1)) return false;
-            if (callEvent.EventType == CallEventType.Start)
+            if (callEvent.EventType == CallEventTypeStatistics.Start)
             {
                 OngoingCalls++;
                 if (OngoingCalls > _maxSimultaneousCallsPerDay[0])
@@ -148,33 +148,32 @@ namespace CCM.Core.Entities.Statistics
     public class HourBasedCallEvent
     {
         public DateTime EventTime { get; set; }
-        public CallEventType EventType { get; set; }
+        public CallEventTypeStatistics EventType { get; set; }
 
-        public static IEnumerable<HourBasedCallEvent> GetOrderedEvents(IList<CallHistory> callHistories,
-            Guid locationId)
+        public static IEnumerable<HourBasedCallEvent> GetOrderedEvents(IList<CallHistory> callHistories, Guid locationId)
         {
             return GetEvents(callHistories, locationId).OrderBy(e => e.EventTime).ThenBy(e => (int)e.EventType);
         }
 
-        public static IEnumerable<HourBasedCallEvent> GetEvents(IList<CallHistory> callHistories, Guid locationId)
+        private static IEnumerable<HourBasedCallEvent> GetEvents(IList<CallHistory> callHistories, Guid locationId)
         {
             foreach (var call in callHistories)
             {
                 if (call.FromLocationId == locationId || call.ToLocationId == locationId)
                 {
                     yield return
-                        Create(CallEventType.Start, call);
+                        Create(CallEventTypeStatistics.Start, call);
                     yield return
-                        Create(CallEventType.End, call);
+                        Create(CallEventTypeStatistics.End, call);
                 }
             }
         }
 
-        public static HourBasedCallEvent Create(CallEventType eventType, CallHistory call)
+        private static HourBasedCallEvent Create(CallEventTypeStatistics eventType, CallHistory call)
         {
             return new HourBasedCallEvent
             {
-                EventTime = eventType == CallEventType.Start ? call.Started : call.Ended,
+                EventTime = eventType == CallEventTypeStatistics.Start ? call.Started : call.Ended,
                 EventType = eventType,
             };
         }
@@ -185,6 +184,7 @@ namespace CCM.Core.Entities.Statistics
         public Guid LocationId { get; set; }
         public string LocationName { get; set; }
         public IList<HourBasedStatistics> Statistics { get; set; }
+        public int MaxCallCount => Statistics.Max(data => data.MaxSimultaneousCalls);
 
         public IEnumerable<IList<HourBasedStatistics>> GetSeries()
         {

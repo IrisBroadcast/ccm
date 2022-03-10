@@ -28,33 +28,39 @@ using System;
 using System.Collections.Generic;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
+using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using LazyCache;
 
 namespace CCM.Core.Cache
 {
-    public class CachedProfileRepository : IProfileRepository
+    public class CachedProfileRepository : ICachedProfileRepository
     {
         private readonly IAppCache _lazyCache;
         private readonly IProfileRepository _internalRepository;
+        private readonly ISettingsManager _settingsManager;
 
-        public CachedProfileRepository(IAppCache lazyCache, IProfileRepository internalRepository)
+        public CachedProfileRepository(
+            IAppCache lazyCache,
+            IProfileRepository internalRepository,
+            ISettingsManager settingsManager)
         {
             _lazyCache = lazyCache;
             _internalRepository = internalRepository;
+            _settingsManager = settingsManager;
         }
 
-        public Profile GetById(Guid id)
+        public ProfileCodec GetById(Guid id)
         {
             return _internalRepository.GetById(id);
         }
 
-        public List<Profile> GetAll()
+        public List<ProfileCodec> GetAll()
         {
             return _internalRepository.GetAll();
         }
 
-        public void Save(Profile profile)
+        public void Save(ProfileCodec profile)
         {
             _internalRepository.Save(profile);
             _lazyCache.ClearProfiles();
@@ -66,14 +72,14 @@ namespace CCM.Core.Cache
             _lazyCache.ClearProfiles();
         }
 
-        public List<Profile> FindProfiles(string searchString)
+        public List<ProfileCodec> FindProfiles(string searchString)
         {
             return _internalRepository.FindProfiles(searchString);
         }
 
         public IList<ProfileNameAndSdp> GetAllProfileNamesAndSdp()
         {
-            return _lazyCache.GetOrAddAllProfileNamesAndSdp(() => _internalRepository.GetAllProfileNamesAndSdp());
+            return _lazyCache.GetOrAddAllProfileNamesAndSdp(() => _internalRepository.GetAllProfileNamesAndSdp(), _settingsManager.CacheTimeConfigData);
         }
 
         public IList<ProfileInfo> GetAllProfileInfos()
@@ -81,11 +87,9 @@ namespace CCM.Core.Cache
             return _internalRepository.GetAllProfileInfos();
         }
 
-        public void SetProfileSortIndex(IList<Tuple<Guid, int>> profileTuples)
+        public IReadOnlyCollection<ProfileFullDetail> GetFullDetails()
         {
-            _internalRepository.SetProfileSortIndex(profileTuples);
-            _lazyCache.ClearProfiles();
+            return _lazyCache.GetOrAddFullDetailProfiles(() => _internalRepository.GetFullDetails(), _settingsManager.CacheTimeConfigData);
         }
-
     }
 }

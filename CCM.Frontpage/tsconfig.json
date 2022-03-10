@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "typings",
+      "@types",
+      "node_modules/@types"
+    ]
+  }
+}

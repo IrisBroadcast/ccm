@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using CCM.Core.Attributes;
 using CCM.Core.Interfaces;
@@ -45,7 +46,7 @@ namespace CCM.Data.Entities
 
         // IP v4
         public string Net_Address_v4 { get; set; }
-        // CIDR = Classless Inter-Domain Routing. Decides the network size.
+        /// <summary>CIDR = Classless Inter-Domain Routing. Decides the network size.</summary>
         public byte? Cidr { get; set; }
 
         // IP v6
@@ -56,15 +57,24 @@ namespace CCM.Data.Entities
         public string CarrierConnectionId { get; set; }
 
         [MetaType]
-        public virtual CityEntity City { get; set; }
-
-        public virtual ICollection<RegisteredSipEntity> RegisteredSips { get; set; }
-
-        [MetaType]
-        public virtual RegionEntity Region { get; set; }
-
-        [MetaType]
+        [ForeignKey("ProfileGroup_Id")]
         public virtual ProfileGroupEntity ProfileGroup { get; set; }
 
+        public Guid? Region_Id { get; set; }
+        [MetaType]
+        [ForeignKey(nameof(Region_Id))]
+        public virtual RegionEntity Region { get; set; }
+
+        public Guid? City_Id { get; set; }
+        [MetaType]
+        [ForeignKey(nameof(City_Id))]
+        public virtual CityEntity City { get; set; }
+
+        public Guid? Category_Id { get; set; }
+        [MetaType]
+        [ForeignKey(nameof(Category_Id))]
+        public virtual CategoryEntity Category { get; set; }
+
+        public virtual ICollection<RegisteredCodecEntity> RegisteredSips { get; set; }
     }
 }

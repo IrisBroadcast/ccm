@@ -24,15 +24,18 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.IO;
+using System;
 using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Http.Cors;
-using CCM.Core.Helpers;
-using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.SipEvent;
-using CCM.Web.Infrastructure.SignalR;
+using Microsoft.AspNetCore.Mvc;
+using CCM.Core.Interfaces.Parser;
+using CCM.Core.SipEvent.Event;
+using CCM.Core.SipEvent.Messages;
+using CCM.Core.SipEvent.Models;
+using CCM.Web.Hubs;
+using Microsoft.Extensions.Hosting.Internal;
+using Microsoft.Extensions.Logging;
 using NLog;
 
 namespace CCM.Web.Controllers.ApiRegistrar
@@ -41,89 +44,87 @@ namespace CCM.Web.Controllers.ApiRegistrar
     /// Receives Kamailio events formatted in a JSON-format
     /// JSON format : Kamailio Events
     /// </summary>
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
-    public class SipEventController : ApiController
+    public class SipEventController : ControllerBase
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
+        private readonly ILogger<SipEventController> _logger;
         private readonly ISipEventParser _sipEventParser;
         private readonly ISipMessageManager _sipMessageManager;
-        private readonly IGuiHubUpdater _guiHubUpdater;
-        private readonly IStatusHubUpdater _statusHubUpdater;
+        private readonly IWebGuiHubUpdater _webGuiHubUpdater;
+        private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
         private readonly ISettingsManager _settingsManager;
 
-        public SipEventController(ISipEventParser sipEventParser, ISipMessageManager sipMessageManager,
-            IGuiHubUpdater guiHubUpdater, IStatusHubUpdater statusHubUpdater, ISettingsManager settingsManager)
+        public SipEventController(
+            ISipEventParser sipEventParser,
+            ISipMessageManager sipMessageManager,
+            IWebGuiHubUpdater webGuiHubUpdater,
+            ICodecStatusHubUpdater codecStatusHubUpdater,
+            ISettingsManager settingsManager,
+            ILogger<SipEventController> logger)
         {
             _sipEventParser = sipEventParser;
             _sipMessageManager = sipMessageManager;
-            _guiHubUpdater = guiHubUpdater;
-            _statusHubUpdater = statusHubUpdater;
+            _webGuiHubUpdater = webGuiHubUpdater;
+            _codecStatusHubUpdater = codecStatusHubUpdater;
             _settingsManager = settingsManager;
+            _logger = logger;
         }
 
-        public string Get()
+        [HttpGet]
+        public string Index()
         {
-            // For test
             return $"Hello. I'm a SIP event receiver. UseSipEvent={_settingsManager.UseSipEvent}";
         }
 
-        public async Task<IHttpActionResult> Post(KamailioSipEvent sipEvent)
+        [HttpPost]
+        public IActionResult Index([FromBody] KamailioSipEventData sipEventData)
         {
             if (!_settingsManager.UseSipEvent)
             {
-                if (log.IsTraceEnabled)
-                {
-                    log.Warn("Receiving event but receiver is not ON for 'UseSipEvent'");
-                }
+                _logger.LogTrace("Receiving event but receiver is not ON for 'UseSipEvent'");
                 return Ok();
             }
 
-            if (log.IsTraceEnabled)
+            if (sipEventData == null)
             {
-                Stream stream = await Request.Content.ReadAsStreamAsync();
-                stream.Seek(0, SeekOrigin.Begin);
-                var body = await Request.Content.ReadAsStringAsync();
-                log.Trace($"Request {Request} Body {body}");
+                log.Warn("SIP event controller received empty data");
+                return BadRequest();
             }
 
-            using (new TimeMeasurer("Incoming SIP event"))
+            try
             {
-                if (sipEvent == null)
-                {
-                    log.Warn("SIP event controller received empty data");
-                    return BadRequest();
-                }
-
-                var sipMessage = _sipEventParser.Parse(sipEvent);
-
+                SipMessageBase sipMessage = _sipEventParser.Parse(sipEventData);
                 if (sipMessage == null)
                 {
-                    log.Warn("Incorrect SIP message format: ", sipEvent);
+                    log.Warn("Incorrect SIP message format: ", sipEventData);
                     return BadRequest();
                 }
 
                 SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
 
-                if (log.IsDebugEnabled)
-                {
-                    log.Debug("SIP message, Handled: {0}, Parsed: {1}, Result: {2}", sipEvent.ToLogString(), sipMessage.ToDebugString(), result?.ChangeStatus);
+                if (log.IsDebugEnabled) {
+                    log.Debug(
+                    $"SIP message, Handled: {sipEventData.FromUri.Replace("sip:", "")} '{sipEventData.FromDisplayName ?? ""}' Expires:{sipEventData.Expires} -- RAW:${sipEventData.Event}: Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
                 }
 
                 if (result == null)
                 {
-                    log.Warn("Kamailio message was handled but result was null");
+                    log.Warn("SIP message was handled but result was null");
                 }
                 else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
                 {
-                    _guiHubUpdater.Update(result); // First web gui
-                    _statusHubUpdater.Update(result); // Then codec status to external clients
+                    _webGuiHubUpdater.Update(result); // First web gui
+                    _codecStatusHubUpdater.Update(result); // Then codec status to external clients
                 }
-
-                return Ok();
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+                log.Error(ex.Message);
             }
 
+            return Ok();
         }
-
     }
 }

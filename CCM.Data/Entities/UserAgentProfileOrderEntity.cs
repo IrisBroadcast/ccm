@@ -33,14 +33,19 @@ namespace CCM.Data.Entities
     [Table("UserAgentProfileOrders")]
     public class UserAgentProfileOrderEntity
     {
-        [Key, ForeignKey("UserAgent"), Column("UserAgentId", Order = 0)]
+        [ForeignKey("UserAgentId")]
+        public virtual UserAgentEntity UserAgent { get; set; }
+
+        [Key, Column("UserAgentId", Order = 0)]
         public Guid UserAgentId { get; set; }
 
-        [Key, ForeignKey("Profile"), Column("ProfileId", Order = 1)]
+        [ForeignKey("ProfileId")]
+        public virtual ProfileCodecEntity Profile { get; set; }
+
+        [Key, Column("ProfileId", Order = 1)]
         public Guid ProfileId { get; set; }
 
-        public virtual UserAgentEntity UserAgent { get; set; }
-        public virtual ProfileEntity Profile { get; set; }
-        public int SortIndex { get; set; }
+        [Column("SortIndex")]
+        public int ProfileSortIndexForUserAgent { get; set; }
     }
 }

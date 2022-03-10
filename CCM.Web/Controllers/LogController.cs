@@ -29,11 +29,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Mvc;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Core.Managers;
 using CCM.Web.Models.Log;
+using CCM.Web.Properties;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
+using System.Text.Json;
+using CCM.Core.Interfaces.Managers;
 using NLog;
 
 namespace CCM.Web.Controllers
@@ -43,15 +49,22 @@ namespace CCM.Web.Controllers
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly ILogRepository _logRepository;
+        private readonly IStringLocalizer<Resources> _localizer;
+        private readonly ISettingsManager _settingsManager;
 
-        public LogController(ILogRepository logRepository)
+        public LogController(
+            ILogRepository logRepository,
+            IStringLocalizer<Resources> localizer,
+            ISettingsManager settingsManager)
         {
             _logRepository = logRepository;
+            _localizer = localizer;
+            _settingsManager = settingsManager;
         }
 
         public async Task<ActionResult> Index(LogViewModel model)
         {
-            model.Search = model.Search ?? string.Empty;
+            model.Search ??= string.Empty;
             model.Application = !string.IsNullOrEmpty(model.Application) ? model.Application : CcmApplications.Web;
             model.SelectedLastOption = !string.IsNullOrEmpty(model.SelectedLastOption) ? model.SelectedLastOption : GetLastOptions().First().Value;
             model.StartDateTime = model.StartDateTime > DateTime.MinValue ? model.StartDateTime : DateTime.Now.AddHours(-6);
@@ -76,8 +89,8 @@ namespace CCM.Web.Controllers
             string logLevelCcm = LogLevelManager.GetCurrentLevel().Name;
             string logLevelDiscovery = await GetDiscoveryLogLevelAsync();
 
-            ViewBag.CurrentLevelCCM = logLevelCcm;
-            ViewBag.CurrentLevelDiscovery = logLevelDiscovery;
+            ViewData["CurrentLevelCCM"] = logLevelCcm;
+            ViewData["CurrentLevelDiscovery"] = logLevelDiscovery;
 
             model.LogRows = await _logRepository.GetLastAsync(model.Rows, model.Application, startTime, endTime, model.SelectedLevel, model.Search, model.ActivityId);
             model.LastOptions = GetLastOptions();
@@ -90,24 +103,24 @@ namespace CCM.Web.Controllers
         {
             return new List<SelectListItem>()
             {
-                new SelectListItem() { Value = "00:01:00", Text = @Resources.Date_Time_Name_Minute },
-                new SelectListItem() { Value = "00:10:00", Text = @Resources.Date_Time_Name_Ten_Minutes },
-                new SelectListItem() { Value = "00:30:00", Text = @Resources.Date_Time_Name_Thirty_Minutes },
-                new SelectListItem() { Value = "01:00:00", Text = @Resources.Date_Time_Name_One_Hour },
-                new SelectListItem() { Value = "03:00:00", Text = @Resources.Date_Time_Name_Three_Hours },
-                new SelectListItem() { Value = "06:00:00", Text = @Resources.Date_Time_Name_Six_Hours },
-                new SelectListItem() { Value = "12:00:00", Text = @Resources.Date_Time_Name_Twelve_Hours },
-                new SelectListItem() { Value = "1.00:00:00", Text = @Resources.Date_Time_Name_Day_And_Night },
-                new SelectListItem() { Value = "3.00:00:00", Text = @Resources.Date_Time_Name_Three_Days_And_Night },
-                new SelectListItem() { Value = "7.00:00:00", Text = @Resources.Date_Time_Name_Week },
-                new SelectListItem() { Value = "interval", Text = @Resources.Date_Time_Name_Time_Interval },
+                new SelectListItem() { Value = "00:01:00", Text = _localizer["Date_Time_Name_Minute"] },
+                new SelectListItem() { Value = "00:10:00", Text = _localizer["Date_Time_Name_Ten_Minutes"] },
+                new SelectListItem() { Value = "00:30:00", Text = _localizer["Date_Time_Name_Thirty_Minutes"] },
+                new SelectListItem() { Value = "01:00:00", Text = _localizer["Date_Time_Name_One_Hour"] },
+                new SelectListItem() { Value = "03:00:00", Text = _localizer["Date_Time_Name_Three_Hours"] },
+                new SelectListItem() { Value = "06:00:00", Text = _localizer["Date_Time_Name_Six_Hours"] },
+                new SelectListItem() { Value = "12:00:00", Text = _localizer["Date_Time_Name_Twelve_Hours"] },
+                new SelectListItem() { Value = "1.00:00:00", Text = _localizer["Date_Time_Name_Day_And_Night"] },
+                new SelectListItem() { Value = "3.00:00:00", Text = _localizer["Date_Time_Name_Three_Days_And_Night"] },
+                new SelectListItem() { Value = "7.00:00:00", Text = _localizer["Date_Time_Name_Week"] },
+                new SelectListItem() { Value = "interval", Text = _localizer["Date_Time_Name_Time_Interval"] },
             };
         }
 
         [HttpGet]
         public async Task<ActionResult> Level(string application)
         {
-            application = application ?? string.Empty;
+            application ??= string.Empty;
             string logLevel = "";
 
             if (application == CcmApplications.Web)
@@ -119,16 +132,16 @@ namespace CCM.Web.Controllers
                 logLevel = await GetDiscoveryLogLevelAsync();
             }
 
-            ViewBag.CurrentLevel = logLevel;
-            ViewBag.Application = application;
+            ViewData["CurrentLevel"] = logLevel;
+            ViewData["Application"] = application;
 
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Level(string logLevel, string application)
+        public ActionResult Level(string logLevel, string application)
         {
-            application = application ?? string.Empty;
+            application ??= string.Empty;
 
             if (application == CcmApplications.Web)
             {
@@ -142,18 +155,6 @@ namespace CCM.Web.Controllers
                     log.Info("Log level was NOT changed to '{0}' for CCM Web", logLevel);
                 }
             }
-            else if (application == CcmApplications.Discovery)
-            {
-                var result = await SetDiscoveryLogLevelAsync(logLevel);
-
-                if (result != logLevel)
-                {
-                    log.Info("Log level changed to '{0}' for CCM Discovery", logLevel);
-                    ViewBag.CurrentLevel = logLevel;
-                    ViewBag.Application = application;
-                    return View();
-                }
-            }
 
             return RedirectToAction("Index", new { application });
         }
@@ -161,8 +162,8 @@ namespace CCM.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> Delete(string application, int nrOfRowsToDelete = 100)
         {
-            ViewBag.nrOfRowsToDelete = nrOfRowsToDelete;
-            ViewBag.LogCount = await _logRepository.GetLogInfoAsync();
+            ViewData["nrOfRowsToDelete"] = nrOfRowsToDelete;
+            ViewData["LogCount"] = await _logRepository.GetLogTableInfoAsync();
             return View();
         }
 
@@ -170,34 +171,32 @@ namespace CCM.Web.Controllers
         public ActionResult Delete(int nrOfRowsToDelete = 100)
         {
             _logRepository.DeleteOldest(nrOfRowsToDelete);
-            ViewBag.nrOfRowsToDelete = nrOfRowsToDelete;
+            ViewData["nrOfRowsToDelete"] = nrOfRowsToDelete;
             return RedirectToAction("Delete", new { nrOfRowsToDelete });
+        }
+
+        [HttpPost]
+        public ActionResult DeleteAll()
+        {
+            _logRepository.DeleteAll();
+            return RedirectToAction("Delete", 100);
         }
 
         private async Task<string> GetDiscoveryLogLevelAsync()
         {
-            using (var client = new HttpClient())
-            {
-                var response = await client.GetAsync(ApplicationSettings.DiscoveryLogLevelUrl);
+            try {
+                using var client = new HttpClient();
+                var response = await client.GetAsync($"{_settingsManager.DiscoveryServiceUrl}/api/loglevel");
                 if (response.IsSuccessStatusCode)
                 {
-                    var levelModel = await response.Content.ReadAsAsync<LevelModel>();
+                    string json = await response.Content.ReadAsStringAsync();
+                    LevelModel levelModel = JsonSerializer.Deserialize<LevelModel>(json);
                     return levelModel != null ? levelModel.LogLevel : string.Empty;
                 }
                 return "";
             }
-        }
-
-        private async Task<string> SetDiscoveryLogLevelAsync(string level)
-        {
-            using (var client = new HttpClient())
+            catch (Exception)
             {
-                var responseMessage = await client.PostAsJsonAsync(ApplicationSettings.DiscoveryLogLevelUrl, new LevelModel() { LogLevel = level });
-                if (responseMessage.IsSuccessStatusCode)
-                {
-                    var levelModel = await responseMessage.Content.ReadAsAsync<LevelModel>();
-                    return levelModel != null ? levelModel.LogLevel : string.Empty;
-                }
                 return "";
             }
         }

@@ -31,60 +31,59 @@ using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
+using Microsoft.EntityFrameworkCore;
 
 namespace CCM.Data.Repositories
 {
     public class OwnersRepository : BaseRepository, IOwnersRepository
     {
-        public OwnersRepository(IAppCache cache) : base(cache)
+        public OwnersRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
         public void Save(Owner owner)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            OwnerEntity dbOwner = null;
+
+            if (owner.Id != Guid.Empty)
             {
-                OwnerEntity dbOwner = null;
-
-
-                if (owner.Id != Guid.Empty)
-                {
-                    dbOwner = db.Owners.SingleOrDefault(o => o.Id == owner.Id);
-                }
-
-                if (dbOwner == null)
-                {
-                    dbOwner = new OwnerEntity()
-                    {
-                        Id = Guid.NewGuid(),
-                        CreatedBy = owner.CreatedBy,
-                        CreatedOn = DateTime.UtcNow
-                    };
-                    db.Owners.Add(dbOwner);
-                    owner.Id = dbOwner.Id;
-                    owner.CreatedOn = dbOwner.CreatedOn;
-                }
-
-
-                dbOwner.Name = owner.Name;
-                dbOwner.UpdatedBy = owner.UpdatedBy;
-                dbOwner.UpdatedOn = DateTime.UtcNow;
-                owner.UpdatedOn = dbOwner.UpdatedOn;
-
-                db.SaveChanges();
+                dbOwner = db.Owners
+                    .Include(o => o.SipAccounts)
+                    .SingleOrDefault(o => o.Id == owner.Id);
             }
+
+            if (dbOwner == null)
+            {
+                dbOwner = new OwnerEntity()
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedBy = owner.CreatedBy,
+                    CreatedOn = DateTime.UtcNow
+                };
+                db.Owners.Add(dbOwner);
+                owner.Id = dbOwner.Id;
+                owner.CreatedOn = dbOwner.CreatedOn;
+            }
+
+
+            dbOwner.Name = owner.Name;
+            dbOwner.UpdatedBy = owner.UpdatedBy;
+            dbOwner.UpdatedOn = DateTime.UtcNow;
+            owner.UpdatedOn = dbOwner.UpdatedOn;
+
+            db.SaveChanges();
         }
 
         public void Delete(Guid id)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            OwnerEntity owner = db.Owners
+                .Include(o => o.SipAccounts)
+                .SingleOrDefault(o => o.Id == id);
+            if (owner != null)
             {
-                OwnerEntity owner = db.Owners.SingleOrDefault(o => o.Id == id);
-                if (owner == null)
-                {
-                    return;
-                }
-
+                owner.SipAccounts?.Clear();
                 db.Owners.Remove(owner);
                 db.SaveChanges();
             }
@@ -92,59 +91,60 @@ namespace CCM.Data.Repositories
 
         public List<Owner> GetAll()
         {
-            using (var db = GetDbContext())
-            {
-                var dbOwners = db.Owners.ToList();
-                return dbOwners.Select(owner => MapOwner(owner)).OrderBy(o => o.Name).ToList();
-            }
+            var db = _ccmDbContext;
+            var dbOwners = db.Owners
+                .Include(o => o.SipAccounts).ToList();
+
+            return dbOwners.Select(owner => MapToOwner(owner)).OrderBy(o => o.Name).ToList();
         }
 
         public Owner GetById(Guid id)
         {
-            using (var db = GetDbContext())
-            {
-                var owner = db.Owners.SingleOrDefault(o => o.Id == id);
-                return owner == null ? null : MapOwner(owner);
-            }
+            var db = _ccmDbContext;
+            var owner = db.Owners
+                .Include(o => o.SipAccounts)
+                .SingleOrDefault(o => o.Id == id);
+
+            return owner == null ? null : MapToOwner(owner);
         }
 
         public Owner GetByName(string name)
         {
-            using (var db = GetDbContext())
-            {
-                name = (name ?? string.Empty).ToLower();
+            name = (name ?? string.Empty).ToLower();
 
-                var owner = db.Owners.SingleOrDefault(o => o.Name.ToLower() == name);
-                return owner == null ? null : MapOwner(owner, false);
-            }
+            var owner = _ccmDbContext.Owners
+                .Include(o => o.SipAccounts)
+                .SingleOrDefault(o => o.Name.ToLower() == name);
+
+            return owner == null ? null : MapToOwner(owner, false);
         }
 
         public List<Owner> FindOwners(string search)
         {
-            using (var db = GetDbContext())
-            {
-                var dbOwners = db.Owners.Where(o => o.Name.ToLower().Contains(search.ToLower())).ToList();
-                return dbOwners.Select(owner => MapOwner(owner)).OrderBy(o => o.Name).ToList();
-            }
+            var dbOwners = _ccmDbContext.Owners
+                .Include(o => o.SipAccounts)
+                .Where(o => o.Name.ToLower().Contains(search.ToLower())).ToList();
+
+            return dbOwners.Select(owner => MapToOwner(owner)).OrderBy(o => o.Name).ToList();
         }
 
-        private Owner MapOwner(OwnerEntity owner, bool includeUsers = true)
+        private Owner MapToOwner(OwnerEntity owner, bool includeUsers = true)
         {
             return owner == null ? null : new Owner
-                {
-                    Id = owner.Id,
-                    Name = owner.Name,
-                    CreatedBy = owner.CreatedBy,
-                    CreatedOn = owner.CreatedOn,
-                    UpdatedBy = owner.UpdatedBy,
-                    UpdatedOn = owner.UpdatedOn,
-                    Users = includeUsers && owner.Users != null
-                        ? owner.Users.Select(MapUser).OrderBy(u => u.UserName).ToList()
+            {
+                Id = owner.Id,
+                Name = owner.Name,
+                CreatedBy = owner.CreatedBy,
+                CreatedOn = owner.CreatedOn,
+                UpdatedBy = owner.UpdatedBy,
+                UpdatedOn = owner.UpdatedOn,
+                Users = includeUsers && owner.SipAccounts != null
+                        ? owner.SipAccounts.Select(MapToUser).OrderBy(u => u.UserName).ToList()
                         : new List<SipAccount>()
-                };
+            };
         }
 
-        private SipAccount MapUser(SipAccountEntity dbUser)
+        private SipAccount MapToUser(SipAccountEntity dbUser)
         {
             return new SipAccount
             {

@@ -25,51 +25,38 @@
  */
 
 using System;
-using System.Linq;
-using System.Web.Http;
-using CCM.Core.Entities;
-using CCM.Core.Helpers;
-using CCM.Core.Interfaces.Managers;
-using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
-using CCM.Web.Models.ApiExternal;
-using CCM.WebCommon.Authentication;
-using CCM.WebCommon.Infrastructure.WebApi;
+using Microsoft.AspNetCore.Mvc;
 using NLog;
+using CCM.Core.Entities;
+using CCM.Core.Interfaces.Repositories;
+using CCM.Web.Infrastructure;
+using CCM.Web.Models.ApiExternal;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
     /// <summary>
     /// Creating accounts from external service.
     /// </summary>
-    [CcmUserBasicAuthentication]
-    [CcmApiAuthorize(Roles = "Admin,AccountManager")]
-    [RoutePrefix("api/account")]
-    public class AccountController : ApiController
+    [CcmAuthorize(Roles = "Admin,AccountManager")]
+    [Route("api/account")]
+    public class AccountController : ControllerBase
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly ISipAccountManager _sipAccountManager;
-        private readonly IOwnersRepository _ownersRepository;
-        private readonly ICodecTypeRepository _codecTypeRepository;
+        private readonly ISipAccountRepository _sipAccountRepository;
 
-        public AccountController(
-            ISipAccountManager userManager,
-            IOwnersRepository ownersRepository,
-            ICodecTypeRepository codecTypeRepository)
+        public AccountController(ISipAccountRepository userManager)
         {
-            _sipAccountManager = userManager;
-            _ownersRepository = ownersRepository;
-            _codecTypeRepository = codecTypeRepository;
+            _sipAccountRepository = userManager;
         }
 
         [HttpGet]
         [Route("get")]
-        public IHttpActionResult Get(string username)
+        public ActionResult Get(string username)
         {
             log.Debug("Call to ExternalAccountController.Get");
 
-            SipAccount user = _sipAccountManager.GetByUserName(username);
+            SipAccount user = _sipAccountRepository.GetByUserName(username);
 
             if (user == null)
             {
@@ -84,10 +71,9 @@ namespace CCM.Web.Controllers.ApiExternal
             });
         }
 
-        [ValidateModel]
         [HttpPost]
         [Route("add")]
-        public IHttpActionResult Add(AddUserModel model)
+        public ActionResult Add(AddUserModel model)
         {
             log.Debug("Call to ExternalAccountController.AddUser");
 
@@ -102,33 +88,32 @@ namespace CCM.Web.Controllers.ApiExternal
                 UserName = model.UserName.Trim(),
                 DisplayName = model.DisplayName,
                 Comment = model.Comment,
-                Owner = _ownersRepository.GetByName(Owners.SrOwnerName),
-                CodecType = _codecTypeRepository.Find(CodecTypes.Personliga).FirstOrDefault(),
+                Owner = null,
+                CodecType = null,
                 Password = model.Password
             };
 
             try
             {
-                var existingUser = _sipAccountManager.GetByUserName(user.UserName);
+                var existingUser = _sipAccountRepository.GetByUserName(user.UserName);
                 if (existingUser != null)
                 {
                     return Conflict();
                 }
 
-                _sipAccountManager.Create(user);
+                _sipAccountRepository.Create(user);
                 return Created(Url.Content("get?username=" + user.UserName), "User created");
             }
             catch (Exception ex)
             {
                 log.Error(ex, "Could not create user");
-                return InternalServerError();
+                return StatusCode(500, new ApplicationException("Could not create user"));
             }
         }
 
         [HttpPost]
-        [ValidateModel]
         [Route("update")]
-        public IHttpActionResult Update(UserModel model)
+        public ActionResult Update(UserModel model)
         {
             log.Debug("Call to ExternalAccountController.EditUser");
 
@@ -137,7 +122,7 @@ namespace CCM.Web.Controllers.ApiExternal
                 return BadRequest("Parameters missing.");
             }
 
-            var user = _sipAccountManager.GetByUserName(model.UserName);
+            var user = _sipAccountRepository.GetByUserName(model.UserName);
 
             if (user == null)
             {
@@ -150,21 +135,19 @@ namespace CCM.Web.Controllers.ApiExternal
 
             try
             {
-                _sipAccountManager.Update(user);
+                _sipAccountRepository.Update(user);
                 return Ok("User updated");
             }
             catch (Exception ex)
             {
-                log.Error(ex, "Could not update user");
-                return InternalServerError(new ApplicationException("User could not be updated."));
+                log.Error(ex, "User could not be updated");
+                return StatusCode(500, new ApplicationException("User could not be updated"));
             }
-
         }
 
         [HttpPost]
-        [ValidateModel]
         [Route("updatepassword")]
-        public IHttpActionResult UpdatePassword(ChangePasswordModel model)
+        public ActionResult UpdatePassword(ChangePasswordModel model)
         {
             log.Debug("Call to ExternalAccountController.UpdatePassword");
 
@@ -173,7 +156,7 @@ namespace CCM.Web.Controllers.ApiExternal
                 return BadRequest("Parameters missing.");
             }
 
-            var user = _sipAccountManager.GetByUserName(model.UserName);
+            var user = _sipAccountRepository.GetByUserName(model.UserName);
 
             if (user == null)
             {
@@ -182,20 +165,19 @@ namespace CCM.Web.Controllers.ApiExternal
 
             try
             {
-                _sipAccountManager.UpdatePassword(user.Id, model.NewPassword);
+                _sipAccountRepository.UpdatePassword(user.Id, model.NewPassword);
                 return Ok("Password updated");
             }
             catch (Exception ex)
             {
                 log.Error(ex, "Could not update password");
-                return InternalServerError(new ApplicationException("Password could not be updated."));
+                return StatusCode(500, new ApplicationException("Could not update password"));
             }
         }
 
-        [ValidateModel]
         [HttpDelete]
         [Route("delete")]
-        public IHttpActionResult Delete(string userName)
+        public ActionResult Delete(string userName)
         {
             log.Debug("Call to ExternalAccountController.Delete");
 
@@ -204,7 +186,7 @@ namespace CCM.Web.Controllers.ApiExternal
                 return BadRequest("Can not delete user, username missing");
             }
 
-            SipAccount user = _sipAccountManager.GetByUserName(userName);
+            SipAccount user = _sipAccountRepository.GetByUserName(userName);
 
             if (user == null)
             {
@@ -214,16 +196,17 @@ namespace CCM.Web.Controllers.ApiExternal
 
             try
             {
-                if (!_sipAccountManager.Delete(user.Id))
+                if (!_sipAccountRepository.DeleteWithResult(user.Id))
                 {
-                    return InternalServerError(new ApplicationException("User not deleted"));
+                    log.Error("User not deleted");
+                    return StatusCode(500, new ApplicationException("User not deleted"));
                 }
                 return Ok("User deleted");
             }
             catch (Exception ex)
             {
-                log.Error(ex, "Could not delete user");
-                return InternalServerError(new ApplicationException("User could not be deleted. " + ex.Message));
+                log.Error(ex, "User could not be deleted");
+                return StatusCode(500, new ApplicationException("User could not be deleted. " + ex.Message));
             }
         }
     }

@@ -25,18 +25,16 @@
  */
 
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Managers;
-using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
-using CCM.Web.Models;
 using CCM.Web.Models.Settings;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = Roles.Admin)]
-    public class SettingsController : BaseController
+    public class SettingsController : Controller
     {
         private readonly ISettingsManager _settingsManager;
 
@@ -47,7 +45,10 @@ namespace CCM.Web.Controllers
 
         public ActionResult Index()
         {
-            var model = new SettingsViewModel { Settings = _settingsManager.GetSettings().OrderBy(s => s.Name).ToList() };
+            var model = new SettingsViewModel
+            {
+                Settings = _settingsManager.GetSettings().OrderBy(s => s.Name).ToList()
+            };
             return View(model);
         }
 

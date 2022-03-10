@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Sockets;
+using CCM.Web.Properties;
 
 namespace CCM.Web.Models.Location
 {
@@ -55,21 +56,26 @@ namespace CCM.Web.Models.Location
         [Display(ResourceType = typeof(Resources), Name = "Carrier_Connection_Id")]
         public string CarrierConnectionId { get; set; }
 
+        [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "Profile_Group_Required")]
         [Display(ResourceType = typeof(Resources), Name = "Profile_Group")]
-        [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "Profile_Group_Required")]
-        public Guid? ProfileGroup { get; set; }
+        public Guid ProfileGroup { get; set; }
 
         public List<ListItemViewModel> ProfileGroups { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "Region")]
-        public Guid Region { get; set; }
+        public Guid? Region { get; set; }
 
         public List<ListItemViewModel> Regions { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "City")]
-        public Guid City { get; set; }
+        public Guid? City { get; set; }
 
         public List<ListItemViewModel> Cities { get; set; }
+
+        [Display(ResourceType = typeof(Resources), Name = "Category")]
+        public Guid? Category { get; set; }
+
+        public List<ListItemViewModel> Categories { get; set; }
 
         [MaxLength(8)]
         [Display(ResourceType = typeof(Resources), Name = "Location_Short_Name")]
@@ -88,8 +94,7 @@ namespace CCM.Web.Models.Location
                 }
                 else
                 {
-                    IPAddress ipAddress;
-                    if (IPAddress.TryParse(Net, out ipAddress))
+                    if (IPAddress.TryParse(Net, out var ipAddress))
                     {
                         if (ipAddress.AddressFamily != AddressFamily.InterNetwork)
                         {
@@ -111,8 +116,7 @@ namespace CCM.Web.Models.Location
                 }
                 else
                 {
-                    IPAddress ipAddress;
-                    if (IPAddress.TryParse(NetV6, out ipAddress))
+                    if (IPAddress.TryParse(NetV6, out var ipAddress))
                     {
                         if (ipAddress.AddressFamily != AddressFamily.InterNetworkV6)
                         {

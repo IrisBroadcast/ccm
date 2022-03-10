@@ -24,78 +24,82 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using CCM.Core.Entities.Discovery;
+using CCM.DiscoveryApi.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using NLog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
-using CCM.Core.Entities.Discovery;
-using CCM.DiscoveryApi.Authentication;
-using CCM.DiscoveryApi.Infrastructure;
-using CCM.DiscoveryApi.Models;
-using CCM.DiscoveryApi.Models.DiscoveryModels;
-using CCM.DiscoveryApi.Services;
-using NLog;
+using CCM.DiscoveryApi.Models.Discovery;
+using Microsoft.AspNetCore.Http;
 
 namespace CCM.DiscoveryApi.Controllers
 {
-    [DiscoveryControllerConfig]
-    [DiscoveryAuthentication]
-    [Authorize]
-    public class DiscoveryController : ApiController
+    [Produces("application/xml")]
+    [Authorize("BasicAuthenticationDiscoveryV1")]
+    public class DiscoveryController : ControllerBase
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly IDiscoveryHttpService _discoveryService;
 
-        public DiscoveryController()
+        public DiscoveryController(IDiscoveryHttpService discoveryHttpService)
         {
-            _discoveryService = new DiscoveryHttpService();
+            _discoveryService = discoveryHttpService;
         }
 
         [Route("~/filters")]
         [HttpPost]
-        public async Task<SrDiscovery> Filters()
+        public async Task<DiscoveryResponse> Filters()
         {
             log.Trace("Discovery API - requesting 'filters'");
 
             var filterDtos = await _discoveryService.GetFiltersAsync(Request);
 
-            var filters = filterDtos.Select(f => new Filter
+            var filters = filterDtos.Select(f => new DiscoveryFilter
             {
                 Name = f.Name,
-                FilterOptions = f.Options.Select(o => new FilterOption { Name = o }).ToList()
+                FilterOptions = f.Options.Select(o => new DiscoveryFilterOption { Name = o }).ToList()
             }).ToList();
 
-            return new SrDiscovery { Filters = filters };
+            return new DiscoveryResponse { Filters = filters };
         }
 
         [Route("~/profiles")]
         [HttpPost]
-        public async Task<SrDiscovery> Profiles()
+        public async Task<DiscoveryResponse> Profiles()
         {
             log.Trace("Discovery API - requesting 'profiles'");
 
             var profileDtos = await _discoveryService.GetProfilesAsync(Request);
 
             var profiles = profileDtos
-                .Select(p => new Profile { Name = p.Name, Sdp = p.Sdp })
+                .Select(p => new DiscoveryProfile { Name = p.Name, Sdp = p.Sdp })
                 .ToList();
-            return new SrDiscovery { Profiles = profiles };
+            return new DiscoveryResponse { Profiles = profiles };
         }
 
         [Route("~/useragents")]
         [HttpPost]
-        [DiscoveryParameterParser]
-        public async Task<SrDiscovery> UserAgents()
+        public async Task<DiscoveryResponse> UserAgents([FromForm] DiscoveryUserAgentRequest reqFormData)
         {
-            var parameters = (SrDiscoveryParameters)Request.Properties["SRDiscoveryParameters"];
+            if (Request.ContentType != "application/x-www-form-urlencoded")
+            {
+                log.Warn("Wrong content type, expecting 'application/x-www-form-urlencoded'");
+            }
+
+            // Since nested filter choices does not work with flat keys, special parsing is done
+            DiscoveryUserAgentRequest srDiscoveryParameters = ParseDiscoveryParameters(Request.Form);
 
             var searchParams = new UserAgentSearchParamsDto
             {
-                Caller = parameters.Caller,
-                Callee = parameters.Callee,
-                IncludeCodecsInCall = parameters.IncludeCodecsInCall,
-                Filters = parameters.Filters
+                Caller = srDiscoveryParameters.Caller,
+                Callee = srDiscoveryParameters.Callee,
+                IncludeCodecsInCall = srDiscoveryParameters.IncludeCodecsInCall,
+                Filters = srDiscoveryParameters.Filters
             };
 
             log.Trace("Discovery API - requesting 'useragents'", searchParams);
@@ -105,23 +109,49 @@ namespace CCM.DiscoveryApi.Controllers
             if (uaResult == null)
             {
                 log.Info("No user agents returned for DiscoveryV1");
-                return new SrDiscovery();
+                return new DiscoveryResponse();
             }
 
-            var profiles = uaResult.Profiles?.Select(p => new Profile() { Name = p.Name, Sdp = p.Sdp }).ToList() ?? new List<Profile>();
+            var profiles = uaResult.Profiles?.Select(p => new DiscoveryProfile() { Name = p.Name, Sdp = p.Sdp }).ToList() ?? new List<DiscoveryProfile>();
 
-            var userAgents = uaResult.UserAgents?.Select(ua => new UserAgent()
+            var userAgents = uaResult.UserAgents?.Select(ua => new DiscoveryUserAgent()
             {
                 SipId = ua.SipId,
                 ConnectedTo = ua.ConnectedTo,
-                ProfileRec = ua.Profiles.Select(p => new UserAgentProfileRef { Name = p }).ToList(),
-                MetaData = ua.MetaData.Select(m => new UserAgentMetaData() { Key = m.Key, Value = m.Value }).ToList()
-            }).ToList() ?? new List<UserAgent>();
+                ProfileRec = ua.Profiles.Select(p => new DiscoveryUserAgentProfileRef { Name = p }).ToList(),
+                MetaData = ua.MetaData.Select(m => new DiscoveryUserAgentMetaData() { Key = m.Key, Value = m.Value }).ToList()
+            }).ToList() ?? new List<DiscoveryUserAgent>();
 
             log.Debug("Discovery V1 Returning {0} useragents and {1} profiles", uaResult.UserAgents?.Count ?? 0, uaResult.Profiles?.Count ?? 0);
 
-            return new SrDiscovery { UserAgents = userAgents, Profiles = profiles };
+            return new DiscoveryResponse { UserAgents = userAgents, Profiles = profiles };
         }
 
+        /// <summary>
+        /// These parameters are not filter parameters
+        /// </summary>
+        private readonly IEnumerable<string> _nonFilterKeys = new List<string> { "username", "pwdhash", "caller", "callee", "includeCodecsInCall" }.Select(i => i.ToLower());
+
+        private DiscoveryUserAgentRequest ParseDiscoveryParameters(IFormCollection formData)
+        {
+            if (formData == null)
+            {
+                return new DiscoveryUserAgentRequest();
+            }
+            IList<KeyValuePair<string, string>> filters = formData.Keys
+                .Where(k => !_nonFilterKeys.Contains(k.ToLower()))
+                .Select(key => new KeyValuePair<string, string>(key, formData[key]))
+                .ToList();
+
+            bool.TryParse(formData["includeCodecsInCall"], out var includeCodecsInCall);
+
+            return new DiscoveryUserAgentRequest
+            {
+                Caller = formData["caller"],
+                Callee = formData["callee"],
+                IncludeCodecsInCall = includeCodecsInCall,
+                Filters = filters
+            };
+        }
     }
 }

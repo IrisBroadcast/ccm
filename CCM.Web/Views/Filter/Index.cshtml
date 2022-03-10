@@ -1,7 +1,10 @@
-﻿@model System.Collections.Generic.List<CCM.Web.Models.Filter.FilterViewModel>
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model System.Collections.Generic.List<CCM.Web.Models.Filter.FilterViewModel>
 
 @{
-    ViewBag.Title = Resources.Filters;
+    ViewData["Title"] = @Localizer["Filters"];
 }
 
 @section search
@@ -9,8 +12,8 @@
     @using (Html.BeginForm("Index", "Filter", FormMethod.Post, new { @class = "navbar-form navbar-right ccm-navbar-search", role = "search" }))
     {
         <div class="form-group">
-            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Resources.Search" value="@ViewBag.SearchString">
-            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Resources.Search</button>
+            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Localizer["Search"]" value="@ViewData["SearchString"]">
+            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Localizer["Search"]</button>
         </div>
     }
 }
@@ -19,11 +22,12 @@
     <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header ccm-sub-navbar--admin--header">
-                <span class="navbar-brand">@Resources.Filters</span>
+                <h2>@Localizer["Filters"]</h2>
+                <span class="navbar-page-description"></span>
             </div>
             <div class="navbar ccm-sub-navbar--admin--links">
                 <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
-                    <li>@Html.ActionLink(Resources.New_Filter, "Create", "Filter")</li>
+                    <li>@Html.ActionLink(@Localizer["New_Filter"].Value, "Create", "Filter")</li>
                 </ul>
             </div>
         </div>
@@ -34,7 +38,7 @@
     <div class="panel panel-default list-ccm">
         <div class="panel-heading list-ccm-heading">
             <div class="row">
-                <div class="col-md-11">@Resources.Name</div>
+                <div class="col-md-11">@Localizer["Name"]</div>
                 <div class="col-md-1"> </div>
             </div>
         </div>

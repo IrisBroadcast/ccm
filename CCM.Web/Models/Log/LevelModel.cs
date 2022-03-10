@@ -30,5 +30,4 @@ namespace CCM.Web.Models.Log
     {
         public string LogLevel { get; set; }
     }
-
 }

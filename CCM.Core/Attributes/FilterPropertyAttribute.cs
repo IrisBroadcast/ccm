@@ -28,6 +28,9 @@ using System;
 
 namespace CCM.Core.Attributes
 {
+    /// <summary>
+    /// Used to collect possible discovery filter properties, use as '[FilterProperty(TableName = "Locations", ColumnName = "Name")]'
+    /// </summary>
     public class FilterPropertyAttribute : Attribute
     {
         public string TableName { get; set; }

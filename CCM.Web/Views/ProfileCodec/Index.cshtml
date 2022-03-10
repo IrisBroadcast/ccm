@@ -1,0 +1,102 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@using CCM.Core.Helpers
+@using Roles = CCM.Core.Helpers.Roles
+@model List<CCM.Core.Entities.ProfileCodec>
+
+@{
+    ViewData["Title"] = @Localizer["Profiles"];
+}
+
+@section search
+{
+    @using (Html.BeginForm("Index", "ProfileCodec", FormMethod.Post, new { @class = "navbar-form navbar-right ccm-navbar-search", role = "search" }))
+    {
+        <div class="form-group">
+            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Localizer["Search"]" value="@ViewData["SearchString"]">
+            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Localizer["Search"]</button>
+        </div>
+    }
+}
+
+<div class="row">
+    <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header ccm-sub-navbar--admin--header">
+                <h2>@Localizer["Profiles"]</h2>
+                <span class="navbar-page-description"></span>
+            </div>
+            <div class="navbar ccm-sub-navbar--admin--links">
+                @if (User.IsInRole(Roles.Admin))
+                {
+                    <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
+                        <li>@Html.ActionLink(@Localizer["New_Profile"].Value, "Create", "ProfileCodec")</li>
+                    </ul>
+                }
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="panel panel-default list-ccm">
+        <div class="panel-heading list-ccm-heading">
+            <div class="row">
+                <div class="col-md-3">@Localizer["Name"]</div>
+                <div class="col-md-8">@Localizer["Description"]</div>
+            </div>
+        </div>
+        <div class="panel-body-lp" id="profiles">
+            @foreach (var profile in Model)
+            {
+                <div class="profile-row">
+                    @Html.HiddenFor(p => profile.Id, new { @class = "profileId" })
+                    <div class="panel-body-item row">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#@profile.Id">
+                            <div class="col-md-3">@profile.Name</div>
+                            <div class="col-md-8">@profile.Description</div>
+                            <div class="col-md-1 text-right list-ccm-icongroup">
+                                @if (User.IsInRole(Roles.Admin))
+                                {
+                                    @Html.ActionLink(" ", "Edit", "ProfileCodec", new { @id = profile.Id }, new { @class = "glyphicon glyphicon-pencil list-ccm-inlineicon" })
+                                    @Html.ActionLink(" ", "Delete", "ProfileCodec", new { @id = profile.Id }, new { @class = "glyphicon glyphicon-trash list-ccm-inlineicon" })
+                                }
+                            </div>
+                        </a>
+                    </div>
+                    <div class="row panel-collapse collapse mui-well" id="@profile.Id">
+                        <div class="col-md-12 panel-body">
+                            <div class="col-md-4">
+                                <div>
+                                    <dl>
+                                        <dt>@Localizer["Groups"]</dt>
+                                        @foreach (var group in profile.Groups)
+                                        {
+                                            <dd>@group.Name</dd>
+                                        }
+                                    </dl>
+                                </div>
+                                <div>
+                                    <dl>
+                                        <dt>@Localizer["UserAgents"]</dt>
+                                        @foreach (var userAgent in profile.UserAgents)
+                                        {
+                                            <dd>@userAgent.Name</dd>
+                                        }
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="col-md-offset-4">
+                                <dl>
+                                    <dt>@Localizer["SDP"]</dt>
+                                    <dd><pre>@profile.Sdp</pre></dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

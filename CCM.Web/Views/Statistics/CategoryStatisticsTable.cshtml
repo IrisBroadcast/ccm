@@ -1,0 +1,37 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Statistics.DateBasedChartCategoriesViewModel
+
+<div class="tab-pane--topbanner">
+    <a href="@Url.Action("GetDateBasedCsv", new { filterType = Model.FilterType, startDate = Model.StartDate, endDate = Model.EndDate })"><span class="glyphicon glyphicon-download"></span>&nbsp;@Localizer["Download_Csv"]</a>
+</div>
+<div>
+    <h3>@Localizer["Categories"] @Localizer["Stats_Number_Of_Calls"]</h3>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>@Localizer["Category"]</th>
+                <th>@Localizer["Total"] @Localizer["Calls"]</th>
+                <th>@Localizer["Total"] @Localizer["Call_Time"]</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var row in @Model.Stats)
+            {
+                <tr>
+                    <td style="text-transform: capitalize">
+                        @row.Category
+                    </td>
+                    <td>@row.NumberOfCalls</td>
+                    <td>@TimeSpan.FromSeconds(row.TotalCallTime).ToString(@"hh\:mm") @Localizer["Hours"]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="errormessage"></div>
+<div>
+    <svg id="bar-chart" width="650" height="400"></svg>
+</div>

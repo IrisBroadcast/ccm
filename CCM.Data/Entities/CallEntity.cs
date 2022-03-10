@@ -24,10 +24,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using CCM.Core.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using CCM.Core.Enums;
 
 namespace CCM.Data.Entities
 {
@@ -36,28 +36,34 @@ namespace CCM.Data.Entities
     {
         [Key]
         public Guid Id { get; set; }
-        public string SipCallID { get; set; }
         public DateTime Started { get; set; }
         public DateTime Updated { get; set; }
-        public SipCallState? State { get; set; }
+        public SipCallState? State { get; set; } // TODO: maybe remove this column, in use?
         public bool Closed { get; set; }
-        public bool IsPhoneCall { get; set; }
+        public bool IsPhoneCall { get; set; } // TODO Enum and change name?
+        public string SDP { get; set; }
 
-        public string DlgHashId { get; set; }
-        public string DlgHashEnt { get; set; }
+        [Column("SipCallID")]
+        public string DialogCallId { get; set; } // TODO: Rename Column...
+        [Column("DlgHashId")]
+        public string DialogHashId { get; set; }
+        [Column("DlgHashEnt")]
+        public string DialogHashEnt { get; set; }
 
         public Guid? FromId { get; set; }
         [ForeignKey("FromId")]
-        public virtual RegisteredSipEntity FromSip { get; set; }
+        public virtual RegisteredCodecEntity FromCodec { get; set; } // TODO: Rename "FromUserAgent"
         public string FromUsername { get; set; }
         public string FromDisplayName { get; set; }
-        public string FromTag { get; set; } // Not in use?
+        public string FromTag { get; set; } // TODO: Not in use?
+        public string FromCategory { get; set; }
 
         public Guid? ToId { get; set; }
         [ForeignKey("ToId")]
-        public virtual RegisteredSipEntity ToSip { get; set; }
+        public virtual RegisteredCodecEntity ToCodec { get; set; } // TODO: Rename "ToUserAgent"
         public string ToUsername { get; set; }
         public string ToDisplayName { get; set; }
-        public string ToTag { get; set; } // Not in use?
+        public string ToTag { get; set; } // TODO: Not in use?
+        public string ToCategory { get; set; }
     }
 }

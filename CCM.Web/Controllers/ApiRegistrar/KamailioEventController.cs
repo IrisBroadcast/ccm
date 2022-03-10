@@ -24,14 +24,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Web.Http;
-using System.Web.Http.Cors;
-using CCM.Core.Helpers;
-using CCM.Core.Interfaces.Kamailio;
 using CCM.Core.Interfaces.Managers;
+using CCM.Core.Interfaces.Parser;
 using CCM.Core.SipEvent;
 using CCM.Core.SipEvent.Messages;
-using CCM.Web.Infrastructure.SignalR;
+using CCM.Core.SipEvent.Models;
+using CCM.Web.Hubs;
+using CCM.Web.Mappers;
+using Microsoft.AspNetCore.Mvc;
 using NLog;
 
 namespace CCM.Web.Controllers.ApiRegistrar
@@ -40,80 +40,84 @@ namespace CCM.Web.Controllers.ApiRegistrar
     /// Receives Kamailio events formatted in a '::' separated string
     /// String format : Kamailio Events
     /// </summary>
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
-    public class KamailioEventController : ApiController
+    public class KamailioEventController : ControllerBase
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly ISipMessageManager _sipMessageManager;
-        private readonly IKamailioMessageParser _kamailioMessageParser;
-        private readonly IGuiHubUpdater _guiHubUpdater;
-        private readonly IStatusHubUpdater _statusHubUpdater;
+        private readonly IKamailioEventParser _kamailioEventParser;
+        private readonly IWebGuiHubUpdater _webGuiHubUpdater;
+        private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
         private readonly ISettingsManager _settingsManager;
+        private readonly RegisteredUserAgentViewModelsProvider _registeredUserAgentViewModelsProvider;
 
-        public KamailioEventController(ISipMessageManager sipMessageManager, IKamailioMessageParser kamailioMessageParser,
-            IGuiHubUpdater guiHubUpdater, IStatusHubUpdater statusHubUpdater, ISettingsManager settingsManager)
+        public KamailioEventController(
+            ISipMessageManager sipMessageManager,
+            IKamailioEventParser kamailioEventParser,
+            IWebGuiHubUpdater webGuiHubUpdater,
+            ICodecStatusHubUpdater codecStatusHubUpdater,
+            ISettingsManager settingsManager,
+            RegisteredUserAgentViewModelsProvider registeredUserAgentViewModelsProvider)
         {
             _sipMessageManager = sipMessageManager;
-            _kamailioMessageParser = kamailioMessageParser;
-            _guiHubUpdater = guiHubUpdater;
-            _statusHubUpdater = statusHubUpdater;
+            _kamailioEventParser = kamailioEventParser;
+            _webGuiHubUpdater = webGuiHubUpdater;
+            _codecStatusHubUpdater = codecStatusHubUpdater;
             _settingsManager = settingsManager;
+            _registeredUserAgentViewModelsProvider = registeredUserAgentViewModelsProvider;
+       
         }
 
-        public string Get()
+        [HttpGet]
+        public string Index()
         {
-            // For test
             return $"Hello. I'm a Kamailio event receiver. UseKamailioEvent={_settingsManager.UseOldKamailioEvent}";
         }
 
-        public IHttpActionResult Post([FromBody] string message)
+        [HttpPost]
+        public IActionResult Index([FromBody] string message)
         {
             if (!_settingsManager.UseOldKamailioEvent)
             {
-                if(log.IsTraceEnabled)
+                if (log.IsTraceEnabled)
                 {
                     log.Warn("Receiving event but receiver is not ON for 'UseOldKamailioEvent'");
                 }
                 return Ok();
             }
 
-            using (new TimeMeasurer("Incoming Kamailio event"))
+            if (string.IsNullOrWhiteSpace(message))
             {
-                if (string.IsNullOrWhiteSpace(message))
-                {
-                    log.Warn("Kamailio event controller received empty data");
-                    return BadRequest();
-                }
-
-                SipMessageBase sipMessage = _kamailioMessageParser.Parse(message);
-
-                if (sipMessage == null)
-                {
-                    log.Warn("Incorrect Kamailio message format: {0}", message);
-                    return BadRequest();
-                }
-
-                SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
-
-                if (log.IsDebugEnabled)
-                {
-                    log.Debug("SIP message, Handled: {0}, Parsed: {1}, Result: {2}", message, sipMessage.ToDebugString(), result?.ChangeStatus);
-                }
-
-                if (result == null)
-                {
-                    log.Warn("Kamailio message was handled but result was null");
-                }
-                else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
-                {
-                    _guiHubUpdater.Update(result); // First web gui
-                    _statusHubUpdater.Update(result); // Then codec status to external clients
-                }
-
-                return Ok();
+                log.Warn("Kamailio event controller received empty data");
+                return BadRequest();
             }
-        }
 
+            SipMessageBase sipMessage = _kamailioEventParser.Parse(message);
+
+            if (sipMessage == null)
+            {
+                log.Warn("Incorrect Kamailio message format: {0}", message);
+                return BadRequest();
+            }
+
+            SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
+
+            if (log.IsDebugEnabled)
+            {
+                log.Debug("SIP message, Handled: {0}, Parsed: {1}, Result: {2}", message, sipMessage.ToDebugString(), result?.ChangeStatus);
+            }
+
+            if (result == null)
+            {
+                log.Warn("Kamailio message was handled but result was null");
+            }
+            else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
+            {
+                _webGuiHubUpdater.Update(result); // First web gui
+                _codecStatusHubUpdater.Update(result); // Then codec status to external clients
+            }
+
+            return Ok();
+        }
     }
 }

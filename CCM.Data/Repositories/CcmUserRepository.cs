@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using CCM.Core.Entities;
@@ -41,146 +41,112 @@ namespace CCM.Data.Repositories
     public class CcmUserRepository : BaseRepository, ICcmUserRepository
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private readonly IRoleRepository _roleRepository;
 
-        public CcmUserRepository(IAppCache cache) : base(cache)
+        public CcmUserRepository(
+            IAppCache cache,
+            CcmDbContext ccmDbContext,
+            IRoleRepository roleRepository)
+            : base(cache, ccmDbContext)
         {
+            _roleRepository = roleRepository;
         }
 
         public bool Create(CcmUser ccmUser)
         {
-            using (var db = GetDbContext())
-            {
-                var dbUser = new UserEntity();
-                MapUserEntity(db, ccmUser, dbUser);
+            var dbUser = new UserEntity();
+            dbUser = MapToUserEntity(ccmUser, dbUser);
 
-                db.Users.Add(dbUser);
-                var result = db.SaveChanges();
-                ccmUser.Id = dbUser.Id;
-                return result >= 1;
-            }
+            _ccmDbContext.Users.Add(dbUser);
+            var success = _ccmDbContext.SaveChanges();
+            ccmUser.Id = dbUser.Id;
+            return success >= 1;
         }
 
         public bool Update(CcmUser ccmUser)
         {
-            using (var db = GetDbContext())
+            UserEntity dbUser = _ccmDbContext.Users.SingleOrDefault(u => u.Id == ccmUser.Id);
+            if (dbUser == null)
             {
-                var dbUser = db.Users.SingleOrDefault(u => u.Id == ccmUser.Id);
-                if (dbUser == null)
-                {
-                    return false;
-                }
-
-                MapUserEntity(db, ccmUser, dbUser);
-
-                var result = db.SaveChanges();
-                return result == 1;
+                return false;
             }
+
+            dbUser = MapToUserEntity(ccmUser, dbUser);
+
+            return _ccmDbContext.SaveChanges() == 1;
         }
 
         public void UpdatePassword(Guid id, string passwordHash, string salt)
         {
-            using (var db = GetDbContext())
+            UserEntity dbUser = _ccmDbContext.Users.SingleOrDefault(u => u.Id == id);
+            if (dbUser != null)
             {
-                UserEntity dbUser = db.Users.SingleOrDefault(u => u.Id == id);
-
-                if (dbUser != null)
-                {
-                    dbUser.PasswordHash = passwordHash;
-                    dbUser.Salt = salt;
-                    db.SaveChanges();
-                }
+                dbUser.PasswordHash = passwordHash;
+                dbUser.Salt = salt;
+                _ccmDbContext.SaveChanges();
             }
         }
 
         public bool Delete(Guid userId)
         {
-            using (var db = GetDbContext())
+            UserEntity user = _ccmDbContext.Users.SingleOrDefault(u => u.Id == userId);
+            if (user == null)
             {
-                UserEntity user = db.Users.SingleOrDefault(u => u.Id == userId);
-
-                if (user == null)
-                {
-                    return false;
-                }
-
-                db.Users.Remove(user);
-                var result = db.SaveChanges();
-                return result == 1;
+                return false;
             }
+
+            _ccmDbContext.Users.Remove(user);
+
+            return _ccmDbContext.SaveChanges() == 1;
         }
 
         public CcmUser GetById(Guid userId)
         {
-            using (var db = GetDbContext())
-            {
-                UserEntity user = db.Users.SingleOrDefault(u => u.Id == userId);
-                return MapToCcmUser(user);
-            }
+            UserEntity user = _ccmDbContext.Users
+                .Include(u => u.Role)
+                .SingleOrDefault(u => u.Id == userId);
+            return MapToCcmUser(user);
         }
 
         public List<CcmUser> GetAll()
         {
-            using (var db = GetDbContext())
-            {
-                var users = db.Users
-                    .Include(u => u.Role)
-                    .ToList();
-
-                return users.Select(MapToCcmUser).OrderBy(u => u.UserName).ToList();
-            }
+            var users = _ccmDbContext.Users
+                .Include(u => u.Role)
+                .ToList();
+            return users.Select(MapToCcmUser).OrderBy(u => u.UserName).ToList();
         }
 
         public List<CcmUser> FindUsers(string startsWith)
         {
-            using (var db = GetDbContext())
-            {
-                var users = db.Users
-                    .Where(u => u.UserName.Contains(startsWith))
-                    .ToList();
-                return users.Select(MapToCcmUser).OrderBy(u => u.UserName).ToList();
-            }
+            var users = _ccmDbContext.Users
+                .Where(u => u.UserName.Contains(startsWith))
+                .ToList();
+            return users.Select(MapToCcmUser).OrderBy(u => u.UserName).ToList();
         }
 
         public CcmUser GetByUserName(string userName)
         {
-            using (var db = GetDbContext())
-            {
-                UserEntity user = db.Users.SingleOrDefault(u => u.UserName == userName);
-                return MapToCcmUser(user);
-            }
+            UserEntity user = _ccmDbContext.Users.Include(usr => usr.Role).SingleOrDefault(u => u.UserName == userName);
+            return MapToCcmUser(user);
         }
 
         public async Task<bool> AuthenticateAsync(string username, string password)
         {
-            using (var db = GetDbContext())
+            var user = await _ccmDbContext.Users.FirstOrDefaultAsync(u => u.UserName == username);
+            if (user == null)
             {
-                var user = await db.Users.FirstOrDefaultAsync(u => u.UserName == username);
-                if (user == null)
-                {
-                    return false;
-                }
-
-                string hash = CryptoHelper.Md5HashSaltedPassword(password, user.Salt);
-                var success = (hash == user.PasswordHash);
-
-                if (!success)
-                {
-                    log.Info("Authentication failed for user {0}", username);
-                }
-
-                return success;
-
+                return false;
             }
-        }
 
-        public CcmRole GetUserRole(CcmUser ccmUser)
-        {
-            using (var db = GetDbContext())
+            string hash = CryptoHelper.Md5HashSaltedPassword(password, user.Salt);
+            var success = (hash == user.PasswordHash);
+
+            if (!success)
             {
-                var user = db.Users.SingleOrDefault(u => u.Id == ccmUser.Id);
-
-                return user?.Role == null ? null : new CcmRole { Id = user.Role.Id, Name = user.Role.Name };
+                log.Info("Authentication failed for user {0}", username);
             }
+
+            return success;
         }
 
         private static CcmUser MapToCcmUser(UserEntity dbUser)
@@ -197,27 +163,24 @@ namespace CCM.Data.Repositories
             };
         }
 
-        private void MapUserEntity(CcmDbContext cxt, CcmUser ccmUser, UserEntity dbUser)
+        private UserEntity MapToUserEntity(CcmUser ccmUser, UserEntity dbUser)
         {
             dbUser.UserName = ccmUser.UserName;
             dbUser.FirstName = ccmUser.FirstName;
             dbUser.LastName = ccmUser.LastName;
             dbUser.Comment = ccmUser.Comment;
 
-            var role = string.IsNullOrWhiteSpace(ccmUser.RoleId) ? null : cxt.Roles.SingleOrDefault(r => r.Id == new Guid(ccmUser.RoleId));
-
             // Only admins allowed to assign admin role to account
-            if (CurrentUserIsAdmin() || role == null || role.Name != Roles.Admin)
-            {
-                dbUser.Role = role;
-            }
-
+            dbUser.Role =  string.IsNullOrWhiteSpace(ccmUser.RoleId) ? null : _ccmDbContext.Roles.SingleOrDefault(r => r.Id == new Guid(ccmUser.RoleId));
+          
             if (!string.IsNullOrEmpty(ccmUser.Password))
             {
                 var saltBytes = CryptoHelper.GenerateSaltBytes();
                 dbUser.PasswordHash = CryptoHelper.Md5HashSaltedPassword(ccmUser.Password, saltBytes);
                 dbUser.Salt = Convert.ToBase64String(saltBytes);
             }
+
+            return dbUser;
         }
     }
 }

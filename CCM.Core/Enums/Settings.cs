@@ -24,15 +24,53 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+
 namespace CCM.Core.Enums
 {
     public enum SettingsEnum
     {
+        [DefaultSetting("Time in seconds before SIP registration is obsolete","120")]
         MaxRegistrationAge,
+        [DefaultSetting("The SIP domain", "@domain.sip.com")] // TODO: Is this in use? and really necessary??
         SIPDomain,
+        [DefaultSetting("Number of closed calls to show on startpage", "50")]
         LatestCallCount,
+        [DefaultSetting("Codec Control on/off", "true")]
         CodecControlActive,
+        [DefaultSetting("Receive Kamailio messages in old '::' string separated format", "false")]
         UseOldKamailioEvent,
-        UseSipEvent
+        [DefaultSetting("Receive Kamailio messages in JSON-format", "true")]
+        UseSipEvent,
+        [DefaultSetting("Folder for User-Agent images", "")]
+        UserAgentImagesFolder,
+        [DefaultSetting("URL to CCM Discovery service", "http://ccm.discovery.com")]
+        DiscoveryServiceUrl,
+        [DefaultSetting("URL to Codec Control service for startpage codec control", "https://codeccontrol.com")]
+        CodecControlHost,
+        [DefaultSetting("Username for Codec Control authentication", "")]
+        CodecControlUserName,
+        [DefaultSetting("Password for Codec Control authentication", "")]
+        CodecControlPassword,
+        [DefaultSetting("Cache time for information that changes more frequently in seconds", "30")]
+        CacheTimeLiveData,
+        [DefaultSetting("Cache time for information that is changed less often in seconds", "60")]
+        CacheTimeConfigData,
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class DefaultSettingAttribute : Attribute
+    {
+        protected string DefaultValue { get; set; }
+        protected string DefaultDescription { get; set; }
+
+        public virtual string Value => DefaultValue;
+        public virtual string Description => DefaultDescription;
+
+        public DefaultSettingAttribute(string defaultDescription, string defaultValue)
+        {
+            DefaultValue = defaultValue;
+            DefaultDescription = defaultDescription;
+        }
     }
 }

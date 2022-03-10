@@ -1,17 +1,16 @@
-﻿@model CCM.Web.Models.User.UserViewModel
-@using Microsoft.AspNet.Identity
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.User.UserViewModel
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 
 @{
-    Guid currentUserId = Guid.Parse(User.Identity.GetUserId());
-}
+    var identity = (ClaimsIdentity)User.Identity;
+    var idNameClaim = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+    var identityId = idNameClaim != null ? idNameClaim.Value : identity.Name;
 
-@section scripts
-{
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#search").focus();
-        });
-    </script>
+    Guid currentUserId = Guid.Parse(identityId);
 }
 
 @section search
@@ -19,8 +18,8 @@
     @using (Html.BeginForm("Index", "User", FormMethod.Post, new { @class = "navbar-form navbar-right ccm-navbar-search", role = "search" }))
     {
         <div class="form-group">
-            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Resources.Search">
-            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Resources.Search</button>
+            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Localizer["Search"]">
+            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Localizer["Search"]</button>
         </div>
     }
 }
@@ -29,11 +28,12 @@
     <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header ccm-sub-navbar--admin--header">
-                <span class="navbar-brand">@Resources.Users</span>
+                <h2>@Localizer["Users"]</h2>
+                <span class="navbar-page-description"></span>
             </div>
             <div class="navbar ccm-sub-navbar--admin--links">
                 <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
-                    <li>@Html.ActionLink(Resources.New_User, "Create", "User")</li>
+                    <li>@Html.ActionLink(@Localizer["New_User"].Value, "Create", "User")</li>
                 </ul>
             </div>
         </div>
@@ -44,9 +44,9 @@
     <div class="panel panel-default list-ccm">
         <div class="panel-heading list-ccm-heading">
             <div class="row">
-                <div class="col-md-3">@Resources.UserName</div>
-                <div class="col-md-7">@Resources.Name - @Resources.Comment</div>
-                <div class="col-md-2">@Resources.Role</div>
+                <div class="col-md-3">@Localizer["UserName"]</div>
+                <div class="col-md-7">@Localizer["Name"] - @Localizer["Comment"]</div>
+                <div class="col-md-2">@Localizer["Role"]</div>
             </div>
         </div>
 

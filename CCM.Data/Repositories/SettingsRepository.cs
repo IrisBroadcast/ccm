@@ -26,10 +26,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using CCM.Core.Entities;
+using CCM.Core.Enums;
+using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
+using CCM.Data.Entities;
 using LazyCache;
 using NLog;
 
@@ -39,52 +42,67 @@ namespace CCM.Data.Repositories
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public SettingsRepository(IAppCache cache) : base(cache)
+        public SettingsRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
         public List<Setting> GetAll()
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            var settings = db.Settings.ToList();
+            var list = settings.Select(setting => new Setting
             {
-                //log.Debug("Hash codes. Settings repository: {0}, Context:{1}", this.GetHashCode(), Context.GetHashCode());
+                Name = setting.Name,
+                Id = setting.Id,
+                Value = setting.Value,
+                Description = setting.Description
+            }).ToList();
 
-                var settings = db.Settings.ToList();
-
-                var list = settings.Select(setting => new Setting
+            // Check for settings that is not in the database yet and add them
+            foreach (string key in Enum.GetNames(typeof(SettingsEnum)))
+            {
+                if (!list.Exists(x => x.Name == key))
                 {
-                    Name = setting.Name,
-                    Id = setting.Id,
-                    Value = setting.Value,
-                    Description = setting.Description
-                }).ToList();
+                    (string, string) defaultData = ((SettingsEnum)Enum.Parse(typeof(SettingsEnum), key)).DefaultValue();
 
-                //log.Debug("Getting settings from database. {0}", string.Join(" ", list.Select(s => string.Format("{0}:{1}", s.Name,s.Value))));
-
-                return list;
+                    db.Settings.Add(new SettingEntity()
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = key,
+                        Value = defaultData.Item1,
+                        Description = defaultData.Item2,
+                        UpdatedOn = DateTime.UtcNow,
+                        UpdatedBy = "system",
+                        CreatedOn = DateTime.UtcNow,
+                        CreatedBy = "system"
+                    });
+                    db.SaveChanges();
+                }
             }
+
+            //log.Debug("Getting settings from database. {0}", string.Join(" ", list.Select(s => string.Format("{0}:{1}", s.Name,s.Value))));
+
+            return list;
         }
 
         public void Save(List<Setting> settings, string userName)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            DbSet<SettingEntity> existing = db.Settings;
+
+            foreach (Setting setting in settings)
             {
-                DbSet<Entities.SettingEntity> existing = db.Settings;
+                SettingEntity dbSetting = existing.SingleOrDefault(s => s.Id == setting.Id);
 
-                foreach (Setting setting in settings)
+                if (dbSetting != null && dbSetting.Value != setting.Value)
                 {
-                    Entities.SettingEntity dbSetting = existing.SingleOrDefault(s => s.Id == setting.Id);
-
-                    if (dbSetting != null && dbSetting.Value != setting.Value)
-                    {
-                        dbSetting.Value = setting.Value;
-                        dbSetting.UpdatedOn = DateTime.UtcNow;
-                        dbSetting.UpdatedBy = userName;
-                    }
+                    dbSetting.Value = setting.Value;
+                    dbSetting.UpdatedOn = DateTime.UtcNow;
+                    dbSetting.UpdatedBy = userName;
                 }
-
-                db.SaveChanges();
             }
+
+            db.SaveChanges();
         }
 
     }

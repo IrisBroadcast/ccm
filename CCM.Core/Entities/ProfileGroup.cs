@@ -33,7 +33,7 @@ namespace CCM.Core.Entities
     {
         public ProfileGroup()
         {
-            Profiles = new List<Profile>(); // TODO: This whole class needs some work.. Why this?
+            Profiles = new List<ProfileCodec>(); // TODO: This whole class needs some work.. Why this?
         }
 
         public string Name { get; set; }
@@ -41,6 +41,6 @@ namespace CCM.Core.Entities
 
         // Decides how valuable this group is compared to other groups
         public int? GroupSortWeight { get; set; }
-        public List<Profile> Profiles { get; set; }
+        public List<ProfileCodec> Profiles { get; set; }
     }
 }

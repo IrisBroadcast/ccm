@@ -28,40 +28,39 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models.Profile;
 using CCM.Core.Entities.Specific;
-using AutoMapper;
 using CCM.Web.Models.UserAgents;
+using CCM.Web.Properties;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
-    public class ProfileGroupController : BaseController
+    public class ProfileGroupController : Controller
     {
-        private readonly IProfileGroupRepository _profileGroupRepository;
-        private readonly IProfileRepository _profileRepository;
+        private readonly ICachedProfileGroupRepository _cachedProfileGroupRepository;
+        private readonly ICachedProfileRepository _cachedProfileRepository;
+        private readonly IStringLocalizer<Resources> _localizer;
 
-        public ProfileGroupController(IProfileGroupRepository profileGroupRepository, IProfileRepository profileRepository)
+        public ProfileGroupController(ICachedProfileGroupRepository cachedProfileGroupRepository, ICachedProfileRepository cachedProfileRepository, IStringLocalizer<Resources> localizer)
         {
-            _profileGroupRepository = profileGroupRepository;
-            _profileRepository = profileRepository;
+            _cachedProfileGroupRepository = cachedProfileGroupRepository;
+            _cachedProfileRepository = cachedProfileRepository;
+            _localizer = localizer;
         }
 
         public ActionResult Index(string search = "")
         {
-            ViewBag.SearchString = search;
-
-            // TODO: Enable search? think it is, but this is not working then i guess
-            //var profiles = string.IsNullOrWhiteSpace(search) ?
-            //    _profileRepository.GetAllProfilesIncludingRelations() :
-            //    _profileRepository.FindProfiles(search);
-            var profileGroups = _profileGroupRepository.GetAll();
+            ViewData["SearchString"] = search;
+            var profileGroups = string.IsNullOrWhiteSpace(search) ?
+                _cachedProfileGroupRepository.GetAll() :
+                _cachedProfileGroupRepository.FindProfileGroups(search);
             return View(profileGroups);
         }
 
@@ -69,32 +68,26 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Create()
         {
-            ViewBag.Title = Resources.New_ProfileGroup;
+            ViewData["Title"] = _localizer["New_ProfileGroup"];
 
             var model = new ProfileGroupViewModel();
             PopulateViewModel(model);
             return View("CreateEdit", model);
         }
 
-        private void PopulateViewModel(ProfileGroupViewModel model)
-        {
-            var profiles = _profileRepository.GetAllProfileInfos() ?? new List<ProfileInfo>();
-            var notSelectedViewModels = profiles.Where(p => !model.Profiles.Select(pr => pr.Id).Contains(p.Id)).OrderBy(p => p.Name).Select(p => new ProfileListItemViewModel() { Id = p.Id, Name = p.Name, Selected = false });
-            model.Profiles.AddRange(notSelectedViewModels);
-        }
-
         [HttpGet]
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Edit(Guid id)
         {
-            ViewBag.Title = Resources.Edit_ProfileGroup;
+            ViewData["Title"] = _localizer["Edit_ProfileGroup"];
 
-            var group = _profileGroupRepository.GetById(id);
+            var group = _cachedProfileGroupRepository.GetById(id);
             if (group == null)
             {
                 return RedirectToAction("Index");
             }
-            var model = Mapper.Map<ProfileGroupViewModel>(group);
+
+            var model = ProfileGroupToViewModel(group);
             PopulateViewModel(model);
             return View("CreateEdit", model);
         }
@@ -106,9 +99,8 @@ namespace CCM.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var group = Mapper.Map<ProfileGroup>(model);
-                group.UpdatedBy = User.Identity.Name;
-                _profileGroupRepository.Save(group);
+                var group = ViewModelToProfileGroup(model);
+                _cachedProfileGroupRepository.Save(group);
                 return RedirectToAction("Index");
             }
 
@@ -122,24 +114,17 @@ namespace CCM.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var group = Mapper.Map<ProfileGroup>(model);
-
-                if (group.Id == Guid.Empty)
-                {
-                    group.CreatedBy = User.Identity.Name;
-                    group.CreatedOn = DateTime.UtcNow;
-                }
-
-                group.UpdatedBy = User.Identity.Name;
-                group.UpdatedOn = DateTime.UtcNow;
+                var group = ViewModelToProfileGroup(model);
+                group.CreatedBy = User.Identity.Name;
+                group.CreatedOn = DateTime.UtcNow;
 
                 try
                 {
-                    _profileGroupRepository.Save(group);
+                    _cachedProfileGroupRepository.Save(group);
                 }
                 catch (DuplicateNameException)
                 {
-                    ModelState.AddModelError("NameMustBeUnique", Resources.Profile_Group_Error_Profile_Group_Could_Not_Be_Saved_The_Name_Is_Already_In_Use);
+                    ModelState.AddModelError("NameMustBeUnique", _localizer["Profile_Group_Error_Profile_Group_Could_Not_Be_Saved_The_Name_Is_Already_In_Use"]);
                     return View("CreateEdit", model);
                 }
 
@@ -154,7 +139,7 @@ namespace CCM.Web.Controllers
         public ActionResult Delete(Guid id)
         {
 
-            var group = _profileGroupRepository.GetById(id);
+            var group = _cachedProfileGroupRepository.GetById(id);
             if (group == null)
             {
                 return RedirectToAction("Index");
@@ -169,27 +154,57 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Delete(ProfileGroup profile)
         {
-            _profileGroupRepository.Delete(profile.Id);
+            _cachedProfileGroupRepository.Delete(profile.Id);
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        [CcmAuthorize(Roles = Roles.Admin)]
-        public JsonResult SetProfileGroupSortWeight(List<GuidSortWeightTuple> profileGroupSortWeight)
+        private ProfileGroup ViewModelToProfileGroup(ProfileGroupViewModel model)
         {
-            var model = new SetSortIndexResultViewModel();
+            var group = new ProfileGroup
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                GroupSortWeight = model.GroupSortWeight,
+                Profiles = model.Profiles.Where(x => x.Selected).Select(x =>
+                new ProfileCodec
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    OrderIndex = x.SortIndex
+                }).OrderBy(s => s.OrderIndex).ToList()
+            };
 
-            if (profileGroupSortWeight == null || profileGroupSortWeight.Any(d => d.Id == Guid.Empty))
-            {
-                model.IndexSet = false;
-            }
-            else
-            {
-                var paramdata = profileGroupSortWeight.Select(i => new Tuple<Guid, int>(i.Id, i.SortWeight)).ToList();
-                _profileGroupRepository.SetProfileGroupSortWeight(paramdata);
-            }
-            return Json(model);
+            group.UpdatedBy = User.Identity.Name;
+            group.UpdatedOn = DateTime.UtcNow;
+
+            return group;
         }
 
+        private ProfileGroupViewModel ProfileGroupToViewModel(ProfileGroup group)
+        {
+            return new ProfileGroupViewModel
+            {
+                Id = group.Id,
+                Name = group.Name,
+                Description = group.Description,
+                GroupSortWeight = group.GroupSortWeight ?? 0,
+                Profiles = group.Profiles.Select(x =>
+                new ProfileListItemViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    SortIndex = x.OrderIndex,
+                    Selected = true
+                }).ToList()
+            };
+        }
+
+        private void PopulateViewModel(ProfileGroupViewModel model)
+        {
+            var profiles = _cachedProfileRepository.GetAllProfileInfos() ?? new List<ProfileInfo>();
+            var notSelectedViewModels = profiles.Where(p => !model.Profiles.Select(pr => pr.Id).Contains(p.Id)).OrderBy(p => p.Name).Select(p => new ProfileListItemViewModel() { Id = p.Id, Name = p.Name, Selected = false });
+            model.Profiles.AddRange(notSelectedViewModels);
+        }
     }
 }

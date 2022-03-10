@@ -25,16 +25,14 @@
  */
 
 using CCM.Core.Helpers.PasswordGeneration;
-using CCM.Web.Authentication;
+using CCM.Web.Infrastructure;
 using CCM.Web.Models.ApiExternal;
-using CCM.WebCommon.Authentication;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
-    [CcmUserBasicAuthentication]
-    [CcmApiAuthorize(Roles = "Admin,AccountManager")]
-    public class PasswordGeneratorController : ApiController
+    [CcmAuthorize(Roles = "Admin,AccountManager")]
+    public class PasswordGeneratorController : ControllerBase
     {
         private readonly IPasswordGenerator passwordGenerator;
 
@@ -43,10 +41,11 @@ namespace CCM.Web.Controllers.ApiExternal
             this.passwordGenerator = passwordGenerator;
         }
 
-        public GeneratedPasswordModel Get()
+        public GeneratedPasswordModel Index()
         {
             string password = this.passwordGenerator.GeneratePassword();
             return new GeneratedPasswordModel(password);
         }
     }
 }
+

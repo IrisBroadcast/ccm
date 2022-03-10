@@ -25,7 +25,6 @@
  */
 
 using System.Linq;
-using System.Runtime.Caching;
 using System.Threading;
 using CCM.Core.Cache;
 using CCM.Core.Entities;

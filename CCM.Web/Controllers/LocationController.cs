@@ -26,33 +26,37 @@
 
 using System;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models.Location;
+using System.Collections.Generic;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
-    public class LocationController : BaseController
+    public class LocationController : Controller
     {
+        private readonly ICachedLocationRepository _cachedLocationRepository;
         private readonly ICityRepository _cityRepository;
-        private readonly ILocationRepository _locationRepository;
         private readonly IRegionRepository _regionRepository;
-        private readonly IProfileGroupRepository _profileGroupRepository;
+        private readonly ICachedProfileGroupRepository _cachedProfileGroupRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public LocationController(ILocationRepository locationManager,
+        public LocationController(
+            ICachedLocationRepository cachedLocationManager,
             IRegionRepository regionRepository,
             ICityRepository cityRepository,
-            IProfileGroupRepository profileGroupRepository)
+            ICachedProfileGroupRepository cachedProfileGroupRepository,
+            ICategoryRepository categoryRepository)
         {
-            _locationRepository = locationManager;
+            _cachedLocationRepository = cachedLocationManager;
             _regionRepository = regionRepository;
             _cityRepository = cityRepository;
-            _profileGroupRepository = profileGroupRepository;
+            _cachedProfileGroupRepository = cachedProfileGroupRepository;
+            _categoryRepository = categoryRepository;
         }
 
         public ActionResult Index(LocationIndexViewModel model = null)
@@ -62,7 +66,7 @@ namespace CCM.Web.Controllers
                 model = new LocationIndexViewModel();
             }
 
-            model.Locations = string.IsNullOrWhiteSpace(model.Search) ? _locationRepository.GetAll() : _locationRepository.FindLocations(model.Search);
+            model.Locations = string.IsNullOrWhiteSpace(model.Search) ? _cachedLocationRepository.GetAll() : _cachedLocationRepository.FindLocations(model.Search);
             model.Locations = model.Locations.OrderBy(m => m.Name).ToList();
 
             if (model.SortBy == 0)
@@ -91,8 +95,13 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Create()
         {
-            var model = new LocationViewModel();
-            PopulateViewModel(model, null);
+            var model = new LocationViewModel
+            {
+                Regions = PopulateRegions(),
+                Cities = PopulateCities(),
+                ProfileGroups = PopulateProfileGroups(),
+                Categories = PopulateCategories()
+            };
             return View(model);
         }
 
@@ -103,15 +112,16 @@ namespace CCM.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                Location location = GetLocation(model);
+                Location location = ViewModelToLocation(model);
                 location.CreatedBy = User.Identity.Name;
-
-                _locationRepository.Save(location);
+                _cachedLocationRepository.Save(location);
                 return RedirectToAction("Index");
             }
 
-            // TODO: Populate view model
-
+            model.Regions = PopulateRegions();
+            model.Cities = PopulateCities();
+            model.ProfileGroups = PopulateProfileGroups();
+            model.Categories = PopulateCategories();
             return View(model);
         }
 
@@ -119,30 +129,13 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Edit(Guid id)
         {
-            Location location = _locationRepository.GetById(id);
+            Location location = _cachedLocationRepository.GetById(id);
             if (location == null)
             {
                 return RedirectToAction("Index");
             }
 
-            var model = new LocationViewModel
-            {
-                Id = location.Id,
-                Name = location.Name,
-                ShortName = location.ShortName,
-                Net = location.Net,
-                Cidr = location.Cidr,
-                NetV6 = location.Net_v6,
-                CidrV6 = location.Cidr_v6,
-                CarrierConnectionId = location.CarrierConnectionId,
-                Comment = location.Comment,
-                Region = location.Region != null ? location.Region.Id : Guid.Empty,
-                City = location.City != null ? location.City.Id : Guid.Empty,
-                ProfileGroup = location.ProfileGroup != null ? location.ProfileGroup.Id : Guid.Empty
-            };
-
-            PopulateViewModel(model, location);
-
+            var model = LocationToViewModel(location);
             return View(model);
         }
 
@@ -151,16 +144,18 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Edit(LocationViewModel model)
         {
-            Location location = GetLocation(model);
-
             if (ModelState.IsValid)
             {
-                _locationRepository.Save(location);
+                Location location = ViewModelToLocation(model);
+                location.UpdatedBy = User.Identity.Name;
+                _cachedLocationRepository.Save(location);
                 return RedirectToAction("Index");
             }
 
-            PopulateViewModel(model, location);
-
+            model.Regions = PopulateRegions();
+            model.Cities = PopulateCities();
+            model.ProfileGroups = PopulateProfileGroups();
+            model.Categories = PopulateCategories();
             return View(model);
         }
 
@@ -168,7 +163,7 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Delete(Guid id)
         {
-            Location location = _locationRepository.GetById(id);
+            Location location = _cachedLocationRepository.GetById(id);
             if (location == null)
             {
                 return RedirectToAction("Index");
@@ -182,12 +177,11 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Delete(Location location)
         {
-            _locationRepository.Delete(location.Id);
-
+            _cachedLocationRepository.Delete(location.Id);
             return RedirectToAction("Index");
         }
 
-        private Location GetLocation(LocationViewModel model)
+        private Location ViewModelToLocation(LocationViewModel model)
         {
             var location = new Location
             {
@@ -203,72 +197,117 @@ namespace CCM.Web.Controllers
                 UpdatedBy = User.Identity.Name
             };
 
-            if (model.Region != Guid.Empty)
+            if (model.ProfileGroup != Guid.Empty)
             {
-                var region = _regionRepository.GetById(model.Region);
+                var profileGroup = _cachedProfileGroupRepository.GetById(model.ProfileGroup);
+                if (profileGroup != null)
+                {
+                    location.ProfileGroup = profileGroup;
+                }
+            }
 
+            if (model.Region != null && model.Region != Guid.Empty)
+            {
+                var region = _regionRepository.GetById(model.Region ?? Guid.Empty);
                 if (region != null)
                 {
                     location.Region = region;
                 }
             }
 
-            if (model.City != Guid.Empty)
+            if (model.City != null && model.City != Guid.Empty)
             {
-                var city = _cityRepository.GetById(model.City);
+                var city = _cityRepository.GetById(model.City ?? Guid.Empty);
                 if (city != null)
                 {
                     location.City = city;
                 }
             }
 
-            var profileGroup = _profileGroupRepository.GetById(model.ProfileGroup ?? Guid.Empty);
-            location.ProfileGroup = profileGroup;
+            if (model.Category != null && model.Category != Guid.Empty)
+            {
+                var category = _categoryRepository.GetById(model.Category ?? Guid.Empty);
+                if (category != null)
+                {
+                    location.Category = category;
+                }
+            }
 
             return location;
         }
 
-        private void PopulateViewModel(LocationViewModel model, Location location)
+        private LocationViewModel LocationToViewModel(Location location)
         {
-            PopulateRegions(model, location);
-            PopulateCities(model, location);
-            PopulateProfileGroups(model, location);
+            var model = new LocationViewModel
+            {
+                Id = location.Id,
+                Name = location.Name,
+                ShortName = location.ShortName,
+                Net = location.Net,
+                Cidr = location.Cidr,
+                NetV6 = location.Net_v6,
+                CidrV6 = location.Cidr_v6,
+                CarrierConnectionId = location.CarrierConnectionId,
+                Comment = location.Comment,
+                Region = location.Region?.Id ?? Guid.Empty,
+                City = location.City?.Id ?? Guid.Empty,
+                Category = location.Category?.Id ?? Guid.Empty,
+                ProfileGroup = location.ProfileGroup?.Id ?? Guid.Empty,
+                Regions = PopulateRegions(location),
+                Cities = PopulateCities(location),
+                ProfileGroups = PopulateProfileGroups(location),
+                Categories = PopulateCategories(location)
+            };
+
+            return model;
         }
 
-        private void PopulateCities(LocationViewModel model, Location location)
+        private List<ListItemViewModel> PopulateCities(Location location = null)
         {
-            var cities = _cityRepository.GetAll();
-            model.Cities = cities.Select(city => new ListItemViewModel
+            var cities = _cityRepository.GetAll().Select(city => new ListItemViewModel
             {
                 Id = city.Id,
                 Name = city.Name,
                 Selected = location != null && location.City != null && location.City.Id == city.Id
             }).ToList();
-            model.Cities.Insert(0, new ListItemViewModel() { Id = Guid.Empty, Name = string.Empty });
+
+            return cities;
         }
 
-        private void PopulateProfileGroups(LocationViewModel model, Location location)
+        private List<ListItemViewModel> PopulateProfileGroups(Location location = null)
         {
-            var groups = _profileGroupRepository.GetAll();
-            model.ProfileGroups = groups.Select(g => new ListItemViewModel
+            var groups = _cachedProfileGroupRepository.GetAll().Select(g => new ListItemViewModel
             {
                 Id = g.Id,
                 Name = g.Name,
                 Selected = location?.ProfileGroup != null && location.ProfileGroup.Id == g.Id
             }).ToList();
-            model.ProfileGroups.Insert(0, new ListItemViewModel() { Id = null, Name = string.Empty });
+
+            return groups;
         }
 
-        private void PopulateRegions(LocationViewModel model, Location location)
+        private List<ListItemViewModel> PopulateRegions(Location location = null)
         {
-            var regions = _regionRepository.GetAll();
-            model.Regions = regions.Select(region => new ListItemViewModel
+            var regions = _regionRepository.GetAll().Select(region => new ListItemViewModel
             {
                 Id = region.Id,
                 Name = region.Name,
                 Selected = location?.Region != null && location.Region.Id == region.Id
             }).ToList();
-            model.Regions.Insert(0, new ListItemViewModel() { Id = Guid.Empty, Name = string.Empty });
+
+            return regions;
+        }
+
+        private List<ListItemViewModel> PopulateCategories(Location location = null)
+        {
+            var categories = _categoryRepository.GetAll().Select(g => new ListItemViewModel
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Selected = location?.Category != null && location.Category.Id == g.Id
+            }).ToList();
+
+            return categories;
         }
     }
 }

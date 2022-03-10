@@ -26,6 +26,7 @@
 
 using System;
 using System.Linq;
+using AutoMapper;
 using CCM.Core.Cache;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
@@ -46,19 +47,21 @@ namespace CCM.Tests
         private readonly RegisteredSipsManager _registeredSipsManager;
         private readonly ICallRepository _callRepository;
         private readonly IProfileGroupRepository _profileGroupRepository;
+        private readonly IMapper _mapper;
 
         public CallEndedTests()
         {
+            // TODO: Big chance that the mapper doesn't work.. gosh, who needs tests anyway, they should be rewritten anyways
             var settingsManager = new SettingsManager(new SettingsRepository(new CachingService()));
-            var locationManager = new LocationManager(new LocationRepository(new CachingService()));
+            var locationManager = new LocationManager(new LocationRepository(_mapper, new CachingService()));
             var sipAccountManager = new SipAccountManager(new SipAccountRepository(new CachingService()));
             var metaRepository = new MetaRepository(new CachingService());
-            var locationRepository = new LocationRepository(new CachingService());
+            var locationRepository = new LocationRepository(_mapper, new CachingService());
             var userAgentRepository = new UserAgentRepository(new CachingService());
             var registeredSipRepository = new RegisteredSipRepository(settingsManager, locationManager, metaRepository, userAgentRepository, sipAccountManager, new CachingService());
             _registeredSipRepository = new CachedRegisteredSipRepository(new CachingService(), registeredSipRepository);
 
-            var profileGroupRepository = new ProfileGroupRepository(new CachingService());
+            var profileGroupRepository = new ProfileGroupRepository(_mapper, new CachingService());
             _profileGroupRepository = new CachedProfileGroupRepository(new CachingService(), profileGroupRepository);
             _kamailioMessageManager = new KamailioMessageManager(
                 _registeredSipRepository,

@@ -126,9 +126,6 @@
   <data name="Administration" xml:space="preserve">
     <value>Administration</value>
   </data>
-  <data name="Studios" xml:space="preserve">
-    <value>Studior</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Avbryt</value>
   </data>
@@ -676,12 +673,6 @@
   <data name="Unable_To_Resolve_Address" xml:space="preserve">
     <value>Det gick inte att matcha adressen till kodaren</value>
   </data>
-  <data name="Db_Level" xml:space="preserve">
-    <value>dB nivå</value>
-  </data>
-  <data name="Db_Level_Values" xml:space="preserve">
-    <value>dB nivå värden</value>
-  </data>
   <data name="Max" xml:space="preserve">
     <value>Max</value>
   </data>
@@ -696,9 +687,6 @@
   </data>
   <data name="Codec_Reboot_Second_Confirm" xml:space="preserve">
     <value>Jag har kontrollerat att kodaren inte används</value>
-  </data>
-  <data name="Requires_Activex" xml:space="preserve">
-    <value>Kräver en ActiveX kompatibel webbläsare</value>
   </data>
   <data name="Statistics" xml:space="preserve">
     <value>Statistik</value>
@@ -769,9 +757,6 @@
   <data name="No_Gpo_Found" xml:space="preserve">
     <value>Ingen GPO kunde hittas</value>
   </data>
-  <data name="Gpo_Names" xml:space="preserve">
-    <value>GPO namnlista</value>
-  </data>
   <data name="Open_User_Interface" xml:space="preserve">
     <value>Visa länk för alla</value>
   </data>
@@ -841,21 +826,6 @@
   <data name="Edit_ProfileGroup" xml:space="preserve">
     <value>Ändra profilgrupp</value>
   </data>
-  <data name="Remove_Studio" xml:space="preserve">
-    <value>Ta bort studio</value>
-  </data>
-  <data name="Delete_Studio_Are_You_Sure" xml:space="preserve">
-    <value>Är du säker på att du vill ta bort denna studio</value>
-  </data>
-  <data name="Hang_Up_I_Have_Booked" xml:space="preserve">
-    <value>Jag har bokat denna studio enligt gällande rutin</value>
-  </data>
-  <data name="Hang_Up_I_Have_Checked" xml:space="preserve">
-    <value>Jag har kontrollerat att studion är tom och ingen verksamhet pågår</value>
-  </data>
-  <data name="Hang_Up_Studio" xml:space="preserve">
-    <value>Koppla ner studio</value>
-  </data>
   <data name="Edit_User" xml:space="preserve">
     <value>Ändra användare</value>
   </data>
@@ -883,9 +853,6 @@
   <data name="Extension_Number" xml:space="preserve">
     <value>Anknytningsnummer</value>
   </data>
-  <data name="Nr_Of_Gpos" xml:space="preserve">
-    <value>Antal GPO:er</value>
-  </data>
   <data name="No_Items_In_Filtered_Call_History" xml:space="preserve">
     <value>Ingen samtalshistorik</value>
   </data>
@@ -898,63 +865,6 @@
   <data name="Counting_Pieces" xml:space="preserve">
     <value>st</value>
     <comment>Pieces, counting amount</comment>
-  </data>
-  <data name="Studio_Audio_Codec_Sip_Address" xml:space="preserve">
-    <value>Ljudkodarens SIP-adress</value>
-  </data>
-  <data name="Studio_Camera_Audio_Url" xml:space="preserve">
-    <value>Sökväg ljuduppspelning</value>
-  </data>
-  <data name="Studio_Camera_Host_Or_Ip_Address" xml:space="preserve">
-    <value>Kamerans adress eller IP-nummer</value>
-  </data>
-  <data name="Studio_Camera_Is_In_Use" xml:space="preserve">
-    <value>Kamera aktiv</value>
-  </data>
-  <data name="Studio_Camera_Password" xml:space="preserve">
-    <value>Kameralösenord</value>
-  </data>
-  <data name="Studio_Camera_Still_Image" xml:space="preserve">
-    <value>Sökväg stillbild</value>
-  </data>
-  <data name="Studio_Camera_User_Name" xml:space="preserve">
-    <value>Användarnamn kamera</value>
-  </data>
-  <data name="Studio_Error_Message_Name_Too_Long" xml:space="preserve">
-    <value>Namnet är för långt</value>
-  </data>
-  <data name="Studio_Information_Text" xml:space="preserve">
-    <value>Informationstext</value>
-  </data>
-  <data name="Studio_Inputs_Names" xml:space="preserve">
-    <value>Ingångarnas namn</value>
-  </data>
-  <data name="Studio_Names_Of_Audio_Clips" xml:space="preserve">
-    <value>Ljudklippens namn</value>
-  </data>
-  <data name="Studio_Number_Of_Inputs" xml:space="preserve">
-    <value>Antal ingångar</value>
-  </data>
-  <data name="Studio_Number_Of_Minutes_Before_Page_Gets_Inactive" xml:space="preserve">
-    <value>Antal minuter innan monitorsidan blir inaktiv</value>
-  </data>
-  <data name="Studio_Preselected_Input_Level" xml:space="preserve">
-    <value>Förvald ingångsnivå</value>
-  </data>
-  <data name="Studio_Settings_For_Web_Camera" xml:space="preserve">
-    <value>Inställningar för webbkamera</value>
-  </data>
-  <data name="Studio_Studio_Information" xml:space="preserve">
-    <value>Information</value>
-  </data>
-  <data name="Studio_Studio_Name" xml:space="preserve">
-    <value>Studionamn</value>
-  </data>
-  <data name="Studio_Url_To_Camera_Video_Feed" xml:space="preserve">
-    <value>Sökväg video</value>
-  </data>
-  <data name="Studio_Url_To_Page_With_Manual" xml:space="preserve">
-    <value>Sökväg till 'manual'-sidan</value>
   </data>
   <data name="Logged_In_As" xml:space="preserve">
     <value>Inloggad som</value>
@@ -1038,7 +948,7 @@
     <value>Registrar</value>
   </data>
   <data name="Codec_Error_No_Audio_Metering_Status_Available" xml:space="preserve">
-    <value>Ingen ljudmätare tillgänlig</value>
+    <value>Ingen ljudmätare tillgänglig</value>
   </data>
   <data name="Debug_Title" xml:space="preserve">
     <value>Debug</value>
@@ -1051,12 +961,6 @@
   </data>
   <data name="Sip_Account_Could_Not_Be_Saved" xml:space="preserve">
     <value>Användaren kunde inte sparas</value>
-  </data>
-  <data name="Studio_Comma_Separated_List_With_Gpo_Names" xml:space="preserve">
-    <value>Kommaseparerad lista med namn på GPO:er</value>
-  </data>
-  <data name="Studio_Comma_Separated_List_With_Input_Names" xml:space="preserve">
-    <value>Kommaseparerad lista med mikrofonernas namn</value>
   </data>
   <data name="Location_Error_Message_Cidr_For_Ipv4_Is_Missing" xml:space="preserve">
     <value>CIDR för IPv4 saknas</value>
@@ -1141,5 +1045,90 @@
   </data>
   <data name="Profile_Group_Error_Profile_Group_Could_Not_Be_Saved_The_Name_Is_Already_In_Use" xml:space="preserve">
     <value>Gruppen kunde inte sparas. Namnet används redan.</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Kategorier</value>
+  </data>
+  <data name="Edit_Category" xml:space="preserve">
+    <value>Redigera kategori</value>
+  </data>
+  <data name="New_Category" xml:space="preserve">
+    <value>Ny kategori</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="LongDescription" xml:space="preserve">
+    <value>Längre beskrivning</value>
+  </data>
+  <data name="No_Items_In_Filtered_Result" xml:space="preserve">
+    <value>Inga filtrerade resultat</value>
+  </data>
+  <data name="Login_For_Codec_Control" xml:space="preserve">
+    <value>Logga in för kodarstyrning</value>
+  </data>
+  <data name="Logs_Delete_All_Records_From_Log" xml:space="preserve">
+    <value>Rensa alla loggar</value>
+  </data>
+  <data name="Make_A_Call" xml:space="preserve">
+    <value>Ring samtal</value>
+  </data>
+  <data name="Status_Information" xml:space="preserve">
+    <value>Statusinformation</value>
+  </data>
+  <data name="Status_Jitter_Buffer" xml:space="preserve">
+    <value>Jitterbuffer status</value>
+  </data>
+  <data name="Stream_Status" xml:space="preserve">
+    <value>Anslutningsstatus</value>
+  </data>
+  <data name="HangUp" xml:space="preserve">
+    <value>Lägg på</value>
+  </data>
+  <data name="Regular_Expression" xml:space="preserve">
+    <value>Reguljärt uttryck</value>
+  </data>
+  <data name="No_Codec_Control_Available" xml:space="preserve">
+    <value>Ingen kodarstyrning tillgänglig</value>
+  </data>
+  <data name="Reset filters" xml:space="preserve">
+    <value>Återställ filter</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>timmar</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minuter</value>
+  </data>
+  <data name="Unknown Category" xml:space="preserve">
+    <value>Okänd kategori</value>
+  </data>
+  <data name="Registered Codecs" xml:space="preserve">
+    <value>Registrerade enheter</value>
+  </data>
+  <data name="Show more filters" xml:space="preserve">
+    <value>Filterval</value>
+  </data>
+  <data name="Tip! Press ESC to clear the searchbar" xml:space="preserve">
+    <value>Tips! Tryck Escape för att tömma sökbaren</value>
+  </data>
+  <data name="Use of resource" xml:space="preserve">
+    <value>Resursutnyttjande</value>
+  </data>
+  <data name="Change some codec data" xml:space="preserve">
+    <value>Förändra kodarens egenskaper</value>
+  </data>
+  <data name="Change the codec comment" xml:space="preserve">
+    <value>Ändra kodarens kommentar</value>
+  </data>
+  <data name="External Reference" xml:space="preserve">
+    <value>Extern kontoreferens</value>
+    <comment>Can be used as a reference for linking accounts in other systems</comment>
+  </data>
+  <data name="Presentation Name" xml:space="preserve">
+    <value>Presentationsnamn</value>
+  </data>
+  <data name="Ongoing calls" xml:space="preserve">
+    <value>Pågående samtal</value>
   </data>
 </root>

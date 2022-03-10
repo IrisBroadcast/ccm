@@ -1,26 +1,15 @@
-﻿@model CCM.Web.Models.User.UserFormViewModel
+﻿
+
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.User.UserFormViewModel
 
 @section scripts
 {
-    <script type="text/javascript">
-        function generatePassword() {
-            var length = 13;
-            var alfabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#%";
-
-            var password = "";
-            for (var i = 0; i < length; ++i) {
-                password += alfabet.charAt(Math.floor(Math.random() * alfabet.length));
-            }
-
-            $('#Password').val(password);
-            $('#PasswordConfirm').val(password);
-            $('#generatedPassword').val(password);
-            $('#generatedWrapper').removeClass('hidden');
-        }
-    </script>
+    <script src="~/dist/ccm-form.js"></script>
 }
 
-<h2>@ViewBag.Title</h2>
+<h2>@ViewData["Title"]</h2>
 <hr />
 
 @using (Html.BeginForm("Save", "User", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -29,7 +18,7 @@
 
     @Html.AntiForgeryToken()
 
-   <div class="form-group">
+    <div class="form-group">
         @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
@@ -55,7 +44,7 @@
         <div class="form-group" id="roleGroup">
             @Html.LabelFor(m => m.RoleId, new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
-                @Html.DropDownListFor(m => m.RoleId, new SelectList(Model.Roles, "Id", "Name"), new { @class = "form-control" })
+                @Html.DropDownListFor(m => m.RoleId, new SelectList(Model.Roles, "Key", "Value"), new { @class = "form-control" })
             </div>
         </div>
     }
@@ -70,11 +59,11 @@
             @Html.TextBoxFor(m => m.Comment, new { @class = "form-control" })
         </div>
     </div>
-    
+
     <div id="generatedWrapper" class="form-group hidden">
-        <label class="col-md-2 control-label">@Resources.Generated_Password</label>
+        <label class="col-md-2 control-label">@Localizer["Generated_Password"]</label>
         <div class="col-md-4">
-            <input id="generatedPassword" class="form-control" />
+            <input id="generatedPassword" class="form-control" readonly />
         </div>
     </div>
 
@@ -82,7 +71,7 @@
         @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.PasswordFor(m => m.Password, new { @class = "form-control--horizontal" })
-            <button id="pwGen" type="button" onclick="generatePassword()" class="btn btn-info">@Resources.Generate_Password</button>
+            <button id="pwGen" type="button" class="btn btn-info">@Localizer["Generate_Password"]</button>
         </div>
     </div>
 
@@ -95,8 +84,8 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            @Html.ActionLink(Resources.Cancel, "Index", "User", null, new { @class = "btn btn-default" })
-            <button type="submit" class="btn btn-primary">@Resources.Save</button>
+            @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "User", null, new { @class = "btn btn-default" })
+            <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
         </div>
     </div>
 

@@ -31,7 +31,7 @@ using LazyCache;
 
 namespace CCM.Core.Cache
 {
-    public class CachedSettingsRepository : ISettingsRepository
+    public class CachedSettingsRepository : ICachedSettingsRepository
     {
         private readonly ISettingsRepository _internalRepository;
         private readonly IAppCache _lazyCache;

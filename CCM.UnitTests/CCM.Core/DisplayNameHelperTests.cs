@@ -45,7 +45,7 @@ namespace CCM.UnitTests.CCM.Core
         {
             var s = "840200@acip.example.com";
             var result = DisplayNameHelper.AnonymizePhonenumber(s);
-            Assert.AreEqual("840200", result);
+            Assert.AreEqual("840200@acip.example.com", result);
         }
 
         [Test]

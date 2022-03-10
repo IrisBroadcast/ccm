@@ -27,9 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Enums;
+using CCM.Web.Properties;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CCM.Web.Models.SipAccount
 {
@@ -51,11 +52,14 @@ namespace CCM.Web.Models.SipAccount
         [Display(ResourceType = typeof(Resources), Name = "Account_Locked")]
         public bool AccountLocked { get; set; }
 
+        [Display(ResourceType = typeof(Resources), Name = "External_Reference")]
+        public string ExternalReference { get; set; }
+
         [Display(ResourceType = typeof(Resources), Name = "Owner")]
-        public Guid OwnerId { get; set; }
+        public Guid? OwnerId { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "Codec_Type")]
-        public Guid CodecTypeId { get; set; }
+        public Guid? CodecType_Id { get; set; }
 
         [Display(ResourceType = typeof(Resources), Name = "Account_Type")]
         public SipAccountType AccountType { get; set; }
@@ -65,6 +69,5 @@ namespace CCM.Web.Models.SipAccount
         public List<CodecType> CodecTypes { get; set; }
 
         public List<SelectListItem> AccountTypes { get; set; }
-
     }
 }

@@ -26,17 +26,16 @@
 
 using System;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models.Meta;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = Roles.Admin)]
-    public class MetaController : BaseController
+    public class MetaController : Controller
     {
         private readonly IMetaRepository _metaRepository;
 
@@ -50,7 +49,7 @@ namespace CCM.Web.Controllers
             var metaTypes = string.IsNullOrWhiteSpace(search) ? _metaRepository.GetAll() : _metaRepository.FindMetaTypes(search);
             var model = metaTypes.Select(metaType => new MetaViewModel() {Id = metaType.Id, Name = metaType.Name}).ToList();
 
-            ViewBag.SearchString = search;
+            ViewData["SearchString"] = search;
             return View(model);
         }
 

@@ -1,0 +1,94 @@
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@using CCM.Core.Helpers
+
+<ul class="mui-nav">
+    <!-- Overview -->
+    <li class="mui-nav-li">
+        <div class="mui-link mui-link--not-mobile">
+            @Html.ActionLink(@Localizer["Overview"].Value, "Index", "Home")
+        </div>
+    </li>
+
+    <!-- Statistics -->
+    <li class="mui-nav-li">
+        <div class="mui-link mui-link--not-mobile">
+            @Html.ActionLink(@Localizer["Statistics"].Value, "Index", "Statistics")
+        </div>
+    </li>
+    
+    <!-- Temporary link to studio -->
+    <li class="mui-nav-li">
+        <div class="mui-link mui-link--not-mobile">
+            <a href="https://besökstudio.sr.se/studio/s45-sto" target="_blank">Studio45</a>
+        </div>
+    </li>
+
+    <!-- Administration -->
+    <li class="mui-nav-li">
+        @if (User.IsInRole(Roles.Admin) || User.IsInRole("Remote"))
+        {
+            <div class="mui-link" id="admin-navigation-btn">
+                <span>
+                    @Localizer["Administration"].Value
+                </span>
+            </div>
+        }
+
+        @if (User.IsInRole(Roles.Admin))
+        {
+            <div class="mui-nav-group section collapsible" id="admin-navigation-content">
+                <ul class="mui-subnav mui-subnav--mobile">
+                    <li>@Html.ActionLink(@Localizer["Overview"].Value, "Index", "Home")</li>
+                    <li>@Html.ActionLink(@Localizer["Statistics"].Value, "Index", "Statistics")</li>
+                </ul>
+                <ul class="mui-subnav">
+                    <li>@Html.ActionLink(@Localizer["Accounts"].Value, "Index", "SipAccount")</li>
+                    <li>@Html.ActionLink(@Localizer["UserAgents"].Value, "Index", "UserAgents")</li>
+                    <li>@Html.ActionLink(@Localizer["Profiles"].Value, "Index", "ProfileCodec")</li>
+                    <li>@Html.ActionLink(@Localizer["Profile_Groups"].Value, "Index", "ProfileGroup")</li>
+                    <li>@Html.ActionLink(@Localizer["Owners"].Value, "Index", "Owners")</li>
+                    <li>@Html.ActionLink(@Localizer["Categories"].Value, "Index", "Category")</li>
+                </ul>
+                <ul class="mui-subnav">
+                    <li>@Html.ActionLink(@Localizer["Codec_Types"].Value, "Index", "CodecTypes")</li>
+                    <li>@Html.ActionLink(@Localizer["Regions"].Value, "Index", "Regions")</li>
+                    <li>@Html.ActionLink(@Localizer["Locations"].Value, "Index", "Location")</li>
+                    <li>@Html.ActionLink(@Localizer["Cities"].Value, "Index", "City")</li>
+                </ul>
+                <ul class="mui-subnav">
+                    <li>@Html.ActionLink(@Localizer["Filters"].Value, "Index", "Filter")</li>
+                    <li>@Html.ActionLink(@Localizer["MetaTypes"].Value, "Index", "Meta")</li>
+                </ul>
+                <ul class="mui-subnav">
+                    <li>@Html.ActionLink(@Localizer["Users"].Value, "Index", "User")</li>
+                    <li>@Html.ActionLink(@Localizer["Settings"].Value, "Index", "Settings")</li>
+                    <li>@Html.ActionLink(@Localizer["Logs"].Value, "Index", "Log")</li>
+                    <li>@Html.ActionLink(@Localizer["Debug_Title"].Value, "Index", "Debugging")</li>
+                </ul>
+            </div>
+        }
+
+        @if (User.IsInRole("Remote"))
+        {
+            <div class="mui-nav-group section collapsible" id="admin-navigation-content">
+                <ul class="mui-subnav">
+                    <li>@Html.ActionLink(@Localizer["UserAgents"].Value, "Index", "UserAgents")</li>
+                    <li>@Html.ActionLink(@Localizer["Profiles"].Value, "Index", "ProfileCodec")</li>
+                    <li>@Html.ActionLink(@Localizer["Profile_Groups"].Value, "Index", "ProfileGroup")</li>
+                    <li>@Html.ActionLink(@Localizer["Owners"].Value, "Index", "Owners")</li>
+                    <li>@Html.ActionLink(@Localizer["Categories"].Value, "Index", "Category")</li>
+                </ul>
+                <ul class="mui-subnav">
+                    <li>@Html.ActionLink(@Localizer["Codec_Types"].Value, "Index", "CodecTypes")</li>
+                    <li>@Html.ActionLink(@Localizer["Locations"].Value, "Index", "Location")</li>
+                    <li>@Html.ActionLink(@Localizer["Regions"].Value, "Index", "Regions")</li>
+                    <li>@Html.ActionLink(@Localizer["Cities"].Value, "Index", "City")</li>
+                </ul>
+            </div>
+        }
+    </li>
+</ul>
+
+<div class="mui-menu-cover" id="admin-menu-cover"></div>

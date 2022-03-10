@@ -1,66 +1,21 @@
-﻿@using CCM.Core.Helpers
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
 @using Roles = CCM.Core.Helpers.Roles
 @model CCM.Web.Models.Location.LocationIndexViewModel
 
 @{
-    ViewBag.Title = Resources.Locations;
-}
-
-@section scripts {
-    <script type="text/javascript">
-
-        $(function() {
-            $('#nameColumn').on('click', function() {
-                if ($('#SortBy').val() !== "0") {
-                    $('#Direction').val("0");
-                } else if ($('#Direction').val() === "1") {
-                    $('#Direction').val("0");
-                } else {
-                    $('#Direction').val("1");
-                }
-
-                $('#SortBy').val("0");
-                $('#searchForm').submit();
-            });
-
-            $('#netColumn').on('click', function () {
-                if ($('#SortBy').val() !== "1") {
-                    $('#Direction').val("0");
-                } else if ($('#Direction').val() === "1") {
-                    $('#Direction').val("0");
-                } else {
-                    $('#Direction').val("1");
-                }
-
-                $('#SortBy').val("1");
-                $('#searchForm').submit();
-            });
-
-            $('#netColumnV6').on('click', function () {
-                if ($('#SortBy').val() !== "2") {
-                    $('#Direction').val("0");
-                } else if ($('#Direction').val() === "1") {
-                    $('#Direction').val("0");
-                } else {
-                    $('#Direction').val("1");
-                }
-
-                $('#SortBy').val("2");
-                $('#searchForm').submit();
-            });
-        });
-    </script>
+    ViewData["Title"] = @Localizer["Locations"];
 }
 
 @section search {
     @using (Html.BeginForm("Index", "Location", FormMethod.Post, new { @class = "navbar-form navbar-right ccm-navbar-search", role = "search", @id = "searchForm" }))
     {
         <div class="form-group">
-            @Html.TextBoxFor(m => m.Search, new { autofocus="autofocus", @class="form-control ccm-navbar-search--field", placeholder=Resources.Search })
+            @Html.TextBoxFor(m => m.Search, new { autofocus = "autofocus", @class = "form-control ccm-navbar-search--field", placeholder = @Localizer["Search"] })
             @Html.HiddenFor(m => m.SortBy)
             @Html.HiddenFor(m => m.Direction)
-            @*<input type="text" id="search" name="search" autofocus class="form-control" placeholder="@Resources.Search" value="@ViewBag.SearchString">*@
-            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Resources.Search</button>
+            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Localizer["Search"]</button>
         </div>
     }
 }
@@ -69,13 +24,14 @@
     <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header ccm-sub-navbar--admin--header">
-                <span class="navbar-brand">@Resources.Locations</span>
+                <h2>@Localizer["Locations"]</h2>
+                <span class="navbar-page-description"></span>
             </div>
             <div class="navbar ccm-sub-navbar--admin--links">
                 @if (User.IsInRole(Roles.Admin))
                 {
                     <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
-                        <li>@Html.ActionLink(Resources.New_Location, "Create", "Location")</li>
+                        <li>@Html.ActionLink(@Localizer["New_Location"].Value, "Create", "Location")</li>
                     </ul>
                 }
             </div>
@@ -87,11 +43,11 @@
     <div class="panel panel-default list-ccm">
         <div class="panel-heading list-ccm-heading">
             <div class="row">
-                <div class="col-md-3 sort-column" id="nameColumn">@Resources.Name</div>
-                <div class="col-md-2 sort-column" id="netColumn">@Resources.Net</div>
-                <div class="col-md-2 sort-column" id="netColumnV6">@Resources.NetV6</div>
-                <div class="col-md-3">@Resources.Comment</div>
-                <div class="col-md-1">@Resources.Group</div>
+                <div class="col-md-3 sort-column" id="nameColumn">@Localizer["Name"]</div>
+                <div class="col-md-2 sort-column" id="netColumn">@Localizer["Net"]</div>
+                <div class="col-md-2 sort-column" id="netColumnV6">@Localizer["NetV6"]</div>
+                <div class="col-md-3">@Localizer["Comment"]</div>
+                <div class="col-md-1">@Localizer["Group"]</div>
                 <div class="col-md-1"></div>
             </div>
         </div>
@@ -105,7 +61,7 @@
                             <div class="col-md-2">@location.ToIpV4String()</div>
                             <div class="col-md-2">@location.ToIpV6String()</div>
                             <div class="col-md-3">@location.Comment</div>
-                            <div class="col-md-1">@location.ProfileGroup.Name</div>
+                            <div class="col-md-1">@location.ProfileGroup?.Name</div>
                             <div class="col-md-1 text-right list-ccm-icongroup">
                                 @if (User.IsInRole(Roles.Admin))
                                 {
@@ -115,17 +71,17 @@
                             </div>
                         </a>
                     </div>
-                    <div class="row panel-collapse collapse well" id="@location.Id">
+                    <div class="row panel-collapse collapse mui-well" id="@location.Id">
                         <div class="col-md-12 panel-body">
                             <div class="col-md-4">
                                 <dl>
-                                    <dt>@Resources.Location_Short_Name</dt>
+                                    <dt>@Localizer["Location_Short_Name"]</dt>
                                     <dd>@location.ShortName</dd>
-                                    <dt>@Resources.Carrier_Connection_Id</dt>
+                                    <dt>@Localizer["Carrier_Connection_Id"]</dt>
                                     <dd>@location.CarrierConnectionId</dd>
-                                    <dt>@Resources.City</dt>
+                                    <dt>@Localizer["City"]</dt>
                                     <dd>@(location.City != null ? location.City.Name : string.Empty)</dd>
-                                    <dt>@Resources.Region</dt>
+                                    <dt>@Localizer["Region"]</dt>
                                     <dd>@(location.Region != null ? location.Region.Name : string.Empty)</dd>
                                 </dl>
                             </div>

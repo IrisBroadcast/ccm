@@ -24,47 +24,112 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Linq;
-using System.Web.Mvc;
-using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
-using CCM.Web.Models.Home;
-using Microsoft.AspNet.SignalR;
+using Microsoft.AspNetCore.SignalR;
+using NLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using CCM.Web.Mappers;
 
 namespace CCM.Web.Hubs
 {
-    public class CodecStatusHub : HubBase
+    public interface ICodecStatusHub
     {
-        public static void UpdateCodecStatus(Guid id)
+        Task CodecStatus(CodecStatusViewModel codecStatusViewModel);
+        Task CodecStatusList(List<CodecStatusViewModel> codecStatusViewModel);
+        Task CodecStatusExtended(CodecStatusExtendedViewModel codecStatusViewModel);
+        Task CodecStatusExtendedList(List<CodecStatusExtendedViewModel> codecStatusViewModel);
+    }
+
+    public class CodecStatusHub : Hub<ICodecStatusHub>
+    {
+        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private readonly CodecStatusViewModelsProvider _codecStatusViewModelsProvider;
+
+        public CodecStatusHub(CodecStatusViewModelsProvider codecStatusViewModelsProvider)
         {
-            if (id == Guid.Empty)
+            _codecStatusViewModelsProvider = codecStatusViewModelsProvider;
+        }
+
+        public override async Task OnConnectedAsync()
+        {
+            if (log.IsDebugEnabled)
             {
-                return;
+                log.Debug($"SignalR client connected to {GetType().Name}, connection id={Context.ConnectionId}");
             }
-            
-            var codecStatusViewModelsProvider = (CodecStatusViewModelsProvider)DependencyResolver.Current.GetService(typeof(CodecStatusViewModelsProvider));
-            var userAgentsOnline = codecStatusViewModelsProvider.GetAll();
+            await base.OnConnectedAsync();
+        }
 
-            var updatedCodecStatus = userAgentsOnline.FirstOrDefault(x => x.Id == id);
-
-            if (updatedCodecStatus != null)
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            if (exception == null)
             {
-                log.Debug($"SignalR is sending codec status to clients. SipAddress: {updatedCodecStatus.SipAddress}, State: {updatedCodecStatus.State}");
-                var hubContext = GlobalHost.ConnectionManager.GetHubContext<CodecStatusHub>();
-                hubContext.Clients.All.codecStatus(updatedCodecStatus);
+                log.Debug($"SignalR client disconnected gracefully from {GetType().Name}, connection id={Context.ConnectionId}");
             }
             else
             {
-                log.Error($"Can't update Codec status hub. No codec online with id: {id}");
+                log.Debug($"SignalR client disconnected ungracefully from {GetType().Name}, connection id={Context.ConnectionId}");
             }
+            await base.OnDisconnectedAsync(exception);
         }
 
-        public static void UpdateCodecStatusRemoved(CodecStatusViewModel codecStatus)
+        public Task JoinExtended()
         {
-            log.Debug($"SignalR is sending codec status to clients. SipAddress: {codecStatus.SipAddress}, State: {codecStatus.State}");
-            var hubContext = GlobalHost.ConnectionManager.GetHubContext<CodecStatusHub>();
-            hubContext.Clients.All.codecStatus(codecStatus);
+            return Groups.AddToGroupAsync(Context.ConnectionId, "extended");
+        }
+
+        public Task LeaveExtended()
+        {
+            return Groups.RemoveFromGroupAsync(Context.ConnectionId, "extended");
+        }
+
+        public Task Registered()
+        {
+            var registered = _codecStatusViewModelsProvider.GetAll().ToList();
+            return Clients.Caller.CodecStatusList(registered);
+        }
+
+        public Task RegisteredExtended()
+        {
+            var registered = _codecStatusViewModelsProvider.GetAllExtended().ToList();
+            return Clients.Caller.CodecStatusExtendedList(registered);
+        }
+
+        public Task RegisteredByAddress(string sipAddress)
+        {
+            var registered = _codecStatusViewModelsProvider.GetAll();
+            var codecStatus = registered.FirstOrDefault(x => x.SipAddress == sipAddress) ?? new CodecStatusViewModel
+            {
+                SipAddress = sipAddress,
+                State = CodecState.NotRegistered
+            };
+
+            return Clients.Caller.CodecStatus(codecStatus);
+        }
+
+        public Task RegisteredById(string id)
+        {
+            if (String.IsNullOrEmpty(id) || String.IsNullOrWhiteSpace(id))
+            {
+                return Clients.Caller.CodecStatus(new CodecStatusViewModel
+                {
+                    Id = Guid.Empty,
+                    SipAddress = "",
+                    State = CodecState.NotRegistered
+                });
+            }
+            var registered = _codecStatusViewModelsProvider.GetAll();
+            var codecStatus = registered.FirstOrDefault(x => x.Id == Guid.Parse(id)) ?? new CodecStatusViewModel
+            {
+                Id = Guid.Empty,
+                SipAddress = "",
+                State = CodecState.NotRegistered
+            };
+
+            return Clients.Caller.CodecStatus(codecStatus);
         }
     }
 }
+    

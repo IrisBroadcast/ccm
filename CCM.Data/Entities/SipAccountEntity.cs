@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using CCM.Core.Attributes;
@@ -44,12 +45,24 @@ namespace CCM.Data.Entities
         public bool AccountLocked { get; set; }
         public string Password { get; set; }
 
+        /// <summary> Filled in on registration </summary>
+        public DateTime? LastUsed { get; set; }
+        /// <summary> Filled in on registration </summary>
+        public string LastUserAgent { get; set; }
+        /// <summary> Filled in on registration </summary>
+        public string LastKnownAddress { get; set; }
+
+        /// <summary> An external reference that can be used to link accounts in other systems</summary>
+        public string ExternalReference { get; set; }
+
         [MetaType]
+        [ForeignKey("Owner_Id")]
         public virtual OwnerEntity Owner { get; set; }
 
         [MetaType]
+        [ForeignKey("CodecType_Id")]
         public virtual CodecTypeEntity CodecType { get; set; }
 
-        public virtual ICollection<RegisteredSipEntity> RegisteredSips { get; set; }
+        public virtual ICollection<RegisteredCodecEntity> RegisteredSips { get; set; }
     }
 }
