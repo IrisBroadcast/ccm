@@ -27,26 +27,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models.Regions;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
-    public class RegionsController : BaseController
+    public class RegionsController : Controller
     {
         private readonly IRegionRepository _regionRepository;
-        private readonly ILocationInfoRepository _locationInfoRepository;
+        private readonly ILocationRepository _locationRepository;
+        private readonly ICachedLocationRepository _cachedLocationRepository;
 
-        public RegionsController(IRegionRepository regionRepository, ILocationInfoRepository locationInfoRepository)
+        public RegionsController(IRegionRepository regionRepository, ILocationRepository locationRepository, ICachedLocationRepository cachedLocationRepository)
         {
             _regionRepository = regionRepository;
-            _locationInfoRepository = locationInfoRepository;
+            _locationRepository = locationRepository;
+            _cachedLocationRepository = cachedLocationRepository;
         }
 
         public ActionResult Index(string search = "")
@@ -63,7 +64,7 @@ namespace CCM.Web.Controllers
                     Locations = new List<LocationViewModel>()
                 };
 
-                foreach (var location in region.Locations) // <-- alltid tom lista? ta bort.
+                foreach (var location in region.Locations)
                 {
                     regionViewModel.Locations.Add(new LocationViewModel()
                     {
@@ -75,7 +76,7 @@ namespace CCM.Web.Controllers
                 model.Add(regionViewModel);
             }
 
-            ViewBag.SearchString = search;
+            ViewData["SearchString"] = search;
             return View(model);
         }
 
@@ -85,7 +86,11 @@ namespace CCM.Web.Controllers
         {
             var model = new RegionViewModel
             {
-                Locations = _locationInfoRepository.GetAll().Select(location => new LocationViewModel { Id = location.Id, Name = location.Name }).ToList()
+                Locations = _cachedLocationRepository.GetAllLocationInfo().Select(location => new LocationViewModel
+                {
+                    Id = location.Id,
+                    Name = location.Name
+                }).ToList()
             };
             return View(model);
         }
@@ -99,7 +104,6 @@ namespace CCM.Web.Controllers
             {
                 var region = ViewModelToRegion(model);
                 region.CreatedBy = User.Identity.Name;
-
                 _regionRepository.Save(region);
 
                 return RedirectToAction("Index");
@@ -130,6 +134,7 @@ namespace CCM.Web.Controllers
             if (ModelState.IsValid)
             {
                 var region = ViewModelToRegion(model);
+                region.UpdatedBy = User.Identity.Name;
                 _regionRepository.Save(region);
 
                 return RedirectToAction("Index");
@@ -166,7 +171,11 @@ namespace CCM.Web.Controllers
             {
                 Id = region.Id,
                 Name = region.Name,
-                Locations = _locationInfoRepository.GetAll().Select(location => new LocationViewModel { Id = location.Id,Name = location.Name }).ToList()
+                Locations = _locationRepository.GetAllLocationInfo().Select(location => new LocationViewModel
+                {
+                    Id = location.Id,
+                    Name = location.Name
+                }).ToList()
             };
 
             foreach (var location in region.Locations)
@@ -190,7 +199,11 @@ namespace CCM.Web.Controllers
                 UpdatedBy = User.Identity.Name,
                 Locations = model.Locations
                     .Where(vm => vm.Selected)
-                    .Select(vm => new Location {Id = vm.Id, Name = vm.Name})
+                    .Select(vm => new Location
+                    {
+                        Id = vm.Id,
+                        Name = vm.Name
+                    })
                     .ToList()
             };
         }

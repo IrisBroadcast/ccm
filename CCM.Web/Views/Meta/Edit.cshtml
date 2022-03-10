@@ -1,13 +1,15 @@
 ﻿@model CCM.Web.Models.Meta.MetaFormViewModel
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
 
 @{
-    ViewBag.Title = "Edit";
+    ViewData["Title"] = @Localizer["Edit_MetaType"];
 }
 
-<h2>Edit</h2>
+<h2>@Localizer["Edit_MetaType"]</h2>
 <hr />
 
 @using (Html.BeginForm("Edit", "Meta", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
-    @Html.Partial("_MetaForm", Model)
+    <partial name="_MetaForm" model="Model" />
 }

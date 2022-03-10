@@ -27,14 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
 using NLog;
-using CodecType = CCM.Core.Entities.CodecType;
-using Owner = CCM.Core.Entities.Owner;
 
 namespace CCM.Data.Repositories
 {
@@ -42,53 +40,61 @@ namespace CCM.Data.Repositories
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public CodecTypeRepository(IAppCache cache) : base(cache)
+        public CodecTypeRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
         public void Save(CodecType codecType)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            CodecTypeEntity dbCodecType = null;
+
+            if (codecType.Id != Guid.Empty)
             {
-                CodecTypeEntity dbCodecType = null;
-
-                if (codecType.Id != Guid.Empty)
+                dbCodecType = db.CodecTypes
+                    .Include(c => c.SipAccounts)
+                    .SingleOrDefault(c => c.Id == codecType.Id);
+                if(dbCodecType == null)
                 {
-                    dbCodecType = db.CodecTypes.SingleOrDefault(c => c.Id == codecType.Id);
+                    throw new Exception("Codec type could not be found");
                 }
-
-                if (dbCodecType == null)
-                {
-                    dbCodecType = new CodecTypeEntity()
-                    {
-                        Id = Guid.NewGuid(),
-                        CreatedBy = codecType.CreatedBy,
-                        CreatedOn = DateTime.UtcNow
-                    };
-                    db.CodecTypes.Add(dbCodecType);
-                }
-
-                dbCodecType.Name = codecType.Name;
-                dbCodecType.Color = codecType.Color;
-                dbCodecType.UpdatedBy = codecType.UpdatedBy;
-                dbCodecType.UpdatedOn = DateTime.UtcNow;
-
-                db.SaveChanges();
             }
+
+            if (dbCodecType == null)
+            {
+                dbCodecType = new CodecTypeEntity()
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedBy = codecType.CreatedBy,
+                    CreatedOn = DateTime.UtcNow
+                };
+                db.CodecTypes.Add(dbCodecType);
+            }
+
+            dbCodecType.Name = codecType.Name;
+            dbCodecType.Color = codecType.Color;
+            dbCodecType.UpdatedBy = codecType.UpdatedBy;
+            dbCodecType.UpdatedOn = DateTime.UtcNow;
+
+            db.SaveChanges();
         }
 
         public void Delete(Guid codecTypeId)
         {
-            using (var db = GetDbContext())
-            {
-                var dbCodecType = db.CodecTypes.SingleOrDefault(c => c.Id == codecTypeId);
+            var db = _ccmDbContext;
+            var dbCodecType = db.CodecTypes
+                .Include(ct => ct.SipAccounts)
+                .SingleOrDefault(c => c.Id == codecTypeId);
 
-                if (dbCodecType != null)
+            if (dbCodecType != null)
+            {
+                if (dbCodecType.SipAccounts != null)
                 {
-                    dbCodecType.Users.Clear();
-                    db.CodecTypes.Remove(dbCodecType);
-                    db.SaveChanges();
+                    dbCodecType.SipAccounts.Clear();
                 }
+
+                db.CodecTypes.Remove(dbCodecType);
+                db.SaveChanges();
             }
         }
 
@@ -99,21 +105,19 @@ namespace CCM.Data.Repositories
                 return null;
             }
 
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            var dbCodecType = db.CodecTypes
+                .Include(ct => ct.SipAccounts)
+                .SingleOrDefault(c => c.Id == codecTypeId);
+
+            if (dbCodecType == null)
             {
-                var dbCodecType = db.CodecTypes
-                    .Include(ct => ct.Users)
-                    .SingleOrDefault(c => c.Id == codecTypeId);
-
-                if (dbCodecType == null)
-                {
-                    return null;
-                }
-
-                var codecType = MapToCodecType(dbCodecType);
-
-                return codecType;
+                return null;
             }
+
+            var codecType = MapToCodecType(dbCodecType);
+
+            return codecType;
         }
 
         public List<CodecType> GetAll()
@@ -123,36 +127,39 @@ namespace CCM.Data.Repositories
 
         public List<CodecType> GetAll(bool includeUsers)
         {
-            using (var db = GetDbContext())
+            if (includeUsers)
             {
-                var dbCodecTypes = db.CodecTypes
-                    .Include(ct => ct.Users)
-                    .Include(ct => ct.Users.Select(u => u.Owner))
-                    .ToList();
-
-                return dbCodecTypes
-                    .Select(dbCodecType => MapToCodecType(dbCodecType, includeUsers))
+                return _ccmDbContext.CodecTypes
+                    .Include(it => it.SipAccounts)
+                    .ThenInclude(acc => acc.Owner)
+                    .AsEnumerable()
+                    .Select(dbCodecType => MapToCodecType(dbCodecType, true))
                     .OrderBy(c => c.Name)
                     .ToList();
+
             }
+
+            return _ccmDbContext.CodecTypes?
+                .AsEnumerable()
+                .Select(dbCodecType => MapToCodecType(dbCodecType, false))
+                .OrderBy(c => c.Name)
+                .ToList();
         }
 
         public List<CodecType> Find(string search, bool includeUsers = true)
         {
-            using (var db = GetDbContext())
-            {
-                var dbCodecTypes = db.CodecTypes
-                    .Include(ct => ct.Users)
-                    .Where(c => c.Name.ToLower().Contains(search.ToLower())).OrderBy(c => c.Name)
-                    .ToList();
+            var db = _ccmDbContext;
+            var dbCodecTypes = db.CodecTypes
+                .Include(ct => ct.SipAccounts)
+                .Where(c => c.Name.ToLower().Contains(search.ToLower())).OrderBy(c => c.Name)
+                .ToList();
 
-                return dbCodecTypes
-                    .Select(dbCodecType => MapToCodecType(dbCodecType, includeUsers))
-                    .ToList();
-            }
+            return dbCodecTypes
+                .Select(dbCodecType => MapToCodecType(dbCodecType, includeUsers))
+                .ToList();
         }
 
-        private CodecType MapToCodecType(CodecTypeEntity dbCodecType, bool includeUsers = true)
+        private static CodecType MapToCodecType(CodecTypeEntity dbCodecType, bool includeUsers = true)
         {
             var codecType = new CodecType()
             {
@@ -167,13 +174,13 @@ namespace CCM.Data.Repositories
 
             if (includeUsers)
             {
-                codecType.Users = dbCodecType.Users.Select(u => MapEntityToSipAccont(codecType, u)).ToList();
+                codecType.Users = dbCodecType.SipAccounts.Select(u => MapEntityToSipAccount(codecType, u)).ToList();
             }
 
             return codecType;
         }
 
-        private SipAccount MapEntityToSipAccont(CodecType codecType, SipAccountEntity user)
+        private static SipAccount MapEntityToSipAccount(CodecType codecType, SipAccountEntity user)
         {
             return new SipAccount
             {

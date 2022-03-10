@@ -1,12 +1,16 @@
-﻿@model CCM.Core.Entities.City
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Core.Entities.City
 
 @{
-    ViewBag.Title = Resources.Delete_City;
+    ViewData["Title"] = @Localizer["Delete_City"];
 }
 
-<h2>@Resources.Delete_City</h2>
+<h2>@Localizer["Delete_City"]</h2>
 <hr />
-<p>@Resources.Delete_City_Are_You_Sure</p>
+
+<p>@Localizer["Delete_City_Are_You_Sure"]</p>
 <p>@Model.Name</p>
 
 @using (Html.BeginForm("Delete", "City", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -16,7 +20,9 @@
     @Html.HiddenFor(m => m.Id)
 
     <div class="form-group">
-        @Html.ActionLink(Resources.Cancel, "Index", "City", null, new { @class = "btn btn-default" })
-        <button type="submit" class="btn btn-danger">@Resources.Delete</button>
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "City", null, new { @class = "btn btn-default"})
+            <button type="submit" class="btn btn-danger">@Localizer["Delete"]</button>
+        </div>
     </div>
 }

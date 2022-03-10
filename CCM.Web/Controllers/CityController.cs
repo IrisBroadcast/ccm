@@ -27,26 +27,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models.Cities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
-    public class CityController : BaseController
+    public class CityController : Controller
     {
         private readonly ICityRepository _cityRepository;
-        private readonly ILocationInfoRepository _locationInfoRepository;
+        private readonly ICachedLocationRepository _cachedLocationRepository;
 
-        public CityController(ICityRepository cityRepository, ILocationInfoRepository locationInfoRepository)
+        public CityController(ICityRepository cityRepository, ICachedLocationRepository cachedLocationRepository)
         {
             _cityRepository = cityRepository;
-            _locationInfoRepository = locationInfoRepository;
+            _cachedLocationRepository = cachedLocationRepository;
         }
 
         public ActionResult Index(string search = "")
@@ -57,10 +56,14 @@ namespace CCM.Web.Controllers
             {
                 Id = city.Id,
                 Name = city.Name,
-                Locations = city.Locations.Select(location => new LocationViewModel() { Id = location.Id, Name = location.Name }).ToList(),
+                Locations = city.Locations.Select(location => new LocationViewModel()
+                {
+                    Id = location.Id,
+                    Name = location.Name
+                }).ToList(),
             }).ToList();
 
-            ViewBag.SearchString = search;
+            ViewData["SearchString"] = search;
             return View(model);
         }
 
@@ -70,7 +73,12 @@ namespace CCM.Web.Controllers
         {
             var model = new CityViewModel
             {
-                Locations = _locationInfoRepository.GetAll().Select(location => new LocationViewModel { Id = location.Id, Name = location.Name }).ToList()
+                Locations = _cachedLocationRepository.GetAllLocationInfo()
+                    .Select(location => new LocationViewModel
+                    {
+                        Id = location.Id,
+                        Name = location.Name
+                    }).ToList()
             };
             return View(model);
         }
@@ -83,6 +91,7 @@ namespace CCM.Web.Controllers
             if (ModelState.IsValid)
             {
                 var city = ViewModelToCity(model);
+                city.CreatedBy = User.Identity.Name;
                 _cityRepository.Save(city);
 
                 return RedirectToAction("Index");
@@ -113,8 +122,8 @@ namespace CCM.Web.Controllers
             if (ModelState.IsValid)
             {
                 var city = ViewModelToCity(model);
+                city.UpdatedBy = User.Identity.Name;
                 _cityRepository.Save(city);
-
                 return RedirectToAction("Index");
             }
             return View(model);
@@ -150,12 +159,14 @@ namespace CCM.Web.Controllers
             {
                 Id = city.Id,
                 Name = city.Name,
-                Locations = _locationInfoRepository.GetAll().Select(location => new LocationViewModel
-                {
-                    Id = location.Id,
-                    Name = location.Name,
-                    Selected = locationIds.Contains(location.Id)
-                }).ToList()
+                Locations = _cachedLocationRepository
+                    .GetAllLocationInfo()
+                    .Select(location => new LocationViewModel
+                    {
+                        Id = location.Id,
+                        Name = location.Name,
+                        Selected = locationIds.Contains(location.Id)
+                    }).ToList()
             };
 
             return model;
@@ -167,33 +178,16 @@ namespace CCM.Web.Controllers
             {
                 Id = model.Id,
                 Name = model.Name,
-                Locations = new List<Location>(),
-
-                // TODO: Replace with this:
-                //Locations = (model.Locations ?? new List<LocationViewModel>())
-                //    .Where(l => l.Selected)
-                //    .Select(l => new Location() {Id = l.Id, Name = l.Name})
-                //    .ToList()
-
-            };
-
-            if (model.Locations != null)
-            {
-                foreach (var locationViewModel in model.Locations)
-                {
-                    if (locationViewModel.Selected)
+                Locations = (model.Locations ?? new List<LocationViewModel>())
+                    .Where(l => l.Selected)
+                    .Select(l => new Location()
                     {
-                        city.Locations.Add(new Location()
-                        {
-                            Id = locationViewModel.Id,
-                            Name = locationViewModel.Name
-                        });
-                    }
-                }
-            }
-
+                        Id = l.Id,
+                        Name = l.Name
+                    })
+                    .ToList()
+            };
             return city;
         }
-
     }
 }

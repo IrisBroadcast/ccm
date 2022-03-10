@@ -35,6 +35,8 @@ namespace CCM.Core.Interfaces.Repositories
     {
         Task<List<Log>> GetLastAsync(int nrOfRows, string application, DateTime? startTime, DateTime? endTime, int minLevel, string search, Guid activityId);
         Task<IList<LogInfo>> GetLogInfoAsync();
+        Task<LogInfo> GetLogTableInfoAsync();
         void DeleteOldest(int nrOfRowsToDelete = 100);
+        void DeleteAll();
     }
 }

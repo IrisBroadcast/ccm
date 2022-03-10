@@ -28,12 +28,13 @@ using CCM.Web.Models.UserAgents;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CCM.Web.Properties;
 
 namespace CCM.Web.Models.Profile
 {
     public class ProfileGroupViewModel
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.Empty;
 
         [Required]
         [MaxLength(40, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "Profile_Group_Error_Message_Name_Is_Too_Long")]

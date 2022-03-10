@@ -28,161 +28,177 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Data.Entity;
-using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
-using Profile = AutoMapper.Profile;
 
 namespace CCM.Data.Repositories
 {
     public class ProfileGroupRepository : BaseRepository, IProfileGroupRepository
     {
-        public ProfileGroupRepository(IAppCache cache) : base(cache)
+        public ProfileGroupRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
         public List<ProfileGroup> GetAll()
         {
-            using (var db = GetDbContext())
-            {
-                var profileGroups = db.ProfileGroups
-                    .Include(g => g.OrderedProfiles.Select(op => op.Profile))
-                    .ToList();
-                var pg = profileGroups.OrderBy(p => p.GroupSortWeight).Select(gp => Mapper.Map<ProfileGroup>(gp)).ToList();
-                return pg;
-                // TODO: This needs to keep it's order in some way, for the profiles.. just make sure.
-            }
+            var profileGroups = _ccmDbContext.ProfileGroups
+                .Include(p => p.OrderedProfiles)
+                .ThenInclude(op => op.Profile)
+                .ToList();
+
+            var pg = profileGroups.OrderBy(p => p.GroupSortWeight).Select(MapToProfileGroup).ToList();
+            return pg;
+        }
+
+        public List<ProfileGroup> FindProfileGroups(string search)
+        {
+            var profileGroups = _ccmDbContext.ProfileGroups
+                .Include(p => p.OrderedProfiles)
+                .ThenInclude(op => op.Profile)
+                .Where(u => u.Name.ToLower().Contains(search.ToLower()) ||
+                            u.Description.ToLower().Contains(search.ToLower()))
+                .ToList();
+
+            var pg = profileGroups.OrderBy(p => p.GroupSortWeight).Select(MapToProfileGroup).ToList();
+            return pg;
         }
 
         public ProfileGroup GetById(Guid id)
         {
-            using (var db = GetDbContext())
-            {
-                var group = db.ProfileGroups
-                    .Include(g => g.OrderedProfiles.Select(op => op.Profile))
-                    .SingleOrDefault(g => g.Id == id);
-                var profileGroup = Mapper.Map<ProfileGroup>(group);
+            var db = _ccmDbContext;
+            var profileGroup = db.ProfileGroups
+                .Include(g => g.OrderedProfiles)
+                .ThenInclude(p => p.Profile)
+                .Select(MapToProfileGroup)
+                .SingleOrDefault(g => g.Id == id);
 
-                return profileGroup;
-            }
+            return profileGroup;
         }
 
         public void Save(ProfileGroup profileGroup)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            bool nameCollision = db.ProfileGroups.Any(p => p.Name == profileGroup.Name && p.Id != profileGroup.Id);
+            if (nameCollision)
             {
-                bool nameCollision = db.ProfileGroups.Any(p => p.Name == profileGroup.Name && p.Id != profileGroup.Id);
-                if (nameCollision)
-                {
-                    throw new DuplicateNameException();
-                }
-
-                ProfileGroupEntity dbProfileGroup;
-
-                if (profileGroup.Id != Guid.Empty)
-                {
-                    // Update
-                    dbProfileGroup = db.ProfileGroups.SingleOrDefault(g => g.Id == profileGroup.Id);
-                    if (dbProfileGroup == null)
-                    {
-                        throw new Exception("Group could not be found");
-                    }
-
-                    Mapper.Map(profileGroup, dbProfileGroup);
-
-                    dbProfileGroup.OrderedProfiles.Where(op => !profileGroup.Profiles.Any(sp => sp.Id == op.ProfileId))
-                        .ToList()
-                        .ForEach(pg =>
-                            {
-                                dbProfileGroup.OrderedProfiles.Remove(pg);
-                            }
-                        );
-
-                    profileGroup.Profiles.Where(sp => !dbProfileGroup.OrderedProfiles.Any(op => op.ProfileId == sp.Id))
-                        .ToList()
-                        .ForEach(sp =>
-                        {
-                            var pgpo = new ProfileGroupProfileOrdersEntity()
-                            {
-                                ProfileGroupId = dbProfileGroup.Id,
-                                ProfileId = sp.Id,
-                            };
-                            dbProfileGroup.OrderedProfiles.Add(pgpo);
-                        });
-
-                    int i = 0;
-                    foreach (var p in profileGroup.Profiles.OrderBy(sp => sp.SortIndex))
-                    {
-                        dbProfileGroup.OrderedProfiles.Where(op => p.Id == op.ProfileId).SingleOrDefault().SortIndex = i++;
-                    }
-                }
-                else
-                {
-                    // New
-                    profileGroup.Id = Guid.NewGuid();
-                    dbProfileGroup = Mapper.Map<ProfileGroupEntity>(profileGroup);
-                    dbProfileGroup.OrderedProfiles = new List<ProfileGroupProfileOrdersEntity>();
-
-                    profileGroup.Profiles.ForEach(profile =>
-                        dbProfileGroup.OrderedProfiles.Add(new ProfileGroupProfileOrdersEntity()
-                            {
-                                ProfileGroupId = dbProfileGroup.Id,
-                                ProfileId = profile.Id,
-                            }
-                        ));
-
-                    int i = 0;
-                    foreach (var p in profileGroup.Profiles.OrderBy(sp => sp.SortIndex))
-                    {
-                        dbProfileGroup.OrderedProfiles.Where(op => p.Id == op.ProfileId).SingleOrDefault().SortIndex = i++;
-                    }
-
-                    dbProfileGroup.CreatedBy = profileGroup.CreatedBy;
-                    dbProfileGroup.CreatedOn = profileGroup.CreatedOn;
-
-                    db.ProfileGroups.Add(dbProfileGroup);
-                }
-
-                db.SaveChanges();
+                throw new DuplicateNameException();
             }
+
+            ProfileGroupEntity dbProfileGroup;
+
+            if (profileGroup.Id != Guid.Empty)
+            {
+                dbProfileGroup = db.ProfileGroups
+                    .Include(op => op.OrderedProfiles)
+                    .SingleOrDefault(g => g.Id == profileGroup.Id);
+                if (dbProfileGroup == null)
+                {
+                    throw new Exception("ProfileGroup could not be found");
+                }
+
+                // Goes through profiles in profilegroup table. Compares to see changes in incoming profile list and removes removed profiles.
+                dbProfileGroup.OrderedProfiles.Where(op => !profileGroup.Profiles.Any(sp => sp.Id == op.ProfileId))
+                    .ToList()
+                    .ForEach(pg =>
+                        {
+                            dbProfileGroup.OrderedProfiles.Remove(pg);
+                        }
+                    );
+
+                // Goes through incoming profile list. Compares to see changes in profiles in table and adds missing profiles.
+                profileGroup.Profiles.Where(sp => !dbProfileGroup.OrderedProfiles.Any(op => op.ProfileId == sp.Id))
+                    .ToList()
+                    .ForEach(sp =>
+                    {
+                        var pgpo = new ProfileGroupProfileOrdersEntity()
+                        {
+                            ProfileGroupId = dbProfileGroup.Id,
+                            ProfileId = sp.Id,
+                        };
+                        dbProfileGroup.OrderedProfiles.Add(pgpo);
+                    });
+
+                int i = 0;
+                foreach (var p in profileGroup.Profiles.OrderBy(sp => sp.OrderIndex))
+                {
+                    var a = dbProfileGroup.OrderedProfiles.Where(op => p.Id == op.ProfileId).SingleOrDefault().SortIndexForProfileInGroup = i++;
+                }
+            }
+            else
+            {
+                dbProfileGroup = new ProfileGroupEntity() { Id = Guid.NewGuid() };          
+
+                dbProfileGroup.OrderedProfiles = new List<ProfileGroupProfileOrdersEntity>();
+
+                profileGroup.Profiles.ForEach(profile =>
+                    dbProfileGroup.OrderedProfiles.Add(new ProfileGroupProfileOrdersEntity()
+                    {
+                        ProfileGroupId = dbProfileGroup.Id,
+                        ProfileId = profile.Id,
+                    }
+                ));
+
+                int i = 0;
+                foreach (var p in profileGroup.Profiles.OrderBy(sp => sp.OrderIndex))
+                {
+                    dbProfileGroup.OrderedProfiles.Where(op => p.Id == op.ProfileId).SingleOrDefault().SortIndexForProfileInGroup = i++;
+                }
+
+                dbProfileGroup.CreatedBy = profileGroup.CreatedBy;
+                dbProfileGroup.CreatedOn = DateTime.UtcNow;
+
+                db.ProfileGroups.Add(dbProfileGroup);
+            }
+
+            dbProfileGroup.Name = profileGroup.Name;
+            dbProfileGroup.Description = profileGroup.Description;
+            dbProfileGroup.GroupSortWeight = profileGroup.GroupSortWeight;
+            dbProfileGroup.UpdatedBy = profileGroup.UpdatedBy;
+            dbProfileGroup.UpdatedOn = DateTime.UtcNow;
+
+            db.SaveChanges();
         }
 
         public void Delete(Guid id)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            var group = db.ProfileGroups.SingleOrDefault(g => g.Id == id);
+            if (@group != null)
             {
-                var group = db.ProfileGroups.SingleOrDefault(g => g.Id == id);
-                if (group != null)
-                {
-                    db.ProfileGroups.Remove(group);
-                    db.SaveChanges();
-                }
+                db.ProfileGroups.Remove(@group);
+                db.SaveChanges();
             }
         }
 
-        public void SetProfileGroupSortWeight(IList<Tuple<Guid, int>> profileTuples)
+        private ProfileGroup MapToProfileGroup(ProfileGroupEntity profileGroupEntity)
         {
-            using (var db = GetDbContext())
+            if (profileGroupEntity == null) return null;
+
+            return new ProfileGroup
             {
-                foreach (var tuple in profileTuples)
-                {
-                    var id = tuple.Item1;
-                    var sortWeightIndex = tuple.Item2;
-
-                    var profile = db.ProfileGroups.SingleOrDefault(p => p.Id == id);
-                    if (profile == null)
+                Id = profileGroupEntity.Id,
+                Name = profileGroupEntity.Name,
+                Description = profileGroupEntity.Description,
+                GroupSortWeight = profileGroupEntity.GroupSortWeight,
+                Profiles = profileGroupEntity.OrderedProfiles.Select(x =>
+                    new ProfileCodec
                     {
-                        continue;
-                    }
+                        Id = x.Profile.Id,
+                        Name = x.Profile.Name,
+                        Description = x.Profile.Description,
+                        LongDescription = x.Profile.LongDescription,
+                        Sdp = x.Profile.Sdp,
+                        OrderIndex = x.SortIndexForProfileInGroup
 
-                    profile.GroupSortWeight = sortWeightIndex;
-                }
-
-                db.SaveChanges();
-            }
+                    }).OrderBy(x => x.OrderIndex).ToList(),
+                CreatedBy = profileGroupEntity.CreatedBy,
+                CreatedOn = profileGroupEntity.CreatedOn,
+                UpdatedBy = profileGroupEntity.UpdatedBy,
+                UpdatedOn = profileGroupEntity.UpdatedOn
+            };
         }
     }
 }

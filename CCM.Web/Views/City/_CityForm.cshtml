@@ -1,4 +1,7 @@
-﻿@model CCM.Web.Models.Cities.CityViewModel
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Cities.CityViewModel
 
 <div class="form-group">
     @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
@@ -11,16 +14,15 @@
     @Html.LabelFor(m => m.Locations, new { @class = "col-md-2 control-label" })
     <div class="col-md-10">
         <div class="dropdown">
-            <a class="dropdown-toggle btn-default btn" data-toggle="dropdown" href="#">@Resources.Locations <b class="caret"></b></a>
-            <div class="dropdown-menu dropdown-menu-checkboxes">
-                <input type="text" id="locationfilter" class="form-control" placeholder="@Resources.Search" />
+            <input type="text" id="locationfilter" class="form-control filterable-selection" data-to-filter="locations-menu" placeholder="@Localizer["Search"]" />
+            <div class="inlineselection-menu">
                 <ul class="" role="menu" id="locations-menu">
                     @for (int i = 0; i < Model.Locations.Count; i++)
                     {
                         <li>
                             <label class="checkbox">
                                 @Html.CheckBoxFor(m => m.Locations[i].Selected)
-                                <span>@Model.Locations[i].Name</span>
+                                @Model.Locations[i].Name
                                 @Html.HiddenFor(m => m.Locations[i].Name)
                                 @Html.HiddenFor(m => m.Locations[i].Id)
                             </label>
@@ -36,7 +38,7 @@
 
 <div class="form-group">
     <div class="col-md-offset-2 col-md-10">
-        @Html.ActionLink(Resources.Cancel, "Index", "City", null, new { @class = "btn btn-default" })
-        <button type="submit" class="btn btn-primary">@Resources.Save</button>
+        @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "City", null, new { @class = "btn btn-default" })
+        <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
     </div>
 </div>

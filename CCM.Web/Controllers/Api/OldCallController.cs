@@ -25,30 +25,36 @@
  */
 
 using System.Collections.Generic;
-using System.Web.Http;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers.Api
 {
     /// <summary>
     /// Returns a list of historical calls
     /// </summary>
-    public class OldCallController : ApiController
+    public class OldCallController : ControllerBase
     {
-        private readonly ICallHistoryRepository _callHistoryRepository;
+        private readonly ICachedCallHistoryRepository _cachedCallHistoryRepository;
         private readonly ISettingsManager _settingsManager;
 
-        public OldCallController(ICallHistoryRepository callHistoryRepository, ISettingsManager settingsManager)
+        public OldCallController(ICachedCallHistoryRepository cachedCallHistoryRepository, ISettingsManager settingsManager)
         {
-            _callHistoryRepository = callHistoryRepository;
+            _cachedCallHistoryRepository = cachedCallHistoryRepository;
             _settingsManager = settingsManager;
         }
 
-        public IList<OldCall> Post()
+        public IList<OldCall> Index()
         {
-            return _callHistoryRepository.GetOldCalls(_settingsManager.LatestCallCount, true);
+            return _cachedCallHistoryRepository.GetOldCalls(_settingsManager.LatestCallCount);
+        }
+
+        public IList<OldCall> Filtered(string region = "", string codecType = "", string category = "", string search = "")
+        {
+            var oldCalls = _cachedCallHistoryRepository.GetOldCallsFiltered(region, codecType, "", search, false, _settingsManager.LatestCallCount, true);
+            return oldCalls;
         }
     }
 }

@@ -40,7 +40,6 @@ namespace CCM.Core.Entities
             Guid id,
             string sipUri,
             string displayName,
-            string username,
             string ipAddress,
             string userAgentHeader,
             string userAgentName,
@@ -62,7 +61,6 @@ namespace CCM.Core.Entities
             Id = id;
             SipUri = sipUri;
             DisplayName = displayName;
-            Username = username;
             IpAddress = ipAddress;
             UserAgentHeader = userAgentHeader;
             UserAgentName = userAgentName;
@@ -87,32 +85,24 @@ namespace CCM.Core.Entities
         public Guid Id { get; }
         public string SipUri { get; }
         public string DisplayName { get; }
-        public string Username { get; }
+        //public string Username { get; } // TODO: remove med...
+        [FilterProperty(TableName = "UserAgents", ColumnName = "Identifier")]
         public string IpAddress { get; }
         public string UserAgentHeader { get; }
-
         [FilterProperty(TableName = "UserAgents", ColumnName = "Name")]
         public string UserAgentName { get; }
-
         [FilterProperty(TableName = "Locations", ColumnName = "Name")]
         public string LocationName { get; }
-
         [FilterProperty(TableName = "Locations", ColumnName = "ShortName")]
         public string LocationShortName { get; }
-
         [FilterProperty(TableName = "Regions", ColumnName = "Name")]
         public string RegionName { get; }
-
         [FilterProperty(TableName = "Cities", ColumnName = "Name")]
         public string CityName { get; }
-
         public string UserOwnerName { get; }
-
         public string UserDisplayName { get; }
-
         [FilterProperty(TableName = "CodecTypes", ColumnName = "Name")]
         public string CodecTypeName { get; }
-
         public List<KeyValuePair<string, string>> MetaData { get; }
 
         // Profiles
@@ -124,6 +114,5 @@ namespace CCM.Core.Entities
         public string InCallWithId { get; }
         public string InCallWithSip { get; }
         public string InCallWithName { get; }
-
     }
 }

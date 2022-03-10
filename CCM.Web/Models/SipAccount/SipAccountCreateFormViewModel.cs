@@ -25,8 +25,9 @@
  */
 
 using System.ComponentModel.DataAnnotations;
-using CCM.Web.InputValidation.ValidationAttributes;
 using CCM.Web.Infrastructure.PasswordGeneration;
+using CCM.Web.Infrastructure.ValidationAttributes;
+using CCM.Web.Properties;
 
 namespace CCM.Web.Models.SipAccount
 {
@@ -41,10 +42,10 @@ namespace CCM.Web.Models.SipAccount
         [MustContainDigits(PasswordComplexityConfiguration.MinNumberOfDigits)]
         [MustContainLowerCaseLetters(PasswordComplexityConfiguration.MinNumberOfLower)]
         [MustContainUpperCaseLetters(PasswordComplexityConfiguration.MinNumberOfUpper)]
-        public string Password { get; set; }
+        public string PasswordDefault { get; set; }
 
         [DataType(DataType.Password)]
-        [Compare(nameof(Password), ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Dont_Match))]
+        [Compare(nameof(PasswordDefault), ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = nameof(Resources.Password_Dont_Match))]
         [Display(ResourceType = typeof(Resources), Name = nameof(Resources.Confirm_Password))]
         public string PasswordConfirm { get; set; }
     }

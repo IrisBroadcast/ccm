@@ -1,0 +1,308 @@
+
+.mui-panel {
+
+    padding: 0;
+
+    &-block {
+        margin: 0.5rem auto;
+    }
+
+    table {
+        width: auto;
+        flex: 1;
+        display: grid;
+        border-collapse: collapse;
+        /* These are just initial values which are overriden using JavaScript when a column is resized */
+        grid-template-columns:
+            minmax(200px, 4fr)
+            minmax(150px, 3fr)
+            minmax(50px, 2fr)
+            minmax(50px, 1fr);
+
+        @media only screen and (max-width: 768px) {
+            grid-template-columns: minmax(200px, 4fr) minmax(32px, 3fr);
+
+            .mui-col--ua-comment {
+                grid-column: 1 / span 2;
+            }
+            .mui-col--ua-image {
+                display: none !important;
+            }
+        }
+    }
+
+    thead,
+    tbody,
+    tr {
+        display: contents;
+    }
+
+    th,
+    td {
+        padding: 0.25rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    th {
+        position: sticky;
+        top: 0;
+        padding: 0.5rem 0.25rem 0.5rem 0.5rem;
+        background: @text-header-bg;
+        text-align: left;
+        font-weight: normal;
+        font-size: 1rem;
+        color: #333333;
+        position: relative;
+    }
+
+    th:last-child {
+        border: 0;
+    }
+
+    .sortable-header {
+        cursor: pointer;
+    }
+
+    .list-ccm-thead--sort {
+        /* List is sorted on this */
+        text-decoration: none;
+        font-weight: 800;
+    }
+
+    .resize-handle {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background: black;
+        opacity: 0;
+        width: 3px;
+        cursor: col-resize;
+    }
+
+    .resize-handle:hover,
+    /* The following selector is needed so the handle is visible during resize even if the mouse isn't over the handle anymore */
+    .header--being-resized .resize-handle {
+        opacity: 0.5;
+    }
+
+    th:hover .resize-handle {
+        opacity: 0.3;
+    }
+
+    td {
+        color: #808080;
+    }
+
+    tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    tr:nth-child(even) td {
+        background: #f7f7f7;
+    }
+
+    .codec-type {
+        display: inline-flex;
+        padding: 0 0.25rem;
+        background-color: #d2f5d0;
+        margin: 0 0.25rem;
+        align-content: center;
+        border-radius: 0.25rem;
+        align-items: center;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        cursor: pointer;
+        &.category{
+            background-color: #f5f5d0;
+            text-transform: capitalize;
+        }
+    }
+
+    .comment-to, .comment-from {
+        color: #757575;
+        font-size: 0.9rem;
+    }
+
+    .mui-grid {
+        display: grid;
+        grid-template-columns: 2fr 2fr 1fr;
+    }
+
+    .mui-row {
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+
+        border-width: 0px 0px 1px 0px;
+        border-color: #dddddd;
+        border-style: solid;
+
+        padding: 0.1rem 0.25rem;
+
+        &.header {
+            background-color: unset !important;
+            border-width: 0 !important;
+            color: black !important;
+        }
+
+        &.codecs {
+            padding: 0.25rem;
+        }
+
+        &:nth-child(odd) {
+            background-color: @list-row-odd;
+        }
+
+        &:nth-child(even) {
+            background-color: @list-row-even;
+        }
+
+        &.call:nth-child(odd) {
+            background-color: #e4ffe3;
+        }
+
+        &.call:nth-child(even) {
+            background-color: #c3efc2;
+        }
+
+        &--feedback {
+            background-color: #f8f8f8;
+            text-align: center;
+            position: relative;
+            display: block;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px 0;
+            border-width: 0px 0px 1px 0px;
+            border-color: #dddddd;
+            border-style: solid;
+            background: none;
+        }
+    }
+
+    .mui-col {
+        flex: 1 1 auto;
+        align-self: center;
+
+        &--ua-comment {
+            &.edit {
+                cursor: pointer;
+
+                span {
+                    border-bottom: 1px dashed @border-color-editable;
+                }
+            }
+
+            &.edit-empty {
+                /* If comment is editable but empty */
+                cursor: cell;
+
+                span {
+                    border-bottom: 1px dashed @border-color-editable;
+                    width: 20px;
+                    display: block;
+                }
+            }
+        }
+
+        &--ua-image {
+            img {
+                max-height: 18px;
+                max-width: 100%;
+            }
+        }
+
+        a {
+            font-weight: 600;
+        }
+
+        .mui-registered-incall-dir {
+            width: 1rem;
+            flex: 0 0 2rem;
+            display: inline-flex;
+        }
+    }
+
+    .mui-col.mui-col--source {
+        flex: 0 0 34%;
+    }
+
+    .mui-col.mui-col--direction {
+        max-width: 2rem;
+        flex: 0 0 2rem;
+        padding: 0 0.5rem 0 0;
+
+        svg {
+            height: 100%;
+            display: block;
+        }
+
+        polygon {
+            fill: #97dea4;
+        }
+    }
+
+    .mui-col.mui-col--duration {
+        flex: 1 1 6rem;
+        text-align: right;
+    }
+
+    .mui-col.mui-col--call-info {
+        flex: 1 1 100%;
+    }
+}
+
+.mui-content {
+    &-heading {
+        background-color: #c3d4f1;
+        border-bottom: 1px solid #ddd;
+        border-radius: 3px 3px 0 0;
+
+        &-main {
+            font-size: 1.1rem;
+            padding: 0.5rem;
+        }
+
+        &-sub {
+            background-color: @text-header-bg;
+            padding: 0.3rem;
+            margin: 5px 5px 0 5px;
+        }
+    }
+
+    &.registered-codecs {
+        margin: 5px 0 0 0;
+        padding: 0 5px 0 5px;
+    }
+
+    &.ongoing-calls {
+        margin: 0 5px;
+    }
+
+    &.calls-history {
+        margin: 0 5px;
+    }
+}
+
+// Accounts
+.account-is-unused {
+    background-color: #ffc5c5 !important;
+}
+
+// Tabs
+.tab-pane {
+    .loading {
+        display: block;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' id='Heart' x='0px' y='0px' width='48px' height='48px' viewBox='-24 -24 48 48' enable-background='new 0 0 48 48' xml:space='preserve' preserveAspectRatio='xMidYMid meet'%3E%3Cg%3E%3Cg transform='rotate(0)'%3E%3Ccircle cx='0' cy='-17' r='3' stroke-width='0' fill='%23d8d8d8' stroke='none' stroke-linecap='round'%3E%3Canimate attributeName='opacity' dur='1s' values='0;1;0' repeatCount='indefinite' begin='0.1'/%3E%3C/circle%3E%3C/g%3E%3Cg transform='rotate(45)'%3E%3Ccircle cx='0' cy='-17' r='3' stroke-width='0' fill='%23d8d8d8' stroke='none' stroke-linecap='round'%3E%3Canimate attributeName='opacity' dur='1s' values='0;1;0' repeatCount='indefinite' begin='0.2'/%3E%3C/circle%3E%3C/g%3E%3Cg transform='rotate(90)'%3E%3Ccircle cx='0' cy='-17' r='3' stroke-width='0' fill='%23d8d8d8' stroke='none' stroke-linecap='round'%3E%3Canimate attributeName='opacity' dur='1s' values='0;1;0' repeatCount='indefinite' begin='0.3'/%3E%3C/circle%3E%3C/g%3E%3Cg transform='rotate(135)'%3E%3Ccircle cx='0' cy='-17' r='3' stroke-width='0' fill='%23d8d8d8' stroke='none' stroke-linecap='round'%3E%3Canimate attributeName='opacity' dur='1s' values='0;1;0' repeatCount='indefinite' begin='0.4'/%3E%3C/circle%3E%3C/g%3E%3Cg transform='rotate(180)'%3E%3Ccircle cx='0' cy='-17' r='3' stroke-width='0' fill='%23d8d8d8' stroke='none' stroke-linecap='round'%3E%3Canimate attributeName='opacity' dur='1s' values='0;1;0' repeatCount='indefinite' begin='0.5'/%3E%3C/circle%3E%3C/g%3E%3Cg transform='rotate(225)'%3E%3Ccircle cx='0' cy='-17' r='3' stroke-width='0' fill='%23d8d8d8' stroke='none' stroke-linecap='round'%3E%3Canimate attributeName='opacity' dur='1s' values='0;1;0' repeatCount='indefinite' begin='0.6'/%3E%3C/circle%3E%3C/g%3E%3Cg transform='rotate(270)'%3E%3Ccircle cx='0' cy='-17' r='3' stroke-width='0' fill='%23d8d8d8' stroke='none' stroke-linecap='round'%3E%3Canimate attributeName='opacity' dur='1s' values='0;1;0' repeatCount='indefinite' begin='0.7'/%3E%3C/circle%3E%3C/g%3E%3Cg transform='rotate(315)'%3E%3Ccircle cx='0' cy='-17' r='3' stroke-width='0' fill='%23d8d8d8' stroke='none' stroke-linecap='round'%3E%3Canimate attributeName='opacity' dur='1s' values='0;1;0' repeatCount='indefinite' begin='0.8'/%3E%3C/circle%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        min-height: 4rem;
+    }
+}

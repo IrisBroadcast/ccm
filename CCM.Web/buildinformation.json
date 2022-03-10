@@ -1,0 +1,9 @@
+{
+  "Build": {
+    "Name": "APP_NAME",
+    "ReleaseDate": "APP_RELEASE_DATE",
+    "Version": "APP_VERSION",
+    "Environment": "APP_ENVIRONMENT",
+    "Server": "APP_SERVER"
+  }
+}

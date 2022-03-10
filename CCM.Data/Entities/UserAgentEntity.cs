@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using CCM.Core.Attributes;
@@ -33,39 +34,40 @@ using CCM.Data.Entities.Base;
 
 namespace CCM.Data.Entities
 {
-    // TODO: Redo this whole object. It's way to big and seems strange that it's needed.
-    // Codec Model
+    // TODO: Redo this whole object. It's way to big and seems strange that it's needed. Maybe rename, UserAgentModels, CodecUserAgents
     [Table("UserAgents")]
     public class UserAgentEntity : EntityBase, ISipFilter
     {
         [MetaType]
         public string Name { get; set; }
         public string Identifier { get; set; }
-        public MatchType MatchType { get; set; }
+        public UserAgentPatternMatchType MatchType { get; set; }
         public string Image { get; set; }
 
-        // Connected to codec control
+        /// <summary> Codec control part </summary>
         public string UserInterfaceLink { get; set; }
-        // True if this UserAgent uses ActiveX for web interface.
-        // TODO: Rename this to something else
+
         public bool Ax { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-        // Shows link to codec user interface
+        /// <summary> Shows link to codec user interface, for all users </summary>
         public bool UserInterfaceIsOpen { get; set; }
         public bool UseScrollbars { get; set; }
-        public string Api { get; set; }
-        public int Lines { get; set; }
-        public int Inputs { get; set; }
-        public int NrOfGpos { get; set; }
-        public int MaxInputDb { get; set; }
-        public int MinInputDb { get; set; }
+        public string Api { get; set; } // TODO: Keep this one but link it to new table, for queries that is interested.. Maybe Guid?
+        //public int Lines { get; set; } // TODO: remove from db table
+        //public int Inputs { get; set; } // TODO: remove from db table
+        // public int NrOfGpos { get; set; } // TODO: remove from db table
+        // public int MaxInputDb { get; set; } // TODO: remove from db table
+        // public int MinInputDb { get; set; } // TODO: remove from db table
         public string Comment { get; set; }
-        public int InputGainStep { get; set; }
-        public string GpoNames { get; set; }
+        // public int InputGainStep { get; set; } // TODO: remove from db table
+        // public string GpoNames { get; set; } // TODO: remove from db table
+
+        public Guid? Category_Id { get; set; }
+        [MetaType]
+        [ForeignKey(nameof(Category_Id))]
+        public virtual CategoryEntity Category { get; set; }
 
         public virtual ICollection<UserAgentProfileOrderEntity> OrderedProfiles { get; set; }
-        //public virtual ICollection<RegisteredSipEntity> RegisteredSips { get; set; } // TODO: ZZZ Registered sips should maybe not anymore be here??
-        public virtual ICollection<CodecPresetEntity> CodecPresets { get; set; }
     }
 }

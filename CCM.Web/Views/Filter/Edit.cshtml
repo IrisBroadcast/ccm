@@ -1,13 +1,15 @@
-﻿@model CCM.Web.Models.Filter.FilterFormViewModel
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Filter.FilterFormViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewData["Title"] = @Localizer["Edit_Filter"];
 }
 
-<h2>Edit</h2>
+<h2>@Localizer["Edit_Filter"]</h2>
 <hr />
 
 @using (Html.BeginForm("Edit", "Filter", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
-    @Html.Partial("_FilterForm", Model)
+    <partial name="_FilterForm" model="Model" />
 }

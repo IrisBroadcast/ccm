@@ -25,21 +25,21 @@
  */
 
 using System;
-using System.Web.Mvc;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
+using CCM.Web.Infrastructure;
 using CCM.Web.Models.Call;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers
 {
     public class CallController : Controller
     {
-        private readonly ICallRepository _callRepository;
+        private readonly ICachedCallRepository _cachedCallRepository;
 
-        public CallController(ICallRepository callRepository)
+        public CallController(ICachedCallRepository cachedCallRepository)
         {
-            _callRepository = callRepository;
+            _cachedCallRepository = cachedCallRepository;
         }
 
         [CcmAuthorize(Roles = Roles.Admin)]
@@ -49,25 +49,22 @@ namespace CCM.Web.Controllers
         {
             if (model.CallId != Guid.Empty && model.IHaveChecked && model.ImSure)
             {
-                _callRepository.CloseCall(model.CallId);
+                _cachedCallRepository.CloseCall(model.CallId);
             }
 
             return RedirectToAction("Index", "Home");
         }
 
-
         [CcmAuthorize(Roles = Roles.Admin)]
         [HttpGet]
         public ActionResult DeleteCall(string id)
         {
-            Guid callIdGuid;
-
-            if (!Guid.TryParse(id, out callIdGuid))
+            if (!Guid.TryParse(id, out var callIdGuid))
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var call = _callRepository.GetCallInfoById(callIdGuid);
+            var call = _cachedCallRepository.GetCallInfoById(callIdGuid);
 
             if (call == null)
             {

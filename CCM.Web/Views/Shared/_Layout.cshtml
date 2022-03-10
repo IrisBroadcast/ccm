@@ -1,160 +1,83 @@
-﻿@using System.Configuration
-@using System.Reflection
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@inject ISettingsManager SettingsManager
+@inject IOptions<ApplicationBuildInformation> BuildInformation
+@using CCM.Core.Interfaces.Managers
+@using Microsoft.Extensions.Options
 @using Roles = CCM.Core.Helpers.Roles
+@using CCM.Core.Helpers
+@using CCM.Core.Managers
 @{
-    string env = @ConfigurationManager.AppSettings["Environment"];
-    var logoClass = (env == "Test" ? "logo-test" : (env == "Dev" ? "logo-dev" : "logo"));
-    string deployVersion = Assembly.GetAssembly(typeof(CCM.Core.Entities.Call)).GetName().Version.ToString(3);
-    string deployServer = @ConfigurationManager.AppSettings["Server"];
-    string buildDateString = @ConfigurationManager.AppSettings["BuildDate"];
-    string codecControlHost = @ConfigurationManager.AppSettings["CodecControlHost"];
-    string codecControlUserName = @ConfigurationManager.AppSettings["CodecControlUserName"];
-    string codecControlPassword = @ConfigurationManager.AppSettings["CodecControlPassword"];
+    string env = @BuildInformation.Value.Environment;
+    var logoClass = (env == "development" ? "development" : (env == "staging" ? "staging" : "production"));
+    string deployVersion = @BuildInformation.Value.Version;
+    string deployServer = @BuildInformation.Value.Server;
+    string deployEnvironment = BuildInformation.Value.Environment;
+    string buildDateString = @BuildInformation.Value.ReleaseDate;
+    string codecControlHost = @SettingsManager.CodecControlHost;
+    string codecControlUserName = @SettingsManager.CodecControlUserName;
+    string codecControlPassword = @SettingsManager.CodecControlPassword;
+    string discoveryServiceUrl = @SettingsManager.DiscoveryServiceUrl;
 }
 <!DOCTYPE html>
-<html ng-app="ccm">
+<html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <!-- Android chrome -->
     <meta name="theme-color" content="#337ab7" />
-    <!-- Windows Phone -->
     <meta name="msapplication-navbutton-color" content="#337ab7">
-    <!-- iOS Safari -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="~/dist/ccm-styles.css">
     <title>CCM</title>
-    @Styles.Render("~/Content/css")
+
     @RenderSection("head", required: false)
 </head>
+<body>
 
-<body @RenderSection("BodyAttributes", false)>
-
-    @RenderSection("bodyTop", false)
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container ccm-top-navbar-container">
-            <div class="navbar-header">
-                <!-- data-toggle="collapse" data-target=".navbar-collapse"-->
-                <button type="button" class="navbar-toggle">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a href="@Url.Action("Index", "Home")" class="@logoClass"></a>
-            </div>
-            <div class="navbar-collapse collapse ccm-top-navbar-links">
-
-                <ul class="nav navbar-nav navbar-left ccm-top-navbar-links--ul">
-                    <!-- Overview -->
-                    <li>@Html.ActionLink(Resources.Overview, "Index", "Home")</li>
-
-                    <!-- Statistics -->
-                    <li>@Html.ActionLink(Resources.Statistics, "Index", "Statistics")</li>
-
-                    <!-- Studior -->
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Resources.Studios</a>
-                        @Html.Action("Menu", "StudioMonitor", new { area = "" })
-                    </li>
-                    
-                    <li><a href="#" onclick="return popitup('menu.html')">Info</a></li>
-
-                    <!-- Administration -->
-                    @if (User.IsInRole(Roles.Admin))
-                    {
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Resources.Administration</a>
-
-                            <ul class="dropdown-menu ccm-top-navbar-links--dropdown">
-                                <li>@Html.ActionLink(Resources.Accounts, "Index", "SipAccount")</li>
-                                <li>@Html.ActionLink(Resources.UserAgents, "Index", "UserAgents")</li>
-                                <li>@Html.ActionLink(Resources.Profiles, "Index", "Profile")</li>
-                                <li>@Html.ActionLink(Resources.Profile_Groups, "Index", "ProfileGroup")</li>
-                                <li>@Html.ActionLink(Resources.Owners, "Index", "Owners")</li>
-                                <li class="dropdown-menu--divider"><div> </div></li>
-                                <li>@Html.ActionLink(Resources.Codec_Types, "Index", "CodecTypes")</li>
-                                <li>@Html.ActionLink(Resources.Locations, "Index", "Location")</li>
-                                <li>@Html.ActionLink(Resources.Regions, "Index", "Regions")</li>
-                                <li>@Html.ActionLink(Resources.Cities, "Index", "City")</li>
-                                <li class="dropdown-menu--divider"><div> </div></li>
-                                <li>@Html.ActionLink(@Resources.Studios, "Index", "Studio")</li>
-                                <li>@Html.ActionLink(Resources.Codec_Presets, "Index", "Presets")</li>
-                                <li class="dropdown-menu--divider"><div> </div></li>
-                                <li>@Html.ActionLink(Resources.Filters, "Index", "Filter")</li>
-                                <li>@Html.ActionLink(Resources.MetaTypes, "Index", "Meta")</li>
-                                <li>@Html.ActionLink(Resources.Settings, "Index", "Settings")</li>
-                                <li>@Html.ActionLink(Resources.Users, "Index", "User")</li>
-                                <li class="dropdown-menu--divider"><div> </div></li>
-                                <li>@Html.ActionLink(@Resources.Logs, "Index", "Log")</li>
-                                <li>@Html.ActionLink(@Resources.Debug_Title, "Index", "Debugging")</li>
-                            </ul>
-                        </li>
-                    }
-
-                    @if (User.IsInRole("Remote"))
-                    {
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Resources.Administration</a>
-
-                            <ul class="dropdown-menu ccm-top-navbar-links--dropdown">
-                                <li>@Html.ActionLink(Resources.UserAgents, "Index", "UserAgents")</li>
-                                <li>@Html.ActionLink(Resources.Profiles, "Index", "Profile")</li>
-                                <li>@Html.ActionLink(Resources.Profile_Groups, "Index", "ProfileGroup")</li>
-                                <li>@Html.ActionLink(Resources.Owners, "Index", "Owners")</li>
-                                <li class="dropdown-menu--divider"><div> </div></li>
-                                <li>@Html.ActionLink(Resources.Codec_Types, "Index", "CodecTypes")</li>
-                                <li>@Html.ActionLink(Resources.Locations, "Index", "Location")</li>
-                                <li>@Html.ActionLink(Resources.Regions, "Index", "Regions")</li>
-                                <li>@Html.ActionLink(Resources.Cities, "Index", "City")</li>
-                                <li class="dropdown-menu--divider"><div> </div></li>
-                                <li>@Html.ActionLink(@Resources.Studios, "Index", "Studio")</li>
-                            </ul>
-                        </li>
-                    }
-                </ul>
-
-                <ul class="nav navbar-nav navbar-right">
-                    <!-- Searchbar -->
-                    <li>
-                        @RenderSection("search", required: false)
-                    </li>
-
-                    <!-- Admin Login/Logout-->
-                    <li>
-                        @Html.Partial("_LoginPartial")
-                    </li>
-                </ul>
-
-            </div>
+    <header class="mui-header">
+        <div class="mui-logo @logoClass">
+            <a href="@Url.Action("Index", "Home")">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 130 50" enable-background="new 0 0 130 50" xml:space="preserve">
+                    <g>
+                        <path fill="#383838" d="M65,44c-10.5,0-19-8.5-19-19S54.5,6,65,6c6.4,0,12.3,3.2,15.8,8.5l-6.7,4.4C72.1,15.8,68.7,14,65,14c-6.1,0-11,4.9-11,11s4.9,11,11,11c3.7,0,7.1-1.8,9.2-4.9l6.7,4.4C77.3,40.8,71.4,44,65,44z" />
+                        <path fill="#383838" d="M25,44C14.5,44,6,35.5,6,25S14.5,6,25,6c6.4,0,12.3,3.2,15.8,8.5l-6.7,4.4C32.1,15.8,28.7,14,25,14c-6.1,0-11,4.9-11,11s4.9,11,11,11c3.7,0,7.1-1.8,9.2-4.9l6.7,4.4C37.3,40.8,31.4,44,25,44z" />
+                        <polygon fill="#383838" points="124,44 116,44 116,15.7 105,32.2 94,15.7 94,44 86,44 86,6 97.1,6 105,17.8 112.9,6 124,6" />
+                    </g>
+                </svg>
+            </a>
         </div>
-    </div>
+
+        <partial name="_MenuPartial" />
+
+        <div class="mui-search">
+            @RenderSection("search", required: false)
+        </div>
+
+        <div class="mui-login">
+            <partial name="_LoginPartial" />
+        </div>
+    </header>
 
     <div class="container-fluid body-content">
         @RenderBody()
         <hr />
-        <footer class="ccm-layout-footer">
-            <p>&copy; 2014 - @DateTime.Now.Year Sveriges Radio. Version <strong>@deployVersion</strong> - <strong>@buildDateString</strong> <strong>@deployServer</strong></p>
+        <footer class="mui-footer">
+            <p>&copy; 2014 - @DateTime.Now.Year Sveriges Radio. Version <strong>@deployVersion</strong> - <strong>@buildDateString</strong> <strong>@deployServer</strong> (<i>@deployEnvironment</i>)</p>
         </footer>
     </div>
 
-    @RenderSection("bodyBottom", false)
+    <script src="~/dist/ccm-main.js"></script>
 
-    @Scripts.Render("~/bundles/ccm")
     @RenderSection("scripts", required: false)
 
     <script>
     window.codecControlHost = @Html.Raw("'" + codecControlHost + "'");
     window.codecControlUserName = @Html.Raw("'" + codecControlUserName + "'");
     window.codecControlPassword = @Html.Raw("'" + codecControlPassword + "'");
-
-    function popitup(url) {
-        var newwindow = window.open('http://dev-ccm.sr.se/menu.html','name','height=850,width=680,left=1000,top=50, scrollbars=yes,titlebar=yes,toolbar=yes,resizable=yes,menubar=yes');
-        if (window.focus) {
-            newwindow.focus();
-        }
-        return false;
-    }
+    window.discoveryServiceUrl = @Html.Raw("'" + discoveryServiceUrl + "'");
     </script>
 </body>
 </html>

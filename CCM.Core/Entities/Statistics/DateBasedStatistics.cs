@@ -32,16 +32,16 @@ namespace CCM.Core.Entities.Statistics
 {
     public class DateBasedStatistics
     {
-        public double AverageTime
-        {
-            get { return NumberOfCalls == 0 ? 0 : TotaltTimeForCalls/NumberOfCalls; }
-        }
-
         public DateTime Date { get; set; }
-        public double MaxCallTime { get; private set; }
-        public double MinCallTime { get; private set; }
         public int NumberOfCalls { get; private set; }
-        public double TotaltTimeForCalls { get; private set; }
+        public double MaxCallTime { get; private set; }
+        public string MaxCallTimeView => TimeSpan.FromMinutes(Convert.ToInt32(MaxCallTime)).ToString(@"hh\:mm\:ss");
+        public double MinCallTime { get; private set; }
+        public string MinCallTimeView => TimeSpan.FromMinutes(Convert.ToInt32(MinCallTime)).ToString(@"hh\:mm\:ss");
+        public double TotalTimeForCalls { get; private set; }
+        public string TotalTimeForCallsView => TimeSpan.FromMinutes(Convert.ToInt32(TotalTimeForCalls)).ToString(@"hh\:mm");
+        public double AverageTime => NumberOfCalls == 0 ? 0 : TotalTimeForCalls / NumberOfCalls;
+        public string AverageTimeView => TimeSpan.FromMinutes(Convert.ToInt32(AverageTime)).ToString(@"hh\:mm");
 
         public void AddTime(double timeInMinutes)
         {
@@ -59,7 +59,7 @@ namespace CCM.Core.Entities.Statistics
                 MaxCallTime = timeInMinutes;
             }
 
-            TotaltTimeForCalls += timeInMinutes;
+            TotalTimeForCalls += timeInMinutes;
             NumberOfCalls++;
         }
     }

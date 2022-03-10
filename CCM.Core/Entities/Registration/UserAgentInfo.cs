@@ -38,7 +38,7 @@ namespace CCM.Core.Entities.Registration
         public UserAgentInfo(
             Guid userAgentId,
             string identifier,
-            MatchType matchType)
+            UserAgentPatternMatchType matchType)
         {
             UserAgentId = userAgentId;
             Identifier = identifier;
@@ -47,6 +47,6 @@ namespace CCM.Core.Entities.Registration
 
         public Guid UserAgentId { get; }
         public string Identifier { get; }
-        public MatchType MatchType { get; }
+        public UserAgentPatternMatchType MatchType { get; }
     }
 }

@@ -24,26 +24,32 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
-using System.Web.Http;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers.Api
 {
-    public class OngoingCallController : ApiController
+    public class OngoingCallController : ControllerBase
     {
-        private readonly ICallRepository _callRepository;
+        private readonly ICachedCallRepository _cachedCallRepository;
 
-        public OngoingCallController(ICallRepository callRepository)
+        public OngoingCallController(ICachedCallRepository cachedCallRepository)
         {
-            _callRepository = callRepository;
+            _cachedCallRepository = cachedCallRepository;
         }
 
-        public IReadOnlyCollection<OnGoingCall> Post()
+        public IReadOnlyCollection<OnGoingCall> Index()
         {
             // TODO: Maybe this needs to be a sorted readonly list?
-            return _callRepository.GetOngoingCalls(true);
+            return _cachedCallRepository.GetOngoingCalls(true);
         }
+
+        public OnGoingCall ById(Guid id)
+        {
+            return id != Guid.Empty ? _cachedCallRepository.GetOngoingCallById(id) : null;
+        } 
     }
 }

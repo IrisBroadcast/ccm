@@ -24,34 +24,33 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.Caching;
-using System.Web.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using CCM.Web.Infrastructure;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
-    [RoutePrefix("debug")]
+    [Route("debug")]
     public class DebuggingController : Controller
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly ICcmUserRepository _ccmUserRepository;
-        private readonly ISipAccountRepository _sipAccountRepository;
+        private readonly ICachedSipAccountRepository _cachedSipAccountRepository;
 
-        public DebuggingController(ICcmUserRepository ccmUserRepository, ISipAccountRepository sipAccountRepository)
+        public DebuggingController(ICcmUserRepository ccmUserRepository, ICachedSipAccountRepository cachedSipAccountRepository)
         {
             _ccmUserRepository = ccmUserRepository;
-            _sipAccountRepository = sipAccountRepository;
+            _cachedSipAccountRepository = cachedSipAccountRepository;
         }
 
         [Route("")]
@@ -70,7 +69,7 @@ namespace CCM.Web.Controllers
         [Route("getsipaccounts")]
         public ActionResult GetSipAccounts()
         {
-            var accounts = _sipAccountRepository.GetAll();
+            var accounts = _cachedSipAccountRepository.GetAll();
             return View(accounts);
         }
 
@@ -85,7 +84,7 @@ namespace CCM.Web.Controllers
 
             DisableLoggingTarget(loggingRule);
 
-            ViewBag.Title = "Log Test";
+            ViewData["Title"] = "Log Test";
             return View("ShowLog", target.Logs);
         }
 
@@ -124,11 +123,11 @@ namespace CCM.Web.Controllers
         [Route("getcacheinfo")]
         public ActionResult GetCacheInfo()
         {
-            var memoryCache = MemoryCache.Default;
+            // TODO:: https://stackoverflow.com/questions/45597057/how-to-retrieve-a-list-of-memory-cache-keys-in-asp-net-core
 
-            string name = memoryCache.Name;
-            long count = memoryCache.GetCount();
-            int hashCode = memoryCache.GetHashCode();
+            string name = typeof(MemoryCache).GetProperty("Name", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).ToString();
+            long count = typeof(MemoryCache).GetArrayRank();
+            int hashCode = typeof(MemoryCache).GetHashCode();
 
             var model = new CacheViewModel()
             {
@@ -142,38 +141,6 @@ namespace CCM.Web.Controllers
             Debug.WriteLine($"Cache count objects: {count}");
             Debug.WriteLine($"Cache hash code: {hashCode}");
             Debug.WriteLine("");
-
-            Debug.WriteLine("Cache content");
-
-            var cacheEnumberable = (IEnumerable)memoryCache;
-            foreach (DictionaryEntry item in cacheEnumberable)
-            {
-                IList cachedList = item.Value as IList;
-
-                var cachedItem = new CachedItem
-                {
-                    CacheKey = item.Key.ToString(),
-                    CachedObject = item.Value,
-                    CachedType = item.Value.GetType(),
-                    ListCount = cachedList?.Count
-                };
-                model.CachedItems.Add(cachedItem);
-
-                Debug.WriteLine($"Cached key: {cachedItem.CacheKey}");
-                Debug.WriteLine($"Cached type: {cachedItem.CachedType}");
-
-                if (cachedList != null)
-                {
-                    Debug.WriteLine("Object cashed is a list");
-                    Debug.WriteLine($"Items in cached list count: {cachedItem.ListCount}");
-
-                    foreach (var listItem in cachedList)
-                    {
-                        Debug.WriteLine($"\t{listItem}");
-                    }
-                }
-                Debug.WriteLine("");
-            }
 
             return View(model);
         }
@@ -194,5 +161,4 @@ namespace CCM.Web.Controllers
         public int HashCode { get; set; }
         public IList<CachedItem> CachedItems { get; set; }
     }
-
 }

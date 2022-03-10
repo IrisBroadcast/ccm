@@ -38,6 +38,8 @@ namespace CCM.Data.Entities
         public string Comment { get; set; }
         public string PasswordHash { get; set; }
         public string Salt { get; set; }
+
+        [ForeignKey("Role_Id")]
         public virtual RoleEntity Role { get; set; }
     }
 }

@@ -26,29 +26,31 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
 using NLog;
 using CCM.Web.Models.User;
+using CCM.Web.Properties;
+using Microsoft.Extensions.Localization;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = Roles.Admin)]
-    public class UserController : BaseController
+    public class UserController : Controller
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly IRoleRepository _roleRepository;
         private readonly ICcmUserRepository _userRepository;
+        private readonly IStringLocalizer<Resources> _localizer;
 
-        public UserController(ICcmUserRepository userRepository, IRoleRepository roleRepository)
+        public UserController(ICcmUserRepository userRepository, IRoleRepository roleRepository, IStringLocalizer<Resources> localizer)
         {
             _roleRepository = roleRepository;
             _userRepository = userRepository;
+            _localizer = localizer;
         }
 
         public ActionResult Index(string search = "")
@@ -68,7 +70,7 @@ namespace CCM.Web.Controllers
             var userIsAdmin = User.IsInRole(Roles.Admin);
             model.Roles = GetRoles(userIsAdmin);
 
-            ViewBag.Title = Resources.New_User;
+            ViewData["Title"] = _localizer["New_User"];
             return View("CreateEdit", model);
         }
 
@@ -89,12 +91,12 @@ namespace CCM.Web.Controllers
                 Id = user.Id,
                 LastName = user.LastName,
                 UserName = user.UserName,
-                RoleId = user.RoleId,
+                RoleId = user.RoleId
             };
 
             var userIsAdmin = User.IsInRole(Roles.Admin);
             model.Roles = GetRoles(userIsAdmin);
-            ViewBag.Title = Resources.Edit_User;
+            ViewData["Title"] = _localizer["Edit_User"];
             return View("CreateEdit", model);
         }
 
@@ -103,11 +105,22 @@ namespace CCM.Web.Controllers
         public ActionResult Save(UserFormViewModel model)
         {
             bool newUser = model.Id == Guid.Empty;
+            var userIsAdmin = User.IsInRole(Roles.Admin);
 
             try
             {
                 if (ModelState.IsValid)
                 {
+                    var role = string.IsNullOrWhiteSpace(model.RoleId) ? null : _roleRepository.GetById(model.RoleId);
+
+                    if (!User.IsInRole(Roles.Admin) && role.Name == Roles.Admin)
+                    {
+                        log.Warn("You need to be an administrator to create an administrator");
+                        ModelState.AddModelError("SaveUser", _localizer["You_need_to_be_administrator"]);
+                        ViewData["Title"] = newUser ? _localizer["New_User"] : _localizer["Edit_User"];
+                        model.Roles = GetRoles(userIsAdmin);
+                        return View("CreateEdit", model);
+                    }
                     var user = new CcmUser
                     {
                         Id = model.Id,
@@ -124,7 +137,7 @@ namespace CCM.Web.Controllers
                         if (_userRepository.GetByUserName(user.UserName) != null)
                         {
                             log.Warn("Can't create user. Username {0} already exists in CCM database", user.UserName);
-                            ModelState.AddModelError("SaveUser", Resources.User_Name_Already_Taken);
+                            ModelState.AddModelError("SaveUser", _localizer["User_Name_Already_Taken"]);
                         }
                         else
                         {
@@ -142,12 +155,11 @@ namespace CCM.Web.Controllers
             catch (Exception ex)
             {
                 log.Error(ex, "Could not save user");
-                ModelState.AddModelError("SaveUser", Resources.User_could_not_be_saved);
+                ModelState.AddModelError("SaveUser", _localizer["User_could_not_be_saved"]);
             }
 
-            var userIsAdmin = User.IsInRole(Roles.Admin);
             model.Roles = GetRoles(userIsAdmin);
-            ViewBag.Title = newUser ? Resources.New_User : Resources.Edit_User;
+            ViewData["Title"] = newUser ? _localizer["New_User"] : _localizer["Edit_User"];
             return View("CreateEdit", model);
         }
 
@@ -178,14 +190,23 @@ namespace CCM.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        private List<CcmRole> GetRoles(bool includeAdminRole = true)
+        private Dictionary<string, string> GetRoles(bool includeAdminRole = true)
         {
             var allRoles = _roleRepository.GetRoles();
-            var roles = includeAdminRole ? allRoles : allRoles.Where(r => r.Name != Roles.Admin).ToList();
-            roles.Insert(0, new CcmRole() { Name = string.Empty, Id = Guid.Empty });
+            Dictionary<string, string> roles = new Dictionary<string, string> { { string.Empty, string.Empty } };
+            foreach (var role in allRoles)
+            {
+                if(includeAdminRole)
+                {
+                    roles.Add(role.Id.ToString(), role.Name);
+                }
+                else if(role.Name != Roles.Admin)
+                {
+                    roles.Add(role.Id.ToString(), role.Name);
+                }
+            }
+
             return roles;
-
         }
-
     }
 }

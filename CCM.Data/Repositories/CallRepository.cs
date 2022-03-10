@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
@@ -37,6 +37,7 @@ using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using CCM.Data.Helpers;
 using LazyCache;
+using Microsoft.Extensions.Logging;
 using NLog;
 
 namespace CCM.Data.Repositories
@@ -45,73 +46,170 @@ namespace CCM.Data.Repositories
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly ICallHistoryRepository _callHistoryRepository;
+        private readonly ILogger<CallRepository> _logger;
+        private readonly ICachedCallHistoryRepository _cachedCallHistoryRepository;
         private readonly ISettingsManager _settingsManager;
 
-        public CallRepository(ICallHistoryRepository callHistoryRepository, ISettingsManager settingsManager, IAppCache cache) : base(cache)
+        public CallRepository(ICachedCallHistoryRepository cachedCallHistoryRepository, ISettingsManager settingsManager, IAppCache cache, CcmDbContext ccmDbContext, ILogger<CallRepository> logger) : base(cache, ccmDbContext)
         {
-            _callHistoryRepository = callHistoryRepository;
+            _cachedCallHistoryRepository = cachedCallHistoryRepository;
             _settingsManager = settingsManager;
+            _logger = logger;
         }
 
         public bool CallExists(string callId, string hashId, string hashEnt)
         {
-            using (var db = GetDbContext())
-            {
-                return db.Calls.Any(c => c.SipCallID == callId && c.DlgHashId == hashId && c.DlgHashEnt == hashEnt);
-            }
+            return _ccmDbContext.Calls.Any(c => c.DialogCallId == callId && c.DialogHashId == hashId && c.DialogHashEnt == hashEnt);
         }
 
-        public void CloseCall(Guid callId)
+        /// <summary>
+        /// Update or add information about a call. Can be used to close calls as well
+        /// </summary>
+        /// <param name="call"></param>
+        public void UpdateCall(Call call)
         {
-            using (var db = GetDbContext())
+            try
             {
-                var dbCall = db.Calls.SingleOrDefault(c => c.Id == callId);
+                var dbCall = call.Id != Guid.Empty ? _ccmDbContext.Calls.FirstOrDefault(c => c.Id == call.Id) : null;
 
                 if (dbCall == null)
                 {
-                    log.Warn("Trying to close call but call with id {0} doesn't exist", callId);
-                    return;
+                    var callId = Guid.NewGuid();
+                    call.Id = callId;
+
+                    dbCall = new CallEntity
+                    {
+                        Id = callId,
+                        DialogCallId = call.CallId,
+                        DialogHashId = call.DialogHashId,
+                        DialogHashEnt = call.DialogHashEnt,
+                        Started = call.Started,
+
+                        FromId = call.FromId,
+                        FromTag = call.FromTag,
+                        FromUsername = call.FromSip,
+                        FromDisplayName = call.FromDisplayName,
+                        FromCategory = call.FromCategory,
+
+                        ToId = call.ToId,
+                        ToTag = call.ToTag,
+                        ToUsername = call.ToSip,
+                        ToDisplayName = call.ToDisplayName,
+                        ToCategory = call.ToCategory,
+
+                        IsPhoneCall = call.IsPhoneCall,
+                        SDP = call.SDP
+                    };
+
+                    _ccmDbContext.Calls.Add(dbCall);
                 }
 
-                dbCall.Updated = DateTime.UtcNow;
-                dbCall.Closed = true;
-                // TODO: Is it necessary to save this closing of the call, to then remove it later?
-                db.SaveChanges();
+                // Common properties. Updated also for existing call
+                var updated = DateTime.UtcNow;
+                call.Updated = updated;
+                dbCall.Updated = updated;
+                dbCall.State = call.State;
+                dbCall.Closed = call.Closed;
+                var success = _ccmDbContext.SaveChanges() > 0;
 
+                if (success && call.Closed)
+                {
+                    // Call ended. Save call history and delete call from db
+                    var callHistory = MapToCallHistory(dbCall);
+                    var callHistorySuccess = _cachedCallHistoryRepository.Save(callHistory);
+
+                    if (callHistorySuccess)
+                    {
+                        // Remove the original call
+                        _ccmDbContext.Calls.Remove(dbCall);
+                        _ccmDbContext.SaveChanges();
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"Unable to save call history with call id: {call.CallId}, hash id: {call.DialogHashId}, hash ent: {call.DialogHashEnt}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+                _logger.LogError(ex, $"Error saving/updating call with call id: {call.CallId}, hash id: {call.DialogHashId}, hash ent: {call.DialogHashEnt}");
+            }
+        }
+
+        /// <summary>
+        /// Closes a call and saves it to call history
+        /// </summary>
+        /// <param name="callId"></param>
+        public void CloseCall(Guid callId)
+        {
+            // TODO: Make help function that returns one call
+            var dbCall = _ccmDbContext.Calls
+                .Include(c => c.FromCodec)
+                .Include(c => c.FromCodec.User)
+                .Include(c => c.FromCodec.User.CodecType)
+                .Include(c => c.FromCodec.User.Owner)
+                .Include(c => c.FromCodec.UserAgent.Category)
+                .Include(c => c.FromCodec.Location)
+                .Include(c => c.FromCodec.Location.Region)
+                .Include(c => c.FromCodec.Location.Category)
+                .Include(c => c.ToCodec)
+                .Include(c => c.ToCodec.User)
+                .Include(c => c.ToCodec.User.CodecType)
+                .Include(c => c.ToCodec.User.Owner)
+                .Include(c => c.ToCodec.UserAgent.Category)
+                .Include(c => c.ToCodec.Location)
+                .Include(c => c.ToCodec.Location.Region)
+                .Include(c => c.ToCodec.Location.Category)
+                .SingleOrDefault(c => c.Id == callId);
+
+            if (dbCall == null)
+            {
+                _logger.LogWarning($"Trying to close call but call with id {callId} doesn't exist");
+                return;
+            }
+
+            // Close call to remove it later
+            dbCall.Closed = true;
+            dbCall.Updated = DateTime.UtcNow;
+            var success = _ccmDbContext.SaveChanges() > 0;
+
+            if (success) {
                 // Save call history
-                var callHistory = MapToCallHistory(dbCall, _settingsManager.SipDomain);
-                var success = _callHistoryRepository.Save(callHistory);
+                var callHistory = MapToCallHistory(dbCall);
+                var callHistorySuccess = _cachedCallHistoryRepository.Save(callHistory);
 
-                if (success)
+                if (callHistorySuccess)
                 {
                     // Remove the original call
-                    db.Calls.Remove(dbCall);
-                    db.SaveChanges();
+                    _ccmDbContext.Calls.Remove(dbCall);
+                    _ccmDbContext.SaveChanges();
                 }
                 else
                 {
-                    log.Error($"Unable to save call history with the call fromSip: {dbCall.FromSip}, toSip: {dbCall.ToSip}, hash id: {dbCall.DlgHashId}, hash ent: {dbCall.DlgHashEnt}");
+                    _logger.LogWarning(
+                        $"Unable to save call history with the call fromSip: {dbCall.FromCodec}, toSip: {dbCall.ToCodec}, hash id: {dbCall.DialogHashId}, hash ent: {dbCall.DialogHashEnt}");
                 }
             }
         }
 
-        public CallInfo GetCallInfo(string callId, string hashId, string hashEnt) // CallId, HashId and HashEntry is a unique key for calls in Kamailio
+        /// <summary>
+        /// CallId, HashId and HashEntry is a unique key for calls
+        /// </summary>
+        /// <param name="callId"></param>
+        /// <param name="hashId"></param>
+        /// <param name="hashEnt"></param>
+        /// <returns></returns>
+        public CallInfo GetCallInfo(string callId, string hashId, string hashEnt)
         {
-            using (var db = GetDbContext())
-            {
-                var dbCall = db.Calls.SingleOrDefault(c => c.SipCallID == callId && c.DlgHashId == hashId && c.DlgHashEnt == hashEnt);
-                return MapToCallInfo(dbCall);
-            }
+            var dbCall = _ccmDbContext.Calls.SingleOrDefault(c => c.DialogCallId == callId && c.DialogHashId == hashId && c.DialogHashEnt == hashEnt);
+            return MapToCallInfo(dbCall);
         }
 
         public CallInfo GetCallInfoById(Guid callId)
         {
-            using (var db = GetDbContext())
-            {
-                var dbCall = db.Calls.SingleOrDefault(c => c.Id == callId);
-                return MapToCallInfo(dbCall);
-            }
+            var dbCall = _ccmDbContext.Calls.SingleOrDefault(c => c.Id == callId);
+            return MapToCallInfo(dbCall);
         }
 
         private CallInfo MapToCallInfo(CallEntity dbCall)
@@ -134,263 +232,228 @@ namespace CCM.Data.Repositories
             {
                 return null;
             }
-            using (var db = GetDbContext())
-            {
-                var dbCall = db.Calls
-                    .OrderByDescending(c => c.Updated) // Last call in case several happens to exist in database
-                    .FirstOrDefault(c => !c.Closed && (c.FromUsername == sipAddress || c.ToUsername == sipAddress));
 
-                return MapCall(dbCall);
-            }
-        }
+            var dbCall = _ccmDbContext.Calls
+                .OrderByDescending(c => c.Updated) // Last call in case several happens to exist in database
+                .FirstOrDefault(c => !c.Closed && (c.FromUsername == sipAddress || c.ToUsername == sipAddress));
 
-        public void UpdateCall(Call call)
-        {
-            try
-            {
-                using (var db = GetDbContext())
-                {
-                    var dbCall = call.Id != Guid.Empty ? db.Calls.SingleOrDefault(c => c.Id == call.Id) : null;
-
-                    if (dbCall == null)
-                    {
-                        var callId = Guid.NewGuid();
-                        call.Id = callId;
-
-                        dbCall = new CallEntity
-                        {
-                            Id = callId,
-                            SipCallID = call.CallId,
-                            DlgHashId = call.DlgHashId,
-                            DlgHashEnt = call.DlgHashEnt,
-                            ToTag = call.ToTag,
-                            FromTag = call.FromTag,
-                            Started = call.Started,
-                            FromId = call.FromId,
-                            FromUsername = call.FromSip,
-                            FromDisplayName = call.FromDisplayName,
-                            ToId = call.ToId,
-                            ToUsername = call.ToSip,
-                            ToDisplayName = call.ToDisplayName,
-                            IsPhoneCall = call.IsPhoneCall
-                        };
-
-                        db.Calls.Add(dbCall);
-                    }
-
-                    // Common properties. Updated also for existing call
-                    var updated = DateTime.UtcNow;
-                    call.Updated = updated;
-                    dbCall.Updated = updated;
-                    dbCall.State = call.State;
-                    dbCall.Closed = call.Closed;
-
-                    var success = db.SaveChanges() > 0;
-
-                    if (success && call.Closed)
-                    {
-                        // Call ended. Save call history and delete call from db
-                        var callHistory = MapToCallHistory(dbCall, _settingsManager.SipDomain);
-                        var callHistorySaved = _callHistoryRepository.Save(callHistory);
-
-                        if (callHistorySaved)
-                        {
-                            // Remove the original call
-                            db.Calls.Remove(dbCall);
-                            db.SaveChanges();
-                        }
-                        else
-                        {
-                            log.Error($"Unable to save call history with call id: {call.CallId}, hash id: {call.DlgHashId}, hash ent: {call.DlgHashEnt}");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex, $"Error saving/updating call with call id: {call.CallId}, hash id: {call.DlgHashId}, hash ent: {call.DlgHashEnt}");
-            }
+            return MapToCall(dbCall);
         }
 
         public IReadOnlyCollection<OnGoingCall> GetOngoingCalls(bool anonymize)
         {
-            using (var db = GetDbContext())
-            {
-                var dbCalls = db.Calls
-                    .Include(c => c.FromSip)
-                    .Include(c => c.FromSip.User)
-                    .Include(c => c.FromSip.User.CodecType)
-                    .Include(c => c.FromSip.Location)
-                    .Include(c => c.FromSip.Location.Region)
-                    .Include(c => c.ToSip)
-                    .Include(c => c.ToSip.User)
-                    .Include(c => c.ToSip.User.CodecType)
-                    .Include(c => c.ToSip.Location)
-                    .Include(c => c.ToSip.Location.Region)
-                    .Where(call => !call.Closed).ToList();
-                return dbCalls.Select(dbCall => MapToOngoingCall(dbCall, _settingsManager.SipDomain, anonymize)).ToList().AsReadOnly();
-            }
+            var dbCalls = _ccmDbContext.Calls
+                .Include(c => c.FromCodec)
+                .Include(c => c.FromCodec.User)
+                .Include(c => c.FromCodec.User.CodecType)
+                .Include(c => c.FromCodec.UserAgent.Category)
+                .Include(c => c.FromCodec.Location)
+                .Include(c => c.FromCodec.Location.Region)
+                .Include(c => c.FromCodec.Location.Category)
+                .Include(c => c.ToCodec)
+                .Include(c => c.ToCodec.User)
+                .Include(c => c.ToCodec.User.CodecType)
+                .Include(c => c.ToCodec.UserAgent.Category)
+                .Include(c => c.ToCodec.Location)
+                .Include(c => c.ToCodec.Location.Region)
+                .Include(c => c.ToCodec.Location.Category)
+                .Where(call => !call.Closed).OrderByDescending(call => call.Started).ToList();
+            return dbCalls.Select(dbCall => MapToOngoingCall(dbCall, anonymize)).ToList().AsReadOnly();
         }
 
-        private OnGoingCall MapToOngoingCall(CallEntity dbCall, string sipDomain, bool anonymize)
+        public OnGoingCall GetOngoingCallById(Guid callId)
+        {
+            var dbCall = _ccmDbContext.Calls.Include(c => c.FromCodec)
+                .Include(c => c.FromCodec.User)
+                .Include(c => c.FromCodec.User.CodecType)
+                .Include(c => c.FromCodec.UserAgent.Category)
+                .Include(c => c.FromCodec.Location)
+                .Include(c => c.FromCodec.Location.Region)
+                .Include(c => c.FromCodec.Location.Category)
+                .Include(c => c.ToCodec)
+                .Include(c => c.ToCodec.User)
+                .Include(c => c.ToCodec.User.CodecType)
+                .Include(c => c.ToCodec.UserAgent.Category)
+                .Include(c => c.ToCodec.Location)
+                .Include(c => c.ToCodec.Location.Region)
+                .Include(c => c.ToCodec.Location.Category)
+                .SingleOrDefault(c => c.Id == callId);
+            return MapToOngoingCall(dbCall, false);
+        }
+
+        private OnGoingCall MapToOngoingCall(CallEntity dbCall, bool anonymize)
         {
             // TODO: Fix this mapping, and maybe redo the query?
-            var fromDisplayName = CallDisplayNameHelper.GetDisplayName(dbCall.FromSip, dbCall.FromDisplayName, dbCall.FromUsername, sipDomain);
-            var toDisplayName = CallDisplayNameHelper.GetDisplayName(dbCall.ToSip, dbCall.ToDisplayName, dbCall.ToUsername, sipDomain);
+            string sipDomain = _settingsManager.SipDomain;
+            var fromDisplayName = CallDisplayNameHelper.GetDisplayName(dbCall.FromCodec, dbCall.FromDisplayName, dbCall.FromUsername, sipDomain);
+            var toDisplayName = CallDisplayNameHelper.GetDisplayName(dbCall.ToCodec, dbCall.ToDisplayName, dbCall.ToUsername, sipDomain);
 
             var onGoingCall = new OnGoingCall
             {
-                CallId = GuidHelper.GuidString(dbCall.Id),
+                CallId = GuidHelper.AsString(dbCall.Id),
                 Started = dbCall.Started,
-                FromId = GuidHelper.GuidString(dbCall.FromId),
+                SDP = dbCall.SDP,
+                IsPhoneCall = dbCall.IsPhoneCall,
+
+                FromId = GuidHelper.AsString(dbCall.FromId),
                 FromSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.FromUsername) : dbCall.FromUsername,
                 FromDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(fromDisplayName) : fromDisplayName,
-                FromCodecTypeColor = dbCall.FromSip != null && dbCall.FromSip.User != null && dbCall.FromSip.User.CodecType != null ? dbCall.FromSip.User.CodecType.Color : string.Empty,
-                FromCodecTypeName = dbCall.FromSip != null && dbCall.FromSip.User != null && dbCall.FromSip.User.CodecType != null ? dbCall.FromSip.User.CodecType.Name : string.Empty,
-                FromComment = dbCall.FromSip != null && dbCall.FromSip.User != null ? dbCall.FromSip.User.Comment : string.Empty,
-                FromLocationName = dbCall.FromSip != null && dbCall.FromSip.Location != null ? dbCall.FromSip.Location.Name : string.Empty,
-                FromLocationShortName = dbCall.FromSip != null && dbCall.FromSip.Location != null ? dbCall.FromSip.Location.ShortName : string.Empty,
-                FromRegionName = dbCall.FromSip != null && dbCall.FromSip.Location != null && dbCall.FromSip.Location.Region != null ? dbCall.FromSip.Location.Region.Name : string.Empty,
-                ToId = GuidHelper.GuidString(dbCall.ToId),
+                FromCodecTypeColor = dbCall.FromCodec?.User?.CodecType?.Color ?? string.Empty,
+                FromCodecTypeName = dbCall.FromCodec?.User?.CodecType?.Name ?? string.Empty,
+                FromCodecTypeCategory = dbCall.FromCodec?.UserAgent?.Category?.Name ?? string.Empty,
+                FromComment = dbCall.FromCodec?.User?.Comment ?? string.Empty,
+                FromExternalReference = dbCall.FromCodec?.User?.ExternalReference ?? string.Empty,
+                FromLocationName = dbCall.FromCodec?.Location?.Name ?? string.Empty,
+                FromLocationShortName = dbCall.FromCodec?.Location?.ShortName ?? string.Empty,
+                FromLocationCategory = dbCall.FromCodec?.Location?.Category?.Name ?? string.Empty,
+                FromRegionName = dbCall.FromCodec?.Location?.Region?.Name ?? string.Empty,
+                FromCategory = dbCall.FromCategory,
+
+                ToId = GuidHelper.AsString(dbCall.ToId),
                 ToSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.ToUsername) : dbCall.ToUsername,
                 ToDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(toDisplayName) : toDisplayName,
-                ToCodecTypeColor = dbCall.ToSip != null && dbCall.ToSip.User != null && dbCall.ToSip.User.CodecType != null ? dbCall.ToSip.User.CodecType.Color : string.Empty,
-                ToCodecTypeName = dbCall.ToSip != null && dbCall.ToSip.User != null && dbCall.ToSip.User.CodecType != null ? dbCall.ToSip.User.CodecType.Name : string.Empty,
-                ToComment = dbCall.ToSip != null && dbCall.ToSip.User != null ? dbCall.ToSip.User.Comment : string.Empty,
-                ToLocationName = dbCall.ToSip != null && dbCall.ToSip.Location != null ? dbCall.ToSip.Location.Name : string.Empty,
-                ToLocationShortName = dbCall.ToSip != null && dbCall.ToSip.Location != null ? dbCall.ToSip.Location.ShortName : string.Empty,
-                ToRegionName = dbCall.ToSip != null && dbCall.ToSip.Location != null && dbCall.ToSip.Location.Region != null ? dbCall.ToSip.Location.Region.Name : string.Empty
+                ToCodecTypeColor = dbCall.ToCodec?.User?.CodecType?.Color ?? string.Empty,
+                ToCodecTypeName = dbCall.ToCodec?.User?.CodecType?.Name ?? string.Empty,
+                ToCodecTypeCategory = dbCall.ToCodec?.UserAgent?.Category?.Name ?? string.Empty,
+                ToComment = dbCall.ToCodec?.User?.Comment ?? string.Empty,
+                ToExternalReference = dbCall.ToCodec?.User?.ExternalReference ?? string.Empty,
+                ToLocationName = dbCall.ToCodec?.Location?.Name ?? string.Empty,
+                ToLocationShortName = dbCall.ToCodec?.Location?.ShortName ?? string.Empty,
+                ToLocationCategory = dbCall.ToCodec?.Location?.Category?.Name ?? string.Empty,
+                ToRegionName = dbCall.ToCodec?.Location?.Region?.Name ?? string.Empty,
+                ToCategory = dbCall.ToCategory
             };
 
             return onGoingCall;
         }
 
-        private CallHistory MapToCallHistory(CallEntity call, string sipDomain)
+        private CallHistory MapToCallHistory(CallEntity call)
         {
-            // TODO: Clean up this null checks
+            string sipDomain = _settingsManager.SipDomain;
             var callHistory = new CallHistory()
             {
                 CallId = call.Id,
-                DlgHashEnt = call.DlgHashEnt,
-                DlgHashId = call.DlgHashId,
-                Ended = call.Updated,
-                FromCodecTypeColor = call.FromSip != null && call.FromSip.User != null && call.FromSip.User.CodecType != null
-                    ? call.FromSip.User.CodecType.Color
-                    : string.Empty,
-                FromCodecTypeId = call.FromSip != null && call.FromSip.User != null && call.FromSip.User.CodecType != null
-                    ? call.FromSip.User.CodecType.Id
-                    : Guid.Empty,
-                FromCodecTypeName = call.FromSip != null && call.FromSip.User != null && call.FromSip.User.CodecType != null
-                    ? call.FromSip.User.CodecType.Name
-                    : string.Empty,
-                FromComment = call.FromSip != null && call.FromSip.User != null ? call.FromSip.User.Comment : string.Empty,
-                FromDisplayName = CallDisplayNameHelper.GetDisplayName(call.FromSip, call.FromDisplayName, call.FromUsername, sipDomain),
-                FromId = call.FromId ?? Guid.Empty,
-                FromLocationComment = call.FromSip != null && call.FromSip.Location != null ? call.FromSip.Location.Comment : string.Empty,
-                FromLocationId = call.FromSip != null && call.FromSip.Location != null ? call.FromSip.Location.Id : Guid.Empty,
-                FromLocationName = call.FromSip != null && call.FromSip.Location != null ? call.FromSip.Location.Name : string.Empty,
-                FromLocationShortName = call.FromSip != null && call.FromSip.Location != null ? call.FromSip.Location.ShortName : string.Empty,
-                FromOwnerId = call.FromSip != null && call.FromSip.User != null && call.FromSip.User.Owner != null
-                        ? call.FromSip.User.Owner.Id
-                        : Guid.Empty,
-                FromOwnerName = call.FromSip != null && call.FromSip.User != null && call.FromSip.User.Owner != null
-                        ? call.FromSip.User.Owner.Name
-                        : string.Empty,
-                FromRegionId = call.FromSip != null && call.FromSip.Location != null && call.FromSip.Location.Region != null
-                    ? call.FromSip.Location.Region.Id
-                    : Guid.Empty,
-                FromRegionName = call.FromSip != null && call.FromSip.Location != null && call.FromSip.Location.Region != null
-                    ? call.FromSip.Location.Region.Name
-                    : string.Empty,
-                FromSip = call.FromSip != null ? call.FromSip.SIP : call.FromUsername,
-                FromTag = call.FromTag,
-                FromUserAgentHead = call.FromSip != null ? call.FromSip.UserAgentHeader : string.Empty,
-                FromUsername = call.FromSip != null ? call.FromSip.Username : call.FromUsername,
-                SipCallId = call.SipCallID,
+                DialogCallId = call.DialogCallId,
+                DialogHashEnt = call.DialogHashEnt,
+                DialogHashId = call.DialogHashId,
                 Started = call.Started,
-                ToCodecTypeColor = call.ToSip != null && call.ToSip.User != null && call.ToSip.User.CodecType != null
-                        ? call.ToSip.User.CodecType.Color
-                        : string.Empty,
-                ToCodecTypeId = call.ToSip != null && call.ToSip.User != null && call.ToSip.User.CodecType != null
-                        ? call.ToSip.User.CodecType.Id
-                        : Guid.Empty,
-                ToCodecTypeName = call.ToSip != null && call.ToSip.User != null && call.ToSip.User.CodecType != null
-                        ? call.ToSip.User.CodecType.Name
-                        : string.Empty,
-                ToComment = call.ToSip != null && call.ToSip.User != null ? call.ToSip.User.Comment : string.Empty,
-                ToDisplayName = CallDisplayNameHelper.GetDisplayName(call.ToSip, call.ToDisplayName, call.ToUsername, sipDomain),
+                Ended = call.Updated,
+                IsPhoneCall = call.IsPhoneCall,
+
+                FromCodecTypeColor = call.FromCodec?.User?.CodecType?.Color ?? string.Empty,
+                FromCodecTypeId = call.FromCodec?.User?.CodecType?.Id ?? Guid.Empty,
+                FromCodecTypeName = call.FromCodec?.User?.CodecType?.Name ?? string.Empty,
+                FromCodecTypeCategory = call.FromCodec?.UserAgent?.Category?.Name,
+                FromComment = call.FromCodec?.User?.Comment ?? string.Empty,
+                FromDisplayName = CallDisplayNameHelper.GetDisplayName(call.FromCodec, call.FromDisplayName, call.FromUsername, sipDomain),
+                FromId = call.FromId ?? Guid.Empty,
+                FromLocationComment = call.FromCodec?.Location?.Comment ?? string.Empty,
+                FromLocationId = call.FromCodec?.Location?.Id ?? Guid.Empty,
+                FromLocationName = call.FromCodec?.Location?.Name ?? string.Empty,
+                FromLocationShortName = call.FromCodec?.Location?.ShortName ?? string.Empty,
+                FromLocationCategory = call.FromCodec?.Location?.Category?.Name,
+                FromOwnerId = call.FromCodec?.User?.Owner?.Id ?? Guid.Empty,
+                FromOwnerName = call.FromCodec?.User?.Owner?.Name ?? string.Empty,
+                FromRegionId = call.FromCodec?.Location?.Region?.Id ?? Guid.Empty,
+                FromRegionName = call.FromCodec?.Location?.Region?.Name ?? string.Empty,
+                FromSip = call.FromCodec?.SIP ?? call.FromUsername,
+                FromTag = call.FromTag,
+                FromUserAgentHeader = call.FromCodec?.UserAgentHeader ?? string.Empty,
+                FromUsername = call.FromCodec?.Username ?? call.FromUsername,
+
+                ToCodecTypeColor = call.ToCodec?.User?.CodecType?.Color ?? string.Empty,
+                ToCodecTypeId = call.ToCodec?.User?.CodecType?.Id ?? Guid.Empty,
+                ToCodecTypeName = call.ToCodec?.User?.CodecType?.Name ?? string.Empty,
+                ToCodecTypeCategory = call.ToCodec?.UserAgent?.Category?.Name,
+                ToComment = call.ToCodec?.User?.Comment ?? string.Empty,
+                ToDisplayName = CallDisplayNameHelper.GetDisplayName(call.ToCodec, call.ToDisplayName, call.ToUsername, sipDomain),
                 ToId = call.ToId ?? Guid.Empty,
-                ToLocationComment = call.ToSip != null && call.ToSip.Location != null ? call.ToSip.Location.Comment : string.Empty,
-                ToLocationId = call.ToSip != null && call.ToSip.Location != null ? call.ToSip.Location.Id : Guid.Empty,
-                ToLocationName = call.ToSip != null && call.ToSip.Location != null ? call.ToSip.Location.Name : string.Empty,
-                ToLocationShortName = call.ToSip != null && call.ToSip.Location != null ? call.ToSip.Location.ShortName : string.Empty,
-                ToOwnerId = call.ToSip != null && call.ToSip.User != null && call.ToSip.User.Owner != null
-                        ? call.ToSip.User.Owner.Id
-                        : Guid.Empty,
-                ToOwnerName = call.ToSip != null && call.ToSip.User != null && call.ToSip.User.Owner != null
-                        ? call.ToSip.User.Owner.Name
-                        : string.Empty,
-                ToRegionId = call.ToSip != null && call.ToSip.Location != null && call.ToSip.Location.Region != null
-                    ? call.ToSip.Location.Region.Id
-                    : Guid.Empty,
-                ToRegionName = call.ToSip != null && call.ToSip.Location != null && call.ToSip.Location.Region != null
-                    ? call.ToSip.Location.Region.Name
-                    : string.Empty,
-                ToSip = call.ToSip != null ? call.ToSip.SIP : call.ToUsername,
+                ToLocationComment = call.ToCodec?.Location?.Comment ?? string.Empty,
+                ToLocationId = call.ToCodec?.Location?.Id ?? Guid.Empty,
+                ToLocationName = call.ToCodec?.Location?.Name ?? string.Empty,
+                ToLocationShortName = call.ToCodec?.Location?.ShortName ?? string.Empty,
+                ToLocationCategory = call.ToCodec?.Location?.Category?.Name,
+                ToOwnerId = call.ToCodec?.User?.Owner?.Id ?? Guid.Empty,
+                ToOwnerName = call.ToCodec?.User?.Owner?.Name ?? string.Empty,
+                ToRegionId = call.ToCodec?.Location?.Region?.Id ?? Guid.Empty,
+                ToRegionName = call.ToCodec?.Location?.Region?.Name ?? string.Empty,
+                ToSip = call.ToCodec?.SIP ?? call.ToUsername,
                 ToTag = call.ToTag,
-                ToUserAgentHead = call.ToSip != null ? call.ToSip.UserAgentHeader : string.Empty,
-                ToUsername = call.ToSip != null ? call.ToSip.Username : call.ToUsername,
-                IsPhoneCall = call.IsPhoneCall
+                ToUserAgentHeader = call.ToCodec?.UserAgentHeader ?? string.Empty,
+                ToUsername = call.ToCodec?.Username ?? call.ToUsername
             };
+
+            // Determine category
+            if (call.FromCategory != null && !string.IsNullOrEmpty(call.FromCategory))
+            {
+                callHistory.FromCodecTypeCategory = call.FromCategory;
+            }
+
+            if (call.ToCategory != null && !string.IsNullOrEmpty(call.ToCategory))
+            {
+                callHistory.ToCodecTypeCategory = call.ToCategory;
+            }
+
             return callHistory;
         }
 
-        private Call MapCall(CallEntity dbCall)
+        private Call MapToCall(CallEntity dbCall)
         {
             return dbCall == null ? null : new Call
             {
+                Id = dbCall.Id,
                 FromId = dbCall.FromId ?? Guid.Empty,
                 ToId = dbCall.ToId ?? Guid.Empty,
                 Started = dbCall.Started,
                 State = dbCall.State ?? SipCallState.NONE,
                 Updated = dbCall.Updated,
-                Id = dbCall.Id,
-                CallId = dbCall.SipCallID,
+                CallId = dbCall.DialogCallId,
                 Closed = dbCall.Closed,
-                From = MapRegisteredSip(dbCall.FromSip),
-                To = MapRegisteredSip(dbCall.ToSip),
+                DialogHashId = dbCall.DialogHashId,
+                DialogHashEnt = dbCall.DialogHashEnt,
+                From = MapToRegisteredCodec(dbCall.FromCodec),
+                To = MapToRegisteredCodec(dbCall.ToCodec),
                 FromSip = dbCall.FromUsername,
                 ToSip = dbCall.ToUsername,
                 FromTag = dbCall.FromTag,
                 ToTag = dbCall.ToTag,
-                DlgHashId = dbCall.DlgHashId,
-                DlgHashEnt = dbCall.DlgHashEnt,
-                IsPhoneCall = dbCall.IsPhoneCall
+                FromCategory = dbCall.FromCategory,
+                ToCategory = dbCall.ToCategory,
+                IsPhoneCall = dbCall.IsPhoneCall,
+                SDP = dbCall.SDP
             };
         }
 
-        private RegisteredSip MapRegisteredSip(RegisteredSipEntity dbSip)
+        private CallRegisteredCodec MapToRegisteredCodec(RegisteredCodecEntity dbCodec)
         {
-            var sip = dbSip == null ? null : new RegisteredSip()
+            var sip = dbCodec == null ? null : new CallRegisteredCodec()
             {
-                Id = dbSip.Id,
-                SIP = dbSip.SIP,
-                DisplayName = dbSip.DisplayName,
-                UserAgentHead = dbSip.UserAgentHeader,
-                Username = dbSip.Username,
-                User = MapUser(dbSip.User),
+                Id = dbCodec.Id,
+                SIP = dbCodec.SIP,
+                DisplayName = dbCodec.DisplayName,
+                UserAgentHead = dbCodec.UserAgentHeader,
+                UserName = dbCodec.Username,
+                PresentationName = DisplayNameHelper.GetDisplayName(
+                    dbCodec?.DisplayName ?? string.Empty,
+                    dbCodec?.User?.DisplayName ?? string.Empty,
+                    string.Empty,
+                    dbCodec?.Username ?? string.Empty,
+                    dbCodec?.SIP ?? string.Empty,
+                    string.Empty,
+                    _settingsManager.SipDomain),
+                User = MapToSipAccount(dbCodec.User),
             };
 
             return sip;
         }
 
-        private SipAccount MapUser(SipAccountEntity dbAccount)
+        private CallRegisteredCodecSipAccount MapToSipAccount(SipAccountEntity dbAccount)
         {
-            return dbAccount == null ? null : new SipAccount()
+            return dbAccount == null ? null : new CallRegisteredCodecSipAccount()
             {
                 Id = dbAccount.Id,
                 UserName = dbAccount.UserName,
-                DisplayName = dbAccount.DisplayName,
+                DisplayName = dbAccount.DisplayName
             };
         }
     }

@@ -1,16 +1,21 @@
-﻿@{
-    ViewBag.Title = "Who Am I";
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+
+@{
+    ViewData["Title"] = "Who Am I";
 }
 
 <div class="row">
     <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header ccm-sub-navbar--admin--header">
-                <span class="navbar-brand">Who Am I</span>
+                <h2>Who Am I</h2>
+                <span class="navbar-page-description"></span>
             </div>
             <div class="navbar ccm-sub-navbar--admin--links">
                 <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
-                    <li>@Html.ActionLink(Resources.Logs_Link_Debugging, "Index", "Debugging", new { }, new { })</li>
+                    <li>@Html.ActionLink(@Localizer["Logs_Link_Debugging"].Value, "Index", "Debugging", new { }, new { })</li>
                     <li>@Html.ActionLink("Get CCM Users", "GetCCMUsers", "Debugging", new { }, new { })</li>
                     <li>@Html.ActionLink("Get SIP Accounts", "GetSipAccounts", "Debugging", new { }, new { })</li>
                     <li class="active">@Html.ActionLink("Who Am I", "WhoAmI", "Debugging", new { }, new { })</li>
@@ -23,7 +28,7 @@
 
 <div class="row">
 
-    @if (Request.IsAuthenticated)
+    @if (User.Identity.IsAuthenticated)
     {
         <div>
             Logged in as @User.Identity.Name

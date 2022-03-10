@@ -24,9 +24,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Web.InputValidation.ValidationAttributes;
 using CCM.Web.Infrastructure.PasswordGeneration;
 using System.ComponentModel.DataAnnotations;
+using CCM.Web.Infrastructure.ValidationAttributes;
+using CCM.Web.Properties;
 
 namespace CCM.Web.Models.ApiExternal
 {
@@ -68,5 +69,4 @@ namespace CCM.Web.Models.ApiExternal
         [MustContainUpperCaseLetters(PasswordComplexityConfiguration.MinNumberOfUpper)]
         public string Password { get; set; }
     }
-
 }

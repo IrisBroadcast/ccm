@@ -27,8 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
@@ -41,8 +41,13 @@ namespace CCM.Data.Repositories
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public SipAccountRepository(IAppCache cache) : base(cache)
+        public SipAccountRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
+        }
+
+        public void Save(SipAccount item)
+        {
+            throw new NotImplementedException();
         }
 
         public void Create(SipAccount account)
@@ -52,11 +57,26 @@ namespace CCM.Data.Repositories
                 throw new ArgumentNullException(nameof(account));
             }
 
-            using (var db = GetDbContext())
+            if (GetByUserName(account.UserName) != null)
             {
-                var dbAccount = new SipAccountEntity();
-                SetEntityFromSipAccount(db, account, dbAccount);
-                db.SipAccounts.Add(dbAccount);
+                log.Warn("Can't create user. Username {0} already exists in CCM database", account.UserName);
+                // TODO: make sure to do this in the frontend as well
+                throw new ApplicationException("User name already exists.");
+            }
+
+            var dbAccount = new SipAccountEntity();
+            SetEntityFromSipAccount(_ccmDbContext, account, dbAccount);
+            _ccmDbContext.SipAccounts.Add(dbAccount);
+            _ccmDbContext.SaveChanges();
+        }
+
+        public void Update(SipAccount ccmUser)
+        {
+            var db = _ccmDbContext;
+            SipAccountEntity dbUser = db.SipAccounts.SingleOrDefault(u => u.Id == ccmUser.Id);
+            if (dbUser != null)
+            {
+                SetEntityFromSipAccount(db, ccmUser, dbUser);
                 db.SaveChanges();
             }
         }
@@ -68,132 +88,125 @@ namespace CCM.Data.Repositories
                 throw new ArgumentNullException(nameof(id));
             }
 
-            using (var db = GetDbContext())
-            {
-                SipAccountEntity account = db.SipAccounts.SingleOrDefault(u => u.Id == id);
+            SipAccountEntity account = _ccmDbContext.SipAccounts.SingleOrDefault(u => u.Id == id);
 
-                if (account != null)
-                {
-                    account.RegisteredSips?.Clear();
-                    db.SipAccounts.Remove(account);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    log.Info("Could not find user {0}", id);
-                }
+            if (account != null)
+            {
+                account.RegisteredSips?.Clear();
+                _ccmDbContext.SipAccounts.Remove(account);
+                _ccmDbContext.SaveChanges();
             }
+            else
+            {
+                log.Info($"Could not find user '{id}' to delete");
+            }
+        }
+
+        public bool DeleteWithResult(Guid id)
+        {
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            SipAccountEntity account = _ccmDbContext.SipAccounts.SingleOrDefault(u => u.Id == id);
+
+            if (account != null)
+            {
+                account.RegisteredSips?.Clear();
+                _ccmDbContext.SipAccounts.Remove(account);
+                return _ccmDbContext.SaveChanges() == 1;
+            }
+            return false;
         }
 
         public SipAccount GetById(Guid id)
         {
-            using (var db = GetDbContext())
-            {
-                SipAccountEntity dbAccount = db.SipAccounts.SingleOrDefault(u => u.Id == id);
-                return MapToSipAccount(dbAccount);
-            }
+            var db = _ccmDbContext;
+            SipAccountEntity dbAccount = db.SipAccounts
+                .Include(x => x.Owner)
+                .Include(x => x.CodecType)
+                .SingleOrDefault(u => u.Id == id);
+            return MapToSipAccount(dbAccount);
         }
 
         public SipAccount GetByRegisteredSipId(Guid registeredSipId)
         {
-            using (var db = GetDbContext())
-            {
-                var regSip = db.RegisteredSips
-                    .Include(s => s.User)
-                    .SingleOrDefault(s => s.Id == registeredSipId);
-                return MapToSipAccount(regSip?.User);
-            }
-        }
-
-        public List<SipAccount> GetAllIncludingRelations()
-        {
-            using (var db = GetDbContext())
-            {
-                var users = db.SipAccounts
-                    .Include(u => u.Owner)
-                    .Include(u => u.CodecType)
-                    .ToList();
-
-                return users.Select(MapToSipAccount).OrderBy(u => u.UserName).ToList();
-            }
+            var db = _ccmDbContext;
+            var regSip = db.RegisteredCodecs
+                .Include(s => s.User)
+                .SingleOrDefault(s => s.Id == registeredSipId);
+            return MapToSipAccount(regSip?.User);
         }
 
         public List<SipAccount> GetAll()
         {
-            using (var db = GetDbContext())
-            {
-                return db.SipAccounts.ToList().Select(MapToSipAccount).OrderBy(u => u.UserName).ToList();
-            }
+            return _ccmDbContext.SipAccounts
+                .Include(u => u.Owner)
+                .Include(u => u.CodecType)
+                .ToList()
+                .Select(MapToSipAccount)
+                .OrderBy(u => u.UserName)
+                .ToList();
         }
 
         public List<SipAccount> Find(string startsWith)
         {
-            using (var db = GetDbContext())
-            {
-                var users = db.SipAccounts
-                    .Where(u => u.UserName.Contains(startsWith))
-                    .ToList();
-                return users.Select(MapToSipAccount).OrderBy(u => u.UserName).ToList();
-            }
+            var db = _ccmDbContext;
+            var users = db.SipAccounts
+                .Where(u => u.UserName.Contains(startsWith))
+                .ToList();
+            return users.Select(MapToSipAccount).OrderBy(u => u.UserName).ToList();
         }
 
         public SipAccount GetByUserName(string userName)
         {
-            using (var db = GetDbContext())
-            {
-                SipAccountEntity user = db.SipAccounts.SingleOrDefault(u => u.UserName == userName);
-                return MapToSipAccount(user);
-            }
-        }
-
-        public void Update(SipAccount ccmUser)
-        {
-            using (var db = GetDbContext())
-            {
-                SipAccountEntity dbUser = db.SipAccounts.SingleOrDefault(u => u.Id == ccmUser.Id);
-                if (dbUser != null)
-                {
-                    SetEntityFromSipAccount(db, ccmUser, dbUser);
-                    db.SaveChanges();
-                }
-            }
+            SipAccountEntity user = _ccmDbContext.SipAccounts.SingleOrDefault(u => u.UserName.ToLower() == userName);
+            return MapToSipAccount(user);
         }
 
         public void UpdateComment(Guid id, string comment)
         {
-            using (var db = GetDbContext())
-            {
-                SipAccountEntity dbUser = db.SipAccounts.SingleOrDefault(u => u.Id == id);
+            var db = _ccmDbContext;
+            SipAccountEntity dbUser = db.SipAccounts.SingleOrDefault(u => u.Id == id);
 
-                if (dbUser != null)
-                {
-                    dbUser.Comment = comment;
-                    db.SaveChanges();
-                }
+            if (dbUser != null)
+            {
+                dbUser.Comment = comment;
+                db.SaveChanges();
+            }
+        }
+
+        public void UpdateSipAccountQuick(Guid id, string presentationName, string externalReference)
+        {
+            var db = _ccmDbContext;
+            SipAccountEntity dbUser = db.SipAccounts.SingleOrDefault(u => u.Id == id);
+
+            if (dbUser != null)
+            {
+                dbUser.DisplayName = presentationName;
+                dbUser.ExternalReference = externalReference;
+                db.SaveChanges();
             }
         }
 
         public void UpdatePassword(Guid id, string password)
         {
-            using (var db = GetDbContext())
-            {
-                SipAccountEntity dbUser = db.SipAccounts.SingleOrDefault(u => u.Id == id);
+            var db = _ccmDbContext;
+            SipAccountEntity dbUser = db.SipAccounts.SingleOrDefault(u => u.Id == id);
 
-                if (dbUser != null)
-                {
-                    dbUser.Password = password;
-                    db.SaveChanges();
-                }
+            if (dbUser != null)
+            {
+                dbUser.Password = password;
+                db.SaveChanges();
             }
         }
 
         public async Task<bool> AuthenticateAsync(string username, string password)
         {
-            using (var db = GetDbContext())
-            {
-                var user = await db.SipAccounts.FirstOrDefaultAsync(u => u.UserName == username && u.Password == password);
-                return user != null;
-            }
+            var db = _ccmDbContext;
+            var user = await db.SipAccounts.FirstOrDefaultAsync(u => u.UserName == username && u.Password == password);
+            return user != null;
         }
 
         private SipAccount MapToSipAccount(SipAccountEntity dbAccount)
@@ -207,21 +220,13 @@ namespace CCM.Data.Repositories
                 ExtensionNumber = dbAccount.ExtensionNumber,
                 AccountLocked = dbAccount.AccountLocked,
                 AccountType = dbAccount.AccountType,
+                LastKnownAddress = dbAccount.LastKnownAddress,
+                LastUsed = dbAccount.LastUsed,
+                LastUserAgent = dbAccount.LastUserAgent,
+                ExternalReference = dbAccount.ExternalReference,
                 Owner = MapToOwner(dbAccount.Owner),
-                CodecType = MaptoCodecType(dbAccount.CodecType)
+                CodecType = MapToCodecType(dbAccount.CodecType)
             };
-        }
-
-        private Owner MapToOwner(OwnerEntity dbOwner)
-        {
-            return dbOwner != null ? new Owner { Id = dbOwner.Id, Name = dbOwner.Name } : null;
-        }
-
-        private CodecType MaptoCodecType(CodecTypeEntity dbCodecType)
-        {
-            return dbCodecType != null
-                ? new CodecType { Id = dbCodecType.Id, Name = dbCodecType.Name, Color = dbCodecType.Color }
-                : null;
         }
 
         private void SetEntityFromSipAccount(CcmDbContext cxt, SipAccount account, SipAccountEntity dbAccount)
@@ -235,6 +240,11 @@ namespace CCM.Data.Repositories
             dbAccount.CodecType = account.CodecType != null ? cxt.CodecTypes.SingleOrDefault(c => c.Id == account.CodecType.Id) : null;
             dbAccount.AccountLocked = account.AccountLocked;
             dbAccount.AccountType = account.AccountType;
+            // INFO: Info make sure that this is not needed to be set here
+            //dbAccount.LastKnownAddress = account.LastKnownAddress;
+            //dbAccount.LastUsed = account.LastUsed;
+            //dbAccount.LastUserAgent = account.LastUserAgent;
+            dbAccount.ExternalReference = account.ExternalReference;
 
             if (!string.IsNullOrEmpty(account.Password))
             {
@@ -242,5 +252,16 @@ namespace CCM.Data.Repositories
             }
         }
 
+        private Owner MapToOwner(OwnerEntity dbOwner)
+        {
+            return dbOwner != null ? new Owner { Id = dbOwner.Id, Name = dbOwner.Name } : null;
+        }
+
+        private CodecType MapToCodecType(CodecTypeEntity dbCodecType)
+        {
+            return dbCodecType != null
+                ? new CodecType { Id = dbCodecType.Id, Name = dbCodecType.Name, Color = dbCodecType.Color }
+                : null;
+        }
     }
 }

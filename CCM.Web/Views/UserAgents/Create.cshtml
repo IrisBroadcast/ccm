@@ -1,10 +1,13 @@
-﻿@model CCM.Web.Models.UserAgents.UserAgentViewModel
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.UserAgents.UserAgentViewModel
 
 @{
-    ViewBag.Title = Resources.New_UserAgent;
+    ViewData["Title"] = @Localizer["New_UserAgent"];
 }
 
-<h2>@Resources.New_UserAgent</h2>
+<h2>@Localizer["New_UserAgent"]</h2>
 <hr />
 
 @using (Html.BeginForm("Create", "UserAgents", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
@@ -12,37 +15,10 @@
     @Html.ValidationSummary()
     @Html.AntiForgeryToken()
 
-    @Html.Partial("_UserAgentForm", Model)
-}
-
-@section head
-{
-    <style type="text/css">
-        #profiles {
-            list-style-type: none;
-        }
-
-        #profiles li span {
-            position: absolute;
-            margin-left: -1.3em;
-        }
-    </style>
+    <partial name="_UserAgentForm" model="Model" />
 }
 
 @section scripts
 {
-    @Scripts.Render("~/bundles/jqueryui")
-
-    <script type="text/javascript">
-        $(function () {
-            $("#profiles").sortable({
-                update: function () {
-                    $('#profiles li').each(function (index, element) {
-                        $(element).find('.sortIndex').val(index);
-                    });
-                }
-            });
-            $("#profiles").disableSelection();
-        })
-    </script>
+    <script src="~/dist/ccm-form.js"></script>
 }

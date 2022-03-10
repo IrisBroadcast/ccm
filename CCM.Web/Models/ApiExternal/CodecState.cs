@@ -32,5 +32,4 @@ namespace CCM.Web.Models.ApiExternal
         Available,
         InCall
     }
-
 }

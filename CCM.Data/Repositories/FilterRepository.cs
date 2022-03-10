@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
@@ -36,18 +37,45 @@ namespace CCM.Data.Repositories
 {
     public class FilterRepository : BaseRepository, IFilterRepository
     {
-        public FilterRepository(IAppCache cache) : base(cache)
+        public FilterRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
         public List<string> GetFilterPropertyValues(string tableName, string columnName)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            // TODO: Redo this one, so it supports later Entity framework queries. And for .NET core
+            // TODO: redone, but could probably be niear looking...
+            var sql = string.Format("SELECT {0} FROM {1}", columnName, tableName);
+            //var filterValues = db.Database.SqlQuery<string>(sql).Where(s => s != null).ToList();
+
+            if (tableName == "UserAgents")
             {
-                // TODO: Redo this one, so it supports later Entity framework queries. And for .NET core
-                var sql = string.Format("SELECT {0} FROM {1}", columnName, tableName);
-                var filterValues = db.Database.SqlQuery<string>(sql).Where(s => s != null).ToList();
-                return filterValues;
+                var ty = typeof(UserAgentEntity).GetProperty(columnName);
+                return db.UserAgents.Where(ua => ua != null).Select(ua => (string)ty.GetValue(ua)).Distinct().ToList();
+            }
+            else if(tableName == "Locations")
+            {
+                var ty = typeof(LocationEntity).GetProperty(columnName);
+                return db.Locations.Where(lo => lo != null).Select(lo => (string)ty.GetValue(lo)).Distinct().ToList();
+            }
+            else if(tableName == "Regions")
+            {
+                var ty = typeof(RegionEntity).GetProperty(columnName);
+                return db.Regions.Where(r => r != null).Select(re => (string)ty.GetValue(re)).Distinct().ToList();   
+            }
+            else if(tableName == "Cities")
+            {
+                var ty = typeof(CityEntity).GetProperty(columnName);
+                return db.Cities.Where(c => c != null).Select(c => (string)ty.GetValue(c)).Distinct().ToList();
+            }
+            else if(tableName == "CodecTypes")
+            {
+                var ty = typeof(CodecTypeEntity).GetProperty(columnName);
+                return db.CodecTypes.Where(ct => ct != null).Select(ct => (string)ty.GetValue(ct)).Distinct().ToList();
+            }
+            else {
+                return new List<string>();
             }
         }
 
@@ -59,10 +87,7 @@ namespace CCM.Data.Repositories
         /// <returns></returns>
         public bool CheckFilterNameAvailability(string name, Guid id)
         {
-            using (var db = GetDbContext())
-            {
-                return !db.Filters.Any(f => f.Name == name && f.Id != id);
-            }
+            return !_ccmDbContext.Filters.Any(f => f.Name == name && f.Id != id);
         }
 
         /// <summary>
@@ -71,76 +96,64 @@ namespace CCM.Data.Repositories
         /// <param name="filter">The filter.</param>
         public void Save(Filter filter)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            FilterEntity dbFilter = null;
+
+            if (filter.Id != Guid.Empty)
             {
-                FilterEntity dbFilter = null;
-
-                if (filter.Id != Guid.Empty)
-                {
-                    dbFilter = db.Filters.SingleOrDefault(f => f.Id == filter.Id);
-                }
-
-                if (dbFilter == null)
-                {
-                    dbFilter = new FilterEntity
-                    {
-                        Id = Guid.NewGuid(),
-                        CreatedBy = filter.CreatedBy,
-                        CreatedOn = DateTime.UtcNow
-                    };
-                    filter.Id = dbFilter.Id;
-                    filter.CreatedOn = dbFilter.CreatedOn;
-                    db.Filters.Add(dbFilter);
-                }
-
-
-                dbFilter.FilteringName = filter.FilteringName;
-                dbFilter.Name = filter.Name;
-                dbFilter.PropertyName = filter.ColumnName;
-                dbFilter.Type = filter.TableName;
-                dbFilter.UpdatedBy = filter.UpdatedBy;
-                dbFilter.UpdatedOn = DateTime.UtcNow;
-                filter.UpdatedOn = dbFilter.UpdatedOn;
-
-                db.SaveChanges();
-
-                filter.CreatedOn = dbFilter.CreatedOn;
-                filter.UpdatedOn = dbFilter.UpdatedOn;
+                dbFilter = db.Filters.SingleOrDefault(f => f.Id == filter.Id);
             }
+
+            if (dbFilter == null)
+            {
+                dbFilter = new FilterEntity
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedBy = filter.CreatedBy,
+                    CreatedOn = DateTime.UtcNow
+                };
+                filter.Id = dbFilter.Id;
+                filter.CreatedOn = dbFilter.CreatedOn;
+                db.Filters.Add(dbFilter);
+            }
+
+            dbFilter.FilteringName = filter.FilteringName;
+            dbFilter.Name = filter.Name;
+            dbFilter.PropertyName = filter.ColumnName;
+            dbFilter.Type = filter.TableName;
+            dbFilter.UpdatedBy = filter.UpdatedBy;
+            dbFilter.UpdatedOn = DateTime.UtcNow;
+
+            filter.CreatedOn = dbFilter.CreatedOn;
+            filter.UpdatedOn = dbFilter.UpdatedOn;
+
+            db.SaveChanges();
         }
 
         public List<Filter> GetAll()
         {
-            using (var db = GetDbContext())
-            {
-                var dbFilters = db.Filters.ToList();
-                return dbFilters.Select(MapToFilter).OrderBy(f => f.Name).ToList();
-            }
+            var dbFilters = _ccmDbContext.Filters.ToList();
+            return dbFilters.Select(MapToFilter).OrderBy(f => f.Name).ToList();
         }
 
         public Filter GetById(Guid id)
         {
-            using (var db = GetDbContext())
-            {
-                var dbFilter = db.Filters.SingleOrDefault(f => f.Id == id);
-                return dbFilter != null ? MapToFilter(dbFilter) : null;
-            }
+            var dbFilter = _ccmDbContext.Filters.SingleOrDefault(f => f.Id == id);
+            return dbFilter != null ? MapToFilter(dbFilter) : null;
         }
 
         public void Delete(Guid id)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            var dbFilter = db.Filters.SingleOrDefault(f => f.Id == id);
+
+            if (dbFilter == null)
             {
-                var dbFilter = db.Filters.SingleOrDefault(f => f.Id == id);
-
-                if (dbFilter == null)
-                {
-                    return;
-                }
-
-                db.Filters.Remove(dbFilter);
-                db.SaveChanges();
+                return;
             }
+
+            db.Filters.Remove(dbFilter);
+            db.SaveChanges();
         }
 
         /// <summary>
@@ -150,15 +163,12 @@ namespace CCM.Data.Repositories
         /// <returns></returns>
         public List<Filter> Find(string search)
         {
-            using (var db = GetDbContext())
-            {
-                var dbFilters = db.Filters
-                    .Where(f => f.Name.ToLower().Contains(search.ToLower()) ||
-                                f.PropertyName.ToLower().Contains(search.ToLower()))
-                    .OrderBy(f => f.Name);
+            var dbFilters = _ccmDbContext.Filters
+                .Where(f => f.Name.ToLower().Contains(search.ToLower()) ||
+                            f.PropertyName.ToLower().Contains(search.ToLower()))
+                .OrderBy(f => f.Name).ToList();
 
-                return dbFilters.Select(dbFilter => MapToFilter(dbFilter)).ToList();
-            }
+            return dbFilters.Select(dbFilter => MapToFilter(dbFilter)).ToList();
         }
 
         private Filter MapToFilter(FilterEntity dbFilter)

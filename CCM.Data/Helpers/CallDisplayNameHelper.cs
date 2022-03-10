@@ -33,15 +33,23 @@ namespace CCM.Data.Helpers
 {
     public class CallDisplayNameHelper
     {
-        public static string GetDisplayName(RegisteredSipEntity regSip, string callDisplayName, string callUserName, string sipDomain)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regCodec">Registered user-agent object</param>
+        /// <param name="callDisplayName">Could be different if a user-agent is not registered</param>
+        /// <param name="callUserName">Could be different if a user-agent is not registered</param>
+        /// <param name="sipDomain"></param>
+        /// <returns></returns>
+        public static string GetDisplayName(RegisteredCodecEntity regCodec, string callDisplayName, string callUserName, string sipDomain)
         {
             return DisplayNameHelper.GetDisplayName(
-                regSip != null ? regSip.DisplayName : string.Empty,
-                regSip != null && regSip.User != null ? regSip.User.DisplayName : string.Empty,
+                regCodec?.User?.DisplayName ?? string.Empty,
+                regCodec?.DisplayName ?? string.Empty,
                 callDisplayName,
-                regSip != null ? regSip.Username : string.Empty,
-                regSip != null ? regSip.SIP : string.Empty,
+                regCodec?.SIP ?? string.Empty,
                 callUserName,
+                string.Empty,
                 sipDomain);
         }
     }

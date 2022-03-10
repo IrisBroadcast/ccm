@@ -42,7 +42,6 @@ namespace CCM.Core.Entities
             DateTime updated,
             string sipUri,
             string displayName,
-            string username,
             string ipAddress,
             string userAgentHeader,
             Guid? userAgentId,
@@ -62,7 +61,6 @@ namespace CCM.Core.Entities
             Updated = updated;
             SipUri = sipUri;
             DisplayName = displayName;
-            Username = username;
             IpAddress = ipAddress;
             UserAgentHeader = userAgentHeader;
             UserAgentId = userAgentId;
@@ -77,41 +75,23 @@ namespace CCM.Core.Entities
             CodecTypeName = codecTypeName;
             MetaData = metaData;
         }
-        // TODO: This one doesn't need the FilterProperties. Should also change the editor for the filtering
+        // TODO: Should also change the editor for the filtering
         public Guid Id { get; }
         public DateTime Updated { get; }
         public string SipUri { get; }
         public string DisplayName { get; }
-        public string Username { get; }
         public string IpAddress { get; }
         public string UserAgentHeader { get; }
-
         public Guid? UserAgentId { get; }
-
-        //[FilterProperty(TableName = "UserAgents", ColumnName = "Name")]
         public string UserAgentName { get; }
-
         public Guid? LocationId { get; }
-
-        //[FilterProperty(TableName = "Locations", ColumnName = "Name")]
         public string LocationName { get; }
-
-        //[FilterProperty(TableName = "Locations", ColumnName = "ShortName")]
         public string LocationShortName { get; }
-
-        //[FilterProperty(TableName = "Regions", ColumnName = "Name")]
         public string RegionName { get; }
-
-        //[FilterProperty(TableName = "Cities", ColumnName = "Name")]
         public string CityName { get; }
-
         public string UserOwnerName { get; }
-
         public string UserDisplayName { get; }
-
-        //[FilterProperty(TableName = "CodecTypes", ColumnName = "Name")]
         public string CodecTypeName { get; }
-
         public List<KeyValuePair<string, string>> MetaData { get; }
     }
 }

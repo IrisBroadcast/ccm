@@ -31,44 +31,45 @@ using NLog;
 
 namespace CCM.Web.Infrastructure
 {
-    public static class CertificateHelper
-    {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+    // TODO: Might be implemented again if ccm and discovery have differenc HTTPS certificates
+    //public static class CertificateHelper
+    //{
+    //    private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// Because the certificate on the discovery-server dont correspond with the URL.
-        /// we make an exception here and let the request through to discovery, even
-        /// though the name is wrong
-        /// </summary>
-        public static bool ServerCertificateValidationCallback(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification,
-            System.Security.Cryptography.X509Certificates.X509Chain chain, SslPolicyErrors sslPolicyErrors)
-        {
-            log.Debug("Certificate validation callback. Sender: {0}, Certification: {1}, Chain: {2}, SSL policyErrors: {3}",
-                sender, certification, chain, sslPolicyErrors);
+    //    /// <summary>
+    //    /// Because the certificate on the discovery-server dont correspond with the URL.
+    //    /// we make an exception here and let the request through to discovery, even
+    //    /// though the name is wrong
+    //    /// </summary>
+    //    public static bool ServerCertificateValidationCallback(object sender, System.Security.Cryptography.X509Certificates.X509Certificate certification,
+    //        System.Security.Cryptography.X509Certificates.X509Chain chain, SslPolicyErrors sslPolicyErrors)
+    //    {
+    //        log.Debug("Certificate validation callback. Sender: {0}, Certification: {1}, Chain: {2}, SSL policyErrors: {3}",
+    //            sender, certification, chain, sslPolicyErrors);
 
-            if (sslPolicyErrors == SslPolicyErrors.None)
-            {
-                return true;
-            }
+    //        if (sslPolicyErrors == SslPolicyErrors.None)
+    //        {
+    //            return true;
+    //        }
 
-            if (sslPolicyErrors != SslPolicyErrors.RemoteCertificateNameMismatch)
-            {
-                return false;
-            }
+    //        if (sslPolicyErrors != SslPolicyErrors.RemoteCertificateNameMismatch)
+    //        {
+    //            return false;
+    //        }
 
-            var request = sender as HttpWebRequest;
-            if (request == null)
-            {
-                return false;
-            }
+    //        var request = sender as HttpWebRequest;
+    //        if (request == null)
+    //        {
+    //            return false;
+    //        }
 
-            if (request.Address.Host != ApplicationSettings.DiscoveryHost.Host)
-            {
-                return false;
-            }
+    //        if (request.Address.Host != ApplicationSettingsWeb.DiscoveryHost.Host)
+    //        {
+    //            return false;
+    //        }
 
-            log.Info("Accepting request to {0} although certificate name mismatch", request.Address);
-            return true;
-        }
-    }
+    //        log.Debug("Accepting request to {0} although certificate name mismatch", request.Address);
+    //        return true;
+    //    }
+    //}
 }

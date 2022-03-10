@@ -27,14 +27,19 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
+using CCM.Web.Infrastructure;
 using CCM.Web.Models.Account;
-using Microsoft.AspNet.Identity;
-using Microsoft.Owin.Security;
+using CCM.Web.Properties;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using Claim = System.Security.Claims.Claim;
+using ClaimsIdentity = System.Security.Claims.ClaimsIdentity;
+using ClaimTypes = System.Security.Claims.ClaimTypes;
 
 namespace CCM.Web.Controllers
 {
@@ -42,25 +47,25 @@ namespace CCM.Web.Controllers
     public class AccountController : Controller
     {
         private readonly ICcmUserRepository _userRepository;
+        private readonly IStringLocalizer<Resources> _localizer;
 
-        public AccountController(ICcmUserRepository userRepository)
+        public AccountController(ICcmUserRepository userRepository, IStringLocalizer<Resources> localizer)
         {
             _userRepository = userRepository;
+            _localizer = localizer;
         }
-
-        private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
 
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
+            ViewData["ReturnUrl"] = returnUrl;
             return View(new LoginViewModel());
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -72,15 +77,14 @@ namespace CCM.Web.Controllers
 
                         if (user != null)
                         {
-                            SignIn(user, model.RememberMe);
-                            return RedirectToLocal(returnUrl);
+                            return await SignIn(user, model.RememberMe, returnUrl);
                         }
                     }
-                    ModelState.AddModelError(string.Empty, Resources.Invalid_Username_Password);
-                    }
+                    ModelState.AddModelError(string.Empty, _localizer["Invalid_Username_Password"]);
+                }
                 catch (Exception)
                 {
-                    ModelState.AddModelError(string.Empty, Resources.Invalid_Username_Password);
+                    ModelState.AddModelError(string.Empty, _localizer["Invalid_Username_Password"]);
                 }
             }
 
@@ -88,27 +92,35 @@ namespace CCM.Web.Controllers
         }
 
         [HttpGet]
-        //[ValidateAntiForgeryToken]
-        public ActionResult LogOff()
+        public async Task<ActionResult> LogOff()
         {
-            AuthenticationManager.SignOut();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
 
-        private void SignIn(CcmUser user, bool isPersistent)
+        public async Task<IActionResult> SignIn(CcmUser user, bool isPersistent = false, string returnUrl = null)
         {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+            ClaimsIdentity userIdentity = new ClaimsIdentity("SuperSecureLogin");
+            userIdentity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+            userIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+            userIdentity.AddClaim(new Claim("FullName", $"{user.FirstName} {user.LastName}".Trim()));
+            userIdentity.AddClaim(new Claim(ClaimTypes.Role, user.Role));
+            var userPrincipal = new ClaimsPrincipal(userIdentity);
 
-            ClaimsIdentity identity = new ClaimsIdentity(DefaultAuthenticationTypes.ApplicationCookie);
-            identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
-            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-            identity.AddClaim(new Claim("FullName", $"{user.FirstName} {user.LastName}".Trim()));
-            identity.AddClaim(new Claim(ClaimTypes.Role, user.Role));
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                userPrincipal,
+                new AuthenticationProperties
+                {
+                    ExpiresUtc = DateTime.UtcNow.AddMinutes(20),
+                    IsPersistent = isPersistent,
+                    AllowRefresh = true
+                });
 
-            AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = isPersistent }, identity);
+            return RedirectToLocal(returnUrl);
         }
 
-        private ActionResult RedirectToLocal(string returnUrl)
+        private IActionResult RedirectToLocal(string returnUrl)
         {
             return Url.IsLocalUrl(returnUrl) ? (ActionResult) Redirect(returnUrl) : RedirectToAction("Index", "Home");
         }

@@ -26,25 +26,24 @@
 
 using System.Collections.Generic;
 using System.Net;
-using System.Web.Http;
 using CCM.Core.Entities.Discovery;
 using CCM.Core.Interfaces;
 using CCM.Web.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers.ApiDiscovery
 {
     /// <summary>
     /// Used by DiscoveryApi as internal requests, for authentication
     /// </summary>
-    [SipAccountBasicAuthentication]
-    [Authorize]
-    [CamelCaseControllerConfig]
-    [RoutePrefix("api/authenticateddiscovery")]
-    public class AuthenticatedDiscoveryController : ApiController
+    [Authorize(policy: "SipAccountBasicAuthentication")]
+    [Route("api/authenticateddiscovery")]
+    public class AuthenticatedDiscoveryController : ControllerBase
     {
-        private readonly IDiscoveryService _discoveryService;
+        private readonly IDiscoveryServiceManager _discoveryService;
 
-        public AuthenticatedDiscoveryController(IDiscoveryService discoveryService)
+        public AuthenticatedDiscoveryController(IDiscoveryServiceManager discoveryService)
         {
             _discoveryService = discoveryService;
         }
@@ -65,16 +64,15 @@ namespace CCM.Web.Controllers.ApiDiscovery
 
         [Route("useragents")]
         [HttpPost]
-        public UserAgentsResultDto UserAgents(UserAgentSearchParamsDto searchParams)
+        public ActionResult UserAgents([FromBody]UserAgentSearchParamsDto searchParams)
         {
             if (searchParams == null)
             {
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest("No search parameters");
             }
 
             UserAgentsResultDto uaResult = _discoveryService.GetUserAgents(searchParams.Caller, searchParams.Callee, searchParams.Filters, searchParams.IncludeCodecsInCall);
-            return uaResult;
+            return Ok(uaResult);
         }
-
     }
 }

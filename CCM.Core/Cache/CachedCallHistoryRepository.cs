@@ -26,22 +26,29 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
+using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using LazyCache;
 
 namespace CCM.Core.Cache
 {
-    public class CachedCallHistoryRepository : ICallHistoryRepository
+    public class CachedCallHistoryRepository : ICachedCallHistoryRepository
     {
         private readonly ICallHistoryRepository _internalRepository;
         private readonly IAppCache _lazyCache;
+        private readonly ISettingsManager _settingsManager;
 
-        public CachedCallHistoryRepository(IAppCache cache, ICallHistoryRepository internalRepository)
+        public CachedCallHistoryRepository(
+            IAppCache cache,
+            ICallHistoryRepository internalRepository,
+            ISettingsManager settingsManager)
         {
             _lazyCache = cache;
             _internalRepository = internalRepository;
+            _settingsManager = settingsManager;
         }
 
         public bool Save(CallHistory callHistory)
@@ -58,44 +65,126 @@ namespace CCM.Core.Cache
 
         public CallHistory GetCallHistoryByCallId(Guid callId)
         {
-            return _internalRepository.GetCallHistoryByCallId(callId);
+            try
+            {
+                var history = _lazyCache.GetOrAddCallHistories(() => _internalRepository.GetOneMonthCallHistories(), _settingsManager.CacheTimeLiveData);
+                return history?.FirstOrDefault(c => c.CallId == callId);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public IList<OldCall> GetOldCalls(int callCount, bool anonymize)
+        public IList<OldCall> GetOldCalls(int callCount = 0)
         {
-            return _lazyCache.GetOrAddCallHistory(() => _internalRepository.GetOldCalls(callCount, anonymize));
+            var history = _lazyCache.GetOrAddOldCalls(() => _internalRepository.GetOneMonthOldCalls(), _settingsManager.CacheTimeLiveData);
+            return history.Take(callCount).ToList();
         }
 
-        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount)
+        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool onlyPhoneCalls, int callCount, bool limitByMonth)
         {
-            return _internalRepository.GetOldCallsFiltered(region, codecType, sipAddress, searchString, anonymize,
-                onlyPhoneCalls, callCount);
+            var oldCalls = _lazyCache.GetOrAddOldCalls(() => _internalRepository.GetOneMonthOldCalls(), _settingsManager.CacheTimeLiveData).AsEnumerable();
+            if (oldCalls == null)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrEmpty(region))
+            {
+                oldCalls = oldCalls.Where(ch => ch.FromRegionName == region || ch.ToRegionName == region);
+            }
+
+            if (!string.IsNullOrEmpty(codecType))
+            {
+                oldCalls = oldCalls.Where(ch => ch.FromCodecTypeName == codecType || ch.ToCodecTypeName == codecType);
+            }
+
+            if (!string.IsNullOrEmpty(sipAddress))
+            {
+                oldCalls = oldCalls.Where(ch => ch.FromSip.Contains(sipAddress) || ch.ToSip.Contains(sipAddress));
+            }
+
+            if (onlyPhoneCalls)
+            {
+                oldCalls = oldCalls.Where(ch => ch.IsPhoneCall);
+            }
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                oldCalls = oldCalls.Where(ch =>
+                    ch.FromDisplayName.ToLower().Contains(searchString) ||
+                    ch.ToDisplayName.ToLower().Contains(searchString) ||
+                    ch.FromSip.Contains(searchString) ||
+                    ch.ToSip.Contains(searchString) ||
+                    ch.FromLocationName.Contains(searchString) ||
+                    ch.ToLocationName.Contains(searchString) ||
+                    ch.FromLocationShortName.Contains(searchString) ||
+                    ch.ToLocationShortName.Contains(searchString)
+                );
+            }
+
+            if (limitByMonth)
+            {
+                var monthLimit = DateTime.Today.AddMonths(-1);
+                oldCalls = oldCalls.Where(ch => ch.Ended >= monthLimit);
+            }
+
+            var calls = oldCalls.OrderByDescending(callHistory => callHistory.Ended).Take(callCount).ToList();
+            return calls;
         }
 
-        public IList<CallHistory> GetCallHistoriesByDate(DateTime startTime, DateTime endTime)
+        #region Statistics
+        private IReadOnlyList<CallHistory> GetOneYearCallHistory()
         {
-            return _internalRepository.GetCallHistoriesByDate(startTime, endTime);
+            return _lazyCache.GetOrAddOneYearCallHistory(() => _internalRepository.GetOneYearCallHistory(), _settingsManager.CacheTimeLiveData);
+        }
+
+        public IList<CallHistory> GetCallHistoriesByDate(DateTime startDate, DateTime endDate)
+        {
+            if (startDate > DateTime.Now.AddYears(-1))
+            {
+                return _internalRepository.GetCallHistoriesByDate(GetOneYearCallHistory(), startDate, endDate);
+            }
+            return _internalRepository.GetCallHistoriesByDate(startDate, endDate);
         }
 
         public IList<CallHistory> GetCallHistoriesForRegion(DateTime startDate, DateTime endDate, Guid regionId)
         {
+            if (startDate > DateTime.Now.AddYears(-1))
+            {
+                return _internalRepository.GetCallHistoriesForRegion(GetOneYearCallHistory(), startDate, endDate, regionId);
+            }
             return _internalRepository.GetCallHistoriesForRegion(startDate, endDate, regionId);
         }
 
         public IList<CallHistory> GetCallHistoriesForRegisteredSip(DateTime startDate, DateTime endDate, string sipId)
         {
+            if (startDate > DateTime.Now.AddYears(-1))
+            {
+                return _internalRepository.GetCallHistoriesForRegisteredSip(GetOneYearCallHistory(), startDate, endDate, sipId);
+            }
             return _internalRepository.GetCallHistoriesForRegisteredSip(startDate, endDate, sipId);
         }
 
         public IList<CallHistory> GetCallHistoriesForCodecType(DateTime startDate, DateTime endDate, Guid codecTypeId)
         {
+            if (startDate > DateTime.Now.AddYears(-1))
+            {
+                return _internalRepository.GetCallHistoriesForCodecType(GetOneYearCallHistory(), startDate, endDate, codecTypeId);
+            }
             return _internalRepository.GetCallHistoriesForCodecType(startDate, endDate, codecTypeId);
         }
 
         public IList<CallHistory> GetCallHistoriesForLocation(DateTime startDate, DateTime endDate, Guid locationId)
         {
+            if (startDate > DateTime.Now.AddYears(-1))
+            {
+                return _internalRepository.GetCallHistoriesForLocation(GetOneYearCallHistory(), startDate, endDate, locationId);
+            }
             return _internalRepository.GetCallHistoriesForLocation(startDate, endDate, locationId);
         }
-
+        #endregion Statistics
     }
 }

@@ -34,252 +34,259 @@ using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
+using Microsoft.EntityFrameworkCore;
 
 namespace CCM.Data.Repositories
 {
     public class CallHistoryRepository : BaseRepository, ICallHistoryRepository
     {
-        public CallHistoryRepository(IAppCache cache) : base(cache)
+        public CallHistoryRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
         public bool Save(CallHistory callHistory)
         {
-            using (var db = GetDbContext())
+            CallHistoryEntity dbCallHistory = null;
+
+            if (callHistory.CallHistoryId != Guid.Empty)
             {
-                CallHistoryEntity dbCallHistory = null;
-
-                if (callHistory.CallHistoryId != Guid.Empty)
-                {
-                    dbCallHistory = db.CallHistories.SingleOrDefault(c => c.Id == callHistory.CallHistoryId);
-                }
-
-                if (dbCallHistory == null)
-                {
-                    dbCallHistory = new CallHistoryEntity { Id = Guid.NewGuid() };
-                    callHistory.CallHistoryId = dbCallHistory.Id;
-                    db.CallHistories.Add(dbCallHistory);
-                }
-
-                dbCallHistory.CallId = callHistory.CallId;
-                dbCallHistory.DlgHashEnt = callHistory.DlgHashEnt;
-                dbCallHistory.DlgHashId = callHistory.DlgHashId;
-                dbCallHistory.Ended = callHistory.Ended;
-                dbCallHistory.FromCodecTypeColor = callHistory.FromCodecTypeColor;
-                dbCallHistory.FromCodecTypeId = callHistory.FromCodecTypeId;
-                dbCallHistory.FromCodecTypeName = callHistory.FromCodecTypeName;
-                dbCallHistory.FromComment = callHistory.FromComment;
-                dbCallHistory.FromDisplayName = callHistory.FromDisplayName;
-                dbCallHistory.FromId = callHistory.FromId;
-                dbCallHistory.FromLocationId = callHistory.FromLocationId;
-                dbCallHistory.FromLocationComment = callHistory.FromLocationComment;
-                dbCallHistory.FromLocationName = callHistory.FromLocationName;
-                dbCallHistory.FromLocationShortName = callHistory.FromLocationShortName;
-                dbCallHistory.FromOwnerId = callHistory.FromOwnerId;
-                dbCallHistory.FromOwnerName = callHistory.FromOwnerName;
-                dbCallHistory.FromRegionId = callHistory.FromRegionId;
-                dbCallHistory.FromRegionName = callHistory.FromRegionName;
-                dbCallHistory.FromSip = callHistory.FromSip;
-                dbCallHistory.FromTag = callHistory.FromTag;
-                dbCallHistory.FromUserAgentHead = callHistory.FromUserAgentHead;
-                dbCallHistory.FromUsername = callHistory.FromUsername;
-                dbCallHistory.SipCallId = callHistory.SipCallId;
-                dbCallHistory.Started = callHistory.Started;
-                dbCallHistory.ToCodecTypeColor = callHistory.ToCodecTypeColor;
-                dbCallHistory.ToCodecTypeId = callHistory.ToCodecTypeId;
-                dbCallHistory.ToCodecTypeName = callHistory.ToCodecTypeName;
-                dbCallHistory.ToComment = callHistory.ToComment;
-                dbCallHistory.ToDisplayName = callHistory.ToDisplayName;
-                dbCallHistory.ToId = callHistory.ToId;
-                dbCallHistory.ToLocationId = callHistory.ToLocationId;
-                dbCallHistory.ToLocationComment = callHistory.ToLocationComment;
-                dbCallHistory.ToLocationName = callHistory.ToLocationName;
-                dbCallHistory.ToLocationShortName = callHistory.ToLocationShortName;
-                dbCallHistory.ToOwnerId = callHistory.ToOwnerId;
-                dbCallHistory.ToOwnerName = callHistory.ToOwnerName;
-                dbCallHistory.ToRegionId = callHistory.ToRegionId;
-                dbCallHistory.ToRegionName = callHistory.ToRegionName;
-                dbCallHistory.ToSip = callHistory.ToSip;
-                dbCallHistory.ToTag = callHistory.ToTag;
-                dbCallHistory.ToUserAgentHead = callHistory.ToUserAgentHead;
-                dbCallHistory.ToUsername = callHistory.ToUsername;
-                dbCallHistory.IsPhoneCall = callHistory.IsPhoneCall;
-
-                db.SaveChanges();
-                return true;
+                dbCallHistory = _ccmDbContext.CallHistories.FirstOrDefault(c => c.Id == callHistory.CallHistoryId);
             }
+
+            if (dbCallHistory == null)
+            {
+                dbCallHistory = new CallHistoryEntity
+                {
+                    Id = Guid.NewGuid()
+                };
+                callHistory.CallHistoryId = dbCallHistory.Id;
+                _ccmDbContext.CallHistories.Add(dbCallHistory);
+            }
+
+            dbCallHistory.CallId = callHistory.CallId;
+
+            dbCallHistory.DialogCallId = callHistory.DialogCallId;
+            dbCallHistory.DialogHashEnt = callHistory.DialogHashEnt;
+            dbCallHistory.DialogHashId = callHistory.DialogHashId;
+
+            dbCallHistory.Started = callHistory.Started;
+            dbCallHistory.Ended = callHistory.Ended;
+            dbCallHistory.IsPhoneCall = callHistory.IsPhoneCall;
+
+            dbCallHistory.FromCodecTypeCategory = callHistory.FromCodecTypeCategory;
+            dbCallHistory.FromCodecTypeId = callHistory.FromCodecTypeId;
+            dbCallHistory.FromCodecTypeName = callHistory.FromCodecTypeName;
+            dbCallHistory.FromCodecTypeColor = callHistory.FromCodecTypeColor;
+            dbCallHistory.FromComment = callHistory.FromComment;
+            dbCallHistory.FromDisplayName = callHistory.FromDisplayName;
+            dbCallHistory.FromId = callHistory.FromId;
+            dbCallHistory.FromLocationId = callHistory.FromLocationId;
+            dbCallHistory.FromLocationComment = callHistory.FromLocationComment;
+            dbCallHistory.FromLocationName = callHistory.FromLocationName;
+            dbCallHistory.FromLocationShortName = callHistory.FromLocationShortName;
+            dbCallHistory.FromLocationCategory = callHistory.FromLocationCategory;
+            dbCallHistory.FromOwnerId = callHistory.FromOwnerId;
+            dbCallHistory.FromOwnerName = callHistory.FromOwnerName;
+            dbCallHistory.FromRegionId = callHistory.FromRegionId;
+            dbCallHistory.FromRegionName = callHistory.FromRegionName;
+            dbCallHistory.FromSip = callHistory.FromSip;
+            dbCallHistory.FromTag = callHistory.FromTag;
+            dbCallHistory.FromUserAgentHeader = callHistory.FromUserAgentHeader;
+            dbCallHistory.FromUsername = callHistory.FromUsername;
+
+            dbCallHistory.ToCodecTypeCategory = callHistory.ToCodecTypeCategory;
+            dbCallHistory.ToCodecTypeId = callHistory.ToCodecTypeId;
+            dbCallHistory.ToCodecTypeName = callHistory.ToCodecTypeName;
+            dbCallHistory.ToCodecTypeColor = callHistory.ToCodecTypeColor;
+            dbCallHistory.ToComment = callHistory.ToComment;
+            dbCallHistory.ToDisplayName = callHistory.ToDisplayName;
+            dbCallHistory.ToId = callHistory.ToId;
+            dbCallHistory.ToLocationId = callHistory.ToLocationId;
+            dbCallHistory.ToLocationComment = callHistory.ToLocationComment;
+            dbCallHistory.ToLocationName = callHistory.ToLocationName;
+            dbCallHistory.ToLocationShortName = callHistory.ToLocationShortName;
+            dbCallHistory.ToLocationCategory = callHistory.ToLocationCategory;
+            dbCallHistory.ToOwnerId = callHistory.ToOwnerId;
+            dbCallHistory.ToOwnerName = callHistory.ToOwnerName;
+            dbCallHistory.ToRegionId = callHistory.ToRegionId;
+            dbCallHistory.ToRegionName = callHistory.ToRegionName;
+            dbCallHistory.ToSip = callHistory.ToSip;
+            dbCallHistory.ToTag = callHistory.ToTag;
+            dbCallHistory.ToUserAgentHeader = callHistory.ToUserAgentHeader;
+            dbCallHistory.ToUsername = callHistory.ToUsername;
+
+            return _ccmDbContext.SaveChanges() >= 1;
         }
 
         public CallHistory GetById(Guid id)
         {
-            using (var db = GetDbContext())
-            {
-                var dbCallHistory = db.CallHistories.AsNoTracking().SingleOrDefault(c => c.Id == id);
-                return dbCallHistory == null ? null : MapCallHistory(dbCallHistory);
-            }
+            var dbCallHistory = _ccmDbContext.CallHistories.AsNoTracking().SingleOrDefault(c => c.Id == id);
+            return dbCallHistory == null ? null : MapToCallHistory(dbCallHistory);
         }
 
         /// <summary>
-        /// Used by CodecStatusHub
+        /// Used by WebGuiHub on frontpage
         /// </summary>
-        /// <param name="callId"></param>
-        public CallHistory GetCallHistoryByCallId(Guid callId)
+        public IReadOnlyCollection<OldCall> GetOneMonthOldCalls()
         {
-            using (var db = GetDbContext())
-            {
-                var dbCallHistory = db.CallHistories.SingleOrDefault(c => c.CallId == callId);
-                return dbCallHistory == null ? null : MapCallHistory(dbCallHistory);
-            }
+            var nowTime = DateTime.Now;
+            var startTime = DateTime.Now.AddMonths(-1);
+            var callHistories = _ccmDbContext.CallHistories
+                .AsNoTracking()
+                .OrderByDescending(callHistory => callHistory.Ended)
+                .Where(c => c.Started <= nowTime && c.Ended >= startTime)
+                .ToList();
+            return callHistories.Select(MapToOldCall).ToList().AsReadOnly();
         }
 
-        /// <summary>
-        /// Used by WebGuiHub
-        /// </summary>
-        /// <param name="callCount"></param>
-        /// <param name="anonymize"></param>
-        public IList<OldCall> GetOldCalls(int callCount, bool anonymize)
+        public IReadOnlyCollection<CallHistory> GetOneMonthCallHistories()
         {
-            using (var db = GetDbContext())
-            {
-                var dbCalls = db.CallHistories.OrderByDescending(callHistory => callHistory.Ended).Take(callCount).ToList();
-                return dbCalls.Select(dbCall => MapToOldCall(dbCall, anonymize)).ToList();
-            }
+            var nowTime = DateTime.Now;
+            var startTime = DateTime.Now.AddMonths(-1);
+            var callHistories = _ccmDbContext.CallHistories
+                .AsNoTracking()
+                .OrderByDescending(callHistory => callHistory.Ended)
+                .Where(c => c.Started <= nowTime && c.Ended >= startTime)
+                .ToList();
+            return callHistories.Select(MapToCallHistory).ToList().AsReadOnly();
         }
 
-        public IList<OldCall> GetOldCallsFiltered(string region, string codecType, string sipAddress, string searchString, bool anonymize, bool onlyPhoneCalls, int callCount)
-        {
-            using (var db = GetDbContext())
-            {
-                var query = db.CallHistories.AsQueryable();
-
-                if (!string.IsNullOrEmpty(region))
-                {
-                    query = query.Where(ch => ch.FromRegionName == region || ch.ToRegionName == region);
-                }
-
-                if (!string.IsNullOrEmpty(codecType))
-                {
-                    query = query.Where(ch => ch.FromCodecTypeName == codecType || ch.ToCodecTypeName == codecType);
-                }
-
-                if (!string.IsNullOrEmpty(sipAddress))
-                {
-                    query = query.Where(ch => ch.FromSip.Contains(sipAddress) || ch.ToSip.Contains(sipAddress));
-                }
-
-                if (onlyPhoneCalls)
-                {
-                    query = query.Where(ch => ch.IsPhoneCall);
-                }
-
-                if (!string.IsNullOrEmpty(searchString))
-                {
-                    query = query.Where(ch =>
-                        ch.FromDisplayName.Contains(searchString) ||
-                        ch.ToDisplayName.Contains(searchString) ||
-                        ch.FromSip.Contains(searchString) ||
-                        ch.ToSip.Contains(searchString) ||
-                        ch.FromLocationName.Contains(searchString) ||
-                        ch.ToLocationName.Contains(searchString) ||
-                        ch.FromLocationShortName.Contains(searchString) ||
-                        ch.ToLocationShortName.Contains(searchString) ||
-                        ch.FromUsername.Contains(searchString) ||
-                        ch.ToUsername.Contains(searchString)
-                    );
-                }
-
-                var dbCalls = query.OrderByDescending(callHistory => callHistory.Ended).Take(callCount).ToList();
-                return dbCalls.Select(dbCall => MapToOldCall(dbCall, anonymize)).ToList();
-            }
-        }
-
-        private OldCall MapToOldCall(CallHistoryEntity dbCall, bool anonymize)
+        private OldCall MapToOldCall(CallHistoryEntity dbCallHistory)
         {
             return new OldCall
             {
-                CallId = GuidString(dbCall.CallId),
-                Started = dbCall.Started.ToLocalTime(),
-                Ended = dbCall.Ended.ToLocalTime(),
-                Duration = dbCall.Ended.Subtract(dbCall.Started).ToString(@"dd\d\ hh\:mm\:ss"),
-                IsPhoneCall = dbCall.IsPhoneCall,
-                FromId = GuidString(dbCall.FromId),
-                FromSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.FromUsername) : dbCall.FromUsername,
-                FromCodecTypeColor = dbCall.FromCodecTypeColor,
-                FromCodecTypeName = dbCall.FromCodecTypeName,
-                FromComment = dbCall.FromComment,
-                FromDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(dbCall.FromDisplayName) : dbCall.FromDisplayName,
-                FromLocationName = dbCall.FromLocationName,
-                FromLocationShortName = dbCall.FromLocationShortName,
-                FromRegionName = dbCall.FromRegionName,
-                ToId = GuidString(dbCall.ToId),
-                ToSip = anonymize ? DisplayNameHelper.AnonymizePhonenumber(dbCall.ToUsername) : dbCall.ToUsername,
-                ToCodecTypeColor = dbCall.ToCodecTypeColor,
-                ToCodecTypeName = dbCall.ToCodecTypeName,
-                ToComment = dbCall.ToComment,
-                ToDisplayName = anonymize ? DisplayNameHelper.AnonymizeDisplayName(dbCall.ToDisplayName) : dbCall.ToDisplayName,
-                ToLocationName = dbCall.ToLocationName,
-                ToLocationShortName = dbCall.ToLocationShortName,
-                ToRegionName = dbCall.ToRegionName
+                CallId = MapGuidString(dbCallHistory.CallId),
+                Started = dbCallHistory.Started.ToLocalTime(),
+                Ended = dbCallHistory.Ended.ToLocalTime(),
+                Duration = dbCallHistory.Ended.Subtract(dbCallHistory.Started).ToString(@"dd\d\ hh\:mm\:ss"),
+                IsPhoneCall = dbCallHistory.IsPhoneCall,
+
+                FromId = MapGuidString(dbCallHistory.FromId),
+                FromSip = dbCallHistory.FromUsername,
+                FromCodecTypeColor = dbCallHistory.FromCodecTypeColor,
+                FromCodecTypeName = dbCallHistory.FromCodecTypeName,
+                FromCodecTypeCategory = dbCallHistory.FromCodecTypeCategory,
+                FromComment = dbCallHistory.FromComment,
+                FromDisplayName = dbCallHistory.FromDisplayName,
+                FromLocationName = dbCallHistory.FromLocationName,
+                FromLocationShortName = dbCallHistory.FromLocationShortName,
+                FromRegionName = dbCallHistory.FromRegionName,
+                FromLocationCategory = dbCallHistory.FromLocationCategory,
+
+                ToId = MapGuidString(dbCallHistory.ToId),
+                ToSip = dbCallHistory.ToUsername,
+                ToCodecTypeColor = dbCallHistory.ToCodecTypeColor,
+                ToCodecTypeName = dbCallHistory.ToCodecTypeName,
+                ToCodecTypeCategory = dbCallHistory.ToCodecTypeCategory,
+                ToComment = dbCallHistory.ToComment,
+                ToDisplayName = dbCallHistory.ToDisplayName,
+                ToLocationName = dbCallHistory.ToLocationName,
+                ToLocationShortName = dbCallHistory.ToLocationShortName,
+                ToRegionName = dbCallHistory.ToRegionName,
+                ToLocationCategory = dbCallHistory.ToLocationCategory
             };
         }
 
-        private string GuidString(Guid guid) { return guid == Guid.Empty ? string.Empty : guid.ToString(); }
+        private string MapGuidString(Guid guid) { return guid == Guid.Empty ? string.Empty : guid.ToString(); }
 
         #region Statistics
+        public IReadOnlyList<CallHistory> GetOneYearCallHistory()
+        {
+            var nowTime = DateTime.Now;
+            var startTime = DateTime.Now.AddYears(-1);
+            var callHistories = _ccmDbContext.CallHistories
+                .AsNoTracking()
+                .OrderByDescending(callHistory => callHistory.Ended)
+                .Where(c => c.Started <= nowTime && c.Ended >= startTime)
+                .ToList();
+            return callHistories.Select(MapToCallHistory).ToList();
+        }
+
         public IList<CallHistory> GetCallHistoriesByDate(DateTime startTime, DateTime endTime)
         {
-            return GetFiltered(c => c.Started < endTime && c.Ended >= startTime);
+            return GetFiltered(c => c.Started <= endTime && c.Ended >= startTime);
+        }
+
+        public IList<CallHistory> GetCallHistoriesByDate(IReadOnlyList<CallHistory> callHistories, DateTime startTime, DateTime endTime)
+        {
+            return callHistories.Where(c => c.Started <= endTime && c.Ended >= startTime).ToList();
         }
 
         public IList<CallHistory> GetCallHistoriesForRegion(DateTime startDate, DateTime endDate, Guid regionId)
         {
-            return regionId == Guid.Empty ?
-                GetFiltered(c => c.Started < endDate && c.Ended >= startDate) :
-                GetFiltered(c => c.Started < endDate && c.Ended >= startDate && (c.FromRegionId == regionId || c.ToRegionId == regionId));
+            return regionId == Guid.Empty
+                ? GetFiltered(c => c.Started <= endDate && c.Ended >= startDate)
+                : GetFiltered(c => c.Started <= endDate && c.Ended >= startDate && (c.FromRegionId == regionId || c.ToRegionId == regionId));
+        }
+
+        public IList<CallHistory> GetCallHistoriesForRegion(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, Guid regionId)
+        {
+            return regionId == Guid.Empty
+                ? callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate).ToList()
+                : callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate && (c.FromRegionId == regionId || c.ToRegionId == regionId)).ToList();
         }
 
         public IList<CallHistory> GetCallHistoriesForRegisteredSip(DateTime startDate, DateTime endDate, string sipId)
         {
-            return GetFiltered(c => c.Started < endDate && c.Ended >= startDate && (c.FromSip == sipId || c.ToSip == sipId));
+            return GetFiltered(c => c.Started <= endDate && c.Ended >= startDate && (c.FromSip == sipId || c.ToSip == sipId));
+        }
+
+        public IList<CallHistory> GetCallHistoriesForRegisteredSip(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, string sipId)
+        {
+            return callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate && (c.FromSip == sipId || c.ToSip == sipId)).ToList();
         }
 
         public IList<CallHistory> GetCallHistoriesForCodecType(DateTime startDate, DateTime endDate, Guid codecTypeId)
         {
             return codecTypeId == Guid.Empty
-                ? GetFiltered(c => c.Started < endDate && c.Ended >= startDate)
-                : GetFiltered(c => c.Started < endDate && c.Ended >= startDate && (c.FromCodecTypeId == codecTypeId || c.ToCodecTypeId == codecTypeId));
+                ? GetFiltered(c => c.Started <= endDate && c.Ended >= startDate)
+                : GetFiltered(c => c.Started <= endDate && c.Ended >= startDate && (c.FromCodecTypeId == codecTypeId || c.ToCodecTypeId == codecTypeId));
+        }
+
+        public IList<CallHistory> GetCallHistoriesForCodecType(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, Guid codecTypeId)
+        {
+            return codecTypeId == Guid.Empty
+                ? callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate).ToList()
+                : callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate && (c.FromCodecTypeId == codecTypeId || c.ToCodecTypeId == codecTypeId)).ToList();
         }
 
         public IList<CallHistory> GetCallHistoriesForLocation(DateTime startDate, DateTime endDate, Guid locationId)
         {
             return locationId == Guid.Empty
                 ? new List<CallHistory>()
-                : GetFiltered(c => c.Started < endDate && c.Ended >= startDate && (c.FromLocationId == locationId || c.ToLocationId == locationId));
+                : GetFiltered(c => c.Started <= endDate && c.Ended >= startDate && (c.FromLocationId == locationId || c.ToLocationId == locationId));
+        }
+
+        public IList<CallHistory> GetCallHistoriesForLocation(IReadOnlyList<CallHistory> callHistories, DateTime startDate, DateTime endDate, Guid locationId)
+        {
+            return locationId == Guid.Empty
+                ? new List<CallHistory>()
+                : callHistories.Where(c => c.Started <= endDate && c.Ended >= startDate && (c.FromLocationId == locationId || c.ToLocationId == locationId)).ToList();
         }
 
         private IList<CallHistory> GetFiltered(Expression<Func<CallHistoryEntity, bool>> filterExpression)
         {
-            using (var db = GetDbContext())
-            {
-                var dbCallHistories = db.CallHistories
-                    .AsNoTracking()
-                    .Where(filterExpression)
-                    .ToList();
-                return dbCallHistories.Select(MapCallHistory).ToList();
-            }
+            var dbCallHistories = _ccmDbContext.CallHistories
+                .AsNoTracking()
+                .Where(filterExpression)
+                .ToList();
+            return dbCallHistories.Select(MapToCallHistory).ToList();
         }
 
-        private CallHistory MapCallHistory(CallHistoryEntity dbCallHistory)
+        private CallHistory MapToCallHistory(CallHistoryEntity dbCallHistory)
         {
             return dbCallHistory == null ? null : new CallHistory()
             {
                 CallHistoryId = dbCallHistory.Id,
                 CallId = dbCallHistory.CallId,
-                DlgHashEnt = dbCallHistory.DlgHashEnt,
-                DlgHashId = dbCallHistory.DlgHashId,
+                DialogHashEnt = dbCallHistory.DialogHashEnt,
+                DialogHashId = dbCallHistory.DialogHashId,
+                DialogCallId = dbCallHistory.DialogCallId,
+                Started = dbCallHistory.Started,
                 Ended = dbCallHistory.Ended,
                 IsPhoneCall = dbCallHistory.IsPhoneCall,
-                FromCodecTypeColor = dbCallHistory.FromCodecTypeColor,
+
+                FromCodecTypeCategory = dbCallHistory.FromCodecTypeCategory,
                 FromCodecTypeId = dbCallHistory.FromCodecTypeId,
                 FromCodecTypeName = dbCallHistory.FromCodecTypeName,
                 FromComment = dbCallHistory.FromComment,
@@ -289,17 +296,17 @@ namespace CCM.Data.Repositories
                 FromLocationComment = dbCallHistory.FromLocationComment,
                 FromLocationName = dbCallHistory.FromLocationName,
                 FromLocationShortName = dbCallHistory.FromLocationShortName,
+                FromLocationCategory = dbCallHistory.FromLocationCategory,
                 FromOwnerId = dbCallHistory.FromOwnerId,
                 FromOwnerName = dbCallHistory.FromOwnerName,
                 FromRegionId = dbCallHistory.FromRegionId,
                 FromRegionName = dbCallHistory.FromRegionName,
                 FromSip = dbCallHistory.FromSip,
                 FromTag = dbCallHistory.FromTag,
-                FromUserAgentHead = dbCallHistory.FromUserAgentHead,
+                FromUserAgentHeader = dbCallHistory.FromUserAgentHeader,
                 FromUsername = dbCallHistory.FromUsername,
-                SipCallId = dbCallHistory.SipCallId,
-                Started = dbCallHistory.Started,
-                ToCodecTypeColor = dbCallHistory.ToCodecTypeColor,
+
+                ToCodecTypeCategory = dbCallHistory.ToCodecTypeCategory,
                 ToCodecTypeId = dbCallHistory.ToCodecTypeId,
                 ToCodecTypeName = dbCallHistory.ToCodecTypeName,
                 ToComment = dbCallHistory.ToComment,
@@ -309,13 +316,14 @@ namespace CCM.Data.Repositories
                 ToLocationComment = dbCallHistory.ToLocationComment,
                 ToLocationName = dbCallHistory.ToLocationName,
                 ToLocationShortName = dbCallHistory.ToLocationShortName,
+                ToLocationCategory = dbCallHistory.ToLocationCategory,
                 ToOwnerId = dbCallHistory.ToOwnerId,
                 ToOwnerName = dbCallHistory.ToOwnerName,
                 ToRegionId = dbCallHistory.ToRegionId,
                 ToRegionName = dbCallHistory.ToRegionName,
                 ToSip = dbCallHistory.ToSip,
                 ToTag = dbCallHistory.ToTag,
-                ToUserAgentHead = dbCallHistory.ToUserAgentHead,
+                ToUserAgentHeader = dbCallHistory.ToUserAgentHeader,
                 ToUsername = dbCallHistory.ToUsername
             };
         }

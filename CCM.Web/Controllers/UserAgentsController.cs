@@ -28,25 +28,32 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web.Mvc;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models.UserAgents;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
-    public class UserAgentsController : BaseController
-    { 
-        private readonly ICodecPresetRepository _codecPresetRepository;
-        private readonly IUserAgentRepository _userAgentRepository;
-        private readonly IProfileRepository _profileRepository;
+    public class UserAgentsController : Controller
+    {
+        private readonly IWebHostEnvironment _env;
+        private readonly ICachedUserAgentRepository _cachedUserAgentRepository;
+        private readonly ICachedProfileRepository _cachedProfileRepository;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<UserAgentsController> _logger;
 
         /// <summary>
         /// Must be in sync with implemented API:s in CodecControl
+        /// TODO: SYNC THIS on another way instead, make endpoint that CodecControl can query!
         /// </summary>
         public static List<CodecApiInformation> AvailableApis => new List<CodecApiInformation>
         {
@@ -56,20 +63,27 @@ namespace CCM.Web.Controllers
             new CodecApiInformation { DisplayName = "Baresip Proprietary", Name = "BaresipRest" }
         };
 
-        public UserAgentsController(IUserAgentRepository userAgentRepository,
-            IProfileRepository profileRepository,
-            ICodecPresetRepository codecPresetRepository)
+        public UserAgentsController(
+            IWebHostEnvironment hostingEnvironment,
+            ICachedUserAgentRepository cachedUserAgentRepository,
+            ICachedProfileRepository cachedProfileRepository,
+            ICategoryRepository categoryRepository,
+            IConfiguration configuration,
+            ILogger<UserAgentsController> logger)
         {
-            _userAgentRepository = userAgentRepository;
-            _profileRepository = profileRepository;
-            _codecPresetRepository = codecPresetRepository;
+            _env = hostingEnvironment;
+            _cachedUserAgentRepository = cachedUserAgentRepository;
+            _cachedProfileRepository = cachedProfileRepository;
+            _categoryRepository = categoryRepository;
+            _configuration = configuration;
+            _logger = logger;
         }
 
         public ActionResult Index(string search = "")
         {
-            var userAgents = string.IsNullOrWhiteSpace(search) ? _userAgentRepository.GetAll() : _userAgentRepository.Find(search);
+            var userAgents = string.IsNullOrWhiteSpace(search) ? _cachedUserAgentRepository.GetAll() : _cachedUserAgentRepository.Find(search);
 
-            ViewBag.SearchString = search;
+            ViewData["SearchString"] = search;
             return View(userAgents);
         }
 
@@ -77,27 +91,32 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Create()
         {
-            var model = new UserAgentViewModel() { InputGainStep = 3 };
-            GetCodecApiValues(model);
-            GetProfileViewModels(model);
-            GetCodecPresetViewModels(model);
+            var model = new UserAgentViewModel()
+            {
+                Profiles = PopulateProfiles(),
+                CodecApis = PopulateCodecApis(),
+                Categories = PopulateCategories()
+            };
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequestFormLimits(MultipartBodyLengthLimit = 209715200)]
+        [RequestSizeLimit(209715200)]
         [CcmAuthorize(Roles = Roles.Admin)]
-        public ActionResult Create(UserAgentViewModel model)
+        public async Task<IActionResult> Create(UserAgentViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var userAgent = GetUserAgentFromViewModel(model);
+                var userAgent = await ViewModelToUserAgentAsync(model);
                 userAgent.CreatedBy = User.Identity.Name;
-
-                _userAgentRepository.Save(userAgent);
+                _cachedUserAgentRepository.Save(userAgent);
                 return RedirectToAction("Index");
             }
-            GetCodecApiValues(model);
+
+            model.CodecApis = PopulateCodecApis();
+            model.Categories = PopulateCategories();
             return View(model);
         }
 
@@ -105,58 +124,33 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Edit(Guid id)
         {
-            var userAgent = _userAgentRepository.GetById(id);
-
+            UserAgent userAgent = _cachedUserAgentRepository.GetById(id);
             if (userAgent == null)
             {
                 return RedirectToAction("Index");
             }
 
-            var model = new UserAgentViewModel()
-            {
-                ActiveX = userAgent.Ax,
-                UserInterfaceLink = userAgent.UserInterfaceLink,
-                Height = userAgent.Height,
-                Id = userAgent.Id,
-                Identifier = userAgent.Identifier,
-                Image = userAgent.Image,
-                Name = userAgent.Name,
-                Width = userAgent.Width,
-                MatchType = userAgent.MatchType,
-                Api = userAgent.Api,
-                Lines = userAgent.Lines,
-                Inputs = userAgent.Inputs,
-                NrOfGpos = userAgent.NrOfGpos,
-                MaxInputDb = userAgent.InputMaxDb,
-                MinInputDb = userAgent.InputMinDb,
-                Comment = userAgent.Comment,
-                InputGainStep = userAgent.InputGainStep,
-                GpoNames = userAgent.GpoNames,
-                UserInterfaceIsOpen = userAgent.UserInterfaceIsOpen,
-                UseScrollbars = userAgent.UseScrollbars
-            };
-
-            GetCodecApiValues(model);
-            GetProfileViewModels(model, userAgent.Profiles);
-            GetCodecPresetViewModels(model, userAgent.CodecPresets);
-
+            var model = UserAgentToViewModel(userAgent);
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequestFormLimits(MultipartBodyLengthLimit = 209715200)]
+        [RequestSizeLimit(209715200)]
         [CcmAuthorize(Roles = Roles.Admin)]
-        public ActionResult Edit(UserAgentViewModel model)
+        public async Task<IActionResult> Edit(UserAgentViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var userAgent = GetUserAgentFromViewModel(model);
-                userAgent.Id = model.Id;
-
-                _userAgentRepository.Save(userAgent);
+                var userAgent = await ViewModelToUserAgentAsync(model);
+                userAgent.CreatedBy = User.Identity.Name;
+                _cachedUserAgentRepository.Save(userAgent);
                 return RedirectToAction("Index");
             }
-            GetCodecApiValues(model);
+
+            model.CodecApis = PopulateCodecApis();
+            model.Categories = PopulateCategories();
             return View(model);
         }
 
@@ -164,7 +158,11 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Delete(Guid id)
         {
-            var userAgent = _userAgentRepository.GetById(id);
+            var userAgent = _cachedUserAgentRepository.GetById(id);
+            if (userAgent == null)
+            {
+                return RedirectToAction("Index");
+            }
 
             return View(userAgent);
         }
@@ -174,111 +172,152 @@ namespace CCM.Web.Controllers
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Delete(UserAgent agent)
         {
-            _userAgentRepository.Delete(agent.Id);
-
+            _cachedUserAgentRepository.Delete(agent.Id);
             return RedirectToAction("Index");
         }
 
-        private void GetCodecApiValues(UserAgentViewModel model)
-        {
-            model.CodecApis = new Dictionary<string, string> {{string.Empty, string.Empty}};
-            foreach (var availableApi in AvailableApis)
-            {
-                model.CodecApis.Add(availableApi.DisplayName, availableApi.Name);
-            }
-            model.LinesInList = 10;
-            model.InputsInList = 10;
-            model.GposInList = 6;
-            model.InputDbInListMin = -200;
-            model.InputDbInListMax = 250;
-        }
-
-        private UserAgent GetUserAgentFromViewModel(UserAgentViewModel model)
+        private async Task<UserAgent> ViewModelToUserAgentAsync(UserAgentViewModel model)
         {
             var userAgent = new UserAgent
             {
-                Ax = model.ActiveX,
-                UserInterfaceLink = model.UserInterfaceLink,
-                Height = model.Height,
-                Identifier = model.Identifier,
+                Id = model.Id,
                 Name = model.Name,
-                Width = model.Width,
                 Profiles = GetSelectedProfiles(model.Profiles),
                 Image = model.Image,
                 MatchType = model.MatchType,
-                UpdatedBy = User.Identity.Name,
+                Identifier = model.Identifier,
                 Api = model.Api,
-                Lines = model.Lines,
-                Inputs = model.Inputs,
-                NrOfGpos = model.NrOfGpos,
-                InputMinDb = model.MinInputDb,
-                InputMaxDb = model.MaxInputDb,
                 Comment = model.Comment,
-                InputGainStep = model.InputGainStep,
-                GpoNames = model.GpoNames,
+                UpdatedBy = User.Identity.Name,
+                UserInterfaceLink = model.UserInterfaceLink,
+                Height = model.Height,
+                Width = model.Width,
                 UserInterfaceIsOpen = model.UserInterfaceIsOpen,
-                UseScrollbars = model.UseScrollbars,
-                CodecPresets = GetSelectedCodecPresets(model.CodecPresets)
+                UseScrollbars = model.UseScrollbars
             };
 
-            // Handle uploaded image
-            var imageFile = Request.Files != null && Request.Files.Count > 0 ? Request.Files[0] : null;
-
-            if (imageFile != null && imageFile.ContentLength > 0)
+            if (model.Category != Guid.Empty && model.Category != null)
             {
-                var imagesFolder = Server.MapPath("~/Images/Agents");
-
-                // Remove old picture if there is one
-                if (!string.IsNullOrWhiteSpace(model.Image))
+                var category = _categoryRepository.GetById(model?.Category ?? Guid.Empty);
+                if (category != null)
                 {
-                    var oldFile = Path.Combine(imagesFolder, model.Image);
-                    if (System.IO.File.Exists(oldFile))
-                    {
-                        System.IO.File.Delete(oldFile);
-                    }
-                    // TODO: Remove from the other server
+                    userAgent.Category = category;
+                }
+            }
+
+            // Handle uploaded image
+            var imageFile = Request.Form.Files != null && Request.Form.Files.Count > 0 ? Request.Form.Files[0] : null;
+
+            if (imageFile != null)
+            {
+
+                var imagesFolder = Path.Combine(_env.WebRootPath, "~/Images/Agents");
+                var envImagesFolder = _configuration.GetValue<string>("UserAgentImagesFolder");
+                _logger.LogWarning($"Trying to upload image to {envImagesFolder}");
+                if (!string.IsNullOrWhiteSpace(envImagesFolder) && Directory.Exists(envImagesFolder))
+                {
+                    imagesFolder = envImagesFolder;
                 }
 
-                // Save
-                var newFile = Path.GetFileName(imageFile.FileName) ?? string.Empty; // Empty string to quiet the compiler.
-                var filename = Path.Combine(imagesFolder, newFile);
-                imageFile.SaveAs(filename);
-                userAgent.Image = newFile;
+                try
+                {
+                    // Remove old picture if there is one
+                    if (!string.IsNullOrWhiteSpace(model.Image))
+                    {
+                        var oldFile = Path.Combine(imagesFolder, model.Image);
+                        if (System.IO.File.Exists(oldFile))
+                        {
+                            System.IO.File.Delete(oldFile);
+                        }
+                    }
 
-                // TODO: Replicated image to the other server. Or even better, store at a common file area. Use a config parameter on where to save images.
+                    // Save
+                    var generatedFileName = $@"{Guid.NewGuid()}_{imageFile.FileName ?? "none"}";
+                    var newFile = Path.GetFileName(generatedFileName) ?? string.Empty; // Empty string to quiet the compiler.
+                    var tempFileNameAndPath = Directory.Exists("/tmp") ? "/tmp" : "C:/temp";
+                    using (var stream = new FileStream(Path.Combine(tempFileNameAndPath, newFile), FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream).ConfigureAwait(true);
+                        stream.Seek(0, SeekOrigin.Begin);
+                        stream.Flush(true);
+                        stream.Close();
+                        _logger.LogDebug($"{imageFile.Length} bytes uploaded successfully!");
+                    }
+
+                    // Move to CDN/Networkshare or similar
+                    var fileNameAndPath = Path.Combine(imagesFolder, newFile);
+                    System.IO.File.Move(Path.Combine("/tmp", newFile), fileNameAndPath);
+
+                    userAgent.Image = newFile;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Not Working to upload image because {ex.Message}");
+                }
             }
+
             return userAgent;
         }
 
-        private static List<Profile> GetSelectedProfiles(IEnumerable<ProfileListItemViewModel> profiles)
+        private UserAgentViewModel UserAgentToViewModel(UserAgent userAgent)
         {
-            return profiles == null ? new List<Profile>()
+            var model = new UserAgentViewModel()
+            {
+                Id = userAgent.Id,
+                Name = userAgent.Name,
+                Identifier = userAgent.Identifier,
+                MatchType = userAgent.MatchType,
+                Comment = userAgent.Comment,
+                Api = userAgent.Api,
+                Image = userAgent.Image,
+                Category = userAgent.Category?.Id ?? Guid.Empty,
+                UserInterfaceLink = userAgent.UserInterfaceLink,
+                Height = userAgent.Height,
+                Width = userAgent.Width,
+                UserInterfaceIsOpen = userAgent.UserInterfaceIsOpen,
+                UseScrollbars = userAgent.UseScrollbars,
+                Profiles = PopulateProfiles(userAgent.Profiles),
+                CodecApis = PopulateCodecApis(),
+                Categories = PopulateCategories()
+            };
+            return model;
+        }
+
+        private static List<ProfileCodec> GetSelectedProfiles(IEnumerable<ProfileListItemViewModel> profiles)
+        {
+            return profiles == null ? new List<ProfileCodec>()
                 : profiles
                     .Where(p => p.Selected)
                     .OrderBy(p => p.SortIndex)
-                    .Select(p => new Profile {Id = p.Id, Name = p.Name})
+                    .Select(p => new ProfileCodec
+                    {
+                        Id = p.Id,
+                        Name = p.Name
+                    })
                     .ToList();
         }
 
-        private static List<CodecPreset> GetSelectedCodecPresets(IEnumerable<CodecPresetListItemViewModel> codecPresets)
+        private Dictionary<string, string> PopulateCodecApis()
         {
-            return codecPresets == null ? new List<CodecPreset>()
-                : codecPresets
-                    .Where(p => p.Selected)
-                    .Select(codecPreset => new CodecPreset() {Id = codecPreset.Id, Name = codecPreset.Name})
-                    .ToList();
+            var apis = new Dictionary<string, string> { { string.Empty, string.Empty } };
+            foreach (var availableApi in AvailableApis)
+            {
+                apis.Add(availableApi.DisplayName, availableApi.Name);
+            }
+
+            return apis;
         }
 
-        private void GetProfileViewModels(UserAgentViewModel model, List<Profile> profiles = null)
+        private List<ProfileListItemViewModel> PopulateProfiles(List<ProfileCodec> profiles = null)
         {
-            model.Profiles = new List<ProfileListItemViewModel>();
+            var profilelist = new List<ProfileListItemViewModel>();
 
             // Add existing profiles
             if (profiles != null)
             {
                 foreach (var profile in profiles)
                 {
-                    model.Profiles.Add(new ProfileListItemViewModel
+                    profilelist.Add(new ProfileListItemViewModel
                     {
                         Id = profile.Id,
                         Name = profile.Name,
@@ -287,36 +326,33 @@ namespace CCM.Web.Controllers
                 }
             }
 
-            List<Profile> allProfiles = _profileRepository.GetAll();
-
             // Add other profiles
-            foreach (Profile profile in allProfiles)
+            List<ProfileCodec> allProfiles = _cachedProfileRepository.GetAll();
+            foreach (ProfileCodec profile in allProfiles)
             {
-                if (!model.Profiles.Any(p => p.Id == profile.Id))
+                if (!profilelist.Any(p => p.Id == profile.Id))
                 {
-                    model.Profiles.Add(new ProfileListItemViewModel
-                        {
-                            Id = profile.Id,
-                            Name = profile.Name,
-                            Selected = false
-                        });
+                    profilelist.Add(new ProfileListItemViewModel {
+                        Id = profile.Id,
+                        Name = profile.Name,
+                        Selected = false
+                    });
                 }
             }
+
+            return profilelist;
         }
 
-        private void GetCodecPresetViewModels(UserAgentViewModel model, List<CodecPreset> connectedCodecPresets = null)
+        private List<ListItemViewModel> PopulateCategories(Location location = null)
         {
-            var codecPresets = _codecPresetRepository.GetAll();
-            model.CodecPresets = new List<CodecPresetListItemViewModel>();
-            foreach (var codecPreset in codecPresets)
+            var groups = _categoryRepository.GetAll().Select(g => new ListItemViewModel
             {
-                model.CodecPresets.Add(new CodecPresetListItemViewModel()
-                {
-                    Id = codecPreset.Id,
-                    Name = codecPreset.Name,
-                    Selected = connectedCodecPresets != null ? connectedCodecPresets.Any(c => c.Id == codecPreset.Id) : false
-                });
-            }
+                Id = g.Id,
+                Name = g.Name,
+                Selected = location?.Category != null && location.Category.Id == g.Id
+            }).ToList();
+
+            return groups;
         }
     }
 
@@ -325,5 +361,4 @@ namespace CCM.Web.Controllers
         public string DisplayName { get; set; }
         public string Name { get; set; }
     }
-
 }

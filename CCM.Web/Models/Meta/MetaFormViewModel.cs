@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using CCM.Core.Entities;
+using CCM.Web.Properties;
 
 namespace CCM.Web.Models.Meta
 {

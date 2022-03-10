@@ -24,9 +24,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System.Web.Http;
 using CCM.Core.Managers;
 using NLog;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.DiscoveryApi.Controllers.Api
 {
@@ -35,8 +35,8 @@ namespace CCM.DiscoveryApi.Controllers.Api
         public string LogLevel { get; set; }
     }
 
-    [RoutePrefix("api/loglevel")]
-    public class LogLevelController : ApiController
+    [Route("api/loglevel")]
+    public class LogLevelController : ControllerBase
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
@@ -45,24 +45,6 @@ namespace CCM.DiscoveryApi.Controllers.Api
             var currentLevel = LogLevelManager.GetCurrentLevel();
             log.Info("Log level is '{0}' for CCM Discovery", currentLevel.Name);
             return new LevelModel { LogLevel = currentLevel.Name };
-        }
-
-        public LevelModel Post(LevelModel levelModel)
-        {
-            if (levelModel != null)
-            {
-                var isSet = LogLevelManager.SetLogLevel(levelModel.LogLevel);
-                if (isSet)
-                {
-                    log.Info("Log level changed to '{0}' for CCM Discovery", levelModel.LogLevel);
-                }
-                else
-                {
-                    log.Info("Log level was NOT changed to '{0}' for CCM Discovery", levelModel.LogLevel);
-                }
-            }
-
-            return Get();
         }
     }
 }

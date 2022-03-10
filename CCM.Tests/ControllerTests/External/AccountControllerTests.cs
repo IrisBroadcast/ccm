@@ -26,14 +26,12 @@
 
 using System;
 using System.Net.Http;
-using System.Web.Http;
 using System.Web.Http.Results;
 using System.Web.Http.Routing;
 using CCM.Core.Managers;
 using CCM.Data.Repositories;
 using CCM.Web.Controllers.ApiExternal;
 using CCM.Web.Models.ApiExternal;
-using FluentAssertions;
 using LazyCache;
 using NUnit.Framework;
 
@@ -59,7 +57,7 @@ namespace CCM.Tests.ControllerTests.External
         [Test]
         public void Should_get_sipAccount()
         {
-            IHttpActionResult result = _sut.Get("andste01@acip.example.com");
+            ActionResult result = _sut.Get("andste01@acip.example.com");
             var okResult = result as OkNegotiatedContentResult<UserModel>;
             var user = okResult?.Content;
             Assert.IsNotNull(user);
@@ -114,7 +112,7 @@ namespace CCM.Tests.ControllerTests.External
         public void Dispose()
         {
             Dispose(true);
-            // Use SupressFinalize in case a subclass 
+            // Use SupressFinalize in case a subclass
             // of this type implements a finalizer.
             GC.SuppressFinalize(this);
         }

@@ -38,6 +38,7 @@ namespace CCM.Data.Entities
         [MetaProperty]
         public string Name { get; set; }
         public string Color { get; set; }
-        public virtual ICollection<SipAccountEntity> Users { get; set; }
+
+        public virtual ICollection<SipAccountEntity> SipAccounts { get; set; }
     }
 }

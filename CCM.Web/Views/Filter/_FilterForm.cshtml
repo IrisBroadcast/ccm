@@ -1,4 +1,7 @@
-﻿@model CCM.Web.Models.Filter.FilterFormViewModel
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.Filter.FilterFormViewModel
 
 @Html.ValidationSummary()
 @Html.AntiForgeryToken()
@@ -16,10 +19,12 @@
         @Html.DropDownListFor(m => m.SelectedFilter, new SelectList(Model.Filters, "FilteringName", "FilteringName"), new { @class = "form-control" })
     </div>
 </div>
+
 @Html.HiddenFor(m => m.Id)
+
 <div class="form-group">
     <div class="col-md-offset-2 col-md-10">
-        @Html.ActionLink(Resources.Cancel, "Index", "Filter", null, new { @class = "btn btn-default" })
-        <button type="submit" class="btn btn-primary">@Resources.Save</button>
+        @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "Filter", null, new { @class = "btn btn-default" })
+        <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
     </div>
 </div>

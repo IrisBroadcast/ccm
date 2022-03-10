@@ -30,73 +30,102 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Entities.Discovery;
-using CCM.DiscoveryApi.Infrastructure;
-using Newtonsoft.Json;
 using NLog;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using System.Text.Json;
+using System.Net.Http.Headers;
+using CCM.DiscoveryApi.Models;
 
 namespace CCM.DiscoveryApi.Services
 {
     /// <summary>
-    /// Retreives discovery data via CCM's REST service
+    /// Retrieves discovery data via CCM's REST service
     /// </summary>
-    public class DiscoveryHttpService : ApiController, IDiscoveryHttpService
+    public class DiscoveryHttpService : ControllerBase, IDiscoveryHttpService
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private Uri GetUrl(string action)
+        private readonly ApplicationSettingsDiscovery _configuration;
+
+        public DiscoveryHttpService(IOptions<ApplicationSettingsDiscovery> configuration)
         {
-            return new Uri(ApplicationSettings.CcmHost, $"api/authenticateddiscovery/{action}");
+            _configuration = configuration.Value;
         }
 
-        public async Task<List<FilterDto>> GetFiltersAsync(HttpRequestMessage originalRequest)
+        private Uri GetUrl(string action)
+        {
+            return new Uri($"{_configuration.CcmHost}/api/authenticateddiscovery/{action}");
+        }
+
+        public async Task<List<FilterDto>> GetFiltersAsync(HttpRequest originalRequest)
         {
             var url = GetUrl("filters");
             return await Send<List<FilterDto>>(url, HttpMethod.Get, originalRequest);
         }
 
-        public async Task<List<ProfileDto>> GetProfilesAsync(HttpRequestMessage originalRequest)
+        public async Task<List<ProfileDto>> GetProfilesAsync(HttpRequest originalRequest)
         {
             var url = GetUrl("profiles");
             return await Send<List<ProfileDto>>(url, HttpMethod.Get, originalRequest);
         }
 
-        public async Task<UserAgentsResultDto> GetUserAgentsAsync(UserAgentSearchParamsDto searchParams, HttpRequestMessage originalRequest)
+        public async Task<UserAgentsResultDto> GetUserAgentsAsync(UserAgentSearchParamsDto searchParams, HttpRequest originalRequest)
         {
             var url = GetUrl("useragents");
             return await Send<UserAgentsResultDto>(url, HttpMethod.Post, originalRequest, searchParams);
         }
 
-        private async Task<T> Send<T>(Uri url, HttpMethod method, HttpRequestMessage originalRequest, object data = null)
+        private async Task<T> Send<T>(Uri url, HttpMethod method, HttpRequest originalRequest, object data = null)
         {
             log.Debug("Getting discovery data from {0}", url);
-            using (var client = new HttpClient())
+            var authReqHeader = AuthenticationHeaderValue.Parse(originalRequest.Headers["Authorization"]);
+
+            if (string.IsNullOrEmpty(authReqHeader.Parameter))
             {
-                HttpContent content = data != null ? 
-                    new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json") : null;
-
-                var request = new HttpRequestMessage(method, url) {Content = content};
-                request.Headers.Authorization = originalRequest.Headers.Authorization;
-
-                HttpResponseMessage response = await client.SendAsync(request);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    if (response.StatusCode == HttpStatusCode.Forbidden)
-                    {
-                        log.Debug("Failed to get discovery data. Response: {0} {1}", response.StatusCode, response.ReasonPhrase);
-                    }
-                    else
-                    {
-                        log.Warn("Failed to get discovery data. Response: {0} {1}", response.StatusCode, response.ReasonPhrase);
-                    }
-                    throw new HttpResponseException(response);
-                }
-
-                return await response.Content.ReadAsAsync<T>();
+                throw new Exception("No authorization for discovery");
             }
-        }
+            var request = new HttpRequestMessage(method, url);
+            request.Headers.Add("Accept", "application/json");
 
+            HttpContent content = data != null ? new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json") : null;
+            request.Content = content;
+
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.AllowAutoRedirect = false;
+            HttpClient client = new HttpClient(handler);
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(AuthenticationSchemes.Basic.ToString(), authReqHeader.Parameter);
+
+            var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                log.Debug("Failed to get discovery data. Response: {0} {1}", response.StatusCode, response.ReasonPhrase);
+                throw new Exception($"Failed to get discovery data. Response: {response.StatusCode} {response.ReasonPhrase}");
+            }
+
+            if (response.Content is object && response.Content.Headers.ContentType.MediaType == "application/json")
+            {
+                var contentStream = await response.Content.ReadAsStreamAsync();
+
+                try
+                {
+                    return await JsonSerializer.DeserializeAsync<T>(contentStream, new JsonSerializerOptions { IgnoreNullValues = true, PropertyNameCaseInsensitive = true });
+                }
+                catch (JsonException) // Invalid JSON
+                {
+                    Console.WriteLine("Invalid JSON.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("HTTP Response was invalid and cannot be deserialised.");
+            }
+
+            return default(T);
+        }
     }
 }

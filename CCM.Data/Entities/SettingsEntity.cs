@@ -29,7 +29,7 @@ using CCM.Data.Entities.Base;
 
 namespace CCM.Data.Entities
 {
-    [Table("Settings")]
+    [Table("Settings")] // TODO: make sure there is default values somewhere else if none is defined here.
     public class SettingEntity : EntityBase
     {
         public string Name { get; set; }

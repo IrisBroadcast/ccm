@@ -26,30 +26,32 @@
 
 using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Web.Authentication;
 using CCM.Web.Infrastructure;
+using CCM.Web.Properties;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace CCM.Web.Controllers
 {
     [CcmAuthorize(Roles = "Admin, Remote")]
-    public class OwnersController : BaseController
+    public class OwnersController : Controller
     {
         private readonly IOwnersRepository _ownersRepository;
+        private readonly IStringLocalizer<Resources> _localizer;
 
-        public OwnersController(IOwnersRepository ownersRepository)
+        public OwnersController(IOwnersRepository ownersRepository, IStringLocalizer<Resources> localizer)
         {
             _ownersRepository = ownersRepository;
+            _localizer = localizer;
         }
 
         public ActionResult Index(string search = "")
         {
             List<Owner> owners = string.IsNullOrWhiteSpace(search) ? _ownersRepository.GetAll() : _ownersRepository.FindOwners(search);
-
-            ViewBag.SearchString = search;
+            ViewData["SearchString"] = search;
             return View(owners);
         }
 
@@ -69,11 +71,10 @@ namespace CCM.Web.Controllers
             {
                 model.CreatedBy = User.Identity.Name;
                 model.UpdatedBy = User.Identity.Name;
-
                 _ownersRepository.Save(model);
                 return RedirectToAction("Index");
             }
-            ModelState.AddModelError("Name", Resources.Name_Required);
+            ModelState.AddModelError("Name", _localizer["Name_Required"]);
 
             return View(model);
         }
@@ -83,7 +84,6 @@ namespace CCM.Web.Controllers
         public ActionResult Edit(Guid id)
         {
             Owner owner = _ownersRepository.GetById(id);
-
             return View(owner);
         }
 
@@ -95,11 +95,10 @@ namespace CCM.Web.Controllers
             if (!string.IsNullOrWhiteSpace(model.Name))
             {
                 model.UpdatedBy = User.Identity.Name;
-
                 _ownersRepository.Save(model);
                 return RedirectToAction("Index");
             }
-            ModelState.AddModelError("Name", Resources.Name_Required);
+            ModelState.AddModelError("Name", _localizer["Name_Required"]);
 
             return View(model);
         }

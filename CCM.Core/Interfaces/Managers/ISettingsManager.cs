@@ -40,5 +40,12 @@ namespace CCM.Core.Interfaces.Managers
         bool CodecControlActive { get; }
         bool UseOldKamailioEvent { get; }
         bool UseSipEvent { get; }
+        string UserAgentImagesFolder { get; }
+        string DiscoveryServiceUrl { get; }
+        string CodecControlHost { get; }
+        string CodecControlUserName { get; }
+        string CodecControlPassword { get; }
+        int CacheTimeLiveData { get; }
+        int CacheTimeConfigData { get; }
     }
 }

@@ -29,88 +29,88 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Data.Entity;
 using CCM.Core.Entities;
 using CCM.Core.Entities.Specific;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
 using LazyCache;
+using Microsoft.EntityFrameworkCore;
 
 namespace CCM.Data.Repositories
 {
     public class ProfileRepository : BaseRepository, IProfileRepository
     {
-        public ProfileRepository(IAppCache cache) : base(cache)
+        public ProfileRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
-        public void Save(Profile profile)
+        public void Save(ProfileCodec profile)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            // Check if name already taken
+            bool profileNameCollision = db.Profiles.Any(p => p.Name.ToLower() == profile.Name.ToLower() && p.Id != profile.Id);
+            if (profileNameCollision)
             {
-                // Check if name already taken
-                bool profileNameCollision = db.Profiles.Any(p => p.Name.ToLower() == profile.Name.ToLower() && p.Id != profile.Id);
-                if (profileNameCollision)
-                {
-                    throw new DuplicateNameException();
-                }
-
-                ProfileEntity dbProfile;
-
-                if (profile.Id != Guid.Empty)
-                {
-                    dbProfile = db.Profiles.SingleOrDefault(p => p.Id == profile.Id);
-
-                    if (dbProfile == null)
-                    {
-                        throw new NullReferenceException("Profile");
-                    }
-                }
-                else
-                {
-                    dbProfile = new ProfileEntity()
-                    {
-                        Id = Guid.NewGuid(),
-                        CreatedBy = profile.CreatedBy,
-                        CreatedOn = DateTime.UtcNow
-                    };
-                    profile.Id = dbProfile.Id;
-                    profile.CreatedOn = dbProfile.CreatedOn;
-                    db.Profiles.Add(dbProfile);
-                    dbProfile.SortIndex = db.Profiles.Any() ? db.Profiles.Max(p => p.SortIndex) + 1 : 0;
-                    profile.SortIndex = dbProfile.SortIndex;
-                }
-
-                dbProfile.Description = profile.Description;
-                dbProfile.Name = profile.Name;
-                dbProfile.Sdp = profile.Sdp;
-                dbProfile.UpdatedBy = profile.UpdatedBy;
-                dbProfile.UpdatedOn = DateTime.UtcNow;
-
-                profile.UpdatedOn = dbProfile.UpdatedOn;
-
-                db.SaveChanges();
+                throw new DuplicateNameException();
             }
-        }
 
-        public Profile GetById(Guid id)
-        {
-            using (var db = GetDbContext())
+            ProfileCodecEntity dbProfile;
+
+            if (profile.Id != Guid.Empty)
             {
-                var profile = db.Profiles
-                    .Include(p => p.ProfileGroups)
-                    .Include(p => p.UserAgents.Select(o => o.UserAgent))
-                    .SingleOrDefault(p => p.Id == id);
-                return MapToProfile(profile);
+                dbProfile = db.Profiles
+                    .SingleOrDefault(p => p.Id == profile.Id);
+
+                if (dbProfile == null)
+                {
+                    throw new Exception("Profile could not be found");
+                }
             }
+            else
+            {
+                dbProfile = new ProfileCodecEntity
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedBy = profile.CreatedBy,
+                    CreatedOn = DateTime.UtcNow
+                };
+                profile.Id = dbProfile.Id;
+                profile.CreatedOn = dbProfile.CreatedOn;
+                db.Profiles.Add(dbProfile);
+                //dbProfile.SortIndex = db.Profiles.Any() ? db.Profiles.Max(p => p.SortIndex) + 1 : 0;
+                //profile.OrderIndex = dbProfile.SortIndex;
+            }
+
+            dbProfile.Description = profile.Description;
+            dbProfile.LongDescription = profile.LongDescription;
+            dbProfile.Name = profile.Name;
+            dbProfile.Sdp = profile.Sdp;
+            dbProfile.UpdatedBy = profile.UpdatedBy;
+            dbProfile.UpdatedOn = DateTime.UtcNow;
+
+            profile.UpdatedOn = dbProfile.UpdatedOn;
+
+            db.SaveChanges();
         }
 
-        public List<Profile> GetAll()
+        public ProfileCodec GetById(Guid id)
+        {
+            var db = _ccmDbContext;
+            var profile = db.Profiles
+                .Include(p => p.ProfileGroups)
+                .ThenInclude(p => p.ProfileGroup)
+                .Include(p => p.UserAgents)
+                .ThenInclude(u => u.UserAgent)
+                .SingleOrDefault(p => p.Id == id);
+            return MapToProfileCodec(profile);
+        }
+
+        public List<ProfileCodec> GetAll()
         {
             return GetProfilesByExpression(p => true);
         }
 
-        public List<Profile> FindProfiles(string searchString)
+        public List<ProfileCodec> FindProfiles(string searchString)
         {
             return GetProfilesByExpression(p =>
                 p.Description.ToLower().Contains(searchString) ||
@@ -118,93 +118,99 @@ namespace CCM.Data.Repositories
                 p.Sdp.ToLower().Contains(searchString));
         }
 
-        private List<Profile> GetProfilesByExpression(Expression<Func<ProfileEntity, bool>> whereExpression)
+        private List<ProfileCodec> GetProfilesByExpression(Expression<Func<ProfileCodecEntity, bool>> whereExpression)
         {
-            using (var db = GetDbContext())
-            {
-                var profiles = db.Profiles
-                    .Include(p => p.ProfileGroups)
-                    .Include(p => p.UserAgents.Select(o => o.UserAgent))
-                    .Where(whereExpression)
-                    .ToList();
+            var db = _ccmDbContext;
 
-                return profiles.OrderBy(p => p.SortIndex).Select(MapToProfile).ToList();
-            }
+            var profiles = db.Profiles
+                .Include(p => p.ProfileGroups)
+                .ThenInclude(p => p.ProfileGroup)
+                .Include(ua => ua.UserAgents)
+                .ThenInclude(o => o.UserAgent)
+                .Where(whereExpression)
+                .ToList();
+
+            return profiles.OrderBy(p => p.Name).Select(MapToProfileCodec).ToList();
         }
 
         public IList<ProfileNameAndSdp> GetAllProfileNamesAndSdp()
         {
-            using (var db = GetDbContext())
-            {
-                var profiles = db.Profiles.OrderBy(p => p.SortIndex)
-                    .Select(p => new ProfileNameAndSdp() {Name = p.Name, Sdp = p.Sdp}).ToList();
-                return profiles;
-            }
+            var profiles = _ccmDbContext.Profiles.OrderBy(p => p.Name)
+                .Select(p => new ProfileNameAndSdp
+                {
+                    Name = p.Name,
+                    Sdp = p.Sdp
+                }).ToList();
+            return profiles;
         }
 
         public IList<ProfileInfo> GetAllProfileInfos()
         {
-            using (var db = GetDbContext())
+            return _ccmDbContext.Profiles.Select(p => new ProfileInfo
             {
-                return db.Profiles.Select(p => new ProfileInfo() {Id = p.Id, Name = p.Name}).ToList();
-            }
+                Id = p.Id,
+                Name = p.Name
+            }).ToList();
+        }
+
+        public IReadOnlyCollection<ProfileFullDetail> GetFullDetails()
+        {
+            return _ccmDbContext.Profiles
+                .Include(p => p.ProfileGroups)
+                .ThenInclude(pg => pg.ProfileGroup)
+                .Include(p => p.UserAgents)
+                .ThenInclude(ua => ua.UserAgent)
+                .Select(p => new ProfileFullDetail(p.Id, p.Name, p.Description, p.LongDescription, p.Sdp, p.UserAgents.Select(ua => ua.UserAgent.Name).ToList())).ToList().AsReadOnly().ToList();
         }
 
         public void Delete(Guid id)
         {
-            using (var db = GetDbContext())
+            var db = _ccmDbContext;
+            var profile = db.Profiles
+                .Include(p => p.ProfileGroups)
+                .ThenInclude(pg => pg.ProfileGroup)
+                .Include(p => p.UserAgents)
+                .ThenInclude(ua => ua.UserAgent)
+                .SingleOrDefault(p => p.Id == id);
+
+            if (profile != null)
             {
-                var profile = db.Profiles.SingleOrDefault(p => p.Id == id);
-                if (profile == null)
+                if (profile.ProfileGroups != null)
                 {
-                    return;
+                    profile.ProfileGroups.Clear();
                 }
+                if (profile.UserAgents != null)
+                {
+                    profile.UserAgents.Clear();
+                }
+
                 db.Profiles.Remove(profile);
-
                 db.SaveChanges();
             }
         }
 
-        public void SetProfileSortIndex(IList<Tuple<Guid, int>> profileTuples)
+        private ProfileCodec MapToProfileCodec(ProfileCodecEntity dbProfile)
         {
-            using (var db = GetDbContext())
+            if (dbProfile == null)
             {
-                foreach (var tuple in profileTuples)
-                {
-                    var id = tuple.Item1;
-                    var sortIndex = tuple.Item2;
-
-                    var profile = db.Profiles.SingleOrDefault(p => p.Id == id);
-                    if (profile == null)
-                    {
-                        continue;
-                    }
-
-                    profile.SortIndex = sortIndex;
-                }
-
-                db.SaveChanges();
+                return null;
             }
-        }
 
-        private Profile MapToProfile(ProfileEntity dbProfile)
-        {
-            if (dbProfile == null) { return null; }
-
-          var profile = new Profile
+            var profile = new ProfileCodec
             {
-                Description = dbProfile.Description,
                 Id = dbProfile.Id,
                 Name = dbProfile.Name,
+                Description = dbProfile.Description,
+                LongDescription = dbProfile.LongDescription,
                 Sdp = dbProfile.Sdp,
-                SortIndex = dbProfile.SortIndex,
+                OrderIndex = -1,
                 CreatedBy = dbProfile.CreatedBy,
                 CreatedOn = dbProfile.CreatedOn,
                 UpdatedBy = dbProfile.UpdatedBy,
                 UpdatedOn = dbProfile.UpdatedOn,
                 Groups = MapToProfileGroups(dbProfile.ProfileGroups),
                 UserAgents = dbProfile.UserAgents == null ? new List<UserAgent>()
-                        : dbProfile.UserAgents.Select(oua => MapToUserAgent(oua.UserAgent)).ToList()
+                    : dbProfile.UserAgents.Select(oua => MapToUserAgent(oua.UserAgent)).ToList()
             };
 
             return profile;
@@ -212,21 +218,21 @@ namespace CCM.Data.Repositories
 
         private ICollection<ProfileGroupInfo> MapToProfileGroups(ICollection<ProfileGroupProfileOrdersEntity> groups)
         {
-            var l = new List<ProfileGroupInfo>();
-
-            foreach (var group in groups)
+            var profileGroupInfos = groups.Select(x =>
+            new ProfileGroupInfo
             {
-                l.Add(AutoMapper.Mapper.Map<ProfileGroupInfo>(group.ProfileGroup));
-            }
+                Name = x.ProfileGroup.Name,
+                Description = x.ProfileGroup.Description,
+                GroupSortWeight = x.ProfileGroup.GroupSortWeight
+            }).ToList();
 
-            return l;
+            return profileGroupInfos;
         }
 
         private static UserAgent MapToUserAgent(UserAgentEntity userAgent)
         {
-            return userAgent == null ? null : new UserAgent()
+            return userAgent == null ? null : new UserAgent
             {
-                Ax = userAgent.Ax,
                 Height = userAgent.Height,
                 Id = userAgent.Id,
                 Identifier = userAgent.Identifier,
@@ -236,14 +242,8 @@ namespace CCM.Data.Repositories
                 UserInterfaceLink = userAgent.UserInterfaceLink,
                 Width = userAgent.Width,
                 Api = userAgent.Api,
-                Lines = userAgent.Lines,
-                Inputs = userAgent.Inputs,
-                NrOfGpos = userAgent.NrOfGpos,
-                InputMinDb = userAgent.MinInputDb,
-                InputMaxDb = userAgent.MaxInputDb,
                 Comment = userAgent.Comment
             };
         }
-
     }
 }

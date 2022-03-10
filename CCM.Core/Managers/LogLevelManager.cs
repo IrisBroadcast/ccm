@@ -58,9 +58,13 @@ namespace CCM.Core.Managers
                 foreach (var l in LogLevel.AllLevels)
                 {
                     if (level > l)
+                    {
                         rule.DisableLoggingForLevel(l);
+                    }
                     else
+                    {
                         rule.EnableLoggingForLevel(l);
+                    }
                 }
             }
 

@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using CCM.Core.Entities;
 
@@ -32,5 +33,7 @@ namespace CCM.Core.Interfaces.Repositories
     public interface IRoleRepository
     {
         List<CcmRole> GetRoles();
+        CcmRole GetById(string roleId);
+        CcmRole GetById(Guid roleId);
     }
 }

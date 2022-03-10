@@ -20,6 +20,7 @@ Verify the file "Web.config" and that the "CCMDbContext" settings are present as
 
 ### Initiate new database
 
+TODO: Remove this part.. not the way for .NET core
 If this is your first time running, set the Web.Config variable “Environment” to “Initiate”.
 
 Select what type of creation you prefer in the file “CCM.Data -&gt; CCMDbContext.cs” you can select between:

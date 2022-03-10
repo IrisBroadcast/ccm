@@ -26,13 +26,15 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using CCM.Web.Properties;
+using CCM.Core.Entities;
 
 namespace CCM.Web.Models.Call
 {
     public class DeleteCallViewModel
     {
         public Guid CallId { get; set; }
-        public Core.Entities.CallInfo Call { get; set; }
+        public CallInfo Call { get; set; }
 
         public string CallFromSipAddress { get; set; }
         public string CallToSipAddress { get; set; }

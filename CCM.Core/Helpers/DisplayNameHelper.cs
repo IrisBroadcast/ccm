@@ -26,29 +26,96 @@
 
 using System;
 using CCM.Core.Entities;
+using CCM.Core.Entities.Specific;
 using CCM.Core.Extensions;
-using CCM.Core.Properties;
 
 namespace CCM.Core.Helpers
 {
+    /// <summary>
+    /// TODO: important, all displaynames that is created with this process should be called presentationName instead...
+    /// Presentationname should be in this order:
+    ///  - Saved user DisplayName
+    ///  - Displayname from the codec/user-agent
+    ///  - Call Displayname from the service because the codec is not registered
+    ///  - Username/SIP-Address as told by the registrar (with our domain removed if there is one)
+    ///  - Call Username from the service because the codec is not registered
+    /// </summary>
     public class DisplayNameHelper
     {
-        public static string GetDisplayName(RegisteredSip registeredSip, string sipDomain)
+        public static string GetDisplayName(CallRegisteredCodec registeredCodec, string callDisplayName, string callUserName, string sipDomain)
         {
-            return GetDisplayName(registeredSip.DisplayName, registeredSip.User != null ? registeredSip.User.DisplayName : string.Empty, string.Empty, registeredSip.Username, registeredSip.SIP, "", sipDomain);
+            return GetDisplayName(
+                registeredCodec?.User?.DisplayName ?? string.Empty,
+                registeredCodec?.DisplayName ?? string.Empty,
+                callDisplayName,
+                registeredCodec?.SIP ?? string.Empty,
+                callUserName,
+                string.Empty,
+                sipDomain);
         }
 
-        //public static string GetDisplayName(RegisteredSipDto registeredSip, string sipDomain)
-        //{
-        //    return GetDisplayName(registeredSip.DisplayName, registeredSip.UserDisplayName, string.Empty, registeredSip.UserName, registeredSip.Sip, "", sipDomain);
-        //}
+        public static string GetDisplayName(RegisteredSipDetails registeredSip, string sipDomain)
+        {
+            return GetDisplayName(
+                registeredSip.UserDisplayName,
+                registeredSip.DisplayName,
+                string.Empty,
+                registeredSip.Sip,
+                string.Empty,
+                string.Empty,
+                sipDomain);
+        }
 
-        public static string GetDisplayName(string primaryDisplayName, string secondaryDisplayName, string tertiaryDisplayName, string primaryUserName, string secondaryUserName, string tertiaryUserName,
-            string homeDomain, string defaultDisplayName = "")
+        public static string GetDisplayName(RegisteredUserAgent registeredUserAgent, string sipDomain)
+        {
+            return GetDisplayName(
+                registeredUserAgent.UserDisplayName,
+                registeredUserAgent.DisplayName,
+                string.Empty,
+                registeredUserAgent.SipUri,
+                string.Empty,
+                string.Empty,
+                sipDomain);
+        }
+
+        public static string GetDisplayName(SipAccount sipAccount, string sipDomain)
+        {
+            return GetDisplayName(
+                sipAccount.DisplayName,
+                string.Empty,
+                string.Empty,
+                sipAccount.UserName,
+                string.Empty,
+                string.Empty,
+                sipDomain);
+        }
+
+        public static string GetDisplayName(RegisteredUserAgentDiscovery registeredUserAgentDiscovery, string sipDomain)
+        {
+            return GetDisplayName(
+                registeredUserAgentDiscovery.UserDisplayName,
+                registeredUserAgentDiscovery.DisplayName,
+                string.Empty,
+                registeredUserAgentDiscovery.SipUri,
+                string.Empty,
+                string.Empty,
+                sipDomain);
+        }
+
+        // TODO: make general but better...
+        public static string GetDisplayName(
+            string primaryDisplayName,
+            string secondaryDisplayName,
+            string tertiaryDisplayName,
+            string primaryUserName,
+            string secondaryUserName,
+            string tertiaryUserName,
+            string homeDomain,
+            string defaultDisplayName = "")
         {
             if (!string.IsNullOrWhiteSpace(primaryDisplayName)) { return primaryDisplayName; }
             if (!string.IsNullOrWhiteSpace(secondaryDisplayName)) { return secondaryDisplayName; }
-            if (!string.IsNullOrEmpty(tertiaryDisplayName)) { return tertiaryDisplayName; }
+            if (!string.IsNullOrWhiteSpace(tertiaryDisplayName)) { return tertiaryDisplayName; }
 
             if (!string.IsNullOrEmpty(primaryUserName)) { return GetUserNameWithoutHomeDomain(primaryUserName, homeDomain); }
             if (!string.IsNullOrEmpty(secondaryUserName)) { return GetUserNameWithoutHomeDomain(secondaryUserName, homeDomain); }
@@ -59,7 +126,7 @@ namespace CCM.Core.Helpers
 
         private static string GetUserNameWithoutHomeDomain(string userName, string homeDomain)
         {
-            var domainIndex = userName.IndexOf(string.Format("@{0}", homeDomain), StringComparison.CurrentCulture);
+            var domainIndex = userName.IndexOf($"@{homeDomain}", StringComparison.CurrentCulture);
             if (domainIndex > 0)
             {
                 return userName.Remove(domainIndex);
@@ -75,19 +142,17 @@ namespace CCM.Core.Helpers
             }
 
             s = s.Trim();
-
             var username = s.LeftOf("@");
-
+            // Phone number
             if (username.IsNumeric())
             {
-                // Phone number
                 if (username.Length <= 6)
                 {
                     // Internal short phone number
-                    return username;
+                    return s;
                 }
 
-                return Resources.External_Phone_Number;
+                return Resources.Resources.External_Phone_Number;
             }
             return s;
         }
@@ -100,20 +165,16 @@ namespace CCM.Core.Helpers
             }
 
             s = s.Trim();
-
             var username = s.LeftOf("@");
-
+            // Phone number
             if (username.IsNumeric())
             {
-                // Phone number
                 if (username.Length <= 6)
                 {
                     // Internal short phone number
-                    return string.Format("Ank {0}", username);
-                    // TODO: Resourcify so that it becomes international
+                    return $"{Resources.Resources.Internal_Phone_Connection_Prefix} {username}";
                 }
-
-                return Resources.External_Phone_Number;
+                return Resources.Resources.External_Phone_Number;
             }
             return s;
         }

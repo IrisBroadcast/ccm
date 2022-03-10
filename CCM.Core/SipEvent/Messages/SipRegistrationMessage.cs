@@ -24,6 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using CCM.Core.SipEvent.Models;
+
 namespace CCM.Core.SipEvent.Messages
 {
     public class SipRegistrationMessage : SipMessageBase
@@ -35,14 +37,13 @@ namespace CCM.Core.SipEvent.Messages
         public string UserAgent { get; set; }
         public string Registrar { get; set; }
         public string RegType { get; set; }
-        public string Username { get; set; } // TODO: Obsolete. To be removed. Sip used both as sip address and user name (Anders)
         public string ToDisplayName { get; set; }
         public long UnixTimeStamp { get; set; }
         public int Expires { get; set; }
 
         public override string ToDebugString()
         {
-            return $"SIP:{Sip}, IP:{Ip}, Port:{Port}, UserAgent:{UserAgent}, Username:{Username}, Registrar:{Registrar}, RegType:{RegType}, ToDisplayName:{ToDisplayName}, UnixTimeStamp:{UnixTimeStamp}, Expires:{Expires}";
+            return $"SIP:{Sip}, IP:{Ip}, Port:{Port}, UserAgent:{UserAgent}, Registrar:{Registrar}, RegType:{RegType}, ToDisplayName:{ToDisplayName}, UnixTimeStamp:{UnixTimeStamp}, Expires:{Expires}";
         }
     }
 }

@@ -26,22 +26,29 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using LazyCache;
 using System.Threading.Tasks;
+using CCM.Core.Interfaces.Managers;
 
 namespace CCM.Core.Cache
 {
-    public class CachedSipAccountRepository : ISipAccountRepository
+    public class CachedSipAccountRepository : ICachedSipAccountRepository
     {
         private readonly ISipAccountRepository _internalRepository;
         private readonly IAppCache _lazyCache;
+        private readonly ISettingsManager _settingsManager;
 
-        public CachedSipAccountRepository(IAppCache cache, ISipAccountRepository internalRepository)
+        public CachedSipAccountRepository(
+            IAppCache cache,
+            ISipAccountRepository internalRepository,
+            ISettingsManager settingsManager)
         {
             _lazyCache = cache;
             _internalRepository = internalRepository;
+            _settingsManager = settingsManager;
         }
 
         public SipAccount GetById(Guid id)
@@ -56,22 +63,29 @@ namespace CCM.Core.Cache
 
         public SipAccount GetByUserName(string userName)
         {
+            // TODO: XXXX Is already????
             return _internalRepository.GetByUserName(userName);
         }
 
-        public List<SipAccount> GetAllIncludingRelations()
+        public SipAccount GetSipAccountByUserName(string username)
         {
-            return _internalRepository.GetAllIncludingRelations();
+            // TODO: XXXX Is already????
+            return GetAll().FirstOrDefault(u => u.UserName.ToLower() == username);
         }
 
         public List<SipAccount> GetAll()
         {
-            return _lazyCache.GetOrAddSipAccounts(() => _internalRepository.GetAll());
+            return _lazyCache.GetOrAddSipAccounts(() => _internalRepository.GetAll(), _settingsManager.CacheTimeConfigData);
         }
 
         public List<SipAccount> Find(string startsWith)
         {
             return _internalRepository.Find(startsWith);
+        }
+
+        public void Save(SipAccount ccmUser)
+        {
+            _internalRepository.Save(ccmUser);
         }
 
         public void Create(SipAccount ccmUser)
@@ -92,6 +106,13 @@ namespace CCM.Core.Cache
             // TODO: Maybe this needs to clear more things? like registeredUserAgents
         }
 
+        public void UpdateSipAccountQuick(Guid id, string presentationName, string externalReference)
+        {
+            _internalRepository.UpdateSipAccountQuick(id, presentationName, externalReference);
+            _lazyCache.ClearSipAccounts();
+            // TODO: Maybe this needs to clear more things? like registeredUserAgents
+        }
+
         public void UpdatePassword(Guid id, string password)
         {
             _internalRepository.UpdatePassword(id, password);
@@ -108,6 +129,5 @@ namespace CCM.Core.Cache
         {
             return _internalRepository.AuthenticateAsync(username, password);
         }
-
     }
 }

@@ -27,20 +27,26 @@
 using System;
 using System.Collections.Generic;
 using CCM.Core.Entities;
+using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using LazyCache;
 
 namespace CCM.Core.Cache
 {
-    public class CachedProfileGroupRepository : IProfileGroupRepository
+    public class CachedProfileGroupRepository : ICachedProfileGroupRepository
     {
         private readonly IAppCache _lazyCache;
         private readonly IProfileGroupRepository _internalRepository;
+        private readonly ISettingsManager _settingsManager;
 
-        public CachedProfileGroupRepository(IAppCache lazyCache, IProfileGroupRepository internalRepository)
+        public CachedProfileGroupRepository(
+            IAppCache lazyCache,
+            IProfileGroupRepository internalRepository,
+            ISettingsManager settingsManager)
         {
             _lazyCache = lazyCache;
             _internalRepository = internalRepository;
+            _settingsManager = settingsManager;
         }
 
         public ProfileGroup GetById(Guid id)
@@ -50,24 +56,23 @@ namespace CCM.Core.Cache
 
         public List<ProfileGroup> GetAll()
         {
-            return _lazyCache.GetOrAddProfileGroups(() => _internalRepository.GetAll());
+            return _lazyCache.GetOrAddProfileGroups(() => _internalRepository.GetAll(), _settingsManager.CacheTimeConfigData);
         }
 
-        public void Save(ProfileGroup location)
+        public List<ProfileGroup> FindProfileGroups(string search)
         {
-            _internalRepository.Save(location);
+            return _internalRepository.FindProfileGroups(search);
+        }
+
+        public void Save(ProfileGroup profileGroup)
+        {
+            _internalRepository.Save(profileGroup);
             _lazyCache.ClearProfileGroups();
         }
 
         public void Delete(Guid id)
         {
             _internalRepository.Delete(id);
-            _lazyCache.ClearProfileGroups();
-        }
-
-        public void SetProfileGroupSortWeight(IList<Tuple<Guid, int>> profileGroupTuples)
-        {
-            _internalRepository.SetProfileGroupSortWeight(profileGroupTuples);
             _lazyCache.ClearProfileGroups();
         }
     }

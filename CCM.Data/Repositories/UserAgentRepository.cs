@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using CCM.Core.Entities;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Data.Entities;
@@ -38,208 +38,207 @@ namespace CCM.Data.Repositories
 {
     public class UserAgentRepository : BaseRepository, IUserAgentRepository
     {
-        public UserAgentRepository(IAppCache cache) : base(cache)
+        public UserAgentRepository(IAppCache cache, CcmDbContext ccmDbContext) : base(cache, ccmDbContext)
         {
         }
 
         public void Save(UserAgent userAgent)
         {
-            using (var db = GetDbContext())
-            {
-                UserAgentEntity dbUserAgent = null;
+            UserAgentEntity dbUserAgent;
 
-                if (userAgent.Id != Guid.Empty)
-                {
-                    dbUserAgent = db.UserAgents
-                        .Include(ua => ua.OrderedProfiles)
-                        .SingleOrDefault(a => a.Id == userAgent.Id);
-                }
+            if (userAgent.Id != Guid.Empty)
+            {
+                dbUserAgent = _ccmDbContext.UserAgents
+                    .Include(ua => ua.OrderedProfiles)
+                    .SingleOrDefault(a => a.Id == userAgent.Id);
 
                 if (dbUserAgent == null)
                 {
-                    dbUserAgent = new UserAgentEntity()
-                    {
-                        Id = Guid.NewGuid(),
-                        CreatedBy = userAgent.CreatedBy,
-                        CreatedOn = DateTime.UtcNow
-                    };
-                    userAgent.Id = dbUserAgent.Id;
-                    userAgent.CreatedOn = dbUserAgent.CreatedOn;
-                    db.UserAgents.Add(dbUserAgent);
+                    throw new Exception("UserAgent could not be found");
                 }
 
-                if (dbUserAgent.OrderedProfiles != null)
-                {
-                    dbUserAgent.OrderedProfiles.Clear();
-                }
-
-                dbUserAgent.Ax = userAgent.Ax;
-                dbUserAgent.Height = userAgent.Height;
-                dbUserAgent.Identifier = userAgent.Identifier;
-                dbUserAgent.Image = userAgent.Image;
-                dbUserAgent.Name = userAgent.Name;
-                dbUserAgent.Width = userAgent.Width;
-                dbUserAgent.MatchType = userAgent.MatchType;
-                dbUserAgent.UpdatedBy = userAgent.UpdatedBy;
-                dbUserAgent.UpdatedOn = DateTime.UtcNow;
-                dbUserAgent.Api = userAgent.Api;
-                dbUserAgent.Lines = userAgent.Lines;
-                dbUserAgent.Inputs = userAgent.Inputs;
-                dbUserAgent.NrOfGpos = userAgent.NrOfGpos;
-                dbUserAgent.MaxInputDb = userAgent.InputMaxDb;
-                dbUserAgent.MinInputDb = userAgent.InputMinDb;
-                dbUserAgent.UserInterfaceLink = userAgent.UserInterfaceLink;
-                dbUserAgent.Comment = userAgent.Comment;
-                dbUserAgent.InputGainStep = userAgent.InputGainStep;
-                dbUserAgent.GpoNames = userAgent.GpoNames;
-                dbUserAgent.UserInterfaceIsOpen = userAgent.UserInterfaceIsOpen;
-                dbUserAgent.UseScrollbars = userAgent.UseScrollbars;
-
-                userAgent.UpdatedOn = dbUserAgent.UpdatedOn;
-
-                GetProfileEntitiesFromProfiles(db, dbUserAgent, userAgent.Profiles);
-                GetDbCodecPresetsFromCodecPresets(db, dbUserAgent, userAgent.CodecPresets);
-
-                db.SaveChanges();
+                dbUserAgent.OrderedProfiles?.Clear();
             }
+            else
+            {
+                dbUserAgent = new UserAgentEntity()
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedBy = userAgent.CreatedBy,
+                    CreatedOn = DateTime.UtcNow
+                };
+                userAgent.Id = dbUserAgent.Id;
+                userAgent.CreatedOn = dbUserAgent.CreatedOn;
+                _ccmDbContext.UserAgents.Add(dbUserAgent);
+            }
+
+            dbUserAgent.Height = userAgent.Height;
+            dbUserAgent.Identifier = userAgent.Identifier;
+            dbUserAgent.Image = userAgent.Image;
+            dbUserAgent.Name = userAgent.Name;
+            dbUserAgent.Width = userAgent.Width;
+            dbUserAgent.MatchType = userAgent.MatchType;
+            dbUserAgent.UpdatedBy = userAgent.UpdatedBy;
+            dbUserAgent.UpdatedOn = DateTime.UtcNow;
+            dbUserAgent.Api = userAgent.Api;
+            dbUserAgent.UserInterfaceLink = userAgent.UserInterfaceLink;
+            dbUserAgent.Comment = userAgent.Comment;
+            dbUserAgent.UserInterfaceIsOpen = userAgent.UserInterfaceIsOpen;
+            dbUserAgent.UseScrollbars = userAgent.UseScrollbars;
+
+            // Category
+            dbUserAgent.Category = userAgent.Category != null && userAgent.Category.Id != Guid.Empty
+                ? _ccmDbContext.Categories.SingleOrDefault(c => c.Id == userAgent.Category.Id)
+                : null;
+            dbUserAgent.Category_Id = dbUserAgent.Category?.Id ?? null;
+
+            userAgent.UpdatedOn = DateTime.UtcNow;
+
+            //SetEntityFromProfile(_ccmDbContext, dbUserAgent, userAgent.Profiles);
+
+            // Profiles
+            dbUserAgent.OrderedProfiles ??= new Collection<UserAgentProfileOrderEntity>();
+            dbUserAgent.OrderedProfiles.Clear();
+
+            int sortIndex = 0;
+
+            foreach (ProfileCodec profile in userAgent.Profiles)
+            {
+                var dbProfile = _ccmDbContext.Profiles.SingleOrDefault(p => p.Id == profile.Id);
+                if (dbProfile == null)
+                {
+                    continue;
+                }
+
+                dbUserAgent.OrderedProfiles.Add(new UserAgentProfileOrderEntity()
+                {
+                    Profile = dbProfile,
+                    UserAgent = dbUserAgent,
+                    ProfileSortIndexForUserAgent = sortIndex
+                });
+
+                sortIndex++;
+            }
+
+            _ccmDbContext.SaveChanges();
         }
 
         public void Delete(Guid id)
         {
-            using (var db = GetDbContext())
+            var userAgent = _ccmDbContext.UserAgents.SingleOrDefault(a => a.Id == id);
+            if (userAgent != null)
             {
-                var userAgent = db.UserAgents.SingleOrDefault(a => a.Id == id);
-
-                if (userAgent != null)
-                {
-                    db.UserAgents.Remove(userAgent);
-                    db.SaveChanges();
-                }
+                _ccmDbContext.UserAgents.Remove(userAgent); 
+                _ccmDbContext.SaveChanges();
             }
         }
 
         public UserAgent GetById(Guid id)
         {
-            using (var db = GetDbContext())
-            {
-                var dbUserAgent = db.UserAgents.SingleOrDefault(a => a.Id == id);
-                return dbUserAgent == null ? null : MapToUserAgent(dbUserAgent);
-            }
+            var dbUserAgent = _ccmDbContext.UserAgents
+                .Include(ca => ca.Category)
+                .Include(ua => ua.OrderedProfiles)
+                .ThenInclude(op => op.Profile)
+                .SingleOrDefault(a => a.Id == id);
+
+            return dbUserAgent == null ? null : MapToUserAgent(dbUserAgent);
         }
 
         public List<UserAgent> GetAll()
         {
-            using (var db = GetDbContext())
-            {
-                var dbUserAgents = db.UserAgents
-                    .Include(ua => ua.OrderedProfiles.Select(o => o.Profile))
-                    .Include(ua => ua.CodecPresets)
-                    .ToList();
+            var dbUserAgents = _ccmDbContext.UserAgents
+                .Include(ca => ca.Category)
+                .Include(ua => ua.OrderedProfiles)
+                .ThenInclude(p => p.Profile)
+                .ToList();
 
-                return dbUserAgents.Select(MapToUserAgent).OrderBy(a => a.Name).ToList();
-            }
+            return dbUserAgents.Select(MapToUserAgent)
+                .OrderByDescending(ua => ua.Identifier.Length)
+                .ThenBy(ua => ua.Identifier)
+                .ToList();
         }
 
         public Dictionary<Guid, UserAgentAndProfiles> GetUserAgentsTypesAndProfiles()
         {
-            using (var db = GetDbContext())
-            {
-                var result = db.UserAgents
-                    .OrderBy(y => y.Name)
-                    .Select(x =>
-                        new
-                        {
-                            Id = x.Id,
-                            Name = x.Name,
-                            Identifier = x.Identifier,
-                            MatchType = x.MatchType,
-                            Image = x.Image,
-                            UserInterfaceLink = x.UserInterfaceLink,
-                            Ax = x.Ax,
-                            Width = x.Width,
-                            Height = x.Height,
-                            Comment = x.Comment,
-                            Api = x.Api,
-                            Lines = x.Lines,
-                            Inputs = x.Inputs,
-                            NrOfGpos = x.NrOfGpos,
-                            InputMinDb = x.MinInputDb,
-                            InputMaxDb = x.MaxInputDb,
-                            InputGainStep = x.InputGainStep,
-                            GpoNames = x.GpoNames,
-                            UserInterfaceIsOpen = x.UserInterfaceIsOpen,
-                            UseScrollbars = x.UseScrollbars,
-                            OrderedProfiles = x.OrderedProfiles
-                        })
-                    .ToList();
+            var result = _ccmDbContext.UserAgents
+                .Include(ca => ca.Category)
+                .Include(ua => ua.OrderedProfiles)
+                .ThenInclude(op => op.Profile)
+                .OrderByDescending(ua => ua.Identifier.Length)
+                .ThenBy(ua => ua.Identifier)
+                .Select(x =>
+                    new
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Identifier = x.Identifier,
+                        MatchType = x.MatchType,
+                        Image = x.Image,
+                        UserInterfaceLink = x.UserInterfaceLink,
+                        Width = x.Width,
+                        Height = x.Height,
+                        Comment = x.Comment,
+                        Api = x.Api,
+                        UserInterfaceIsOpen = x.UserInterfaceIsOpen,
+                        UseScrollbars = x.UseScrollbars,
+                        OrderedProfiles = x.OrderedProfiles,
+                        Category = x.Category
+                    })
+                .ToList();
 
-                return result.ToDictionary(u => u.Id, x =>
-                {
-                    return new UserAgentAndProfiles(
-                        id: x.Id,
-                        name: x.Name,
-                        identifier: x.Identifier,
-                        matchType: x.MatchType,
-                        imagePath: x.Image,
-                        userInterfaceLink: x.UserInterfaceLink,
-                        activeX: x.Ax,
-                        width: x.Width,
-                        height: x.Height,
-                        comment: x.Comment,
-                        apiType: x.Api,
-                        connectionLines: x.Lines,
-                        inputs: x.Inputs,
-                        outputs: 0,
-                        nrOfGpos: x.NrOfGpos,
-                        inputMinDb: x.InputMinDb,
-                        inputMaxDb: x.InputMinDb,
-                        inputGainStep: x.InputGainStep,
-                        gpoNames: x.GpoNames,
-                        userInterfaceIsOpen: x.UserInterfaceIsOpen,
-                        useScrollbars: x.UseScrollbars,
-                        profiles: x.OrderedProfiles
-                            .OrderBy(y => y.SortIndex)
-                            .Select(z =>
-                            {
-                                return new Profile
-                                {
-                                    Id = z.Profile.Id,
-                                    Name = z.Profile.Name,
-                                    Description = z.Profile.Description,
-                                    Sdp = z.Profile.Sdp
-                                };
-                            }).ToList()
-                    );
-                });
-            }
+            return result.ToDictionary(u => u.Id, x =>
+            {
+                return new UserAgentAndProfiles(
+                    id: x.Id,
+                    name: x.Name,
+                    identifier: x.Identifier,
+                    matchType: x.MatchType,
+                    imagePath: x.Image,
+                    userInterfaceLink: x.UserInterfaceLink,
+                    width: x.Width,
+                    height: x.Height,
+                    comment: x.Comment,
+                    apiType: x.Api,
+                    userInterfaceIsOpen: x.UserInterfaceIsOpen,
+                    useScrollbars: x.UseScrollbars,
+                    profiles: x.OrderedProfiles
+                        .OrderBy(y => y.ProfileSortIndexForUserAgent)
+                        .Select(z => new ProfileCodec
+                        {
+                            Id = z.Profile.Id,
+                            Name = z.Profile.Name,
+                            Description = z.Profile.Description,
+                            LongDescription = z.Profile.LongDescription,
+                            Sdp = z.Profile.Sdp
+                        }).ToList()
+                );
+            });
         }
 
         public List<UserAgent> Find(string search)
         {
-            using (var db = GetDbContext())
-            {
-                var dbUserAgents = db.UserAgents
-                    .Include(ua => ua.OrderedProfiles.Select(o => o.Profile))
-                    .Include(ua => ua.CodecPresets)
-                    .Where(u => u.Name.ToLower().Contains(search.ToLower()) ||
-                                u.Identifier.ToLower().Contains(search.ToLower()))
-                    .ToList();
+            var dbUserAgents = _ccmDbContext.UserAgents
+                .Include(ca => ca.Category)
+                .Include(ua => ua.OrderedProfiles)
+                .ThenInclude(op => op.Profile)
+                .Where(u => u.Name.ToLower().Contains(search.ToLower()) ||
+                            u.Identifier.ToLower().Contains(search.ToLower()))
+                .OrderByDescending(y => y.Name)
+                .ToList();
 
-                return dbUserAgents.Select(MapToUserAgent).OrderBy(a => a.Name).ToList();
-            }
+            return dbUserAgents.Select(MapToUserAgent).OrderBy(a => a.Name).ToList();
         }
 
         private UserAgent MapToUserAgent(UserAgentEntity dbUserAgent)
         {
             return new UserAgent()
             {
-                Ax = dbUserAgent.Ax,
+                Id = dbUserAgent.Id,
+                Name = dbUserAgent.Name,
                 UserInterfaceLink = dbUserAgent.UserInterfaceLink,
                 Height = dbUserAgent.Height,
-                Id = dbUserAgent.Id,
                 Identifier = dbUserAgent.Identifier,
                 Image = dbUserAgent.Image,
-                Name = dbUserAgent.Name,
                 Width = dbUserAgent.Width,
                 MatchType = dbUserAgent.MatchType,
                 CreatedBy = dbUserAgent.CreatedBy,
@@ -247,91 +246,54 @@ namespace CCM.Data.Repositories
                 UpdatedBy = dbUserAgent.UpdatedBy,
                 UpdatedOn = dbUserAgent.UpdatedOn,
                 Api = dbUserAgent.Api,
-                Lines = dbUserAgent.Lines,
-                Inputs = dbUserAgent.Inputs,
-                NrOfGpos = dbUserAgent.NrOfGpos,
-                InputMaxDb = dbUserAgent.MaxInputDb,
-                InputMinDb = dbUserAgent.MinInputDb,
                 Comment = dbUserAgent.Comment,
-                InputGainStep = dbUserAgent.InputGainStep,
-                GpoNames = dbUserAgent.GpoNames,
                 UserInterfaceIsOpen = dbUserAgent.UserInterfaceIsOpen,
                 UseScrollbars = dbUserAgent.UseScrollbars,
-                Profiles = GetProfilesFromProfiles(dbUserAgent.OrderedProfiles),
-                CodecPresets = dbUserAgent.CodecPresets.Select(MapToCodecPreset).ToList()
+                Profiles = MapToProfiles(dbUserAgent.OrderedProfiles),
+                Category = MapToCategory(dbUserAgent.Category)
             };
         }
 
-        private List<Profile> GetProfilesFromProfiles(IEnumerable<UserAgentProfileOrderEntity> orderedProfiles)
+        private List<ProfileCodec> MapToProfiles(IEnumerable<UserAgentProfileOrderEntity> orderedProfiles)
         {
-            var profiles = orderedProfiles.OrderBy(o => o.SortIndex).Select(o => o.Profile).ToList();
-            return profiles.Select(MapProfile).ToList();
+            return orderedProfiles.OrderBy(o => o.ProfileSortIndexForUserAgent)
+                .Select(x => new ProfileCodec {
+                    Description = x.Profile.Description,
+                    Id = x.Profile.Id,
+                    Name = x.Profile.Name,
+                    Sdp = x.Profile.Sdp
+                }).ToList();
         }
 
-        private static Profile MapProfile(ProfileEntity profile)
+        private Category MapToCategory(CategoryEntity dbCategory)
         {
-            return new Profile
-            {
-                Description = profile.Description,
-                Id = profile.Id,
-                Name = profile.Name,
-                Sdp = profile.Sdp
-            };
+            return dbCategory != null ? new Category { Id = dbCategory.Id, Name = dbCategory.Name } : null;
         }
 
-        private static CodecPreset MapToCodecPreset(CodecPresetEntity dbCodecPreset)
-        {
-            return new CodecPreset()
-            {
-                Id = dbCodecPreset.Id,
-                CreatedBy = dbCodecPreset.CreatedBy,
-                CreatedOn = dbCodecPreset.CreatedOn,
-                Name = dbCodecPreset.Name,
-                UpdatedBy = dbCodecPreset.UpdatedBy,
-                UpdatedOn = dbCodecPreset.UpdatedOn
-            };
-        }
+        //private void SetEntityFromProfile(CcmDbContext db, UserAgentEntity userAgent, IEnumerable<ProfileCodec> profiles)
+        //{
+        //    userAgent.OrderedProfiles ??= new Collection<UserAgentProfileOrderEntity>();
+        //    userAgent.OrderedProfiles.Clear();
 
-        private void GetProfileEntitiesFromProfiles(CcmDbContext db, UserAgentEntity userAgent, IEnumerable<Profile> profiles)
-        {
-            userAgent.OrderedProfiles = userAgent.OrderedProfiles ?? new Collection<UserAgentProfileOrderEntity>();
-            userAgent.OrderedProfiles.Clear();
+        //    int sortIndex = 0;
 
-            int sortIndex = 0;
+        //    foreach (ProfileCodec profile in profiles)
+        //    {
+        //        var dbProfile = db.Profiles.SingleOrDefault(p => p.Id == profile.Id);
+        //        if (dbProfile == null)
+        //        {
+        //            continue;
+        //        }
 
-            foreach (Profile profile in profiles)
-            {
-                var dbProfile = db.Profiles.SingleOrDefault(p => p.Id == profile.Id);
-                if (dbProfile == null)
-                {
-                    continue;
-                }
+        //        userAgent.OrderedProfiles.Add(new UserAgentProfileOrderEntity()
+        //        {
+        //            Profile = dbProfile,
+        //            UserAgent = userAgent,
+        //            ProfileSortIndexForUserAgent = sortIndex
+        //        });
 
-                userAgent.OrderedProfiles.Add(new UserAgentProfileOrderEntity()
-                {
-                    Profile = dbProfile,
-                    UserAgent = userAgent,
-                    SortIndex = sortIndex
-                });
-
-                sortIndex++;
-            }
-        }
-
-        private void GetDbCodecPresetsFromCodecPresets(CcmDbContext db, UserAgentEntity userAgent, IEnumerable<CodecPreset> codecPresets)
-        {
-            userAgent.CodecPresets = userAgent.CodecPresets ?? new Collection<CodecPresetEntity>();
-            userAgent.CodecPresets.Clear();
-
-            foreach (var codecPreset in codecPresets)
-            {
-                var dbCodecPreset = db.CodecPresets.SingleOrDefault(c => c.Id == codecPreset.Id);
-                if (dbCodecPreset == null)
-                {
-                    continue;
-                }
-                userAgent.CodecPresets.Add(dbCodecPreset);
-            }
-        }
+        //        sortIndex++;
+        //    }
+        //}
     }
 }

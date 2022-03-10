@@ -27,20 +27,26 @@
 using System;
 using System.Collections.Generic;
 using CCM.Core.Entities;
+using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using LazyCache;
 
 namespace CCM.Core.Cache
 {
-    public class CachedUserAgentRepository : IUserAgentRepository
+    public class CachedUserAgentRepository : ICachedUserAgentRepository
     {
         private readonly IUserAgentRepository _internalRepository;
         private readonly IAppCache _lazyCache;
+        private readonly ISettingsManager _settingsManager;
 
-        public CachedUserAgentRepository(IAppCache cache, IUserAgentRepository internalRepository)
+        public CachedUserAgentRepository(
+            IAppCache cache,
+            IUserAgentRepository internalRepository,
+            ISettingsManager settingsManager)
         {
             _lazyCache = cache;
             _internalRepository = internalRepository;
+            _settingsManager = settingsManager;
         }
 
         public void Save(UserAgent userAgent)
@@ -60,12 +66,12 @@ namespace CCM.Core.Cache
 
         public List<UserAgent> GetAll()
         {
-            return _lazyCache.GetOrAddUserAgents(() => _internalRepository.GetAll());
+            return _lazyCache.GetOrAddUserAgents(() => _internalRepository.GetAll(), _settingsManager.CacheTimeConfigData);
         }
 
         public Dictionary<Guid, UserAgentAndProfiles> GetUserAgentsTypesAndProfiles()
         {
-            return _lazyCache.GetOrAddUserAgentsAndProfiles(() => _internalRepository.GetUserAgentsTypesAndProfiles());
+            return _lazyCache.GetOrAddUserAgentsAndProfiles(() => _internalRepository.GetUserAgentsTypesAndProfiles(), _settingsManager.CacheTimeConfigData);
         }
 
         public List<UserAgent> Find(string search)

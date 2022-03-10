@@ -25,6 +25,7 @@
  */
 
 using System.ComponentModel.DataAnnotations;
+using CCM.Web.Properties;
 
 namespace CCM.Web.Models.Account
 {

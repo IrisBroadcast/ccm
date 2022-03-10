@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CCM.Web {
+namespace CCM.Web.Properties {
     using System;
     
     
@@ -19,7 +19,7 @@ namespace CCM.Web {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -259,11 +259,47 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kategorier.
+        /// </summary>
+        public static string Categories {
+            get {
+                return ResourceManager.GetString("Categories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kategori.
+        /// </summary>
+        public static string Category {
+            get {
+                return ResourceManager.GetString("Category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Byt lösenord.
         /// </summary>
         public static string Change_Password {
             get {
                 return ResourceManager.GetString("Change_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Förändra kodarens egenskaper.
+        /// </summary>
+        public static string Change_some_codec_data {
+            get {
+                return ResourceManager.GetString("Change some codec data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ändra kodarens kommentar.
+        /// </summary>
+        public static string Change_the_codec_comment {
+            get {
+                return ResourceManager.GetString("Change the codec comment", resourceCulture);
             }
         }
         
@@ -331,7 +367,7 @@ namespace CCM.Web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ingen ljudmätare tillgänlig.
+        ///   Looks up a localized string similar to Ingen ljudmätare tillgänglig.
         /// </summary>
         public static string Codec_Error_No_Audio_Metering_Status_Available {
             get {
@@ -570,24 +606,6 @@ namespace CCM.Web {
         public static string Date_Time_Name_Week {
             get {
                 return ResourceManager.GetString("Date_Time_Name_Week", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to dB nivå.
-        /// </summary>
-        public static string Db_Level {
-            get {
-                return ResourceManager.GetString("Db_Level", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to dB nivå värden.
-        /// </summary>
-        public static string Db_Level_Values {
-            get {
-                return ResourceManager.GetString("Db_Level_Values", resourceCulture);
             }
         }
         
@@ -862,15 +880,6 @@ namespace CCM.Web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Är du säker på att du vill ta bort denna studio.
-        /// </summary>
-        public static string Delete_Studio_Are_You_Sure {
-            get {
-                return ResourceManager.GetString("Delete_Studio_Are_You_Sure", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Ta bort användare.
         /// </summary>
         public static string Delete_User {
@@ -957,6 +966,15 @@ namespace CCM.Web {
         public static string Edit_Account {
             get {
                 return ResourceManager.GetString("Edit_Account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redigera kategori.
+        /// </summary>
+        public static string Edit_Category {
+            get {
+                return ResourceManager.GetString("Edit_Category", resourceCulture);
             }
         }
         
@@ -1087,6 +1105,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Extern kontoreferens.
+        /// </summary>
+        public static string External_Reference {
+            get {
+                return ResourceManager.GetString("External Reference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filtret kunde inte sparas. Möjligen används filter-namnet redan..
         /// </summary>
         public static string Filter_Error_Filter_Could_Not_Be_Saved_The_Name_Is_Already_In_Use {
@@ -1177,15 +1204,6 @@ namespace CCM.Web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GPO namnlista.
-        /// </summary>
-        public static string Gpo_Names {
-            get {
-                return ResourceManager.GetString("Gpo_Names", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to ProfilGrupp.
         /// </summary>
         public static string Group {
@@ -1204,29 +1222,11 @@ namespace CCM.Web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jag har bokat denna studio enligt gällande rutin.
+        ///   Looks up a localized string similar to Lägg på.
         /// </summary>
-        public static string Hang_Up_I_Have_Booked {
+        public static string HangUp {
             get {
-                return ResourceManager.GetString("Hang_Up_I_Have_Booked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Jag har kontrollerat att studion är tom och ingen verksamhet pågår.
-        /// </summary>
-        public static string Hang_Up_I_Have_Checked {
-            get {
-                return ResourceManager.GetString("Hang_Up_I_Have_Checked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Koppla ner studio.
-        /// </summary>
-        public static string Hang_Up_Studio {
-            get {
-                return ResourceManager.GetString("Hang_Up_Studio", resourceCulture);
+                return ResourceManager.GetString("HangUp", resourceCulture);
             }
         }
         
@@ -1254,6 +1254,15 @@ namespace CCM.Web {
         public static string Hour {
             get {
                 return ResourceManager.GetString("Hour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to timmar.
+        /// </summary>
+        public static string Hours {
+            get {
+                return ResourceManager.GetString("Hours", resourceCulture);
             }
         }
         
@@ -1681,6 +1690,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Logga in för kodarstyrning.
+        /// </summary>
+        public static string Login_For_Codec_Control {
+            get {
+                return ResourceManager.GetString("Login_For_Codec_Control", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loggar.
         /// </summary>
         public static string Logs {
@@ -1695,6 +1713,15 @@ namespace CCM.Web {
         public static string Logs_Application {
             get {
                 return ResourceManager.GetString("Logs_Application", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rensa alla loggar.
+        /// </summary>
+        public static string Logs_Delete_All_Records_From_Log {
+            get {
+                return ResourceManager.GetString("Logs_Delete_All_Records_From_Log", resourceCulture);
             }
         }
         
@@ -1843,11 +1870,29 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Längre beskrivning.
+        /// </summary>
+        public static string LongDescription {
+            get {
+                return ResourceManager.GetString("LongDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Längst.
         /// </summary>
         public static string Longest {
             get {
                 return ResourceManager.GetString("Longest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ring samtal.
+        /// </summary>
+        public static string Make_A_Call {
+            get {
+                return ResourceManager.GetString("Make_A_Call", resourceCulture);
             }
         }
         
@@ -1893,6 +1938,15 @@ namespace CCM.Web {
         public static string Min {
             get {
                 return ResourceManager.GetString("Min", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to minuter.
+        /// </summary>
+        public static string Minutes {
+            get {
+                return ResourceManager.GetString("Minutes", resourceCulture);
             }
         }
         
@@ -1947,6 +2001,15 @@ namespace CCM.Web {
         public static string New_Account {
             get {
                 return ResourceManager.GetString("New_Account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ny kategori.
+        /// </summary>
+        public static string New_Category {
+            get {
+                return ResourceManager.GetString("New_Category", resourceCulture);
             }
         }
         
@@ -2068,6 +2131,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ingen kodarstyrning tillgänglig.
+        /// </summary>
+        public static string No_Codec_Control_Available {
+            get {
+                return ResourceManager.GetString("No_Codec_Control_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ingen kodare kunde hittas.
         /// </summary>
         public static string No_Codec_Found {
@@ -2095,6 +2167,15 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inga filtrerade resultat.
+        /// </summary>
+        public static string No_Items_In_Filtered_Result {
+            get {
+                return ResourceManager.GetString("No_Items_In_Filtered_Result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inga pågående samtal.
         /// </summary>
         public static string No_Ongoing_Calls {
@@ -2113,15 +2194,6 @@ namespace CCM.Web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Antal GPO:er.
-        /// </summary>
-        public static string Nr_Of_Gpos {
-            get {
-                return ResourceManager.GetString("Nr_Of_Gpos", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Av.
         /// </summary>
         public static string Off {
@@ -2136,15 +2208,6 @@ namespace CCM.Web {
         public static string On {
             get {
                 return ResourceManager.GetString("On", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pågående samtal.
-        /// </summary>
-        public static string Ongoing_Calls {
-            get {
-                return ResourceManager.GetString("Ongoing_Calls", resourceCulture);
             }
         }
         
@@ -2280,6 +2343,15 @@ namespace CCM.Web {
         public static string Password_To_Short {
             get {
                 return ResourceManager.GetString("Password_To_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presentationsnamn.
+        /// </summary>
+        public static string Presentation_Name {
+            get {
+                return ResourceManager.GetString("Presentation Name", resourceCulture);
             }
         }
         
@@ -2430,9 +2502,27 @@ namespace CCM.Web {
         /// <summary>
         ///   Looks up a localized string similar to Registrerade enheter.
         /// </summary>
+        public static string Registered_Codecs {
+            get {
+                return ResourceManager.GetString("Registered Codecs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registrerade enheter.
+        /// </summary>
         public static string Registered_Sips {
             get {
                 return ResourceManager.GetString("Registered_Sips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reguljärt uttryck.
+        /// </summary>
+        public static string Regular_Expression {
+            get {
+                return ResourceManager.GetString("Regular_Expression", resourceCulture);
             }
         }
         
@@ -2446,20 +2536,11 @@ namespace CCM.Web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ta bort studio.
+        ///   Looks up a localized string similar to Återställ filter.
         /// </summary>
-        public static string Remove_Studio {
+        public static string Reset_filters {
             get {
-                return ResourceManager.GetString("Remove_Studio", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kräver en ActiveX kompatibel webbläsare.
-        /// </summary>
-        public static string Requires_Activex {
-            get {
-                return ResourceManager.GetString("Requires_Activex", resourceCulture);
+                return ResourceManager.GetString("Reset filters", resourceCulture);
             }
         }
         
@@ -2532,6 +2613,15 @@ namespace CCM.Web {
         public static string Shortest {
             get {
                 return ResourceManager.GetString("Shortest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filterval.
+        /// </summary>
+        public static string Show_more_filters {
+            get {
+                return ResourceManager.GetString("Show more filters", resourceCulture);
             }
         }
         
@@ -2698,6 +2788,24 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Statusinformation.
+        /// </summary>
+        public static string Status_Information {
+            get {
+                return ResourceManager.GetString("Status_Information", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jitterbuffer status.
+        /// </summary>
+        public static string Status_Jitter_Buffer {
+            get {
+                return ResourceManager.GetString("Status_Jitter_Buffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Steg.
         /// </summary>
         public static string Step {
@@ -2707,200 +2815,20 @@ namespace CCM.Web {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ljudkodarens SIP-adress.
+        ///   Looks up a localized string similar to Anslutningsstatus.
         /// </summary>
-        public static string Studio_Audio_Codec_Sip_Address {
+        public static string Stream_Status {
             get {
-                return ResourceManager.GetString("Studio_Audio_Codec_Sip_Address", resourceCulture);
+                return ResourceManager.GetString("Stream_Status", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sökväg ljuduppspelning.
+        ///   Looks up a localized string similar to Tips! Tryck Escape för att tömma sökbaren.
         /// </summary>
-        public static string Studio_Camera_Audio_Url {
+        public static string Tip__Press_ESC_to_clear_the_searchbar {
             get {
-                return ResourceManager.GetString("Studio_Camera_Audio_Url", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kamerans adress eller IP-nummer.
-        /// </summary>
-        public static string Studio_Camera_Host_Or_Ip_Address {
-            get {
-                return ResourceManager.GetString("Studio_Camera_Host_Or_Ip_Address", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kamera aktiv.
-        /// </summary>
-        public static string Studio_Camera_Is_In_Use {
-            get {
-                return ResourceManager.GetString("Studio_Camera_Is_In_Use", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kameralösenord.
-        /// </summary>
-        public static string Studio_Camera_Password {
-            get {
-                return ResourceManager.GetString("Studio_Camera_Password", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sökväg stillbild.
-        /// </summary>
-        public static string Studio_Camera_Still_Image {
-            get {
-                return ResourceManager.GetString("Studio_Camera_Still_Image", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Användarnamn kamera.
-        /// </summary>
-        public static string Studio_Camera_User_Name {
-            get {
-                return ResourceManager.GetString("Studio_Camera_User_Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kommaseparerad lista med namn på GPO:er.
-        /// </summary>
-        public static string Studio_Comma_Separated_List_With_Gpo_Names {
-            get {
-                return ResourceManager.GetString("Studio_Comma_Separated_List_With_Gpo_Names", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kommaseparerad lista med mikrofonernas namn.
-        /// </summary>
-        public static string Studio_Comma_Separated_List_With_Input_Names {
-            get {
-                return ResourceManager.GetString("Studio_Comma_Separated_List_With_Input_Names", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Namnet är för långt.
-        /// </summary>
-        public static string Studio_Error_Message_Name_Too_Long {
-            get {
-                return ResourceManager.GetString("Studio_Error_Message_Name_Too_Long", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Informationstext.
-        /// </summary>
-        public static string Studio_Information_Text {
-            get {
-                return ResourceManager.GetString("Studio_Information_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ingångarnas namn.
-        /// </summary>
-        public static string Studio_Inputs_Names {
-            get {
-                return ResourceManager.GetString("Studio_Inputs_Names", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ljudklippens namn.
-        /// </summary>
-        public static string Studio_Names_Of_Audio_Clips {
-            get {
-                return ResourceManager.GetString("Studio_Names_Of_Audio_Clips", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Antal ingångar.
-        /// </summary>
-        public static string Studio_Number_Of_Inputs {
-            get {
-                return ResourceManager.GetString("Studio_Number_Of_Inputs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Antal minuter innan monitorsidan blir inaktiv.
-        /// </summary>
-        public static string Studio_Number_Of_Minutes_Before_Page_Gets_Inactive {
-            get {
-                return ResourceManager.GetString("Studio_Number_Of_Minutes_Before_Page_Gets_Inactive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Förvald ingångsnivå.
-        /// </summary>
-        public static string Studio_Preselected_Input_Level {
-            get {
-                return ResourceManager.GetString("Studio_Preselected_Input_Level", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Inställningar för webbkamera.
-        /// </summary>
-        public static string Studio_Settings_For_Web_Camera {
-            get {
-                return ResourceManager.GetString("Studio_Settings_For_Web_Camera", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Information.
-        /// </summary>
-        public static string Studio_Studio_Information {
-            get {
-                return ResourceManager.GetString("Studio_Studio_Information", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Studionamn.
-        /// </summary>
-        public static string Studio_Studio_Name {
-            get {
-                return ResourceManager.GetString("Studio_Studio_Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sökväg video.
-        /// </summary>
-        public static string Studio_Url_To_Camera_Video_Feed {
-            get {
-                return ResourceManager.GetString("Studio_Url_To_Camera_Video_Feed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sökväg till &apos;manual&apos;-sidan.
-        /// </summary>
-        public static string Studio_Url_To_Page_With_Manual {
-            get {
-                return ResourceManager.GetString("Studio_Url_To_Page_With_Manual", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Studior.
-        /// </summary>
-        public static string Studios {
-            get {
-                return ResourceManager.GetString("Studios", resourceCulture);
+                return ResourceManager.GetString("Tip! Press ESC to clear the searchbar", resourceCulture);
             }
         }
         
@@ -2950,11 +2878,29 @@ namespace CCM.Web {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Okänd kategori.
+        /// </summary>
+        public static string Unknown_Category {
+            get {
+                return ResourceManager.GetString("Unknown Category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Lås upp konto.
         /// </summary>
         public static string Unlock_Account {
             get {
                 return ResourceManager.GetString("Unlock_Account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resursutnyttjande.
+        /// </summary>
+        public static string Use_of_resource {
+            get {
+                return ResourceManager.GetString("Use of resource", resourceCulture);
             }
         }
         

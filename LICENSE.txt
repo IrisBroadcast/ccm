@@ -2,7 +2,7 @@ IRIS CCM is available for use under the following license, commonly known
 as the 3-clause (or "modified") BSD license:
 
 ==============================
-Copyright (c) 2018 Sveriges Radio AB, Stockholm, Sweden
+Copyright (c) 2021 Sveriges Radio AB, Stockholm, Sweden
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions

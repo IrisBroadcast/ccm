@@ -28,8 +28,17 @@ namespace CCM.Core.SipEvent.Messages
 {
     public enum SipEventMessageType
     {
-        Request, // Codec registration
-        Dialog, // Calls
-        RegExpire // Codec registration has expired
+        /// <summary>
+        /// Codec registration
+        /// </summary>
+        Request,
+        /// <summary>
+        /// Calls
+        /// </summary>
+        Dialog,
+        /// <summary>
+        /// Codec registration has expired
+        /// </summary>
+        RegExpire
     }
 }

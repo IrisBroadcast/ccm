@@ -24,40 +24,37 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
-using CCM.Core.Interfaces.Repositories;
 using CCM.Web.Mappers;
 using CCM.Web.Models.ApiExternal;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CCM.Web.Controllers.ApiExternal
 {
     /// <summary>
     /// In use by CodecControl, for asking about codec information.
     /// </summary>
-    public class CodecInformationController : ApiController
+    public class CodecInformationController : ControllerBase
     {
-        public CodecInformationController()
-        {
-        }
+        private readonly IServiceProvider _serviceProvider;
 
-        [HttpGet]
-        public IEnumerable<CodecInformationViewModel> Get()
+        public CodecInformationController(IServiceProvider serviceProvider)
         {
-            var codecInformationViewModelsProvider = (CodecInformationViewModelsProvider)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(CodecInformationViewModelsProvider));
-            return codecInformationViewModelsProvider.GetAll();
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
         /// Get codec information related to a specific SIP-address.
         /// </summary>
         [HttpGet]
-        public CodecInformationViewModel Get(string sipAddress)
+        public CodecInformationViewModel Index(string sipAddress)
         {
             sipAddress = (sipAddress ?? string.Empty).ToLower().Trim();
 
-            var codecInformationViewModelsProvider = (CodecInformationViewModelsProvider)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(CodecInformationViewModelsProvider));
+            var codecInformationViewModelsProvider = _serviceProvider.GetService<CodecInformationViewModelsProvider>();
             var userAgentsOnline = codecInformationViewModelsProvider.GetAll();
 
             var codecInformation = userAgentsOnline.FirstOrDefault(x => x.SipAddress.ToLower() == sipAddress);
@@ -68,12 +65,17 @@ namespace CCM.Web.Controllers.ApiExternal
                     sipAddress: sipAddress,
                     ip: null,
                     api: null,
-                    gpoNames: null,
-                    nrOfInputs: 0,
-                    nrOfGpos: 0);
+                    userAgent: null);
             }
 
             return codecInformation;
+        }
+
+        [HttpGet]
+        public IEnumerable<CodecInformationViewModel> GetAll()
+        {
+            var codecInformationViewModelsProvider = _serviceProvider.GetService<CodecInformationViewModelsProvider>();
+            return codecInformationViewModelsProvider.GetAll();
         }
     }
 }

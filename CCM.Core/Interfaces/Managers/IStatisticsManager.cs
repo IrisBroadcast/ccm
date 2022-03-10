@@ -34,14 +34,19 @@ namespace CCM.Core.Interfaces.Managers
     public interface IStatisticsManager
     {
         List<CodecType> GetCodecTypes();
-        List<LocationBasedStatistics> GetLocationStatistics(DateTime startTime, DateTime endTime, Guid regionId, Guid ownerId, Guid codecTypeId);
         List<Owner> GetOwners();
         List<Region> GetRegions();
-        List<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId);
-        List<SipAccount> GetSipUsers();
-        List<DateBasedStatistics> GetSipStatistics(DateTime startDate, DateTime endDate, Guid userId);
-        IList<DateBasedStatistics> GetCodecTypeStatistics(DateTime startDate, DateTime endDate, Guid codecTypeId);
+        List<SipAccount> GetSipAccounts();
         IList<Location> GetLocationsForRegion(Guid regionId);
-        HourBasedStatisticsForLocation GetHourStatisticsForLocation(DateTime startTime, DateTime endTime, Guid locationId, bool noAggregation);
+
+        List<LocationBasedStatistics> GetLocationStatistics(DateTime startDate, DateTime endDate, Guid regionId, Guid ownerId, Guid codecTypeId);
+        HourBasedStatisticsForLocation GetHourStatisticsForLocation(DateTime startDate, DateTime endDate, Guid locationId, bool noAggregation);
+
+        IList<DateBasedStatistics> GetRegionStatistics(DateTime startDate, DateTime endDate, Guid regionId);
+        IList<DateBasedStatistics> GetSipAccountStatistics(DateTime startDate, DateTime endDate, Guid userId);
+        IList<DateBasedStatistics> GetCodecTypeStatistics(DateTime startDate, DateTime endDate, Guid codecTypeId);
+
+        IList<CategoryCallStatistic> GetCategoryCallStatistics(DateTime startDate, DateTime endDate);
+        IList<CategoryItemStatistic> GetCategoryStatistics(DateTime startDate, DateTime endDate);
     }
 }

@@ -1,12 +1,16 @@
-﻿@model CCM.Web.Models.User.DeleteUserViewModel
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@model CCM.Web.Models.User.DeleteUserViewModel
 
 @{
-    ViewBag.Title = Resources.Delete_Account;
+    ViewData["Title"] = @Localizer["Delete_Account"];
 }
 
-<h2>@Resources.Delete_Account</h2>
-<hr/>
-<p>@Resources.Delete_Account_Are_You_Sure</p>
+<h2>@Localizer["Delete_Account"]</h2>
+<hr />
+
+<p>@Localizer["Delete_Account_Are_You_Sure"]</p>
 <p>@Model.UserName</p>
 
 @using (Html.BeginForm("Delete", "SipAccount", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -15,8 +19,11 @@
 
     @Html.HiddenFor(m => m.Id)
     @Html.HiddenFor(m => m.UserName)
+
     <div class="form-group">
-        @Html.ActionLink(Resources.Cancel, "Index", "SipAccount", null, new { @class = "btn btn-default" })
-        <button type="submit" class="btn btn-danger">@Resources.Delete</button>
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink(@Localizer["Cancel"].Value, "Index", "SipAccount", null, new { @class = "btn btn-default"})
+            <button type="submit" class="btn btn-danger">@Localizer["Delete"]</button>
+        </div>
     </div>
 }

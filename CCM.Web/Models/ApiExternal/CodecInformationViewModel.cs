@@ -24,7 +24,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using System;
 using System.Runtime.Serialization;
 
 namespace CCM.Web.Models.ApiExternal
@@ -36,16 +35,12 @@ namespace CCM.Web.Models.ApiExternal
             string sipAddress,
             string ip,
             string api,
-            string gpoNames,
-            int nrOfInputs,
-            int nrOfGpos)
+            string userAgent)
         {
             SipAddress = sipAddress;
             Ip = ip;
             Api = api;
-            GpoNames = gpoNames;
-            NrOfInputs = nrOfInputs;
-            NrOfGpos = nrOfGpos;
+            UserAgent = userAgent;
         }
 
         [DataMember]
@@ -58,12 +53,6 @@ namespace CCM.Web.Models.ApiExternal
         public string Api { get; protected set; }
 
         [DataMember]
-        public string GpoNames { get; protected set; }
-
-        [DataMember]
-        public int NrOfInputs { get; protected set; }
-
-        [DataMember]
-        public int NrOfGpos { get; protected set; }
+        public string UserAgent { get; protected set; }
     }
 }

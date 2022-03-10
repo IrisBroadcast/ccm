@@ -58,9 +58,7 @@ namespace CCM.Core.Managers
 
             foreach (var property in filterProperties)
             {
-                var filterAttribute = property.GetCustomAttributes(typeof(FilterPropertyAttribute), false).FirstOrDefault() as FilterPropertyAttribute;
-
-                if (filterAttribute != null)
+                if (property.GetCustomAttributes(typeof(FilterPropertyAttribute), false).FirstOrDefault() is FilterPropertyAttribute filterAttribute)
                 {
                     var filter = new AvailableFilter
                     {
@@ -103,8 +101,7 @@ namespace CCM.Core.Managers
         public List<AvailableFilter> GetAvailableFiltersIncludingOptions()
         {
             var filters = GetAllFilters() ?? new List<Filter>();
-
-            return filters.Select(filter => new AvailableFilter
+            var result = filters.Select(filter => new AvailableFilter
             {
                 Name = filter.Name,
                 FilteringName = filter.FilteringName,
@@ -112,6 +109,8 @@ namespace CCM.Core.Managers
                 ColumnName = filter.ColumnName,
                 Options = _filterRepository.GetFilterPropertyValues(filter.TableName, filter.ColumnName)
             }).ToList();
+
+            return result;
         }
 
         public Filter GetFilter(Guid id)

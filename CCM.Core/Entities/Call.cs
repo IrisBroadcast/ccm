@@ -32,28 +32,28 @@ namespace CCM.Core.Entities
 {
     public class Call : CoreEntityBase
     {
-        public string CallId { get; set; } // Id from Kamailio
-        public string DlgHashId { get; set; }
-        public string DlgHashEnt { get; set; }
-        
-        public Guid FromId { get; set; }
-        public RegisteredSip From { get; set; }
-        public string FromSip { get; set; }
-        public string FromDisplayName { get; set; }
-        
-        public Guid ToId { get; set; }
-        public RegisteredSip To { get; set; }
-        public string ToSip { get; set; }
-        public string ToDisplayName { get; set; }
-        
+        public string CallId { get; set; }
+        public string DialogHashId { get; set; }
+        public string DialogHashEnt { get; set; }
         public DateTime Started { get; set; }
         public DateTime Updated { get; set; }
-        
         public SipCallState State { get; set; }
         public bool Closed { get; set; }
-        public bool IsPhoneCall { get; set; } // True if it's a phone call
+        public bool IsPhoneCall { get; set; }
+        public string SDP { get; set; }
 
-        public string ToTag { get; set; } // TODO: Doesn't seem to be in use
-        public string FromTag { get; set; } // TODO: Doesn't seem to be in use
+        public Guid? FromId { get; set; }
+        public CallRegisteredCodec From { get; set; }
+        public string FromSip { get; set; }
+        public string FromDisplayName { get; set; }
+        public string FromTag { get; set; }
+        public string FromCategory { get; set; }
+
+        public Guid? ToId { get; set; }
+        public CallRegisteredCodec To { get; set; }
+        public string ToSip { get; set; }
+        public string ToDisplayName { get; set; }
+        public string ToTag { get; set; }
+        public string ToCategory { get; set; }
     }
 }

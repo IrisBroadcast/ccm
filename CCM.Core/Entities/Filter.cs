@@ -31,8 +31,17 @@ namespace CCM.Core.Entities
     public class Filter : CoreEntityWithTimestamps
     {
         public string Name { get; set; }
-        public string ColumnName { get; set; } // Property/column name name in db
-        public string TableName { get; set; } // Type (table) in db
-        public string FilteringName { get; set; } // Property on cached registered sip object
+        /// <summary>
+        /// Property/column name name in db
+        /// </summary>
+        public string ColumnName { get; set; }
+        /// <summary>
+        /// Type (table) in db
+        /// </summary>
+        public string TableName { get; set; }
+        /// <summary>
+        /// Property on cached registered sip object
+        /// </summary>
+        public string FilteringName { get; set; }
     }
 }

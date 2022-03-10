@@ -1,9 +1,12 @@
-﻿@using CCM.Core.Helpers
+﻿
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<CCM.Web.Properties.Resources> Localizer
+@using CCM.Core.Helpers
 @using Roles = CCM.Core.Helpers.Roles
 @model System.Collections.Generic.List<CCM.Web.Models.Regions.RegionViewModel>
 
 @{
-    ViewBag.Title = Resources.Regions;
+    ViewData["Title"] = @Localizer["Regions"];
 }
 
 @section search
@@ -11,8 +14,8 @@
     @using (Html.BeginForm("Index", "Regions", FormMethod.Post, new { @class = "navbar-form navbar-right ccm-navbar-search", role = "search" }))
     {
         <div class="form-group">
-            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Resources.Search" value="@ViewBag.SearchString">
-            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Resources.Search</button>
+            <input type="text" id="search" name="search" autofocus class="form-control ccm-navbar-search--field" placeholder="@Localizer["Search"]" value="@ViewData["SearchString"]">
+            <button type="submit" class="btn btn-default ccm-navbar-search--btn">@Localizer["Search"]</button>
         </div>
     }
 }
@@ -21,13 +24,14 @@
     <nav class="navbar navbar-default ccm-sub-navbar--admin" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header ccm-sub-navbar--admin--header">
-                <span class="navbar-brand">@Resources.Regions</span>
+                <h2>@Localizer["Regions"]</h2>
+                <span class="navbar-page-description"></span>
             </div>
             <div class="navbar ccm-sub-navbar--admin--links">
                 @if (User.IsInRole(Roles.Admin))
                 {
                     <ul class="nav navbar-nav nav-pills ccm-sub-navbar--admin--ul">
-                        <li>@Html.ActionLink(Resources.New_Region, "Create", "Regions")</li>
+                        <li>@Html.ActionLink(@Localizer["New_Region"].Value, "Create", "Regions")</li>
                     </ul>
                 }
             </div>
@@ -50,16 +54,16 @@
                         <div class="col-md-1 text-right list-ccm-icongroup">
                             @if (User.IsInRole(Roles.Admin))
                             {
-                                @Html.ActionLink(" ", "Edit", "Regions", new {@id = region.Id}, new {@class = "glyphicon glyphicon-pencil list-ccm-inlineicon"})
-                                @Html.ActionLink(" ", "Delete", "Regions", new {@id = region.Id}, new {@class = "glyphicon glyphicon-trash list-ccm-inlineicon"})
+                                @Html.ActionLink(" ", "Edit", "Regions", new { @id = region.Id }, new { @class = "glyphicon glyphicon-pencil list-ccm-inlineicon" })
+                                @Html.ActionLink(" ", "Delete", "Regions", new { @id = region.Id }, new { @class = "glyphicon glyphicon-trash list-ccm-inlineicon" })
                             }
                         </div>
                     </a>
                 </div>
-                <div class="row panel-collapse collapse well" id="@region.Id">
+                <div class="row panel-collapse collapse mui-well" id="@region.Id">
                     <div class="col-md-12 panel-body">
                         <dl>
-                            <dt>@Resources.Locations</dt>
+                            <dt>@Localizer["Locations"]</dt>
                             @foreach (var location in region.Locations)
                             {
                                 <dd>@Html.ActionLink(location.Name, "Edit", "Location", new { id = location.Id }, null)</dd>

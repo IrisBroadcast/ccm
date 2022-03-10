@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
@@ -109,6 +109,5 @@ namespace CCM.Tests.Helpers
 
             return registredSip;
         }
-        
     }
 }
