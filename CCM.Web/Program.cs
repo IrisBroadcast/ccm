@@ -77,6 +77,6 @@ namespace CCM.Web
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                .UseNLog();  // NLog: Setup NLog for Dependency injection
+                .UseNLog(); // NLog: Setup NLog for Dependency injection
     }
 }

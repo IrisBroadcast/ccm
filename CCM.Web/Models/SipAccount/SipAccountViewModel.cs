@@ -24,34 +24,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using CCM.Core.Enums;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using CCM.Core.Entities;
-using CCM.Web.Properties;
 
 namespace CCM.Web.Models.SipAccount
 {
     public class SipAccountViewModel
     {
         public List<Core.Entities.SipAccount> Users { get; set; }
-
-        //public Guid Id { get; set; }
-        //[Display(ResourceType = typeof(Resources), Name = "UserName")]
-        //public string UserName { get; set; }
-        //public string DisplayName { get; set; }
-        //public string Comment { get; set; }
-        //public string ExtensionNumber { get; set; }
-        //public SipAccountType AccountType { get; set; }
-        //public bool AccountLocked { get; set; }
-        //public string Password { get; set; }
-        //public DateTime? LastUsed { get; set; }
-        //public string LastUserAgent { get; set; }
-        //public string LastKnownAddress { get; set; }
-        //public CodecType CodecType { get; set; }
-        //public Owner Owner { get; set; }
-
-        //public bool IsUnused => LastUsed == null || LastUsed < DateTime.UtcNow.AddDays(-360);
     }
 }

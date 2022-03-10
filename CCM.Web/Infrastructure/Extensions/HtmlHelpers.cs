@@ -46,7 +46,6 @@ namespace CCM.Web.Infrastructure.Extensions
         /// using the named param
         /// @Html.DescriptionFor(m => m.PropertyName, tagName: "div")
         /// </summary>
-
         public static IHtmlContent DescriptionFor<TModel, TValue>(this IHtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression, string cssClassName = "", string tagName = "span")
         {
             // if (html == null) throw new ArgumentNullException(nameof(html));
@@ -77,6 +76,5 @@ namespace CCM.Web.Infrastructure.Extensions
 
             return new HtmlString("");
         }
-
     }
 }

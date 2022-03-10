@@ -25,10 +25,8 @@
  */
 
 using System.Collections.Generic;
-using System.Net;
 using CCM.Core.Entities.Discovery;
 using CCM.Core.Interfaces;
-using CCM.Web.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CCM.Web.Controllers.ApiDiscovery
@@ -73,6 +71,5 @@ namespace CCM.Web.Controllers.ApiDiscovery
             UserAgentsResultDto uaResult = _discoveryService.GetUserAgents(searchParams.Caller, searchParams.Callee, searchParams.Filters, searchParams.IncludeCodecsInCall);
             return Ok(uaResult);
         }
-
     }
 }

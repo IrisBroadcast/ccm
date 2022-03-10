@@ -173,26 +173,6 @@ namespace CCM.Data.Repositories
             }
         }
 
-        public void SetProfileGroupSortWeight(IList<Tuple<Guid, int>> profileTuples)
-        {
-            var db = _ccmDbContext;
-            foreach (var tuple in profileTuples)
-            {
-                var id = tuple.Item1;
-                var sortWeightIndex = tuple.Item2;
-
-                var profile = db.ProfileGroups.SingleOrDefault(p => p.Id == id);
-                if (profile == null)
-                {
-                    continue;
-                }
-
-                profile.GroupSortWeight = sortWeightIndex;
-            }
-
-            db.SaveChanges();
-        }
-
         private ProfileGroup MapToProfileGroup(ProfileGroupEntity profileGroupEntity)
         {
             if (profileGroupEntity == null) return null;

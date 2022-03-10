@@ -27,6 +27,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CCM.Core.Interfaces.Repositories;
+using CCM.Web.Controllers;
 using CCM.Web.Models.ApiExternal;
 
 namespace CCM.Web.Mappers
@@ -52,6 +53,17 @@ namespace CCM.Web.Mappers
                 ip: x.Ip,
                 api: x.Api,
                 userAgent: x.UserAgent)).ToList();
+        }
+
+        public Dictionary<string, string> AvailableAPIs()
+        {
+            var apis = new Dictionary<string, string> { { string.Empty, string.Empty } };
+            foreach (var availableApi in UserAgentsController.AvailableApis)
+            {
+                apis.Add(availableApi.DisplayName, availableApi.Name);
+            }
+
+            return apis;
         }
     }
 }

@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
@@ -209,6 +208,5 @@ namespace CCM.Web.Controllers
 
             return roles;
         }
-
     }
 }

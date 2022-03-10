@@ -75,13 +75,6 @@ namespace CCM.Web.Controllers
             return View("CreateEdit", model);
         }
 
-        private void PopulateViewModel(ProfileGroupViewModel model)
-        {
-            var profiles = _cachedProfileRepository.GetAllProfileInfos() ?? new List<ProfileInfo>();
-            var notSelectedViewModels = profiles.Where(p => !model.Profiles.Select(pr => pr.Id).Contains(p.Id)).OrderBy(p => p.Name).Select(p => new ProfileListItemViewModel() { Id = p.Id, Name = p.Name, Selected = false });
-            model.Profiles.AddRange(notSelectedViewModels);
-        }
-
         [HttpGet]
         [CcmAuthorize(Roles = Roles.Admin)]
         public ActionResult Edit(Guid id)
@@ -165,24 +158,6 @@ namespace CCM.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        //[HttpPost]
-        //[CcmAuthorize(Roles = Roles.Admin)]
-        //public JsonResult SetProfileGroupSortWeight(List<GuidSortWeightTuple> profileGroupSortWeight)
-        //{
-        //    var model = new SetSortIndexResultViewModel();
-
-        //    if (profileGroupSortWeight == null || profileGroupSortWeight.Any(d => d.Id == Guid.Empty))
-        //    {
-        //        model.IndexSet = false;
-        //    }
-        //    else
-        //    {
-        //        var paramdata = profileGroupSortWeight.Select(i => new Tuple<Guid, int>(i.Id, i.SortWeight)).ToList();
-        //        _cachedProfileGroupRepository.SetProfileGroupSortWeight(paramdata);
-        //    }
-        //    return Json(model);
-        //}
-
         private ProfileGroup ViewModelToProfileGroup(ProfileGroupViewModel model)
         {
             var group = new ProfileGroup
@@ -225,5 +200,11 @@ namespace CCM.Web.Controllers
             };
         }
 
+        private void PopulateViewModel(ProfileGroupViewModel model)
+        {
+            var profiles = _cachedProfileRepository.GetAllProfileInfos() ?? new List<ProfileInfo>();
+            var notSelectedViewModels = profiles.Where(p => !model.Profiles.Select(pr => pr.Id).Contains(p.Id)).OrderBy(p => p.Name).Select(p => new ProfileListItemViewModel() { Id = p.Id, Name = p.Name, Selected = false });
+            model.Profiles.AddRange(notSelectedViewModels);
+        }
     }
 }

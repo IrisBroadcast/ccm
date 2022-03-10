@@ -37,7 +37,6 @@ namespace CCM.Web.Controllers.ApiExternal
     /// <summary>
     /// Creating accounts from external service.
     /// </summary>
-    //[CcmUserBasicAuthentication] // TODO: needs to work
     [CcmAuthorize(Roles = "Admin,AccountManager")]
     [Route("api/account")]
     public class AccountController : ControllerBase

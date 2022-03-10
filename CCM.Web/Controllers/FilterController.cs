@@ -169,7 +169,7 @@ namespace CCM.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(CCM.Core.Entities.Filter filter)
+        public ActionResult Delete(Filter filter)
         {
             _filterManager.Delete(filter.Id);
 
@@ -192,7 +192,8 @@ namespace CCM.Web.Controllers
         {
             var filter = new Filter
             {
-                
+                Id = model.Id,
+                Name = model.FilterName
             };
             return filter;
         }

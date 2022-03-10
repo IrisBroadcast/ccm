@@ -30,6 +30,6 @@ namespace CCM.Web.Models.Log
     {
         public static string Web = "CCM";
         public static string Discovery = "Discovery";
-        //todo: flytta...
+        //TODO: Move this?
     }
 }

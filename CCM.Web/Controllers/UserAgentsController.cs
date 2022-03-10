@@ -32,7 +32,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CCM.Core.Entities;
 using CCM.Core.Helpers;
-using CCM.Core.Interfaces.Managers;
 using CCM.Core.Interfaces.Repositories;
 using CCM.Web.Infrastructure;
 using CCM.Web.Models.UserAgents;
@@ -54,7 +53,7 @@ namespace CCM.Web.Controllers
 
         /// <summary>
         /// Must be in sync with implemented API:s in CodecControl
-        /// INFO TODO: SYNC THIS on another way instead
+        /// TODO: SYNC THIS on another way instead, make endpoint that CodecControl can query!
         /// </summary>
         public static List<CodecApiInformation> AvailableApis => new List<CodecApiInformation>
         {

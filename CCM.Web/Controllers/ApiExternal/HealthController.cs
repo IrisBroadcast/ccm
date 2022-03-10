@@ -29,7 +29,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CCM.Web.Controllers.ApiExternal
 {
     /// <summary>
-    /// For health checks (used for example during deploy process)
+    /// For health checks (used during deploy process for verification)
     /// </summary>
     public class HealthController: ControllerBase
     {

@@ -74,6 +74,5 @@ namespace CCM.Web.Controllers.ApiDiscovery
             UserAgentsResultDto uaResult = _discoveryService.GetUserAgents(searchParams.Caller, searchParams.Callee, searchParams.Filters, searchParams.IncludeCodecsInCall);
             return Ok(uaResult);
         }
-
     }
 }

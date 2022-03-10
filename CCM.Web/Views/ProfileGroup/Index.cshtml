@@ -8,34 +8,6 @@
     int sortCounter = 0;
 }
 
-@*@section scripts { // TODO: remove this fully
-    <script src="~/bundles/jqueryui.js"></script>
-
-    <script type="text/javascript">
-
-        $(function () {
-            // Profile sorting
-            $("#profileGroups").sortable({
-                update: function () {
-                    var data = [];
-                    $('#profileGroups .profilegroup-row').each(function (index, element) {
-                        $(element).find('.sortWeight').val(index);
-                        data.push({ id: $(element).find('.profileGroupId').val(), sortweight: index });
-                    });
-                    $.ajax({
-                        url: 'ProfileGroup/SetProfileGroupSortWeight',
-                        type: "POST",
-                        data: JSON.stringify(data),
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8"
-                    });
-                }
-            });
-            $("#profileGroups").disableSelection();
-        })
-    </script>
-}*@
-
 @section search {
     @using (Html.BeginForm("Index", "ProfileGroup", FormMethod.Post, new { @class = "navbar-form navbar-right", role = "search", @id = "searchForm" }))
     {

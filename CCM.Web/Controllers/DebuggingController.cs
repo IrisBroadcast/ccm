@@ -142,38 +142,6 @@ namespace CCM.Web.Controllers
             Debug.WriteLine($"Cache hash code: {hashCode}");
             Debug.WriteLine("");
 
-            //Debug.WriteLine("Cache content");
-            
-            //var cacheEnumberable = (IEnumerable)memoryCache;
-            //foreach (DictionaryEntry item in cacheEnumberable)
-            //{
-            //    IList cachedList = item.Value as IList;
-
-            //    var cachedItem = new CachedItem
-            //    {
-            //        CacheKey = item.Key.ToString(),
-            //        CachedObject = item.Value,
-            //        CachedType = item.Value.GetType(),
-            //        ListCount = cachedList?.Count
-            //    };
-            //    model.CachedItems.Add(cachedItem);
-
-            //    Debug.WriteLine($"Cached key: {cachedItem.CacheKey}");
-            //    Debug.WriteLine($"Cached type: {cachedItem.CachedType}");
-
-            //    if (cachedList != null)
-            //    {
-            //        Debug.WriteLine("Object cashed is a list");
-            //        Debug.WriteLine($"Items in cached list count: {cachedItem.ListCount}");
-
-            //        foreach (var listItem in cachedList)
-            //        {
-            //            Debug.WriteLine($"\t{listItem}");
-            //        }
-            //    }
-            //    Debug.WriteLine("");
-            //}
-
             return View(model);
         }
     }

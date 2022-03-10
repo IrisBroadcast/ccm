@@ -184,12 +184,11 @@ namespace CCM.Web.Controllers
 
         private async Task<string> GetDiscoveryLogLevelAsync()
         {
-            using var client = new HttpClient();
             try {
+                using var client = new HttpClient();
                 var response = await client.GetAsync($"{_settingsManager.DiscoveryServiceUrl}/api/loglevel");
                 if (response.IsSuccessStatusCode)
                 {
-                    //var levelModel = await response.Content.ReadAsAsync<LevelModel>();
                     string json = await response.Content.ReadAsStringAsync();
                     LevelModel levelModel = JsonSerializer.Deserialize<LevelModel>(json);
                     return levelModel != null ? levelModel.LogLevel : string.Empty;
