@@ -26,7 +26,7 @@ node(jenkinsWorkerConstraint) {
 
     // Use tag name as build version if existing (used in the bottom footer of main page in the application)
     if(env.TAG_NAME) {
-        buildVersion = env.TAG_NAME
+        buildVersion = env.TAG_NAME.replaceAll("/", "-") // Replace slashes because docker tags cannot include them
         buildEnvironment = "Production"
         application.stackname = "ipk"
         config.dockerHost = "stoipk01"
@@ -58,7 +58,7 @@ node(jenkinsWorkerConstraint) {
 
             argsString += "-f ${dockerFile} ."
 
-            image = docker.build("${application.stackname}-${application.name}", argsString)
+            image = docker.build("${application.stackname}-${application.name}:${buildVersion}", argsString)
         }
 
         stage("Push image to registry") {
