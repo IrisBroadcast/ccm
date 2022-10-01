@@ -1094,7 +1094,10 @@
   <data name="Ongoing calls" xml:space="preserve">
     <value>Pågående samtal</value>
   </data>
-    <data name="Old calls" xml:space="preserve">
+  <data name="Old calls" xml:space="preserve">
     <value>Senast avslutade samtal</value>
+  </data>
+  <data name="SDP_Required" xml:space="preserve">
+    <value>SDPn måste anges</value>
   </data>
 </root>

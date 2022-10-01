@@ -45,6 +45,7 @@ namespace CCM.Web.Models.Profile
         [Display(ResourceType = typeof(Resources), Name = "LongDescription")]
         public string LongDescription { get; set; }
 
+        [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "SDP_Required")]
         [Display(ResourceType = typeof(Resources), Name = "SDP")]
         public string Sdp { get; set; }
 

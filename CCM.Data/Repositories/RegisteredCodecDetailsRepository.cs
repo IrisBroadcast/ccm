@@ -48,7 +48,7 @@ namespace CCM.Data.Repositories
             RegisteredCodecEntity dbCodec = _ccmDbContext.RegisteredCodecs
                 .Include(rs => rs.Location)
                 .Include(rs => rs.Location.City)
-                .Include(rs => rs.Location.Region)
+                .Include(rs => rs.Location.Region) // TODO: verify this?REGION doesn't exist!!!
                 .Include(rs => rs.UserAgent)
                 .Include(rs => rs.User)
                 .SingleOrDefault(r => r.Id == id);

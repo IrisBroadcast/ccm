@@ -40,8 +40,8 @@ namespace CCM.Data.Entities
         /// </summary>
         public string LongDescription { get; set; }
         public string Sdp { get; set; }
-        //[Column("SortIndex")]
-        //public int SortIndex { get; set; } // TODO: Remove from table in database?
+        [Column("SortIndex")]
+        public int SortIndex { get; set; } // TODO: Remove from table in database? And from here...
 
         public virtual ICollection<ProfileGroupProfileOrdersEntity> ProfileGroups { get; set; }
 

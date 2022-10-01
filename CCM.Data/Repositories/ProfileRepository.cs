@@ -77,8 +77,8 @@ namespace CCM.Data.Repositories
                 profile.Id = dbProfile.Id;
                 profile.CreatedOn = dbProfile.CreatedOn;
                 db.Profiles.Add(dbProfile);
-                //dbProfile.SortIndex = db.Profiles.Any() ? db.Profiles.Max(p => p.SortIndex) + 1 : 0;
-                //profile.OrderIndex = dbProfile.SortIndex;
+                dbProfile.SortIndex = 0; //db.Profiles.Any() ? db.Profiles.Max(p => p.SortIndex) + 1 : 0;
+                //profile.OrderIndex = dbProfile.SortIndex; //todo: remove this not in use......
             }
 
             dbProfile.Description = profile.Description;
