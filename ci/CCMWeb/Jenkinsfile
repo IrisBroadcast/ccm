@@ -1,93 +1,139 @@
 def application = [
-    stackname: "contrib",
     name: "ccm",
+    tag: "",
+    tempFilesPath: "/tmp/jenkins",
+    jenkinsWorkerConstraint: "!arm",
 ]
 
-def jenkinsWorkerConstraint = "!arm"
-def httpProxy = env.HTTP_PROXY
-def dockerRegistry = env.DOCKER_REGISTRY
-def dockerFile = "./ci/CCMWeb/Dockerfile"
-def dockerImageEnvName = "IMAGE_NAME"
-def dockerComposeFile = "./ci/CCMWeb/stage/docker-compose.yml"
-def buildVersion = "0.0.0"
-def buildEnvironment = "Dev"
-def configFile = "ccm_appsettings_stage"
-
-
-def config = [
+// Configuration :: Stage
+def configStage = [
+    stackname: "contrib",
+    dockerFile: "./ci/CCMWeb/Dockerfile",
+    dockerComposeFile: "./ci/CCMWeb/stage/docker-compose.yml",
     dockerHost: "msc.sr.se",
     dockerHostCredentialsId: "dockerHostUser",
-    tempFilesPath: "/mnt/nfs/msc-nfs/stacks",
+
+    buildVersion: "0.0.0",
+    environment: "Dev",
 ]
 
-node(jenkinsWorkerConstraint) {
-    stage("Clone repository") {
-       checkout scm
-    }
+// Configuration :: Prod
+def configProd = [
+    stackname: "ipk",
+    dockerFile: "./ci/CCMWeb/Dockerfile",
+    dockerComposeFile: "./ci/CCMWeb/production/docker-compose.yml",
+    dockerHost: "msc.sr.se",
+    dockerHostCredentialsId: "dockerHostUser",
 
-    
-    // Use tag name as build version on production build (a build from a tag) - used in the bottom footer of main page in the application
-    // Use specific configuration file on stage version (a build from a branch)
-    if(env.TAG_NAME) {
-        buildVersion = env.TAG_NAME
-        buildEnvironment = "Prod"
-        application.stackname = "ipk"
-        configFile = "ccm_appsettings_prod"
-        dockerComposeFile = "./ci/CCMWeb/production/docker-compose.yml"
-    }
+    buildVersion: "0.0.0",
+    environment: "Prod",
+]
 
-    // Modify the buildinformation.json file in the repository
-    sh "sed -i \"s/APP_VERSION/\"${buildVersion}\"/g\" ./CCM.Web/buildinformation.json"
-    sh "sed -i \"s/APP_ENVIRONMENT/\"${buildEnvironment}\"/g\" ./CCM.Web/buildinformation.json"
-    sh "sed -i \"s/APP_SERVER/\"${config.dockerHost}\"/g\" ./CCM.Web/buildinformation.json"
+node(application.jenkinsWorkerConstraint) {
 
-    sh '''
-        BUILDINFORMATION="./CCM.Web/buildinformation.json"
-        DATE=$(date '+%Y-%m-%d %H:%M:%S')
-        sed -i "s/APP_NAME/Codec Control Monitor/g" $BUILDINFORMATION
-        sed -i "s/APP_RELEASE_DATE/${DATE}/g" $BUILDINFORMATION
-    '''
-    // Print the modified file
-    sh 'cat ./CCM.Web/buildinformation.json'
+    try {
 
-    def fullImageName
-    docker.withRegistry(dockerRegistry) {
-        stage("Build image") {
-            def buildArgs = ["HTTP_PROXY=${httpProxy}", "HTTPS_PROXY=${httpProxy}", "http_proxy=${httpProxy}", "https_proxy=${httpProxy}"]
-            def argsString = ""
-            buildArgs.each{
-                argsString += "--build-arg ${it} "
+        def config
+        def buildArgs = []
+
+        stage("Clone repository") {
+            checkout scm
+        }
+
+        // #######################################
+        // Make custom build steps below this line
+        // =======================================
+
+        stage("Setting up environment") {
+            if (env.TAG_NAME) {
+                config = configProd
+                config.buildVersion = "tag-${env.TAG_NAME.replaceAll('/', '-')}"
+            } else {
+                config = configStage
+                def gitHash = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                config.buildVersion = "commit-${gitHash}"
+            }
+        }
+
+        stage("Adding build information") {
+            // Modify the buildinformation.json file in the repository
+            sh "sed -i \"s/APP_VERSION/\"${config.buildVersion}\"/g\" ./CCM.Web/buildinformation.json"
+            sh "sed -i \"s/APP_ENVIRONMENT/\"${config.environment}\"/g\" ./CCM.Web/buildinformation.json"
+            sh "sed -i \"s/APP_SERVER/\"${config.dockerHost}\"/g\" ./CCM.Web/buildinformation.json"
+
+            sh '''
+                BUILDINFORMATION="./CCM.Web/buildinformation.json"
+                DATE=$(date '+%Y-%m-%d %H:%M:%S')
+                sed -i "s/APP_NAME/Codec Control Monitor/g" $BUILDINFORMATION
+                sed -i "s/APP_RELEASE_DATE/${DATE}/g" $BUILDINFORMATION
+            '''
+            // Print the modified file
+            sh 'cat ./CCM.Web/buildinformation.json'
+        }
+
+        // #########################################################################
+        // Below is generic for applications - don't change anything below this line
+        // =========================================================================
+
+        def image
+        def imageName
+
+        stage("Setting up tag") {
+            if (env.TAG_NAME) {
+                application.tag = "tag-${env.TAG_NAME.replaceAll('/', '-')}"
+            } else {
+                def gitCommitHash = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                application.tag = "commit-${gitCommitHash}"
             }
 
-            argsString += "-f ${dockerFile} ."
-
-            image = docker.build("${application.stackname}-${application.name}", argsString)
+            // APP_BUILD_TAG is application version identification
+            buildArgs.add("APP_BUILD_TAG=${application.tag}")
         }
 
-        stage("Push image to registry") {
-            image.push()
+        docker.withRegistry(env.DOCKER_REGISTRY) {
+            stage("Build image") {
+                def argsString = ""
+                if (env.HTTP_PROXY) {
+                    def proxyArgs = ["HTTP_PROXY=${env.HTTP_PROXY}", "HTTPS_PROXY=${env.HTTP_PROXY}", "http_proxy=${env.HTTP_PROXY}", "https_proxy=${env.HTTP_PROXY}"]
+                    proxyArgs.each {
+                        argsString += "--build-arg ${it} "
+                    }
+                }
+
+                // Adding custom buildArgs if they exist
+                buildArgs.each {
+                    argsString += "--build-arg ${it} "
+                }
+
+                argsString += "-f ${config.dockerFile} ."
+                image = docker.build("${application.name}:${application.tag}", argsString)
+            }
+
+            stage("Push image to registry") {
+                image.push()
+                imageName = image.imageName()
+            }
         }
 
-        fullImageName = image.imageName()
+        withCredentials([usernamePassword(credentialsId: config.dockerHostCredentialsId, passwordVariable: "pass", usernameVariable: "user")]) {
+            def dockerHost = [
+                allowAnyHosts: true,
+                user: user,
+                password: pass,
+                host: config.dockerHost,
+                name: config.dockerHost,
+            ]
+            def dockerComposePath = "${application.tempFilesPath}/${env.BUILD_TAG}".replaceAll("\\s","-")
+
+            stage("Update service on ${dockerHost.host}") {
+                sshCommand remote: dockerHost, command: "if [ ! -d ${dockerComposePath} ];then mkdir -p ${dockerComposePath};fi"
+                sshPut remote: dockerHost, from: config.dockerComposeFile, into: "${dockerComposePath}/docker-compose.yml"
+                sshCommand remote: dockerHost, command: "IMAGE_NAME=${imageName} docker stack deploy -c ${dockerComposePath}/docker-compose.yml ${config.stackname}"
+                sshCommand remote: dockerHost, command: "if [ -d ${dockerComposePath} ];then rm -rf ${dockerComposePath};fi"
+            }
+        }
+
+    } finally {
+        cleanWs()
     }
-
-    withCredentials([usernamePassword(credentialsId: config.dockerHostCredentialsId, passwordVariable: "pass", usernameVariable: "user")]) {
-        def dockerHost = [
-            allowAnyHosts: true,
-            user: user,
-            password: pass,
-            host: config.dockerHost,
-            name: config.dockerHost,
-        ]
-
-        def dockerComposeDest = "${config.tempFilesPath}/${env.BUILD_TAG}".replaceAll("\\s","-")
-
-        stage("Update service on ${dockerHost.host}") {
-            sshCommand remote: dockerHost, command: "mkdir -p ${dockerComposeDest}"
-            sshPut remote: dockerHost, from: dockerComposeFile, into: "${dockerComposeDest}/docker-compose.yml"
-            sshCommand remote: dockerHost, command: "${dockerImageEnvName}=${fullImageName} docker stack deploy -c ${dockerComposeDest}/docker-compose.yml ${application.stackname}"
-        }
-    }
-
-    cleanWs notFailBuild: true
 }
