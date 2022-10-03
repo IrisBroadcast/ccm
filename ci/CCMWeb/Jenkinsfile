@@ -7,7 +7,7 @@ def application = [
 
 // Configuration :: Stage
 def configStage = [
-    stackname: "contrib",
+    stackname: "ipk-stage",
     dockerFile: "./ci/CCMWeb/Dockerfile",
     dockerComposeFile: "./ci/CCMWeb/stage/docker-compose.yml",
     dockerHost: "msc.sr.se",
