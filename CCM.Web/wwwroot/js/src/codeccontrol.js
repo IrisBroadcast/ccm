@@ -220,7 +220,7 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
 
             // Make initial parsing of codec information
             $scope.inputs = [];
-            for (var i = 0; i < audioStatus.inputStatus.length; i++) {
+            for (let i = 0; i < audioStatus.inputStatus.length; i++) {
                 const input = {
                     id: i,
                     number: i + 1,
@@ -244,7 +244,8 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
     };
 
     $scope.updateAudioStatus = (audioStatus) => {
-        for (var i = 0; i < audioStatus.inputStatus.length; i++) {
+        
+        for (let i = 0; i < audioStatus.inputStatus.length; i++) {
             $scope.setInputValue(audioStatus.inputStatus[i]);
         }
 
@@ -269,10 +270,10 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
         // });
     };
 
-    var fallback = (lastValue, newValue) => {
-        var updateInterval = 500; // i ms
-        var decayRate = 12.0; // i dB/s
-        var maxDecay = decayRate * updateInterval / 1000;
+    const fallback = (lastValue, newValue) => {
+        const updateInterval = 500; // i ms
+        const decayRate = 12.0; // i dB/s
+        const maxDecay = decayRate * updateInterval / 1000;
         return newValue >= lastValue ? newValue : Math.max(newValue, lastValue - maxDecay);
     };
 
@@ -304,6 +305,8 @@ ccmControllers.controller('sipInfoController', function ($scope, $http, $interva
                 }
             }
         }
+
+        $scope.$digest();
 
         // $scope.$apply(function () {
         //     if (input) {
