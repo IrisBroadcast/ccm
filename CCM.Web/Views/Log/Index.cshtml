@@ -117,18 +117,18 @@
                 <span class="col-md-2 no-padding ccm-logs-list--datecol">
                     @if (item.ActivityId == Guid.Empty)
                     {
-                        <span class="@(item.Level == "Error" ? "ccm-logs--error" : "")">
+                        <span class="@(item.Level == "Error" ? "ccm-logs--error" : "") @(item.Level == "Warn" ? "ccm-logs--warning" : "")">
                             @item.Date.ToString("yyyy-MM-dd HH:mm:ss.ffff")<br />@item.Level<br />@item.Callsite
                         </span>
                     }
                     else
                     {
-                        <span class="@(item.Level == "Error" ? "ccm-logs--error" : "")">
+                        <span class="@(item.Level == "Error" ? "ccm-logs--error" : "") @(item.Level == "Warn" ? "ccm-logs--warning" : "")">
                             @item.Date.ToString("yyyy-MM-dd HH:mm:ss.ffff")<br />@item.Level<br /><a href="log?application=@Model.Application&activityId=@item.ActivityId">@item.Callsite</a>
                         </span>
                     }
                 </span>
-                <span class="col-md-10 no-padding">
+                <span class="col-md-10 no-padding @(item.Level == "Error" ? "ccm-logs--error" : "") @(item.Level == "Warn" ? "ccm-logs--warning" : "")">
                     @if (string.IsNullOrEmpty(item.Exception))
                     {
                         <pre>@item.Message</pre>
@@ -179,8 +179,22 @@
         border-color: #f8320d;
     }
 
+    .ccm-logs--warning {
+        color: #f8930d;
+    }
+
+    .ccm-logs--warning pre {
+        color: #f8930d;
+        background: #fff9f1;
+    }
+
     .ccm-logs--error {
         color: #f8320d;
+    }
+
+    .ccm-logs--error pre {
+        color: #f8320d;
+        background: #fff1f1;
     }
 </style>
 

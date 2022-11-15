@@ -21,6 +21,7 @@ services:
 networks:
   proxynet:
     external: true
+
 configs:
   discovery_appsettings_stage:
     external: true

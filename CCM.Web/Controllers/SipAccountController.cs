@@ -122,6 +122,7 @@ namespace CCM.Web.Controllers
                 try
                 {
                     _cachedSipAccountRepository.Create(user);
+                    log.Info($"{User.Identity.Name} succesfully created the SIP Account '{model.UserName}'");
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -198,8 +199,8 @@ namespace CCM.Web.Controllers
                     {
                         _cachedSipAccountRepository.UpdatePassword(user.Id, model.PasswordDefault);
                     }
-
                     _cachedSipAccountRepository.Update(user);
+                    log.Info($"{User.Identity.Name} succesfully edited the SIP Account '{model.UserName}'");
                     return RedirectToAction("Index");
                 }
                 catch (ApplicationException ex)
@@ -228,6 +229,8 @@ namespace CCM.Web.Controllers
                 return RedirectToAction("Index");
             }
 
+            log.Warn($"{User.Identity.Name} has opened the delete dialog for the SIP Account '{account.UserName}'");
+
             var model = new DeleteUserViewModel
             {
                 Id = account.Id,
@@ -241,6 +244,7 @@ namespace CCM.Web.Controllers
         public ActionResult Delete(DeleteSipAccountViewModel model)
         {
             _cachedSipAccountRepository.Delete(Guid.Parse(model.Id));
+            log.Warn($"{User.Identity.Name} has successfully deleted the SIP Account '{model.UserName}'");
             return RedirectToAction("Index");
         }
 

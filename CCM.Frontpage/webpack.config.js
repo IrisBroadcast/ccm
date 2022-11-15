@@ -12,7 +12,8 @@ module.exports = {
     output: {
         path: path.resolve(__dirname + "/../CCM.Web/wwwroot/dist"),
         filename: "[name].js",
-        publicPath: "/"
+        publicPath: "/",
+        assetModuleFilename: 'static/[name][ext][query]'
     },
     resolve: {
         extensions: [".js", ".ts"]
@@ -39,27 +40,35 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(eot|ttf|woff|woff2|otf)$/i,
-                use: [{
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name].[ext]',
-                        outputPath: './static',
-                        context: path.resolve(__dirname, './')
-                    }
-                }]
+                test: /\.svg$/i,
+                type: 'asset/inline'
             },
             {
-                test: /\.(jpe?g|png|gif|svg)$/i,
-                use: [{
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name].[ext]',
-                        outputPath: './static',
-                        context: path.resolve(__dirname, './')
-                    }
-                }]
-            }
+                test: /\.(woff|woff2|eot|ttf|otf)$/i,
+                type: 'asset/resource',
+            },
+            // {
+            //     test: /\.(eot|ttf|woff|woff2|otf)$/i,
+            //     use: [{
+            //         loader: 'file-loader',
+            //         options: {
+            //             name: '[name].[ext]',
+            //             outputPath: './static',
+            //             context: path.resolve(__dirname, './')
+            //         }
+            //     }]
+            // },
+            // {
+            //     test: /\.(jpe?g|png|gif|svg)$/i,
+            //     use: [{
+            //         loader: 'file-loader',
+            //         options: {
+            //             name: '[name].[ext]',
+            //             outputPath: './static',
+            //             context: path.resolve(__dirname, './')
+            //         }
+            //     }]
+            // }
         ]
     },
     plugins: [

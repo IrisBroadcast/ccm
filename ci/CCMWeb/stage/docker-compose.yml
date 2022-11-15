@@ -24,7 +24,7 @@ services:
 configs:
   ccm_appsettings_stage:
     external: true
+
 networks:
   proxynet:
     external: true
-
