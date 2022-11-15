@@ -10,7 +10,7 @@ def configStage = [
     stackname: "ipk-stage",
     dockerFile: "./ci/CCMDiscoveryApi/Dockerfile",
     dockerComposeFile: "./ci/CCMDiscoveryApi/stage/docker-compose.yml",
-    dockerHost: "stoipk-stage0",
+    dockerHost: "stoipk-stage01",
     dockerHostCredentialsId: "ipkServerUser",
 
     buildVersion: "0.0.0",
