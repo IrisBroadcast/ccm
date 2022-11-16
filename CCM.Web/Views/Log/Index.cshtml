@@ -6,16 +6,20 @@
 
 @{
     ViewData["Title"] = @Localizer["Logs"];
-    var logLevelCcm = ViewData["CurrentLevelCCM"];
-    var logLevelDiscovery = ViewData["CurrentLevelDiscovery"];
 }
 
 @section scripts
 {
     <script type="text/javascript">
-        $(".ccm-logs-list--row").click(function (event) {
+        @* $(".ccm-logs-list--row").click(function (event) {
             $(this).toggleClass('selected');
-        });
+        }); *@
+        const data = document.querySelectorAll(".ccm-logs-list--row");
+        for (let i = 0; i < data.length; i++) {
+            data[i].addEventListener("click", function(event) {
+                event.target.classList.toggle("selected");
+            });
+        }
     </script>
 }
 
