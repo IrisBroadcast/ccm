@@ -1100,4 +1100,10 @@
   <data name="SDP_Required" xml:space="preserve">
     <value>SDPn måste anges</value>
   </data>
+  <data name="Login_For_Codec_Link" xml:space="preserve">
+    <value>Du måste logga in för en se länken till kodaren</value>
+  </data>
+  <data name="Login_For_IP_Address" xml:space="preserve">
+    <value>Du måste logga in för att se IP-adressen</value>
+  </data>
 </root>

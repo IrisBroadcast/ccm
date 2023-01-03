@@ -7,7 +7,7 @@
 @{
     Layout = "_LayoutStartPage";
 
-    var hasWriteRights = User.Identity.IsAuthenticated && (User.IsInRole(Roles.Admin) || User.IsInRole("Remote"));
+    var hasWriteRights = User.Identity.IsAuthenticated && (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Remote));
 }
 
 @section search
@@ -495,12 +495,26 @@
                         {{info.regionName}}
                     </div>
                 </div>
-                <div class="row">
-                    <label class="col-md-3">@Localizer["Ip_Address"]</label>
-                    <div class="col-lg-9">
-                        {{info.ip}}
+
+                @if (hasWriteRights)
+                {
+                    <div class="row">
+                        <label class="col-md-3">@Localizer["Ip_Address"]</label>
+                        <div class="col-lg-9">
+                            {{info.ip}}
+                        </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div class="row">
+                        <label class="col-md-3">@Localizer["Ip_Address"]</label>
+                        <div class="col-lg-9">
+                            @Localizer["Login_For_IP_Address"]
+                        </div>
+                    </div>
+                }
+
                 <div class="row">
                     <label class="col-md-3">@Localizer["UserAgent"]</label>
                     <div class="col-lg-9">
@@ -525,14 +539,28 @@
                         {{info.userExternalReference}}
                     </div>
                 </div>
-                <div class="row" ng-show="info.finalUserInterfaceLink.length > 0">
-                    <label class="col-md-3">@Localizer["Web_Interface"]</label>
-                    <div class="col-lg-9">
-                        <a href="{{info.finalUserInterfaceLink}}" onclick="return false;" ng-click="openAdmin(info.finalUserInterfaceLink, info.width, info.height, info.useScrollbars); $event.stopPropagation();">
-                            {{info.finalUserInterfaceLink}}
-                        </a>
+
+                @if (hasWriteRights)
+                {
+                    <div class="row" ng-show="info.finalUserInterfaceLink.length > 0">
+                        <label class="col-md-3">@Localizer["Web_Interface"]</label>
+                        <div class="col-lg-9">
+                            <a href="{{info.finalUserInterfaceLink}}" onclick="return false;" ng-click="openAdmin(info.finalUserInterfaceLink, info.width, info.height, info.useScrollbars); $event.stopPropagation();">
+                                {{info.finalUserInterfaceLink}}
+                            </a>
+                        </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div class="row" ng-show="info.finalUserInterfaceLink.length > 0">
+                        <label class="col-md-3">@Localizer["Web_Interface"]</label>
+                        <div class="col-lg-9">
+                            @Localizer["Login_For_Codec_Link"]
+                        </div>
+                    </div>
+                }
+
             </div>
 
             <!-- Codec control -->
@@ -550,7 +578,10 @@
                             <loading-overlay ng-show="codecControlLoading" />
                             <div class="ccm-ui-popmixer--unit-vu--feedback" ng-hide="codecControlAvailable">
                                 <h3>@Localizer["Codec_Error_No_Audio_Metering_Status_Available"]</h3>
-                                <span>{{codecMeteringErrorMessage}}</span>
+                                @if (hasWriteRights)
+                                {
+                                    <span>{{codecMeteringErrorMessage}}</span>
+                                }
                             </div>
                             <div ng-style="{ visibility : codecControlAvailable ? 'visible': 'hidden'}">
                                 <div class="col-md-12">

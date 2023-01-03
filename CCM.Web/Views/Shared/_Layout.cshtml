@@ -9,6 +9,7 @@
 @using CCM.Core.Helpers
 @using CCM.Core.Managers
 @{
+    var hasWriteRights = User.Identity.IsAuthenticated && (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Remote));
     string env = @BuildInformation.Value.Environment;
     var logoClass = (env == "development" ? "development" : (env == "staging" ? "staging" : "production"));
     string deployVersion = @BuildInformation.Value.Version;
@@ -17,7 +18,7 @@
     string buildDateString = @BuildInformation.Value.ReleaseDate;
     string codecControlHost = @SettingsManager.CodecControlHost;
     string codecControlUserName = @SettingsManager.CodecControlUserName;
-    string codecControlPassword = @SettingsManager.CodecControlPassword;
+    string codecControlPassword = (hasWriteRights ? @SettingsManager.CodecControlPassword : "");
     string discoveryServiceUrl = @SettingsManager.DiscoveryServiceUrl;
 }
 <!DOCTYPE html>

@@ -1699,6 +1699,24 @@ namespace CCM.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Du måste logga in för att se länken till kodaren.
+        /// </summary>
+        public static string Login_For_Codec_Link {
+            get {
+                return ResourceManager.GetString("Login_For_Codec_Link", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Du måste logga in för att se IP-adressen.
+        /// </summary>
+        public static string Login_For_IP_Address {
+            get {
+                return ResourceManager.GetString("Login_For_IP_Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loggar.
         /// </summary>
         public static string Logs {
