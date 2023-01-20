@@ -112,7 +112,6 @@ namespace CCM.Web.Controllers
                 userPrincipal,
                 new AuthenticationProperties
                 {
-                    ExpiresUtc = DateTime.UtcNow.AddMinutes(20),
                     IsPersistent = isPersistent,
                     AllowRefresh = true
                 });
