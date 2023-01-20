@@ -117,7 +117,7 @@ namespace CCM.Web
                     // - Challenge: A cookie authentication scheme redirecting the user to a login page.
                     // - Forbid: A cookie authentication scheme redirecting the user to a page indicating access was forbidden.
                     Configuration.Bind("CookieSettings", options);
-                    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                    options.ExpireTimeSpan = TimeSpan.FromHours(12);
                     options.Cookie.HttpOnly = true;
 
                     // Make options.SlidingExpiration = true; if you want no expiration as long as logged in user is active.
