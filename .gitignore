@@ -90,8 +90,8 @@ CCMWeb/appsettings.Development.json
 logs
 CCM.Web/appsettings.Development.json
 
-ci/CCMDiscoveryApi/Jenkinsfile
-ci/CCMDiscoveryApi/production/docker-compose.yml
+**/ci/CCMDiscoveryApi/Jenkinsfile
+**/ci/CCMDiscoveryApi/production/docker-compose.yml
 
-ci/CCMWeb/Jenkinsfile
-ci/CCMWeb/production/docker-compose.yml
+**/ci/CCMWeb/Jenkinsfile
+**/ci/CCMWeb/production/docker-compose.yml
