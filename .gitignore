@@ -89,3 +89,8 @@ CCMWeb/appsettings.Development.json
 
 logs
 CCM.Web/appsettings.Development.json
+
+production/
+
+Jenkinsfile
+
