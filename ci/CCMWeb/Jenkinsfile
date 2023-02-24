@@ -10,7 +10,7 @@ def configStage = [
     stackname: "ipk-stage",
     dockerFile: "./ci/CCMWeb/Dockerfile",
     dockerComposeFile: "./ci/CCMWeb/stage/docker-compose.yml",
-    dockerHost: "msc.sr.se",
+
     dockerHostCredentialsId: "dockerHostUser",
 
     buildVersion: "0.0.0",
@@ -22,7 +22,7 @@ def configProd = [
     stackname: "ipk",
     dockerFile: "./ci/CCMWeb/Dockerfile",
     dockerComposeFile: "./ci/CCMWeb/production/docker-compose.yml",
-    dockerHost: "msc.sr.se",
+
     dockerHostCredentialsId: "dockerHostUser",
 
     buildVersion: "0.0.0",
