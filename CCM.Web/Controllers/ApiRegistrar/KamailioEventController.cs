@@ -48,6 +48,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
         private readonly IKamailioEventParser _kamailioEventParser;
         private readonly IWebGuiHubUpdater _webGuiHubUpdater;
         private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
+        private readonly IExtendedStatusHubUpdater _extendedStatusHubUpdater;
         private readonly ISettingsManager _settingsManager;
         private readonly RegisteredUserAgentViewModelsProvider _registeredUserAgentViewModelsProvider;
 
@@ -57,7 +58,8 @@ namespace CCM.Web.Controllers.ApiRegistrar
             IWebGuiHubUpdater webGuiHubUpdater,
             ICodecStatusHubUpdater codecStatusHubUpdater,
             ISettingsManager settingsManager,
-            RegisteredUserAgentViewModelsProvider registeredUserAgentViewModelsProvider)
+            RegisteredUserAgentViewModelsProvider registeredUserAgentViewModelsProvider,
+            IExtendedStatusHubUpdater extendedStatusHubUpdater)
         {
             _sipMessageManager = sipMessageManager;
             _kamailioEventParser = kamailioEventParser;
@@ -65,7 +67,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
             _codecStatusHubUpdater = codecStatusHubUpdater;
             _settingsManager = settingsManager;
             _registeredUserAgentViewModelsProvider = registeredUserAgentViewModelsProvider;
-       
+            _extendedStatusHubUpdater = extendedStatusHubUpdater;
         }
 
         [HttpGet]
@@ -115,6 +117,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
             {
                 _webGuiHubUpdater.Update(result); // First web gui
                 _codecStatusHubUpdater.Update(result); // Then codec status to external clients
+                _extendedStatusHubUpdater.Update(result);
             }
 
             return Ok();

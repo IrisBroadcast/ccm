@@ -38,26 +38,27 @@ using Microsoft.Extensions.Logging;
 namespace CCM.Web.Hubs
 {
     /// <summary>
-    /// The codec status hub sends out codec/user-agent changes to external clients.
+    /// The extended status hub sends out codec/user-agent changes to external clients.
+    /// Used for applications that need more details about codecs.
     /// Updates clients through SignalR.
     /// </summary>
-    public class CodecStatusHubUpdater : ICodecStatusHubUpdater
+    public class ExtendedStatusHubUpdater : IExtendedStatusHubUpdater
     {
         private readonly ILogger<CodecStatusHubUpdater> _logger;
 
         private readonly ICachedCallRepository _cachedCallRepository;
         private readonly ICachedCallHistoryRepository _cachedCallHistoryRepository;
         private readonly CodecStatusViewModelsProvider _codecStatusViewModelsProvider;
-        private readonly IHubContext<CodecStatusHub, ICodecStatusHub> _codecStatusHub;
+        private readonly IHubContext<ExtendedStatusHub, IExtendedStatusHub> _hub;
 
-        public CodecStatusHubUpdater(
+        public ExtendedStatusHubUpdater(
             IServiceProvider serviceProvider,
             ICachedCallRepository cachedCallRepository,
             ICachedCallHistoryRepository cachedCallHistoryRepository,
             CodecStatusViewModelsProvider codecStatusViewModelsProvider,
             ILogger<CodecStatusHubUpdater> logger)
         {
-            _codecStatusHub = serviceProvider.GetService<IHubContext<CodecStatusHub, ICodecStatusHub>>();
+            _hub = serviceProvider.GetService<IHubContext<ExtendedStatusHub, IExtendedStatusHub>>();
             _cachedCallRepository = cachedCallRepository;
             _cachedCallHistoryRepository = cachedCallHistoryRepository;
             _codecStatusViewModelsProvider = codecStatusViewModelsProvider;
@@ -76,13 +77,13 @@ namespace CCM.Web.Hubs
 
                     if (callInfo != null)
                     {
-                        _logger.LogDebug($"CodecStatusHub. Call started. From:{callInfo.FromId}, To:{callInfo.ToId}");
+                        _logger.LogDebug($"ExtendedStatusHub. Call started. From:{callInfo.FromId}, To:{callInfo.ToId}");
                         UpdateCodecStatusByGuid(callInfo.FromId);
                         UpdateCodecStatusByGuid(callInfo.ToId);
                     }
                     else
                     {
-                        _logger.LogError($"CodecStatusHub. Call started but was not found in database. Call Id:{callId}");
+                        _logger.LogError($"ExtendedStatusHub. Call started but was not found in database. Call Id:{callId}");
                     }
                     break;
                 }
@@ -114,13 +115,13 @@ namespace CCM.Web.Hubs
                 }
             }
 
-            _logger.LogDebug($"CodecStatusHub. Status:{updateResult.ChangeStatus}, id:{updateResult.ChangedObjectId}, sip address:{updateResult.SipAddress}");
+            _logger.LogDebug($"ExtendedStatusHub. Status:{updateResult.ChangeStatus}, id:{updateResult.ChangedObjectId}, sip address:{updateResult.SipAddress}");
         }
 
         private void UpdateCodecStatusRemoved(CodecStatusViewModel codecStatusViewModel)
         {
-            _logger.LogDebug($"CodecStatusHub is sending codec status to clients. SipAddress: {codecStatusViewModel.SipAddress}, State: {codecStatusViewModel.State}");
-            _codecStatusHub.Clients.All.CodecStatus(codecStatusViewModel);
+            _logger.LogDebug($"ExtendedStatusHub is sending codec status to clients. SipAddress: {codecStatusViewModel.SipAddress}, State: {codecStatusViewModel.State}");
+            _hub.Clients.All.CodecStatus(codecStatusViewModel as CodecStatusExtendedViewModel);
         }
 
         private void UpdateCodecStatusByGuid(Guid id)
@@ -131,16 +132,16 @@ namespace CCM.Web.Hubs
             }
 
             // Check if it's related to any registered online codecs
-            var userAgentsOnline = _codecStatusViewModelsProvider.GetAll();
-            CodecStatusViewModel updatedCodecStatus = userAgentsOnline.FirstOrDefault(x => x.Id == id);
+            var userAgentsOnline = _codecStatusViewModelsProvider.GetAllExtended();
+            CodecStatusExtendedViewModel updatedCodecStatus = userAgentsOnline.FirstOrDefault(x => x.Id == id);
             if (updatedCodecStatus != null)
             {
-                _logger.LogDebug($"CodecStatusHub is sending codec status to clients. SipAddress: {updatedCodecStatus.SipAddress}, State: {updatedCodecStatus.State}");
-                _codecStatusHub.Clients.All.CodecStatus(updatedCodecStatus);
+                _logger.LogDebug($"ExtendedStatusHub is sending codec status to clients. SipAddress: {updatedCodecStatus.SipAddress}, State: {updatedCodecStatus.State}");
+                _hub.Clients.All.CodecStatus(updatedCodecStatus);
             }
             else
             {
-                _logger.LogError($"Can't update CodecStatusHub. No codec online with id: {id}");
+                _logger.LogError($"Can't update ExtendedStatusHub. No codec online with id: {id}");
             }
         }
 
@@ -148,44 +149,73 @@ namespace CCM.Web.Hubs
         {
             if (callId == Guid.Empty)
             {
-                _logger.LogError($"CodecStatusHub. Call id is empty, can't close call:{callId}");
+                _logger.LogError($"ExtendedStatusHub. Call id is empty, can't close call:{callId}");
                 return;
             }
 
             CallHistory call = _cachedCallHistoryRepository.GetCallHistoryByCallId(callId);
             if (call == null)
             {
-                _logger.LogError($"CodecStatusHub. Call closed but was not found in call history. Call id:{callId}");
+                _logger.LogError($"ExtendedStatusHub. Call closed but was not found in call history. Call id:{callId}");
                 return;
             }
 
-            _logger.LogDebug($"CodecStatusHub. Call closed. From:{call.FromId}, to:{call.ToId}, call id:{callId}");
+            _logger.LogDebug($"ExtendedStatusHub. Call closed. From:{call.FromId}, to:{call.ToId}, call id:{callId}");
 
+            var userAgentsOnline = _codecStatusViewModelsProvider.GetAllExtended();
+            CodecStatusExtendedViewModel fromCodec = userAgentsOnline.FirstOrDefault(x => x.Id == call.FromId);
             // From
-            var updatedCodecFrom = new CodecStatusViewModel
+            if (fromCodec != null)
             {
-                State = CodecState.Available,
-                SipAddress = String.IsNullOrEmpty(call.FromSip) ? call.FromUsername : call.FromSip,
-                Id = call.FromId,
-                PresentationName = call.FromDisplayName,
-                DisplayName = call.FromDisplayName,
-                InCall = false
-            };
-            _logger.LogDebug($"CodecStatusHub. Sending codec status to clients. SipAddress: {updatedCodecFrom.SipAddress}, State: {updatedCodecFrom.State}");
-            _codecStatusHub.Clients.All.CodecStatus(updatedCodecFrom);
+                _hub.Clients.All.CodecStatus(fromCodec);
+            }
+            else
+            {
+                var updatedCodecFrom = new CodecStatusExtendedViewModel
+                {
+                    State = CodecState.Available,
+                    SipAddress = String.IsNullOrEmpty(call.FromSip) ? call.FromUsername : call.FromSip,
+                    Id = call.FromId,
+                    PresentationName = call.FromDisplayName,
+                    DisplayName = call.FromDisplayName,
+                    InCall = false,
+                    LocationName = call.FromLocationName,
+                    LocationCategory = call.FromLocationCategory,
+                    CodecTypeName = call.FromCodecTypeName,
+                    CodecTypeColor = call.FromCodecTypeColor,
+                    CodecTypeCategory = call.FromCodecTypeCategory,
+                    RegionName = call.FromRegionName,
+                    UserComment = call.FromComment
+                };
+                _hub.Clients.All.CodecStatus(updatedCodecFrom);
+            }
 
+            CodecStatusExtendedViewModel toCodec = userAgentsOnline.FirstOrDefault(x => x.Id == call.FromId);
             // To
-            var updatedCodecTo = new CodecStatusViewModel
+            if (toCodec != null)
             {
-                State = CodecState.Available,
-                SipAddress = String.IsNullOrEmpty(call.ToSip) ? call.ToUsername : call.ToSip,
-                Id = call.ToId,
-                PresentationName = call.ToDisplayName,
-                DisplayName = call.ToDisplayName,
-                InCall = false
-            };
-            _logger.LogDebug($"CodecStatusHub. Sending codec status to clients. SipAddress: {updatedCodecTo.SipAddress}, State: {updatedCodecTo.State}");
-            _codecStatusHub.Clients.All.CodecStatus(updatedCodecTo);
+                _hub.Clients.All.CodecStatus(toCodec);
+            }
+            else
+            {
+                var updatedCodecTo = new CodecStatusExtendedViewModel
+                {
+                    State = CodecState.Available,
+                    SipAddress = String.IsNullOrEmpty(call.ToSip) ? call.ToUsername : call.ToSip,
+                    Id = call.ToId,
+                    PresentationName = call.ToDisplayName,
+                    DisplayName = call.ToDisplayName,
+                    InCall = false,
+                    LocationName = call.ToLocationName,
+                    LocationCategory = call.ToLocationCategory,
+                    CodecTypeName = call.ToCodecTypeName,
+                    CodecTypeColor = call.ToCodecTypeColor,
+                    CodecTypeCategory = call.ToCodecTypeCategory,
+                    RegionName = call.ToRegionName,
+                    UserComment = call.ToComment
+                };
+                _hub.Clients.All.CodecStatus(updatedCodecTo);
+            }
         }
     }
 }

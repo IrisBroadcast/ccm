@@ -174,7 +174,7 @@ namespace CCM.Web
             services.AddDbContext<CcmDbContext>(builder =>
             {
                 builder.UseMySql(
-                    Configuration.GetConnectionString("CodecCallMonitorDatabaseContext"),
+                    Configuration.GetConnectionString("CodecCallMonitorDatabaseContext"), new MySqlServerVersion(new Version(8, 0, 11)),
                     options =>
                     {
                         options.EnableRetryOnFailure();
@@ -212,14 +212,6 @@ namespace CCM.Web
             }
 
             // Static files for serving images and static files in wwwroot.
-            //app.UseStaticFiles(new StaticFileOptions()
-            //{
-            //    OnPrepareResponse = context =>
-            //    {
-            //        context.Context.Response.Headers.Add("Cache-Control", "no-cache, no-store");
-            //        context.Context.Response.Headers.Add("Expires", "-1");
-            //    }
-            //});
             app.UseStaticFiles();
             var uapath = Configuration.GetValue<string>("UserAgentImagesFolder");
             if (!string.IsNullOrWhiteSpace(uapath) && Directory.Exists(uapath))
@@ -278,6 +270,7 @@ namespace CCM.Web
                 // SignalR / Websocket routes
                 endpoints.MapHub<WebGuiHub>("/webguihub");
                 endpoints.MapHub<CodecStatusHub>("/codecstatushub");
+                endpoints.MapHub<CodecStatusHub>("/v2/extended");
             });
 
         }
@@ -347,6 +340,7 @@ namespace CCM.Web
 
             services.AddScoped<IWebGuiHubUpdater, WebGuiHubUpdater>();
             services.AddScoped<ICodecStatusHubUpdater, CodecStatusHubUpdater>();
+            services.AddScoped<IExtendedStatusHubUpdater, ExtendedStatusHubUpdater>();
 
             // Discovery related
             services.AddScoped<IDiscoveryServiceManager, DiscoveryServiceManager>();

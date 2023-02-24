@@ -1,5 +1,5 @@
 # Get base image
-FROM mcr.microsoft.com/dotnet/sdk:3.1 as builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as builder
 
 # Create work directory folder
 WORKDIR /source
@@ -19,7 +19,7 @@ COPY CCM.DiscoveryApi CCM.DiscoveryApi
 RUN dotnet publish --configuration Release --output ./out ./CCM.DiscoveryApi/CCM.DiscoveryApi.csproj
 
 # Switch to runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:3.1
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
 # RUN apt-get update
 # RUN apt-get install tcpdump -y
 # RUN apt-get install net-tools -y

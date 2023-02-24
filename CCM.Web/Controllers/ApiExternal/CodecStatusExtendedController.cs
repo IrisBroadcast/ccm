@@ -24,35 +24,76 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using CCM.Core.Interfaces.Repositories;
+using CCM.Web.Mappers;
 using CCM.Web.Models.Api;
+using CCM.Web.Models.ApiExternal;
 using CCM.Web.Models.Home;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace CCM.Web.Controllers.Api
+namespace CCM.Web.Controllers.ApiExternal
 {
     /// <summary>
-    /// Used by the CCM Frontpage to get available filtering types
+    /// Used by services with more information need
     /// </summary>
-    public class FilterTypeController : ControllerBase
+    public class CodecStatusExtendedController : ControllerBase
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly ICodecTypeRepository _codecTypeRepository;
         private readonly IRegionRepository _regionRepository;
         private readonly ICategoryRepository _categoryRepository;
 
-        public FilterTypeController(
+        public CodecStatusExtendedController(
+            IServiceProvider serviceProvider,
             IRegionRepository regionRepository,
             ICodecTypeRepository codecTypeRepository,
             ICategoryRepository categoryRepository)
         {
+            _serviceProvider = serviceProvider;
             _regionRepository = regionRepository;
             _codecTypeRepository = codecTypeRepository;
             _categoryRepository = categoryRepository;
         }
 
         [HttpGet]
-        public FilterTypesViewModel GetAll()
+        public CodecStatusExtendedViewModel Index(string sipId)
+        {
+            var codecStatusViewModelsProvider = _serviceProvider.GetService<CodecStatusViewModelsProvider>();
+            var userAgentsOnline = codecStatusViewModelsProvider.GetAllExtended();
+
+            var codecStatus = userAgentsOnline.FirstOrDefault(x => x.SipAddress == sipId);
+
+            if (codecStatus == null)
+            {
+                return new CodecStatusExtendedViewModel
+                {
+                    SipAddress = sipId,
+                    State = CodecState.NotRegistered
+                };
+            }
+
+            return codecStatus;
+        }
+
+        [HttpGet]
+        public IEnumerable<CodecStatusExtendedViewModel> GetAll(bool includeCodecsOffline = false)
+        {
+            var codecStatusViewModelsProvider = _serviceProvider.GetService<CodecStatusViewModelsProvider>();
+
+            if (includeCodecsOffline)
+            {
+                return codecStatusViewModelsProvider.GetAllCodecsExtendedIncludeOffline();
+            }
+
+            return codecStatusViewModelsProvider.GetAllExtended();
+        }
+
+        [HttpGet]
+        public FilterTypesViewModel Filters()
         {
             var vm = new FilterTypesViewModel
             {

@@ -1,5 +1,5 @@
 # Get base image (user is root)
-FROM mcr.microsoft.com/dotnet/sdk:3.1 as builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as builder
 
 # Create work directory folder
 WORKDIR /source
@@ -21,7 +21,7 @@ COPY CCM.Web CCM.Web
 RUN dotnet publish --configuration Release --output ./out ./CCM.Web/CCM.Web.csproj
 
 # Switch to runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:3.1
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
 # RUN apt-get update
 # RUN apt-get install tcpdump -y
 # RUN apt-get install net-tools -y

@@ -46,20 +46,20 @@ namespace CCM.Web.Controllers.ApiRegistrar
         private readonly IExternalStoreMessageManager _externalStoreMessageManager;
         private readonly IWebGuiHubUpdater _webGuiHubUpdater;
         private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
-        private readonly ISettingsManager _settingsManager;
+        private readonly IExtendedStatusHubUpdater _extendedStatusHubUpdater;
 
         public CallRegisterController(
             ISipEventParser sipEventParser,
             IExternalStoreMessageManager externalStoreMessageManager,
             IWebGuiHubUpdater webGuiHubUpdater,
             ICodecStatusHubUpdater codecStatusHubUpdater,
-            ISettingsManager settingsManager)
+            IExtendedStatusHubUpdater extendedStatusHubUpdater)
         {
             _sipEventParser = sipEventParser;
             _externalStoreMessageManager = externalStoreMessageManager;
             _webGuiHubUpdater = webGuiHubUpdater;
             _codecStatusHubUpdater = codecStatusHubUpdater;
-            _settingsManager = settingsManager;
+            _extendedStatusHubUpdater = extendedStatusHubUpdater;
         }
 
         [HttpGet]
@@ -107,6 +107,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
             {
                 _webGuiHubUpdater.Update(result); // First web gui
                 _codecStatusHubUpdater.Update(result); // Then codec status to external clients
+                _extendedStatusHubUpdater.Update(result);
             }
 
             return Ok();

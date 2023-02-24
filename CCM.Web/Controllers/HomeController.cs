@@ -44,6 +44,7 @@ namespace CCM.Web.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IWebGuiHubUpdater _webGuiHubUpdater;
         private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
+        private readonly IExtendedStatusHubUpdater _extendedStatusHubUpdater;
 
         public HomeController(
             IRegionRepository regionRepository,
@@ -51,7 +52,8 @@ namespace CCM.Web.Controllers
             ICachedSipAccountRepository cachedSipAccountRepository,
             ICategoryRepository categoryRepository,
             IWebGuiHubUpdater webGuiHubUpdater,
-            ICodecStatusHubUpdater codecStatusHubUpdater)
+            ICodecStatusHubUpdater codecStatusHubUpdater,
+            IExtendedStatusHubUpdater extendedStatusHubUpdater)
         {
             _regionRepository = regionRepository;
             _codecTypeRepository = codecTypeRepository;
@@ -59,6 +61,7 @@ namespace CCM.Web.Controllers
             _categoryRepository = categoryRepository;
             _webGuiHubUpdater = webGuiHubUpdater;
             _codecStatusHubUpdater = codecStatusHubUpdater;
+            _extendedStatusHubUpdater = extendedStatusHubUpdater;
         }
 
         public ActionResult Index()
@@ -114,6 +117,7 @@ namespace CCM.Web.Controllers
 
                 _webGuiHubUpdater.Update(updateResult); // First web gui
                 _codecStatusHubUpdater.Update(updateResult); // Then codec status to external clients
+                _extendedStatusHubUpdater.Update(updateResult); // TODO: maybe this one one the one above is not needed when comment is edited?
                 return Ok();
             }
             return BadRequest();
@@ -149,6 +153,7 @@ namespace CCM.Web.Controllers
 
                 _webGuiHubUpdater.Update(updateResult); // First web gui
                 _codecStatusHubUpdater.Update(updateResult); // Then codec status to external clients
+                _extendedStatusHubUpdater.Update(updateResult);
                 return Ok();
             }
             return BadRequest();

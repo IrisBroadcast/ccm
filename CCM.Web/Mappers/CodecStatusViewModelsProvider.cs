@@ -154,8 +154,8 @@ namespace CCM.Web.Mappers
             {
                 var result = new CodecStatusExtendedViewModel
                 {
-                    SipAddress = regSip.SipUri,
                     Id = regSip.Id,
+                    SipAddress = regSip.SipUri,
                     PresentationName = DisplayNameHelper.GetDisplayName(regSip, sipDomain),
                     DisplayName = DisplayNameHelper.GetDisplayName(regSip, sipDomain),
                     HasCodecControl = (string.IsNullOrEmpty(regSip.CodecApi) == false),
@@ -304,6 +304,74 @@ namespace CCM.Web.Mappers
                 SipAddress = a.UserName,
                 DisplayName = DisplayNameHelper.GetDisplayName(a, sipDomain),
                 PresentationName = DisplayNameHelper.GetDisplayName(a, sipDomain),
+                State = CodecState.NotRegistered
+            });
+
+            return userAgentsOnline.Concat(notRegisteredSips).ToList();
+        }
+
+        public IEnumerable<CodecStatusExtendedViewModel> GetAllCodecsExtendedIncludeOffline()
+        {
+            var sipDomain = _settingsManager.SipDomain;
+            var registeredUserAgents = _cachedRegisteredCodecRepository.GetRegisteredUserAgents();
+            var ongoingCalls = _cachedCallRepository.GetOngoingCalls(true);
+
+            var userAgentsOnline = registeredUserAgents.Select(regSip =>
+            {
+                var result = new CodecStatusExtendedViewModel
+                {
+                    Id = regSip.Id,
+                    SipAddress = regSip.SipUri,
+                    PresentationName = DisplayNameHelper.GetDisplayName(regSip, sipDomain),
+                    DisplayName = DisplayNameHelper.GetDisplayName(regSip, sipDomain),
+                    HasCodecControl = (string.IsNullOrEmpty(regSip.CodecApi) == false),
+                    CodecTypeName = regSip.CodecTypeName,
+                    CodecTypeCategory = regSip.CodecTypeCategory,
+                    CodecTypeColor = regSip.CodecTypeColor,
+                    UserExternalReference = regSip.UserExternalReference,
+                    LocationName = regSip.Location,
+                    LocationCategory = regSip.LocationCategory,
+                    RegionName = regSip.RegionName,
+                    UserComment = regSip.UserComment
+                };
+
+                var call = ongoingCalls.FirstOrDefault(c => c.FromSip == regSip.SipUri || c.ToSip == regSip.SipUri);
+                bool inCall = call != null;
+                result.InCall = inCall;
+
+                if (inCall)
+                {
+                    var isFromCaller = call.FromSip == regSip.SipUri;
+                    result.IsCallingPart = isFromCaller;
+                    result.ConnectedToSipAddress = isFromCaller ? call.ToSip : call.FromSip;
+                    result.ConnectedToPresentationName = isFromCaller ? call.ToDisplayName : call.FromDisplayName;
+                    result.ConnectedToDisplayName = isFromCaller ? call.ToDisplayName : call.FromDisplayName;
+                    result.ConnectedToLocation = isFromCaller ? call.ToLocationName : call.FromLocationName;
+                    result.CallStartedAt = call.Started;
+                }
+
+                result.State = regSip.Id == Guid.Empty
+                    ? CodecState.NotRegistered
+                    : (inCall ? CodecState.InCall : CodecState.Available);
+
+                return result;
+            }).ToList();
+
+            // Add the offline accounts to the list
+            var userAgentsIdsOnline = userAgentsOnline.Select(rs => rs.SipAddress);
+            var sipAccounts = _cachedSipAccountRepository.GetAll();
+            var accountsNotOnline = sipAccounts.Where(a => !userAgentsIdsOnline.Contains(a.UserName));
+
+            IEnumerable<CodecStatusExtendedViewModel> notRegisteredSips = accountsNotOnline.Select(a => new CodecStatusExtendedViewModel
+            {
+                Id = Guid.Empty,
+                SipAddress = a.UserName,
+                PresentationName = DisplayNameHelper.GetDisplayName(a, sipDomain),
+                DisplayName = DisplayNameHelper.GetDisplayName(a, sipDomain),
+                CodecTypeName = a?.CodecType?.Name ?? null,
+                CodecTypeColor = a?.CodecType?.Color ?? null,
+                UserExternalReference = a.ExternalReference,
+                UserComment = a.Comment,
                 State = CodecState.NotRegistered
             });
 

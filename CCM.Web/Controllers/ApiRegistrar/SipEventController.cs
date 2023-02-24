@@ -53,6 +53,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
         private readonly ISipMessageManager _sipMessageManager;
         private readonly IWebGuiHubUpdater _webGuiHubUpdater;
         private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
+        private readonly IExtendedStatusHubUpdater _extendedStatusHubUpdater;
         private readonly ISettingsManager _settingsManager;
 
         public SipEventController(
@@ -61,7 +62,8 @@ namespace CCM.Web.Controllers.ApiRegistrar
             IWebGuiHubUpdater webGuiHubUpdater,
             ICodecStatusHubUpdater codecStatusHubUpdater,
             ISettingsManager settingsManager,
-            ILogger<SipEventController> logger)
+            ILogger<SipEventController> logger,
+            IExtendedStatusHubUpdater extendedStatusHubUpdater)
         {
             _sipEventParser = sipEventParser;
             _sipMessageManager = sipMessageManager;
@@ -69,6 +71,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
             _codecStatusHubUpdater = codecStatusHubUpdater;
             _settingsManager = settingsManager;
             _logger = logger;
+            _extendedStatusHubUpdater = extendedStatusHubUpdater;
         }
 
         [HttpGet]
@@ -116,6 +119,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
                 {
                     _webGuiHubUpdater.Update(result); // First web gui
                     _codecStatusHubUpdater.Update(result); // Then codec status to external clients
+                    _extendedStatusHubUpdater.Update(result);
                 }
             }
             catch (Exception ex)

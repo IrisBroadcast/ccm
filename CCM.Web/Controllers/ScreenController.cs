@@ -24,10 +24,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO: Maybe kill the whole controller..
+
 using System;
 using System.Linq;
 using CCM.Core.Interfaces.Repositories;
-using CCM.Core.SipEvent;
 using CCM.Core.SipEvent.Models;
 using CCM.Web.Hubs;
 using CCM.Web.Infrastructure;
@@ -44,6 +45,7 @@ namespace CCM.Web.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IWebGuiHubUpdater _webGuiHubUpdater;
         private readonly ICodecStatusHubUpdater _codecStatusHubUpdater;
+        private readonly IExtendedStatusHubUpdater _extendedStatusHubUpdater;
 
         public ScreenController(
             IRegionRepository regionRepository,
@@ -51,7 +53,8 @@ namespace CCM.Web.Controllers
             ICachedSipAccountRepository cachedSipAccountRepository,
             ICategoryRepository categoryRepository,
             IWebGuiHubUpdater webGuiHubUpdater,
-            ICodecStatusHubUpdater codecStatusHubUpdater)
+            ICodecStatusHubUpdater codecStatusHubUpdater,
+            IExtendedStatusHubUpdater extendedStatusHubUpdater)
         {
             _regionRepository = regionRepository;
             _codecTypeRepository = codecTypeRepository;
@@ -59,6 +62,7 @@ namespace CCM.Web.Controllers
             _categoryRepository = categoryRepository;
             _webGuiHubUpdater = webGuiHubUpdater;
             _codecStatusHubUpdater = codecStatusHubUpdater;
+            _extendedStatusHubUpdater = extendedStatusHubUpdater;
         }
 
         public ActionResult Index()
@@ -114,6 +118,7 @@ namespace CCM.Web.Controllers
 
                 _webGuiHubUpdater.Update(updateResult); // First web gui
                 _codecStatusHubUpdater.Update(updateResult); // Then codec status to external clients
+                _extendedStatusHubUpdater.Update(updateResult);
                 return Ok();
             }
             return BadRequest();
@@ -149,6 +154,7 @@ namespace CCM.Web.Controllers
 
                 _webGuiHubUpdater.Update(updateResult); // First web gui
                 _codecStatusHubUpdater.Update(updateResult); // Then codec status to external clients
+                _extendedStatusHubUpdater.Update(updateResult);
                 return Ok();
             }
             return BadRequest();

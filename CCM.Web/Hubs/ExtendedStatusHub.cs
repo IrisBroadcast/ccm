@@ -35,18 +35,18 @@ using CCM.Web.Mappers;
 
 namespace CCM.Web.Hubs
 {
-    public interface ICodecStatusHub
+    public interface IExtendedStatusHub
     {
-        Task CodecStatus(CodecStatusViewModel codecStatusViewModel);
-        Task CodecStatusList(List<CodecStatusViewModel> codecStatusViewModel);
+        Task CodecStatus(CodecStatusExtendedViewModel codecStatusViewModel);
+        Task CodecStatusList(List<CodecStatusExtendedViewModel> codecStatusViewModel);
     }
 
-    public class CodecStatusHub : Hub<ICodecStatusHub>
+    public class ExtendedStatusHub : Hub<IExtendedStatusHub>
     {
         protected static readonly Logger log = LogManager.GetCurrentClassLogger();
         private readonly CodecStatusViewModelsProvider _codecStatusViewModelsProvider;
 
-        public CodecStatusHub(CodecStatusViewModelsProvider codecStatusViewModelsProvider)
+        public ExtendedStatusHub(CodecStatusViewModelsProvider codecStatusViewModelsProvider)
         {
             _codecStatusViewModelsProvider = codecStatusViewModelsProvider;
         }
@@ -55,7 +55,7 @@ namespace CCM.Web.Hubs
         {
             if (log.IsDebugEnabled)
             {
-                log.Debug($"SignalR client connected to {GetType().Name}, connection id={Context.ConnectionId}");
+                log.Debug($"ExtendedStatusHub client connected to {GetType().Name}, connection id={Context.ConnectionId}");
             }
             await base.OnConnectedAsync();
         }
@@ -64,25 +64,34 @@ namespace CCM.Web.Hubs
         {
             if (exception == null)
             {
-                log.Debug($"SignalR client disconnected gracefully from {GetType().Name}, connection id={Context.ConnectionId}");
+                log.Debug($"ExtendedStatusHub client disconnected gracefully from {GetType().Name}, connection id={Context.ConnectionId}");
             }
             else
             {
-                log.Debug($"SignalR client disconnected ungracefully from {GetType().Name}, connection id={Context.ConnectionId}");
+                log.Debug($"ExtendedStatusHub client disconnected ungracefully from {GetType().Name}, connection id={Context.ConnectionId}");
             }
             await base.OnDisconnectedAsync(exception);
         }
 
+        /// <summary>
+        /// Get all registered codecs
+        /// </summary>
+        /// <returns></returns>
         public Task Registered()
         {
-            var registered = _codecStatusViewModelsProvider.GetAll().ToList();
+            var registered = _codecStatusViewModelsProvider.GetAllExtended().ToList();
             return Clients.Caller.CodecStatusList(registered);
         }
 
+        /// <summary>
+        /// Get codec registered by <paramref name="sipAddress"/>
+        /// </summary>
+        /// <param name="sipAddress"></param>
+        /// <returns></returns>
         public Task RegisteredByAddress(string sipAddress)
         {
-            var registered = _codecStatusViewModelsProvider.GetAll();
-            var codecStatus = registered.FirstOrDefault(x => x.SipAddress == sipAddress) ?? new CodecStatusViewModel
+            var registered = _codecStatusViewModelsProvider.GetAllExtended();
+            var codecStatus = registered.FirstOrDefault(x => x.SipAddress == sipAddress) ?? new CodecStatusExtendedViewModel
             {
                 SipAddress = sipAddress,
                 State = CodecState.NotRegistered
@@ -91,19 +100,24 @@ namespace CCM.Web.Hubs
             return Clients.Caller.CodecStatus(codecStatus);
         }
 
+        /// <summary>
+        /// Get codec registered by id <paramref name="id"/>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Task RegisteredById(string id)
         {
             if (String.IsNullOrEmpty(id) || String.IsNullOrWhiteSpace(id))
             {
-                return Clients.Caller.CodecStatus(new CodecStatusViewModel
+                return Clients.Caller.CodecStatus(new CodecStatusExtendedViewModel
                 {
                     Id = Guid.Empty,
                     SipAddress = "",
                     State = CodecState.NotRegistered
                 });
             }
-            var registered = _codecStatusViewModelsProvider.GetAll();
-            var codecStatus = registered.FirstOrDefault(x => x.Id == Guid.Parse(id)) ?? new CodecStatusViewModel
+            var registered = _codecStatusViewModelsProvider.GetAllExtended();
+            var codecStatus = registered.FirstOrDefault(x => x.Id == Guid.Parse(id)) ?? new CodecStatusExtendedViewModel
             {
                 Id = Guid.Empty,
                 SipAddress = "",
