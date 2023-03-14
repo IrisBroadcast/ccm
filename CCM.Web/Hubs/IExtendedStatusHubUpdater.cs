@@ -28,7 +28,11 @@ using CCM.Core.SipEvent.Models;
 
 namespace CCM.Web.Hubs
 {
+<<<<<<<< HEAD:CCM.Web/Hubs/IExtendedStatusHubUpdater.cs
     public interface IExtendedStatusHubUpdater
+========
+    public interface IWebGuiHubUpdater
+>>>>>>>> iris/master:CCM.Web/Hubs/IWebGuiHubUpdater.cs
     {
         void Update(SipEventHandlerResult updateResult);
     }
