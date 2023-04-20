@@ -163,8 +163,9 @@ namespace CCM.Web.Hubs
             _logger.LogDebug($"ExtendedStatusHub. Call closed. From:{call.FromId}, to:{call.ToId}, call id:{callId}");
 
             var userAgentsOnline = _codecStatusViewModelsProvider.GetAllExtended();
-            CodecStatusExtendedViewModel fromCodec = userAgentsOnline.FirstOrDefault(x => x.Id == call.FromId);
+
             // From
+            CodecStatusExtendedViewModel fromCodec = userAgentsOnline.FirstOrDefault(x => x.Id == call.FromId);
             if (fromCodec != null)
             {
                 _hub.Clients.All.CodecStatus(fromCodec);
@@ -190,8 +191,8 @@ namespace CCM.Web.Hubs
                 _hub.Clients.All.CodecStatus(updatedCodecFrom);
             }
 
-            CodecStatusExtendedViewModel toCodec = userAgentsOnline.FirstOrDefault(x => x.Id == call.FromId);
             // To
+            CodecStatusExtendedViewModel toCodec = userAgentsOnline.FirstOrDefault(x => x.Id == call.ToId);
             if (toCodec != null)
             {
                 _hub.Clients.All.CodecStatus(toCodec);

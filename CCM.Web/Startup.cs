@@ -270,7 +270,7 @@ namespace CCM.Web
                 // SignalR / Websocket routes
                 endpoints.MapHub<WebGuiHub>("/webguihub");
                 endpoints.MapHub<CodecStatusHub>("/codecstatushub");
-                endpoints.MapHub<CodecStatusHub>("/v2/extended");
+                endpoints.MapHub<ExtendedStatusHub>("/v2/extended");
             });
 
         }
