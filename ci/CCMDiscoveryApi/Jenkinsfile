@@ -22,8 +22,8 @@ def configProd = [
     stackname: "ipk",
     dockerFile: "./ci/CCMDiscoveryApi/Dockerfile",
     dockerComposeFile: "./ci/CCMDiscoveryApi/production/docker-compose.yml",
-    dockerHost: "stoipk01",
-    dockerHostCredentialsId: "ipkServerUser",
+    dockerHost: "stodacar01",
+    dockerHostCredentialsId: "dacarServerUser",
 
     buildVersion: "0.0.0",
     environment: "Production",
