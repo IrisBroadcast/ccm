@@ -12,9 +12,14 @@ services:
           constraints: [node.role == manager]
     extra_hosts:
       - "ccm.sr.se:134.25.10.16"
+    networks:
+      - proxynet
     configs:
       - source: discovery_appsettings_prod
         target: /app/appsettings.json
 configs:
   discovery_appsettings_prod:
+    external: true
+networks:
+  proxynet:
     external: true
