@@ -19,7 +19,7 @@ def configStage = [
 
 // Configuration :: Prod
 def configProd = [
-    stackname: "ipk",
+    stackname: "medi",
     dockerFile: "./ci/CCMDiscoveryApi/Dockerfile",
     dockerComposeFile: "./ci/CCMDiscoveryApi/production/docker-compose.yml",
     dockerHost: "stodacar01",
