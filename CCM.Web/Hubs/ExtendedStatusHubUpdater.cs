@@ -104,7 +104,7 @@ namespace CCM.Web.Hubs
                 }
                 case (SipEventChangeStatus.CodecRemoved):
                 {
-                    var codecStatus = new CodecStatusViewModel
+                    var codecStatus = new CodecStatusExtendedViewModel
                     {
                         Id = updateResult.ChangedObjectId,
                         State = CodecState.NotRegistered,
@@ -118,10 +118,17 @@ namespace CCM.Web.Hubs
             _logger.LogDebug($"ExtendedStatusHub. Status:{updateResult.ChangeStatus}, id:{updateResult.ChangedObjectId}, sip address:{updateResult.SipAddress}");
         }
 
-        private void UpdateCodecStatusRemoved(CodecStatusViewModel codecStatusViewModel)
+        private void UpdateCodecStatusRemoved(CodecStatusExtendedViewModel codecStatusViewModel)
         {
             _logger.LogDebug($"ExtendedStatusHub is sending codec status to clients. SipAddress: {codecStatusViewModel.SipAddress}, State: {codecStatusViewModel.State}");
-            _hub.Clients.All.CodecStatus(codecStatusViewModel as CodecStatusExtendedViewModel);
+            
+            if (codecStatusViewModel == null)
+            {
+                _logger.LogWarning($"Trying to tell everyone that the codec is removed, but information is null");
+                return;
+            }
+            
+            _hub.Clients.All.CodecStatus(codecStatusViewModel);
         }
 
         private void UpdateCodecStatusByGuid(Guid id)

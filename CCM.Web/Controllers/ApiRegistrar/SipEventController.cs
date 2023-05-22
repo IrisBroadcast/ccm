@@ -46,8 +46,6 @@ namespace CCM.Web.Controllers.ApiRegistrar
     /// </summary>
     public class SipEventController : ControllerBase
     {
-        protected static readonly Logger log = LogManager.GetCurrentClassLogger();
-
         private readonly ILogger<SipEventController> _logger;
         private readonly ISipEventParser _sipEventParser;
         private readonly ISipMessageManager _sipMessageManager;
@@ -91,7 +89,7 @@ namespace CCM.Web.Controllers.ApiRegistrar
 
             if (sipEventData == null)
             {
-                log.Warn("SIP event controller received empty data");
+                _logger.LogWarning("SIP event controller received empty data");
                 return BadRequest();
             }
 
@@ -100,20 +98,17 @@ namespace CCM.Web.Controllers.ApiRegistrar
                 SipMessageBase sipMessage = _sipEventParser.Parse(sipEventData);
                 if (sipMessage == null)
                 {
-                    log.Warn("Incorrect SIP message format: ", sipEventData);
+                    _logger.LogWarning("Incorrect SIP message format: ", sipEventData);
                     return BadRequest();
                 }
 
                 SipEventHandlerResult result = _sipMessageManager.HandleSipMessage(sipMessage);
 
-                if (log.IsDebugEnabled) {
-                    log.Debug(
-                    $"SIP message, Handled: {sipEventData.FromUri.Replace("sip:", "")} '{sipEventData.FromDisplayName ?? ""}' Expires:{sipEventData.Expires} -- RAW:${sipEventData.Event}: Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
-                }
+                _logger.LogDebug($"SIP message, Handled: {sipEventData.FromUri.Replace("sip:", "")} '{sipEventData.FromDisplayName ?? ""}' Expires:{sipEventData.Expires} -- RAW:${sipEventData.Event}: Timestamp:{sipEventData.UnixTimeStampToDateTime(sipEventData.TimeStamp)} {sipEventData.RegType} (SAVING_)");
 
                 if (result == null)
                 {
-                    log.Warn("SIP message was handled but result was null");
+                    _logger.LogWarning("SIP message was handled but result was null");
                 }
                 else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
                 {
@@ -124,8 +119,8 @@ namespace CCM.Web.Controllers.ApiRegistrar
             }
             catch (Exception ex)
             {
-                log.Error(ex);
-                log.Error(ex.Message);
+                _logger.LogError(ex.Message);
+                _logger.LogError(ex.InnerException.ToString());
             }
 
             return Ok();
