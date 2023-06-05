@@ -27,12 +27,6 @@ export class StatisticsView {
             console.warn("No tabs found on this page");
             return;
         }
-        // console.error("==============")
-        // tabs.forEach((tab : HTMLButtonElement) => {
-        //     Tool.$event(tab, "click", (el: any) => {
-        //         console.log(el.target.dataset.targetTab)
-        //     })
-        // });
     }
 
     setDatePickers() {
