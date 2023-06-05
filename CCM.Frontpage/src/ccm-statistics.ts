@@ -35,8 +35,6 @@ export class StatisticsView {
         // });
     }
 
-    private _selectedTab_
-
     setDatePickers() {
         let endDate = new Date();
         endDate.setHours(0);
@@ -225,19 +223,24 @@ export class StatisticsView {
         });
     }
 
-    async NAV_categorySearch() {
-
-        const queryParamsCalls = {
+    private get _qp__category() {
+        return {
             filterType: "Categories",
             chartType: "NumberOfCalls",
             startDate: Tool.$dom("startDate").value,
             endDate: Tool.$dom("endDate").value,
             filterId: ""
         };
+    };
 
+    async NAV_categorySearch() {
+        this._fetch__category();
+    }
+
+    private _fetch__category() {
         // Number of call combinations per category itneraction
         Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/CategoryCallNumberOfCallsView", queryParamsCalls).then(async (content) => {
+        Tool.$fetchView("/Statistics/CategoryCallNumberOfCallsView", this._qp__category).then(async (content) => {
             Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = content;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
 
@@ -258,14 +261,20 @@ export class StatisticsView {
             } catch(err) {
                 console.error(err);
             }
-        }).catch((error) => {
+        })
+        .catch((error) => {
             Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
+        })
+        .finally(() => {
+            this._fetch__category1();
         });
+    }
 
+    private _fetch__category1() {
         // Separated category items
         Tool.$dom("categoryNumberOfItemsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/CategoryNumberOfCallsView", queryParamsCalls).then(async (content) => {
+        Tool.$fetchView("/Statistics/CategoryNumberOfCallsView", this._qp__category).then(async (content) => {
             Tool.$dom("categoryNumberOfItemsChartDiv").innerHTML = content;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
 
@@ -285,9 +294,13 @@ export class StatisticsView {
             } catch(err) {
                 console.error(err);
             }
-        }).catch((error) => {
+        })
+        .catch((error) => {
             Tool.$dom("categoryNumberOfItemsChartDiv").innerHTML = `<div class="error">${error}</div>`;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
+        })
+        .finally(() => {
+            console.log(`Finally last category`);
         });
     }
 
