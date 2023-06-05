@@ -16,11 +16,17 @@ export class StatisticsView {
 
         this.setDatePickers();
 
-        Tool.$event("locationSearchBtn", "click", this.locationSearch.bind(this));
-        Tool.$event("regionSearchBtn", "click", this.regionSearch.bind(this));
-        Tool.$event("sipAccountsSearchBtn", "click", this.sipAccountsSearch.bind(this));
-        Tool.$event("codecTypesSearchBtn", "click", this.codecTypesSearch.bind(this));
-        Tool.$event("categorySearchBtn", "click", this.categorySearch.bind(this));
+        Tool.$event("locationSearchBtn", "click", this.NAV_locationSearch.bind(this));
+        Tool.$event("regionSearchBtn", "click", this.NAV_regionSearch.bind(this));
+        Tool.$event("sipAccountsSearchBtn", "click", this.NAV_sipAccountsSearch.bind(this));
+        Tool.$event("codecTypesSearchBtn", "click", this.NAV_codecTypesSearch.bind(this));
+        Tool.$event("categorySearchBtn", "click", this.NAV_categorySearch.bind(this));
+
+        const tabs = Array.from(document.querySelectorAll('[data-target-tab]'));
+        if (!tabs || tabs.length === 0) {
+            console.warn("No tabs found on this page");
+            return;
+        }
     }
 
     setDatePickers() {
@@ -43,50 +49,74 @@ export class StatisticsView {
         });
     }
 
-    locationSearch() {
+    NAV_locationSearch() {
         Tool.$dom("locationSearchBtn").setAttribute("disabled", "true");
 
-        const queryParams = {
+        this._fetch__location();
+    }
+
+    private get _qp__location() {
+        return {
             startDate: Tool.$dom("startDate").value,
             endDate: Tool.$dom("endDate").value,
             regionId: Tool.$dom("Regions").value,
             ownerId: Tool.$dom("Owners").value,
             codecTypeId: Tool.$dom("CodecTypes").value
         };
+    };
 
+    private _fetch__location() {
+        Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = `<div class="loading"></div>`;
+        Tool.$fetchView("/Statistics/LocationNumberOfCallsView", this._qp__location).then((content) => {
+            Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = content;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        })
+        .catch((error) => {
+            Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        })
+        .finally(() => {
+            this._fetch__location1();
+        });
+    }
+
+    private _fetch__location1() {
+        Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = `<div class="loading"></div>`;
+        Tool.$fetchView("/Statistics/LocationTotalTimeForCallsView", this._qp__location).then((content) => {
+            Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = content;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        })
+        .catch((error) => {
+            Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        })
+        .finally(() => {
+            this._fetch__location2();
+        });
+    }
+
+    private _fetch__location2() {
+        Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = `<div class="loading"></div>`;
+        Tool.$fetchView("/Statistics/LocationMaxSimultaneousCallsView", this._qp__location).then((content) => {
+            Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = content;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        })
+        .catch((error) => {
+            Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
+            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        })
+        .finally(() => {
+            this._fetch__location3();
+        });
+    }
+
+    private _fetch__location3() {
         const sim24HourParams = {
             startDate: Tool.$dom("startDate").value,
             endDate: Tool.$dom("endDate").value,
             regionId: Tool.$dom("Regions").value,
             locationId: "00000000-0000-0000-0000-000000000000"
         };
-
-        Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/LocationNumberOfCallsView", queryParams).then((content) => {
-            Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = content;
-            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        }).catch((error) => {
-            Tool.$dom("locationNumberOfCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
-            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        });
-
-        Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/LocationTotalTimeForCallsView", queryParams).then((content) => {
-            Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = content;
-            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        }).catch((error) => {
-            Tool.$dom("locationTotalTimeForCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
-            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        });
-
-        Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/LocationMaxSimultaneousCallsView", queryParams).then((content) => {
-            Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = content;
-            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        }).catch((error) => {
-            Tool.$dom("locationMaxSimultaneousCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
-            Tool.$dom("locationSearchBtn").removeAttribute("disabled");
-        });
 
         Tool.$dom("locationSim24HourChartDiv").innerHTML = `<div class="loading"></div>`;
         Tool.$dom("locationSim24HourChartDataDiv").innerHTML = "";
@@ -98,6 +128,9 @@ export class StatisticsView {
         }).catch((error) => {
             Tool.$dom("locationSim24HourChartDiv").innerHTML = `<div class="error">${error}</div>`;
             Tool.$dom("locationSearchBtn").removeAttribute("disabled");
+        })
+        .finally(() => {
+            console.log(`Finally ran everything`);
         });
     }
 
@@ -121,7 +154,7 @@ export class StatisticsView {
         });
     }
 
-    regionSearch() {
+    NAV_regionSearch() {
         Tool.$dom("regionSearchBtn").setAttribute("disabled", "true");
 
         const queryParamsCalls = {
@@ -142,7 +175,7 @@ export class StatisticsView {
         });
     }
 
-    sipAccountsSearch() {
+    NAV_sipAccountsSearch() {
         Tool.$dom("sipAccountsSearchBtn").setAttribute("disabled", "true");
 
         const queryParamsCalls = {
@@ -163,7 +196,7 @@ export class StatisticsView {
         });
     }
 
-    codecTypesSearch() {
+    NAV_codecTypesSearch() {
         Tool.$dom("codecTypesSearchBtn").setAttribute("disabled", "true");
 
         const queryParamsCalls = {
@@ -184,20 +217,24 @@ export class StatisticsView {
         });
     }
 
-    async categorySearch() {
-
-
-        const queryParamsCalls = {
+    private get _qp__category() {
+        return {
             filterType: "Categories",
             chartType: "NumberOfCalls",
             startDate: Tool.$dom("startDate").value,
             endDate: Tool.$dom("endDate").value,
             filterId: ""
         };
+    };
 
+    async NAV_categorySearch() {
+        this._fetch__category();
+    }
+
+    private _fetch__category() {
         // Number of call combinations per category itneraction
         Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/CategoryCallNumberOfCallsView", queryParamsCalls).then(async (content) => {
+        Tool.$fetchView("/Statistics/CategoryCallNumberOfCallsView", this._qp__category).then(async (content) => {
             Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = content;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
 
@@ -218,14 +255,20 @@ export class StatisticsView {
             } catch(err) {
                 console.error(err);
             }
-        }).catch((error) => {
+        })
+        .catch((error) => {
             Tool.$dom("categoryNumberOfCallsChartDiv").innerHTML = `<div class="error">${error}</div>`;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
+        })
+        .finally(() => {
+            this._fetch__category1();
         });
+    }
 
+    private _fetch__category1() {
         // Separated category items
         Tool.$dom("categoryNumberOfItemsChartDiv").innerHTML = `<div class="loading"></div>`;
-        Tool.$fetchView("/Statistics/CategoryNumberOfCallsView", queryParamsCalls).then(async (content) => {
+        Tool.$fetchView("/Statistics/CategoryNumberOfCallsView", this._qp__category).then(async (content) => {
             Tool.$dom("categoryNumberOfItemsChartDiv").innerHTML = content;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
 
@@ -245,11 +288,14 @@ export class StatisticsView {
             } catch(err) {
                 console.error(err);
             }
-        }).catch((error) => {
+        })
+        .catch((error) => {
             Tool.$dom("categoryNumberOfItemsChartDiv").innerHTML = `<div class="error">${error}</div>`;
             Tool.$dom("categorySearchBtn").removeAttribute("disabled");
+        })
+        .finally(() => {
+            console.log(`Finally last category`);
         });
-
     }
 
     CreatePieChart(data) {

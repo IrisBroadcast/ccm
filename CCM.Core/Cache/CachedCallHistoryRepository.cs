@@ -143,7 +143,7 @@ namespace CCM.Core.Cache
 
         public IList<CallHistory> GetCallHistoriesByDate(DateTime startDate, DateTime endDate)
         {
-            if (startDate > DateTime.Now.AddYears(-1))
+            if (startDate > DateTime.Now.AddMonths(-4)) // .AddYears(-1))
             {
                 return _internalRepository.GetCallHistoriesByDate(GetOneYearCallHistory(), startDate, endDate);
             }
@@ -152,7 +152,7 @@ namespace CCM.Core.Cache
 
         public IList<CallHistory> GetCallHistoriesForRegion(DateTime startDate, DateTime endDate, Guid regionId)
         {
-            if (startDate > DateTime.Now.AddYears(-1))
+            if (startDate > DateTime.Now.AddMonths(-4)) // .AddYears(-1))
             {
                 return _internalRepository.GetCallHistoriesForRegion(GetOneYearCallHistory(), startDate, endDate, regionId);
             }
@@ -161,7 +161,7 @@ namespace CCM.Core.Cache
 
         public IList<CallHistory> GetCallHistoriesForRegisteredSip(DateTime startDate, DateTime endDate, string sipId)
         {
-            if (startDate > DateTime.Now.AddYears(-1))
+            if (startDate > DateTime.Now.AddMonths(-4)) // .AddYears(-1))
             {
                 return _internalRepository.GetCallHistoriesForRegisteredSip(GetOneYearCallHistory(), startDate, endDate, sipId);
             }
@@ -170,7 +170,7 @@ namespace CCM.Core.Cache
 
         public IList<CallHistory> GetCallHistoriesForCodecType(DateTime startDate, DateTime endDate, Guid codecTypeId)
         {
-            if (startDate > DateTime.Now.AddYears(-1))
+            if (startDate > DateTime.Now.AddMonths(-4)) // .AddYears(-1))
             {
                 return _internalRepository.GetCallHistoriesForCodecType(GetOneYearCallHistory(), startDate, endDate, codecTypeId);
             }
@@ -179,7 +179,7 @@ namespace CCM.Core.Cache
 
         public IList<CallHistory> GetCallHistoriesForLocation(DateTime startDate, DateTime endDate, Guid locationId)
         {
-            if (startDate > DateTime.Now.AddYears(-1))
+            if (startDate > DateTime.Now.AddMonths(-4)) // .AddYears(-1))
             {
                 return _internalRepository.GetCallHistoriesForLocation(GetOneYearCallHistory(), startDate, endDate, locationId);
             }

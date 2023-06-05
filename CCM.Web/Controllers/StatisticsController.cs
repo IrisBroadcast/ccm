@@ -241,7 +241,8 @@ namespace CCM.Web.Controllers
         {
             if (filterId == Guid.Empty)
             {
-                throw new Exception("Please choose a region");
+                //throw new Exception("Please choose a region");
+                return BadRequest("Please choose a region");
             }
             var model = new DateBasedChartViewModel
             {
@@ -263,7 +264,8 @@ namespace CCM.Web.Controllers
         {
             if (filterId == Guid.Empty)
             {
-                throw new Exception("Please choose a sip account");
+                //throw new Exception("Please choose a sip account");
+                return BadRequest("Please choose a sip account");
             }
             var model = new DateBasedChartViewModel
             {
@@ -285,7 +287,8 @@ namespace CCM.Web.Controllers
         {
             if (filterId == Guid.Empty)
             {
-                throw new Exception("Please choose a codec type");
+                //throw new Exception("Please choose a codec type");
+                return BadRequest("Please choose a codec type");
             }
             var model = new DateBasedChartViewModel
             {
@@ -371,7 +374,8 @@ namespace CCM.Web.Controllers
                     break;
                 // TODO: add category here
                 default:
-                    throw new Exception("No filter type selected");
+                    //throw new Exception("No filter type selected");
+                    return BadRequest("No filter type selected");
             }
 
             var csv = new StringBuilder();
