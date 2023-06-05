@@ -193,7 +193,7 @@ namespace CCM.Data.Repositories
         public IReadOnlyList<CallHistory> GetOneYearCallHistory()
         {
             var nowTime = DateTime.Now;
-            var startTime = DateTime.Now.AddYears(-1);
+            var startTime = DateTime.Now.AddMonths(-4); // .AddYears(-1);
             var callHistories = _ccmDbContext.CallHistories
                 .AsNoTracking()
                 .OrderByDescending(callHistory => callHistory.Ended)
