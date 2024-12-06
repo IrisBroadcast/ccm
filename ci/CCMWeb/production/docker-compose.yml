@@ -4,27 +4,23 @@ services:
   ccm:
     image: ${IMAGE_NAME}
     logging:
-      driver: json-file
+      driver: syslog
       options:
-        max-file: "5"
-        max-size: 20m
-    deploy:
-      placement:
-        constraints:
-          - node.labels.function == general-purpose
+        syslog-address: "udp://msc.sr.se:514"
+        syslog-format: "rfc3164"
+        tag: "ipk-ccm-prod"
     environment:
       ASPNETCORE_URLS: http://+:80
     networks:
       - proxynet
-      - default
     configs:
-      - source: ccm_appsettings_prod
+      - source: ccm_appsettings
         target: /app/appsettings.json
     volumes:
       - /mnt/nfs/msc-nfs/docker-share/production/ccm:/ccm
 
 configs:
-  ccm_appsettings_prod:
+  ccm_appsettings:
     external: true
 
 networks:

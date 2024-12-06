@@ -21,12 +21,12 @@ def configStage = [
 
 // Configuration :: Prod
 def configProd = [
-    alias: "CCM PROD", // used as input-text for confirmation to continue deploy
+    alias: "CCM Production", // used as input-text for confirmation to continue deploy
     stackName: "ipk",
     dockerFile: "./ci/CCMWeb/Dockerfile",
     dockerComposeFile: "./ci/CCMWeb/production/docker-compose.yml",
     dockerHost: "msc.sr.se",
-    dockerHostCredentialsId: "dockerHostUser",
+    dockerHostCredentialsId: "jenkinsUserProd",
 
     buildVersion: "0.0.0",
     environment: "Prod",
@@ -40,19 +40,6 @@ def configR2 = [
     dockerComposeFile: "./ci/CCMWeb/R2/docker-compose.yml",
     dockerHost: "rdcmm01",
     dockerHostCredentialsId: "jenkinsDeployUser",
-
-    buildVersion: "0.0.0",
-    environment: "Prod",
-]
-
-// Configuration :: MSC Temp Prod
-def configMscTemp = [
-    alias: "CCM PROD MSC Temp", // used as input-text for confirmation to continue deploy
-    stackName: "ipk",
-    dockerFile: "./ci/CCMWeb/Dockerfile",
-    dockerComposeFile: "./ci/CCMWeb/production/docker-compose-msc.yml",
-    dockerHost: "msc-tmp.sr.se",
-    dockerHostCredentialsId: "jenkinsUserProd",
 
     buildVersion: "0.0.0",
     environment: "Prod",
@@ -74,11 +61,6 @@ node(application.jenkinsWorkerConstraint) {
                 ),
                 booleanParam(
                     defaultValue: false,
-                    description: "Production MSC Temp",
-                    name: "Deploy_Production_Temp"
-                ),
-                booleanParam(
-                    defaultValue: false,
                     description: "Stage",
                     name: "Deploy_Stage"
                 ),
@@ -91,7 +73,7 @@ node(application.jenkinsWorkerConstraint) {
         ])
 
         stage("Prepare") {
-            if (params.Deploy_Rdc == false && params.Deploy_Production == false && params.Deploy_Stage == false && params.Deploy_Production_Temp == false) {
+            if (params.Deploy_Rdc == false && params.Deploy_Production == false && params.Deploy_Stage == false) {
                 currentBuild.result = "NOT_BUILT"
                 currentBuild.displayName = "#${BUILD_NUMBER} dry-run"
                 currentBuild.description = ""
@@ -122,10 +104,11 @@ node(application.jenkinsWorkerConstraint) {
                 echo "Deploy --> Stage"
                 deployTarget.push(configStage)
             }
-            if (params.Deploy_Production_Temp == true) {
-                echo "Deploy --> Prod MSC Temp"
-                deployTarget.push(configMscTemp)
-                application.registry = env.DOCKER_REGISTRY_TMP
+            if (params.Deploy_Rdc == false && params.Deploy_Production == false && params.Deploy_Stage == false) {
+                currentBuild.result = "FAILURE"
+                error("Please select environment")
+                cleanWs notFailBuild: false
+                return
             }
         }
 
