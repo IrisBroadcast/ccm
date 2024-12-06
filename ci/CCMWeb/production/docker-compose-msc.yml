@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  ccm:
+    image: ${IMAGE_NAME}
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://msc.sr.se:514"
+        syslog-format: "rfc3164"
+        tag: "ipk-ccm-prod"
+    environment:
+      ASPNETCORE_URLS: http://+:80
+    networks:
+      - proxynet
+    configs:
+      - source: ccm_appsettings
+        target: /app/appsettings.json
+    volumes:
+      - /mnt/nfs/msc-nfs/docker-share/production/ccm:/ccm
+
+configs:
+  ccm_appsettings:
+    external: true
+
+networks:
+  proxynet:
+    external: true

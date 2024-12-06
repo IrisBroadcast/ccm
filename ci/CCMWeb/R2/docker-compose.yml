@@ -1,4 +1,5 @@
 version: "3.9"
+
 services:
   ccm:
     image: ${IMAGE_NAME}
@@ -20,6 +21,7 @@ services:
         target: /app/appsettings.json
     volumes:
       - /home/mobilmedverkan/ccm/data:/ccm
+
 configs:
   ccm_appsettings_r2:
     name: ccm_appsettings_r2_2024_05_24

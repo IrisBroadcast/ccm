@@ -1,4 +1,5 @@
 version: "3.9"
+
 services:
   discovery:
     image: ${IMAGE_NAME}
@@ -15,9 +16,11 @@ services:
     configs:
       - source: discovery_appsettings_prod
         target: /app/appsettings.json
+
 configs:
   discovery_appsettings_prod:
     external: true
+
 networks:
   proxynet:
     external: true
