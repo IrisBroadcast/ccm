@@ -74,6 +74,21 @@ namespace CCM.Web.Models.ApiExternal
         #endregion
     }
 
+    public class ExtendedCodecCallProgressViewModel
+    {
+        public Guid Id { get; set; }
+        public string SipAddress { get; set; }
+        public string PresentationName { get; set; }
+        public string ConnectedToSipAddress { get; set; }
+        public string ConnectedToPresentationName { get; set; }
+
+        [JsonConverter(typeof(JsonDateTimeConverter))]
+        public DateTime CallStartedAt { get; set; }
+
+        public string SipCode { get; set; }
+        public string SipMessage { get; set; }
+    }
+
     public class JsonDateTimeConverter : JsonConverter<DateTime>
     {
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => reader.GetDateTime();

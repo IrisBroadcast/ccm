@@ -106,7 +106,7 @@ namespace CCM.Core.SipEvent.Parser
 
         private SipDialogMessage ParseDialog(KamailioSipEventData kamailioData)
         {
-            if (!Enum.TryParse(kamailioData.DialogState, true, out SipDialogStatus dialogStatus))
+            if (!Enum.TryParse(kamailioData.DialogState, true, out SipDialogStatus sipDialogStatus))
             {
                 _logger.LogWarning($"Dialog state field = {kamailioData.DialogState} of Kamailio dialog message");
                 return null;
@@ -115,7 +115,7 @@ namespace CCM.Core.SipEvent.Parser
             var dialog = new SipDialogMessage()
             {
                 Method = kamailioData.Method,
-                Status = dialogStatus,
+                Status = sipDialogStatus,
                 CallId = kamailioData.CallId,
                 HashId = kamailioData.DialogHashId,
                 HashEntry = kamailioData.DialogHashEntry,

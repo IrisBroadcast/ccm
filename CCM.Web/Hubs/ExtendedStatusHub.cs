@@ -38,6 +38,9 @@ namespace CCM.Web.Hubs
     public interface IExtendedStatusHub
     {
         Task CodecStatus(CodecStatusExtendedViewModel codecStatusViewModel);
+
+        Task CodecCallProgress(ExtendedCodecCallProgressViewModel callProgressViewModel);
+
         Task CodecStatusList(List<CodecStatusExtendedViewModel> codecStatusViewModel);
     }
 

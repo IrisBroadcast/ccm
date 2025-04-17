@@ -93,24 +93,12 @@ namespace CCM.Web.Hubs
                     }
                 case (SipEventChangeStatus.CallFailed):
                     {
-                        UpdateCodecStatusCallClosed(updateResult.ChangedObjectId);
+                        UpdateCodecProgressByGuid(updateResult);
                         break;
                     }
                 case (SipEventChangeStatus.CallProgress):
                     {
-                        // Load call and update to and from codecs
-                        var callId = updateResult.ChangedObjectId;
-                        CallInfo callInfo = _cachedCallRepository.GetCallInfoById(callId);
-                        if (callInfo != null)
-                        {
-                            _logger.LogDebug($"CodecStatusHub. Call started. From:{callInfo.FromId}, To:{callInfo.ToId}");
-                            UpdateCodecStatusByGuid(updateResult.ChangeStatus, callInfo.FromId, callInfo.FromSipAddress);
-                            UpdateCodecStatusByGuid(updateResult.ChangeStatus, callInfo.ToId, callInfo.ToSipAddress);
-                        }
-                        else
-                        {
-                            _logger.LogError($"CodecStatusHub. Call started but was not found in database. Call Id:{callId}");
-                        }
+                        UpdateCodecProgressByGuid(updateResult);
                         break;
                     }
                 case (SipEventChangeStatus.CodecAdded):
@@ -150,6 +138,34 @@ namespace CCM.Web.Hubs
             }
 
             _hub.Clients.All.CodecStatus(codecStatusViewModel);
+        }
+
+        /// <summary>
+        /// This is a special method designed for progress information, that really should be kept in a database or relate to
+        /// calls or registered peers.
+        /// TODO: Remove this and do it better later...
+        /// </summary>
+        /// <param name="changeReason"></param>
+        /// <param name="id"></param>
+        /// <param name="sipAddress"></param>
+        private void UpdateCodecProgressByGuid(SipEventHandlerResult result)
+        {
+            if (result == null || result.ProgressCall == null)
+            {
+                return;
+            }
+            ExtendedCodecCallProgressViewModel progress = new ExtendedCodecCallProgressViewModel()
+            {
+                Id = result.ProgressCall.Id,
+                SipAddress = result.ProgressCall.FromSipAddress,
+                PresentationName = result.ProgressCall.FromPresentationName,
+                ConnectedToSipAddress = result.ProgressCall.ToSipAddress,
+                ConnectedToPresentationName = result.ProgressCall.ToPresentationName,
+                CallStartedAt = result.ProgressCall.Started,
+                SipCode = result.ProgressCall.SipCode,
+                SipMessage = result.ProgressCall.SipMessage,
+            };
+            _hub.Clients.All.CodecCallProgress(progress);
         }
 
         private void UpdateCodecStatusByGuid(SipEventChangeStatus changeReason, Guid id, string sipAddress = "")
