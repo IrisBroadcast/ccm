@@ -85,6 +85,11 @@ namespace CCM.Core.Cache
             return _internalRepository.GetCallInfoById(callId);
         }
 
+        public CallProgressInfo GetCallProgressInfo(string callId, string hashId, string hashEnt)
+        {
+            return _internalRepository.GetCallProgressInfo(callId, hashId, hashEnt);
+        }
+
         public void UpdateOrAddCall(Call call)
         {
             _internalRepository.UpdateOrAddCall(call);

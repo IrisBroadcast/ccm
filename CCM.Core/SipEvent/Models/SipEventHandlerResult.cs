@@ -24,6 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+using CCM.Core.Entities;
 using System;
 
 namespace CCM.Core.SipEvent.Models
@@ -37,10 +38,17 @@ namespace CCM.Core.SipEvent.Models
         public Guid ChangedObjectId { get; set; }
         public string SipAddress { get; set; }
 
+        /// <summary>
+        /// Only to contain information about a calls progress, that's not stored in the db
+        /// </summary>
+        public CallProgressInfo ProgressCall { get; set; } = null;
+
         public override string ToString()
         {
             return $"Change status:{ChangeStatus}, Changed object id:{ChangedObjectId}, SIP address:{SipAddress}";
         }
+
+        #region Static helpers
 
         public static SipEventHandlerResult NothingChanged => new SipEventHandlerResult { ChangeStatus = SipEventChangeStatus.NothingChanged };
 
@@ -64,23 +72,23 @@ namespace CCM.Core.SipEvent.Models
             };
         }
 
-        public static SipEventHandlerResult CallFailed(Guid id, string sipAddress)
+        public static SipEventHandlerResult CallFailed(Guid id, CallProgressInfo call)
         {
             return new SipEventHandlerResult()
             {
                 ChangeStatus = SipEventChangeStatus.CallFailed,
                 ChangedObjectId = id,
-                SipAddress = sipAddress
+                ProgressCall = call,
             };
         }
 
-        public static SipEventHandlerResult CallProgress(Guid id, string sipAddress)
+        public static SipEventHandlerResult CallProgress(Guid id, CallProgressInfo call)
         {
             return new SipEventHandlerResult()
             {
                 ChangeStatus = SipEventChangeStatus.CallProgress,
                 ChangedObjectId = id,
-                SipAddress = sipAddress
+                ProgressCall = call,
             };
         }
 
@@ -93,5 +101,6 @@ namespace CCM.Core.SipEvent.Models
                 SipAddress = sipAddress
             };
         }
+        #endregion
     }
 }

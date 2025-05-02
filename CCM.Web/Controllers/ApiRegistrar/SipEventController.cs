@@ -107,6 +107,11 @@ namespace CCM.Web.Controllers.ApiRegistrar
                 {
                     _logger.LogWarning("SIP message was handled but result was null");
                 }
+                else if (result.ChangeStatus == SipEventChangeStatus.CallProgress || result.ChangeStatus == SipEventChangeStatus.CallFailed)
+                {
+                    // Only update progress to extended hub
+                    _extendedStatusHubUpdater.Update(result);
+                }
                 else if (result.ChangeStatus != SipEventChangeStatus.NothingChanged)
                 {
                     _webGuiHubUpdater.Update(result); // First web gui

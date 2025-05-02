@@ -266,6 +266,20 @@ namespace CCM.Data.Repositories
         }
 
         /// <summary>
+        /// CallId, HashId and HashEntry is a unique key for calls.
+        /// Also returns closed calls.
+        /// </summary>
+        /// <param name="callId">Kamailio call id</param>
+        /// <param name="hashId"></param>
+        /// <param name="hashEnt"></param>
+        /// <returns></returns>
+        public CallProgressInfo GetCallProgressInfo(string callId, string hashId, string hashEnt)
+        {
+            var dbCall = _ccmDbContext.Calls.SingleOrDefault(c => c.DialogCallId == callId && c.DialogHashId == hashId && c.DialogHashEnt == hashEnt);
+            return MapToCallProgressInfo(dbCall);
+        }
+
+        /// <summary>
         /// Get call information with db id.
         /// </summary>
         /// <param name="dbId"></param>
@@ -536,6 +550,24 @@ namespace CCM.Data.Repositories
                 FromId = dbCall.FromId ?? Guid.Empty,
                 ToId = dbCall.ToId ?? Guid.Empty,
                 Closed = dbCall.Closed
+            };
+        }
+
+        private CallProgressInfo? MapToCallProgressInfo(CallEntity dbCall)
+        {
+            string sipDomain = _settingsManager.SipDomain;
+            return dbCall == null ? null : new CallProgressInfo
+            {
+                Id = dbCall.Id,
+
+                FromSipAddress = dbCall.FromUsername,
+                FromPresentationName = CallDisplayNameHelper.GetDisplayName(dbCall.FromCodec, dbCall.FromDisplayName, dbCall.FromUsername, sipDomain),
+                ToSipAddress = dbCall.ToUsername,
+                ToPresentationName = CallDisplayNameHelper.GetDisplayName(dbCall.ToCodec, dbCall.ToDisplayName, dbCall.ToUsername, sipDomain),
+
+                Started = dbCall.Started,
+
+                IsPhoneCall = dbCall.IsPhoneCall,
             };
         }
     }

@@ -51,6 +51,9 @@ namespace CCM.Core.SipEvent.Event
 
         // Topic: Dialog start
         [JsonPropertyName("request_uri")] public string RequestUri { get; set; } // "sip:registrar.com", The actual requested destination. where to_uri contains the first "destination" that could be a relay
+        /// <summary>
+        /// Contains dialog state, start, end, failed or progress
+        /// </summary>
         [JsonPropertyName("dialog_state")] public string DialogState { get; set; } // "start"
         [JsonPropertyName("dhash_id")] public string DialogHashId { get; set; } // "10300"
         [JsonPropertyName("dhash_ent")] public string DialogHashEntry { get; set; } // "2697"

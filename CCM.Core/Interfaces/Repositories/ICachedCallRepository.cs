@@ -53,6 +53,8 @@ namespace CCM.Core.Interfaces.Repositories
         /// <returns></returns>
         CallInfo GetCallInfo(string callId, string hashId, string hashEnt);
         CallInfo GetCallInfoById(Guid dbId);
+
+        CallProgressInfo GetCallProgressInfo(string callId, string hashId, string hashEnt);
     }
 
     public interface ICallRepository
@@ -70,5 +72,7 @@ namespace CCM.Core.Interfaces.Repositories
 
         CallInfo GetCallInfo(string callId, string hashId, string hashEnt);
         CallInfo GetCallInfoById(Guid dbId);
+
+        CallProgressInfo GetCallProgressInfo(string callId, string hashId, string hashEnt);
     }
 }
