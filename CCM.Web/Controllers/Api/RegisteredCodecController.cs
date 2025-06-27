@@ -70,24 +70,29 @@ namespace CCM.Web.Controllers.Api
         /// <param name="id"></param>
         /// <param name="userId">Account ID</param>
         /// <returns></returns>
-        public ActionResult ById(Guid? id, Guid? userId)
+        public ActionResult ById(string? id, string? userId)
         {
-            if (id == null && userId == null)
+            if (string.IsNullOrEmpty(id) && string.IsNullOrEmpty(userId))
             {
                 return BadRequest();
             }
-            RegisteredSipDetails regSipDetails;
-            if (id.HasValue)
+            RegisteredSipDetails regSipDetails = null;
+            if (!string.IsNullOrEmpty(id))
             {
-                regSipDetails = _registeredCodecDetailsRepository.GetRegisteredSipById(id.Value);
-            }
-            else
-            {
-                if (userId.HasValue)
+                if (!Guid.TryParse(id, out Guid idParse))
                 {
-                    return BadRequest("No account id (userId) provided.");
+                    return BadRequest("Id could not be parsed to Guid.");
                 }
-                regSipDetails = _registeredCodecDetailsRepository.GetRegisteredSipByUserAccountId(userId.Value);
+                regSipDetails = _registeredCodecDetailsRepository.GetRegisteredSipById(idParse);
+            }
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                if (!Guid.TryParse(userId, out Guid idParse))
+                {
+                    return BadRequest("UserId could not be parsed to Guid.");
+                }
+                regSipDetails = _registeredCodecDetailsRepository.GetRegisteredSipByUserAccountId(idParse);
             }
 
             if (regSipDetails == null)
