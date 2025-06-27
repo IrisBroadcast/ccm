@@ -100,7 +100,7 @@ namespace CCM.Data.Repositories
             {
                 model.UserExternalReference = rs.User?.ExternalReference ?? string.Empty;
                 model.Comment = rs.User?.Comment ?? string.Empty;
-                model.UserDisplayName = rs.User?.DisplayName ?? string.Empty,;
+                model.UserDisplayName = rs.User?.DisplayName ?? string.Empty;
             }
 
             if (rs.UserAgent != null)
