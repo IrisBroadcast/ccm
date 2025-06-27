@@ -94,25 +94,42 @@ namespace CCM.Data.Repositories
                 Ip = rs.IP,
                 UserAgentHeader = rs.UserAgentHeader,
                 Registrar = rs.Registrar ?? string.Empty,
-                UserExternalReference = rs?.User?.ExternalReference ?? string.Empty,
-
-                Comment = rs?.User?.Comment ?? string.Empty,
-                UserDisplayName = rs?.User?.DisplayName ?? string.Empty,
-                Api = rs?.UserAgent?.Api ?? string.Empty,
-                Image = rs?.UserAgent?.Image ?? string.Empty,
-                Width = rs?.UserAgent?.Width ?? 1000,
-                Height = rs?.UserAgent?.Height ?? 1000,
-                UserInterfaceLink = rs?.UserAgent?.UserInterfaceLink ?? string.Empty,
-                UserInterfaceIsOpen = rs?.UserAgent?.UserInterfaceIsOpen ?? false,
-                UseScrollbars = rs?.UserAgent?.UseScrollbars ?? false,
-
-                UserAgentName = rs?.UserAgent?.Name ?? string.Empty,
-                LocationName = rs?.Location?.Name ?? string.Empty,
-                LocationComment = rs?.Location?.Comment ?? string.Empty,
-                CityName = rs?.Location?.City?.Name ?? string.Empty,
-                RegionName = rs?.Location?.Region.Name ?? string.Empty,
             };
 
+            if (rs.User != null)
+            {
+                model.UserExternalReference = rs.User?.ExternalReference ?? string.Empty;
+                model.Comment = rs.User?.Comment ?? string.Empty;
+                model.UserDisplayName = rs.User?.DisplayName ?? string.Empty,;
+            }
+
+            if (rs.UserAgent != null)
+            {
+                model.UserAgentName = rs.UserAgent?.Name ?? string.Empty;
+                model.Api = rs.UserAgent?.Api ?? string.Empty;
+                model.Image = rs.UserAgent?.Image ?? string.Empty;
+                model.Width = rs.UserAgent?.Width ?? 1000;
+                model.Height = rs.UserAgent?.Height ?? 1000;
+                model.UserInterfaceLink = rs.UserAgent?.UserInterfaceLink ?? string.Empty;
+                model.UserInterfaceIsOpen = rs.UserAgent?.UserInterfaceIsOpen ?? false;
+                model.UseScrollbars = rs.UserAgent?.UseScrollbars ?? false;
+            }
+
+            if (rs.Location != null)
+            {
+                model.LocationName = rs.Location?.Name ?? string.Empty;
+                model.LocationComment = rs.Location?.Comment ?? string.Empty;
+
+                if (rs.Location.City != null)
+                {
+                    model.CityName = rs.Location?.City?.Name ?? string.Empty;
+                }
+
+                if (rs.Location.Region != null)
+                {
+                    model.RegionName = rs.Location?.Region.Name ?? string.Empty;
+                }
+            }
             return model;
         }
     }
