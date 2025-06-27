@@ -68,6 +68,7 @@ namespace CCM.Web.Controllers.Api
         /// including codec control GUI, for the codec.
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="userId">Account ID</param>
         /// <returns></returns>
         public ActionResult ById(Guid? id, Guid? userId)
         {
@@ -75,8 +76,20 @@ namespace CCM.Web.Controllers.Api
             {
                 return BadRequest();
             }
+            RegisteredSipDetails regSipDetails;
+            if (id.HasValue)
+            {
+                regSipDetails = _registeredCodecDetailsRepository.GetRegisteredSipById(id.Value);
+            }
+            else
+            {
+                if (userId.HasValue)
+                {
+                    return BadRequest("No account id (userId) provided.");
+                }
+                regSipDetails = _registeredCodecDetailsRepository.GetRegisteredSipByUserAccountId(userId.Value);
+            }
 
-            RegisteredSipDetails regSipDetails = id.HasValue ? _registeredCodecDetailsRepository.GetRegisteredSipById(id.Value) : _registeredCodecDetailsRepository.GetRegisteredSipByUserAccountId(userId.Value);
             if (regSipDetails == null)
             {
                 return NotFound();
